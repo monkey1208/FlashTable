@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">FlashTable</string>
+
+    <!-- Universal strings -->
+    <string name="submit">確認</string>
+
+    <!-- Strings related to alert -->
+    <string name="alert_title">提醒</string>
+
 </resources>
