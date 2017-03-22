@@ -17,28 +17,43 @@ import android.widget.Button;
 public class CustomerMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private DrawerLayout drawer;
+
     private Fragment fragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customer_main);
-        setDrawer();
-        setFragment("main");
+        initView();
+        initData();
 
     }
+
+    private void initView() {
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    }
+
+    private void initData() {
+        setDrawer();
+        setFragment("main");
+    }
+
     private void setFragment(String input){
         switch (input){
             case "main":
                 fragment = new CustomerMainFragment();
                 break;
-
+            case "profile":
+                fragment = new CustomerProfileFragment();
+                break;
+            default:
+                break;
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.customer_frame, fragment).commit();
-        return;
     }
+
     private void setDrawer(){
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, null, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -53,6 +68,7 @@ public class CustomerMainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -71,10 +87,11 @@ public class CustomerMainActivity extends AppCompatActivity
 
         if (id == R.id.customer_drawer_reservation) {
             // Handle the camera action
+            setFragment("main");
         } else if (id == R.id.customer_drawer_detail) {
 
         } else if (id == R.id.customer_drawer_profile) {
-
+            setFragment("profile");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
