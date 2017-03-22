@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="transparentBlack">#DD000000</color>
-    <color name="moreTransparentBlack">#A0000000</color>
-    <color name="transparentWhite">#FFFFFF</color>
-    <item name="darkpurple" type="color">#FF9933CC</item>
-    <item name="darkdarkpurple" type="color">#332258</item>
+    <!-- App-related colors -->
+    <color name="colorPrimary">#FF6600</color>
+    <color name="colorPrimaryDark">#1A1A1A</color>
+    <color name="colorAccent">#F4A676</color>
+    <color name="textColorDark">#1A1A1A</color>
+    <color name="textColor">#333333</color>
+    <color name="textColorLight">#4D4D4D</color>
+    <color name="textColorLighter">#808080</color>
+    <color name="textColorOrange">#F08537</color>
+    <color name="textColorRed">#E41E1B</color>
+
+    <color name="alertColor">#E68239</color>
+
+    <!-- Other colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="darkpurple">#FF9933CC</color>
+    <color name="darkdarkpurple">#332258</color>
     <color name="ivory">#FFFFF0</color><!--象牙色 -->
     <color name="lightyellow">#FFFFE0</color><!--亮黄色 -->
     <color name="yellow">#FFFF00</color><!--黄色 -->
@@ -151,21 +163,5 @@
     <color name="darkblue">#00008B</color><!--暗藍色 -->
     <color name="navy">#000080</color><!--海軍色 -->
     <color name="black">#000000</color><!--黑色 -->
-
-    <!-- App-related colors -->
-    <color name="colorPrimary">#FF6600</color>
-    <color name="colorPrimaryDark">#1A1A1A</color>
-    <color name="colorAccent">#F4A676</color>
-    <color name="textColorDark">#1A1A1A</color>
-    <color name="textColor">#333333</color>
-    <color name="textColorLight">#4D4D4D</color>
-    <color name="textColorLighter">#808080</color>
-    <color name="textColorOrange">#F08537</color>
-    <color name="textColorRed">#E41E1B</color>
-
-    <color name="alertColor">#E68239</color>
-
-    <!-- Other colors -->
-    <color name="white">#FFFFFF</color>
 
 </resources>
