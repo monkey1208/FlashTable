@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/customer_drawer_reservation"
+            android:title="立即預約" />
+        <item
+            android:id="@+id/customer_drawer_detail"
+            android:title="預約明細" />
+        <item
+            android:id="@+id/customer_drawer_profile"
+            android:title="個人資料" />
+    </group>
+
+
+
+</menu>
