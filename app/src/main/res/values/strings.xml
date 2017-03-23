@@ -1,18 +1,36 @@
 <resources>
-    <string name="app_name">FlashTable</string>
+    <string name="app_name">Flash Table</string>
 
     <string name="title_activity_customer_main">CustomerMainActivity</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="action_settings">Settings</string>
-
 
     <!-- Universal strings -->
     <string name="submit">確認</string>
 
     <!-- Strings related to alert -->
     <string name="alert_title">提醒</string>
+
+    <!-- Strings related to customer drawer -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="drawer_reservation">立即預約</string>
+    <string name="drawer_detail">預約明細</string>
+    <string name="drawer_profile">個人資料</string>
+
+    <!-- Strings related to customer profile -->
+    <string name="customer_profile_name">使用者名稱</string>
+    <string name="customer_profile_credit">信譽分數：100</string>
+    <string name="customer_profile_reservations">預約紀錄</string>
+    <string name="customer_profile_comments">我的評論</string>
+    <string name="customer_profile_edit">編輯</string>
+    <string name="customer_profile_about_credit">了解信譽分數</string>
+
+    <!-- Strings related to customer detail -->
+    <string name="customer_detail_title">預約明細</string>
+    <string name="customer_detail_shop">店家名稱</string>
+    <string name="customer_detail_location">店家地址</string>
+    <string name="customer_detail_time">2017/02/14 08:00pm</string>
+    <string name="customer_detail_success">已成功訂位（5人）桌位</string>
+    <string name="customer_detail_shop_cancel">店家已取消訂位（5人）桌位</string>
+    <string name="customer_detail_self_cancel">自行取消訂位（5人）桌位</string>
 
 </resources>

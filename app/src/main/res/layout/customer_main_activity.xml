@@ -20,15 +20,6 @@
             android:id="@+id/customer_fab_menu"
             app:fabSize="normal"
             />
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="15dp"
-            android:id="@+id/customer_fab_map"
-            android:layout_alignParentRight="true"
-            app:fabSize="normal"
-            />
 
         <FrameLayout
             android:id="@+id/customer_frame"
@@ -44,7 +35,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/customer_nav_header_main"
+        android:background="@color/transparentWhite"
+        app:headerLayout="@layout/customer_drawer_header"
         app:menu="@menu/customer_drawer_item" />
 
 </android.support.v4.widget.DrawerLayout>

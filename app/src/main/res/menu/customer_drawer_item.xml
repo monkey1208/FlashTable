@@ -4,13 +4,16 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/customer_drawer_reservation"
-            android:title="立即預約" />
+            android:title="@string/drawer_reservation"
+            android:icon="@drawable/ic_customer_drawer_reservation"/>
         <item
             android:id="@+id/customer_drawer_detail"
-            android:title="預約明細" />
+            android:title="@string/drawer_detail"
+            android:icon="@drawable/ic_customer_drawer_detail"/>
         <item
             android:id="@+id/customer_drawer_profile"
-            android:title="個人資料" />
+            android:title="@string/drawer_profile"
+            android:icon="@drawable/ic_customer_drawer_profile"/>
     </group>
 
 

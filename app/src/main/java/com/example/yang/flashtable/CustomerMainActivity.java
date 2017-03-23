@@ -1,5 +1,6 @@
 package com.example.yang.flashtable;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -14,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 
 public class CustomerMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -25,7 +25,7 @@ public class CustomerMainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.customer_main);
+        setContentView(R.layout.customer_main_activity);
         initView();
         initData();
 
@@ -71,6 +71,11 @@ public class CustomerMainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    private void showDetail() {
+        Intent intent = new Intent(this, CustomerDetailActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -95,11 +100,6 @@ public class CustomerMainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -113,6 +113,7 @@ public class CustomerMainActivity extends AppCompatActivity
             // Handle the camera action
             setFragment("main");
         } else if (id == R.id.customer_drawer_detail) {
+            showDetail();
 
         } else if (id == R.id.customer_drawer_profile) {
             setFragment("profile");
@@ -124,7 +125,6 @@ public class CustomerMainActivity extends AppCompatActivity
     }
 
     private void dialogEvent() {
-
         final View view_dialog = LayoutInflater.from(this).inflate(R.layout.alert_dialog, null);
         new AlertDialog.Builder(this)
                 .setView(view_dialog)
