@@ -1,7 +1,5 @@
 package com.example.yang.flashtable;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,7 +21,7 @@ public class RecentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v =  inflater.inflate(R.layout.fragment_recent_layout, container, false);
+        v =  inflater.inflate(R.layout.store_recent_fregment, container, false);
         return v;
     }
 

@@ -2,13 +2,10 @@ package com.example.yang.flashtable;
 
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 
 
-public class FragmentController extends StoreMain{
+public class FragmentController extends StoreMainActivity {
     private static final int FRAG_COUNT = 4;
     private static final int HOME = 0;
     private static final int RECENT = 1;

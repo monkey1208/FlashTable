@@ -1,7 +1,5 @@
 package com.example.yang.flashtable;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -32,10 +30,10 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_home_layout, container, false);
+        v = inflater.inflate(R.layout.store_home_fragment, container, false);
         text_home = (TextView)v.findViewById(R.id.frag_home);
         text_home.setText(screen_msg);
-        but_active = (ImageButton)v.findViewById(R.id.but_active);
+        but_active = (ImageButton)v.findViewById(R.id.bt_active);
         but_active.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
