@@ -36,4 +36,7 @@
     <string name="customer_detail_record_title">預約紀錄明細</string>
     <string name="customer_detail_arrival_time">入座時間</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
