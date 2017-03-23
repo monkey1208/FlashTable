@@ -12,17 +12,79 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.5"></LinearLayout>
+            android:layout_weight="0.5">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_logo"/>
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/frag_home"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
-            android:layout_marginBottom="20dp"
-            android:background="@color/colorHalfTransparent"
             android:layout_height="0dp"
-            android:layout_weight="1.5"/>
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
+            android:layout_weight="1.5"
+            android:weightSum="3"
+            android:orientation="vertical"
+            android:background="@color/colorHalfTransparent">
+            <LinearLayout
+                android:layout_margin="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:weightSum="4"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_temp_store"/>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:weightSum="2"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tv_storename"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"/>
+                    <TextView
+                        android:id="@+id/tv_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="15dp"
+                android:layout_weight="2"
+                android:weightSum="4"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tv_discount"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="discount"/>
+
+                <TextView
+                    android:id="@+id/tv_gift"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:text="gift"/>
+            </LinearLayout>
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/bt_active"
@@ -34,5 +96,5 @@
             android:scaleType="centerInside"
             android:src="@drawable/bt_activate"/>
     </LinearLayout>
-
 </RelativeLayout>
+

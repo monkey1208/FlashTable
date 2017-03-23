@@ -1,11 +1,16 @@
 package com.example.yang.flashtable;
 
+import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class StoreMainActivity extends AppCompatActivity {
 
@@ -24,7 +29,7 @@ public class StoreMainActivity extends AppCompatActivity {
     private Fragment[] fragment;
     private FragmentManager fragmentManager;
 
-    private int current_stat=1;
+    private int current_stat=HOME;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,7 @@ public class StoreMainActivity extends AppCompatActivity {
         setContentView(R.layout.store_main_activity);
         fragmentManager = getSupportFragmentManager();
         fragmentController = new FragmentController(fragmentManager);
+        fragmentController.act(current_stat);
         init_bot_button();
     }
     private void init_bot_button(){
@@ -68,6 +74,8 @@ public class StoreMainActivity extends AppCompatActivity {
     }
     public void onStart(){
         super.onStart();
+    }
+    public void test(){
 
     }
 }
