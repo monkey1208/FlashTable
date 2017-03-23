@@ -43,6 +43,7 @@ public class StoreMainActivity extends AppCompatActivity {
         button[RECENT] = (ImageButton)findViewById(R.id.bt_recent);
         button[APPOINT] = (ImageButton)findViewById(R.id.bt_appoint);
         button[MANAGE] = (ImageButton)findViewById(R.id.bt_manage);
+        pressFeedBack();
         button[HOME].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

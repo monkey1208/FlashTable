@@ -58,12 +58,12 @@ public class HomeFragment extends Fragment {
         but_active.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                customDialog(getActivity());
+                discountDialog(getActivity());
             }
         });
         return v;
     }
-    private void customDialog(Context context){
+    private void discountDialog(Context context){
         View item = LayoutInflater.from(context).inflate(R.layout.store_discount_dialog, null);
         List<StoreInfo.DiscountInfo> discountList = new ArrayList<>();
         discountList = storeInfo.discountList;
@@ -77,8 +77,11 @@ public class HomeFragment extends Fragment {
                 selected = position;
             }
         });
+        View titleBar = LayoutInflater.from(context).inflate(R.layout.store_title_bar, null);
+        TextView tv_title = (TextView)titleBar.findViewById(R.id.title);
+        tv_title.setText("折扣優惠");
         alertDialog = new AlertDialog.Builder(context)
-                .setTitle("折扣優惠")
+                .setCustomTitle(titleBar)
                 .setView(item)
                 .create();
         ImageButton bt_confirm = (ImageButton)item.findViewById(R.id.bt_confirm);
