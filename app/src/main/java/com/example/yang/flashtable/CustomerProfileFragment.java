@@ -40,7 +40,7 @@ public class CustomerProfileFragment extends Fragment {
         ll_reservations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), CustomerDetailActivity.class);
+                Intent intent = new Intent(getActivity().getApplicationContext(), CustomerDetailActivity.class);
                 startActivity(intent);
             }
         });
