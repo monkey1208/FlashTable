@@ -1,10 +1,10 @@
 package com.example.yang.flashtable;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +16,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
+
 public class CustomerMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
-
+    private FloatingActionButton fab_map;
     private Fragment fragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,24 +40,39 @@ public class CustomerMainActivity extends AppCompatActivity
 
     private void initData() {
         setDrawer();
+        setMapButton();
         setFragment("main");
     }
 
     private void setFragment(String input){
         switch (input){
             case "main":
+                fab_map.setVisibility(View.VISIBLE);
                 fragment = new CustomerMainFragment();
                 break;
             case "profile":
+                fab_map.setVisibility(View.GONE);
                 fragment = new CustomerProfileFragment();
+                break;
+            case "map":
+                fab_map.setVisibility(View.GONE);
+                fragment = new CustomerMapFragment();
                 break;
             default:
                 break;
         }
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.customer_frame, fragment).commit();
     }
-
+    private void setMapButton(){
+        fab_map = (FloatingActionButton)findViewById(R.id.customer_fab_map);
+        fab_map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setFragment("map");
+            }
+        });
+    }
     private void setDrawer(){
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, null, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
