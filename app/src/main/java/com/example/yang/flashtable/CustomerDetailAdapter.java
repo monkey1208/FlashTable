@@ -23,6 +23,7 @@ public class CustomerDetailAdapter extends BaseAdapter {
     ImageView iv_shop, iv_credit;
     TextView tv_shop, tv_location, tv_time, tv_success;
     List<String> success_types;
+    String persons;
 
     public CustomerDetailAdapter(Context _context, List<CustomerDetailItem> _reservations) {
         inflater = LayoutInflater.from(_context);
@@ -32,6 +33,7 @@ public class CustomerDetailAdapter extends BaseAdapter {
         success_types.add(_context.getString(R.string.customer_detail_self_cancel));
         success_types.add(_context.getString(R.string.customer_detail_shop_cancel));
         success_types.add(_context.getString(R.string.customer_detail_success));
+        persons = context.getResources().getString(R.string.customer_detail_persons);
     }
 
     @Override
@@ -64,7 +66,7 @@ public class CustomerDetailAdapter extends BaseAdapter {
         tv_time.setText(reservations.get(position).time);
 
         int success = reservations.get(position).success_type;
-        tv_success.setText(success_types.get(success));
+        tv_success.setText(success_types.get(success) + reservations.get(position).persons + persons);
         switch(success) {
             case 0: // self_cancel
                 iv_credit.setImageResource(R.drawable.customer_detail_credit_minus);

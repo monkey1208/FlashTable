@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <include layout="@layout/customer_detail_list"/>
+        <include layout="@layout/customer_detail_show"/>
     </ViewFlipper>
 
 </LinearLayout>

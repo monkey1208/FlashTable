@@ -29,8 +29,11 @@
     <string name="customer_detail_shop">店家名稱</string>
     <string name="customer_detail_location">店家地址</string>
     <string name="customer_detail_time">2017/02/14 08:00pm</string>
-    <string name="customer_detail_success">已成功訂位（5人）桌位</string>
-    <string name="customer_detail_shop_cancel">店家已取消訂位（5人）桌位</string>
-    <string name="customer_detail_self_cancel">自行取消訂位（5人）桌位</string>
+    <string name="customer_detail_success">已成功訂位（</string>
+    <string name="customer_detail_persons">人）桌位</string>
+    <string name="customer_detail_shop_cancel">店家已取消訂位（</string>
+    <string name="customer_detail_self_cancel">自行取消訂位（</string>
+    <string name="customer_detail_record_title">預約紀錄明細</string>
+    <string name="customer_detail_arrival_time">入座時間</string>
 
 </resources>
