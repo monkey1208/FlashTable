@@ -57,12 +57,14 @@ public class StoreMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 current_stat = APPOINT;
+                fragmentController.act(APPOINT);
             }
         });
         button_manage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 current_stat = MANAGE;
+                fragmentController.act(MANAGE);
             }
         });
     }

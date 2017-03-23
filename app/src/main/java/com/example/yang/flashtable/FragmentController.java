@@ -30,6 +30,8 @@ public class FragmentController extends StoreMainActivity {
         fragmentManager  = fm;
         fragment[HOME] = new HomeFragment();
         fragment[RECENT] = new RecentFragment();
+        fragment[APPOINT] = new StoreAppointFragment();
+        fragment[MANAGE] = new StoreManageFragment();
     }
     private void setActive(int mode){
         for(int i=0;i<FRAG_COUNT;i++){
@@ -51,6 +53,12 @@ public class FragmentController extends StoreMainActivity {
                 break;
             case  RECENT:
                 setActive(RECENT);
+                break;
+            case APPOINT:
+                setActive(APPOINT);
+                break;
+            case MANAGE:
+                setActive(MANAGE);
                 break;
         }
     }
