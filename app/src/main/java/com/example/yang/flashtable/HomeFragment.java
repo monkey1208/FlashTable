@@ -30,6 +30,7 @@ public class HomeFragment extends Fragment {
     private int count=0;
     private StoreInfo storeInfo;
     private int selected;
+    private AlertDialog alertDialog;
 
     public HomeFragment() {
     }
@@ -70,25 +71,33 @@ public class HomeFragment extends Fragment {
         ListView lv_discount = (ListView)item.findViewById(R.id.lv_discount);
         DiscountDialogAdapter adapter = new DiscountDialogAdapter(getActivity(),discountList);
         lv_discount.setAdapter(adapter);
-
         lv_discount.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selected = position;
             }
         });
-
-        new AlertDialog.Builder(context)
+        alertDialog = new AlertDialog.Builder(context)
                 .setTitle("折扣優惠")
                 .setView(item)
-                .setPositiveButton("確定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        tv_discount.setText(Integer.toString(storeInfo.discountList.get(selected).discount));
-                        tv_gift.setText(storeInfo.discountList.get(selected).gift);
-                    }
-                })
-                .show();
+                .create();
+        ImageButton bt_confirm = (ImageButton)item.findViewById(R.id.bt_confirm);
+        bt_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv_discount.setText(Integer.toString(storeInfo.discountList.get(selected).discount));
+                tv_gift.setText(storeInfo.discountList.get(selected).gift);
+                alertDialog.dismiss();
+            }
+        });
+        ImageButton bt_cancel = (ImageButton)item.findViewById(R.id.bt_cancel);
+        bt_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
     }
     public void func_Test(List<StoreInfo.DiscountInfo> list){
         StoreInfo.DiscountInfo temp1 = new StoreInfo.DiscountInfo(95,"蛋餅");

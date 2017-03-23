@@ -15,6 +15,8 @@
     <color name="colorHalfTransparent">#80FFFFFF</color>
 
     <color name="alertColor">#E68239</color>
+    <color name="btBottomColor">#4DEA5703</color>
+    <color name="btBottomPressColor">#B2EA5703</color>
 
     <!-- Other colors -->
     <color name="white">#FFFFFF</color>

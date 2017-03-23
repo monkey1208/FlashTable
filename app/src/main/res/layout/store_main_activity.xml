@@ -20,7 +20,7 @@
             android:layout_weight="1"
             android:src="@drawable/bt_home"
             android:scaleType="centerInside"
-            android:background="@color/transparentGreen"/>
+            android:background="@color/btBottomColor"/>
         <ImageButton
             android:id="@+id/bt_recent"
             android:layout_width="0dp"
@@ -28,7 +28,7 @@
             android:layout_weight="1"
             android:src="@drawable/bt_recent"
             android:scaleType="centerInside"
-            android:background="@color/transparentGreen"/>
+            android:background="@color/btBottomColor"/>
         <ImageButton
             android:id="@+id/bt_appoint"
             android:layout_width="0dp"
@@ -36,7 +36,7 @@
             android:layout_weight="1"
             android:src="@drawable/bt_appoint"
             android:scaleType="centerInside"
-            android:background="@color/transparentGreen"/>
+            android:background="@color/btBottomColor"/>
         <ImageButton
             android:id="@+id/bt_manage"
             android:layout_width="0dp"
@@ -44,7 +44,7 @@
             android:layout_weight="1"
             android:src="@drawable/bt_manage"
             android:scaleType="centerInside"
-            android:background="@color/transparentGreen"/>
+            android:background="@color/btBottomColor"/>
     </LinearLayout>
 
 
@@ -58,7 +58,7 @@
             android:id="@+id/fragment_upper"
             android:layout_gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="670dp">
 
         </FrameLayout>
     </FrameLayout>

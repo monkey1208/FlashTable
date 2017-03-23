@@ -14,10 +14,7 @@ import android.widget.Toast;
 
 public class StoreMainActivity extends AppCompatActivity {
 
-    private ImageButton button_home;
-    private ImageButton button_recent;
-    private ImageButton button_appoint;
-    private ImageButton button_manage;
+    private ImageButton[] button;
 
     private static final int FRAG_COUNT = 4;
     private static final int HOME = 0;
@@ -26,7 +23,6 @@ public class StoreMainActivity extends AppCompatActivity {
     private static final int MANAGE = 3;
 
     FragmentController fragmentController;
-    private Fragment[] fragment;
     private FragmentManager fragmentManager;
 
     private int current_stat=HOME;
@@ -34,48 +30,56 @@ public class StoreMainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        button = new ImageButton[FRAG_COUNT];
         setContentView(R.layout.store_main_activity);
         fragmentManager = getSupportFragmentManager();
         fragmentController = new FragmentController(fragmentManager);
         fragmentController.act(current_stat);
-        init_bot_button();
+        init_bt_button();
     }
-    private void init_bot_button(){
-        button_home = (ImageButton)findViewById(R.id.bt_home);
-        button_recent = (ImageButton)findViewById(R.id.bt_recent);
-        button_appoint = (ImageButton)findViewById(R.id.bt_appoint);
-        button_manage = (ImageButton)findViewById(R.id.bt_manage);
-        button_home.setOnClickListener(new View.OnClickListener() {
+
+    private void init_bt_button(){
+        button[HOME] = (ImageButton)findViewById(R.id.bt_home);
+        button[RECENT] = (ImageButton)findViewById(R.id.bt_recent);
+        button[APPOINT] = (ImageButton)findViewById(R.id.bt_appoint);
+        button[MANAGE] = (ImageButton)findViewById(R.id.bt_manage);
+        button[HOME].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 current_stat = HOME;
                 fragmentController.act(HOME);
+                pressFeedBack();
             }
         });
-        button_recent.setOnClickListener(new View.OnClickListener() {
+        button[RECENT].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 current_stat = RECENT;
                 fragmentController.act(RECENT);
+                pressFeedBack();
             }
         });
-        button_appoint.setOnClickListener(new View.OnClickListener() {
+        button[APPOINT].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 current_stat = APPOINT;
+                pressFeedBack();
             }
         });
-        button_manage.setOnClickListener(new View.OnClickListener() {
+        button[MANAGE].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 current_stat = MANAGE;
+                pressFeedBack();
             }
         });
     }
     public void onStart(){
         super.onStart();
     }
-    public void test(){
-
+    public void pressFeedBack(){
+        for(int i=0;i<FRAG_COUNT;i++)
+            button[i].setBackgroundColor(getResources().getColor(R.color.btBottomColor));
+        button[current_stat].setBackgroundColor(getResources().getColor(R.color.btBottomPressColor));
     }
 }
