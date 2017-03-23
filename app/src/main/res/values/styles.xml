@@ -44,4 +44,19 @@
         <item name="android:shadowRadius">5</item>
     </style>
 
+    <!-- Style for rating bar -->
+    <style name="RatingBar">
+        <item name="android:progressDrawable">@drawable/rating_bar</item>
+        <item name="android:numStars">5</item>
+        <item name="android:stepSize">0.5</item>
+    </style>
+
+    <!-- Style for customer orange button -->
+    <style name="CustomerOrangeButton">
+        <item name="android:background">@color/textColorOrange</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">15dp</item>
+    </style>
+
 </resources>

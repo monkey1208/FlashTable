@@ -7,18 +7,24 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".CustomerMainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity android:name=".CustomerDetailActivity"
+            android:theme="@style/AppTheme.LightActionBar">
+        </activity>
+
+        <activity android:name=".CustomerReservationActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity android:name=".CustomerDetailActivity"
-            android:theme="@style/AppTheme.LightActionBar">
         </activity>
     </application>
 

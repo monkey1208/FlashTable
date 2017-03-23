@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/customer_bg_reservation">
+
+    <ImageView
+        android:id="@+id/customer_reservation_iv_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:src="@drawable/logo_white"
+        android:layout_marginTop="20dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/customer_reservation_tv_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/customer_reservation_iv_logo"
+        android:text="@string/customer_reservation_waiting"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:textSize="18sp"/>
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/customer_reservation_gv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/customer_reservation_time_bg"
+        android:layout_centerInParent="true"/>
+    
+    <TextView
+        android:id="@+id/customer_reservation_tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/customer_reservation_seconds"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:layout_centerInParent="true"/>
+
+    <Button
+        android:id="@+id/customer_reservation_bt_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/CustomerOrangeButton"
+        android:text="@string/cancel"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

@@ -22,7 +22,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
     ViewFlipper vf_flipper;
     ListView lv_reservations;
     CustomerDetailAdapter reservation_adapter;
-    List<CustomerDetailItem> reservations;
+    List<CustomerDetailInfo> reservations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +44,10 @@ public class CustomerDetailActivity extends AppCompatActivity {
 
         // Set reservation ListView
         // TODO: Set item attributes
-
         reservations = new ArrayList<>();
-        CustomerDetailItem reservation_1 = new CustomerDetailItem("McDonald's", "台北市大安區辛亥路", "2016/3/24 14:00pm", 0, 12);
-        CustomerDetailItem reservation_2 = new CustomerDetailItem("肯德基", "台北市大安區辛亥路", "2016/3/24 14:00pm", 1, 10);
-        CustomerDetailItem reservation_3 = new CustomerDetailItem("辛殿", "台北市大安區辛亥路", "2016/3/25 15:00pm", 2, 5);
+        CustomerDetailInfo reservation_1 = new CustomerDetailInfo("McDonald's", "台北市大安區辛亥路", "2016/3/24 14:00pm", 0, 12);
+        CustomerDetailInfo reservation_2 = new CustomerDetailInfo("肯德基", "台北市大安區辛亥路", "2016/3/24 14:00pm", 1, 10);
+        CustomerDetailInfo reservation_3 = new CustomerDetailInfo("辛殿", "台北市大安區辛亥路", "2016/3/25 15:00pm", 2, 5);
         reservations.add(reservation_1);
         reservations.add(reservation_2);
         reservations.add(reservation_3);
@@ -91,6 +90,8 @@ public class CustomerDetailActivity extends AppCompatActivity {
 
     private void showRecord(int position) {
         vf_flipper.setDisplayedChild(1);
-        setTitle(getResources().getString(R.string.customer_detail_record_title) + position);
+        setTitle(getResources().getString(R.string.customer_detail_record_title));
+
+
     }
 }

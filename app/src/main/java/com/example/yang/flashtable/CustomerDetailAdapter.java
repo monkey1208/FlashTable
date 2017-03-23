@@ -19,13 +19,13 @@ public class CustomerDetailAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private Context context;
-    private List<CustomerDetailItem> reservations;
+    private List<CustomerDetailInfo> reservations;
     ImageView iv_shop, iv_credit;
     TextView tv_shop, tv_location, tv_time, tv_success;
     List<String> success_types;
     String persons;
 
-    public CustomerDetailAdapter(Context _context, List<CustomerDetailItem> _reservations) {
+    public CustomerDetailAdapter(Context _context, List<CustomerDetailInfo> _reservations) {
         inflater = LayoutInflater.from(_context);
         context = _context;
         reservations = _reservations;
