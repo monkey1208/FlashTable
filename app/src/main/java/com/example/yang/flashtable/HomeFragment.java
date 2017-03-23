@@ -10,10 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -25,6 +29,7 @@ public class HomeFragment extends Fragment {
     private View v;
     private int count=0;
     private StoreInfo storeInfo;
+    private int selected;
 
     public HomeFragment() {
     }
@@ -38,6 +43,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         storeInfo = new StoreInfo("Tasty","台北市南港區");
+        func_Test(storeInfo.discountList);
         v = inflater.inflate(R.layout.store_home_fragment, container, false);
         tv_storename = (TextView)v.findViewById(R.id.tv_storename);
         tv_storename.setText(storeInfo.name);
@@ -57,32 +63,39 @@ public class HomeFragment extends Fragment {
         return v;
     }
     private void customDialog(Context context){
-        final View item = LayoutInflater.from(context).inflate(R.layout.store_discount_dialog, null);
+        View item = LayoutInflater.from(context).inflate(R.layout.store_discount_dialog, null);
+        List<StoreInfo.DiscountInfo> discountList = new ArrayList<>();
+        discountList = storeInfo.discountList;
+
+        ListView lv_discount = (ListView)item.findViewById(R.id.lv_discount);
+        DiscountDialogAdapter adapter = new DiscountDialogAdapter(getActivity(),discountList);
+        lv_discount.setAdapter(adapter);
+
+        lv_discount.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selected = position;
+            }
+        });
+
         new AlertDialog.Builder(context)
                 .setTitle("折扣優惠")
                 .setView(item)
                 .setPositiveButton("確定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        tv_discount.setText(Integer.toString(storeInfo.discountList.get(selected).discount));
+                        tv_gift.setText(storeInfo.discountList.get(selected).gift);
                     }
                 })
                 .show();
     }
-    /*OnHeadlineSelectedListener mCallback;
-    public interface OnHeadlineSelectedListener {
-        public void onaitemSelected(String datestring);
+    public void func_Test(List<StoreInfo.DiscountInfo> list){
+        StoreInfo.DiscountInfo temp1 = new StoreInfo.DiscountInfo(95,"蛋餅");
+        StoreInfo.DiscountInfo temp2 = new StoreInfo.DiscountInfo(85,"可愛臭臭人");
+        StoreInfo.DiscountInfo temp3 = new StoreInfo.DiscountInfo(75,"肥宅臭臭人");
+        list.add(temp1);
+        list.add(temp2);
+        list.add(temp3);
     }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mCallback = (OnHeadlineSelectedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnHeadlineSelectedListener");
-        }
-    }*/
-
 }

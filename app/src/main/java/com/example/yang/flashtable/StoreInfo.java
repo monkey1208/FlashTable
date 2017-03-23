@@ -14,7 +14,7 @@ public class StoreInfo {
     }
     public String name;
     public String address;
-    public class DiscountInfo{
+    public static class DiscountInfo{
         public String gift;
         public int discount;
         public DiscountInfo(int d,String g){
