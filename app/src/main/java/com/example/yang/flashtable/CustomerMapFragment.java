@@ -6,9 +6,7 @@ import android.app.Fragment;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.location.Address;
 import android.location.Criteria;
-import android.location.Geocoder;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,7 +19,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,10 +27,8 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by Yang on 2017/3/23.
@@ -61,17 +56,9 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        MarkerOptions marker = new MarkerOptions();
-        LatLng latLng = new LatLng(25.021918, 121.535285);
-        marker.position(latLng)
-                .anchor(0.75f, 0.5f)
-                .title("ME")
-                .icon(BitmapDescriptorFactory.fromBitmap(createScaledMarker()));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-        googleMap.addMarker(marker);
-        /*LocationManager lm = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);;
-        GPSService gpsService = new GPSService(getActivity(), googleMap, latLng, marker);
-        gpsService.execute();*/
+
+        GPSService gpsService = new GPSService(getActivity(), googleMap);
+        gpsService.execute();
     }
     private Bitmap createScaledMarker(){
         int height = 120;
@@ -86,19 +73,19 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
         private String provider;
         private GoogleMap googleMap;
         private LatLng latLng;
-        private MarkerOptions marker;
+        private MarkerOptions markerOptions;
+        private Marker marker;
         private final int COARSE_PERMISSION_CODE = 11;
         private final int FINE_LOCATION_CODE = 12;
         private Activity c;
 
-        public GPSService(Activity c, GoogleMap googleMap, LatLng latLng, MarkerOptions marker) {
+        public GPSService(Activity c, GoogleMap googleMap) {
             this.c = c;
             this.googleMap = googleMap;
-            this.latLng = latLng;
-            this.marker = marker;
         }
 
         public void execute() {
+            init();
             if (initLocationProvider()) {
                 whereAmI();
             } else {
@@ -108,6 +95,17 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                 System.out.println("GPS_permission_denied!");
                 return;
             }
+        }
+        private void init(){
+            markerOptions = new MarkerOptions();
+            LatLng latLng = new LatLng(25.021918, 121.535285);
+            markerOptions.position(latLng)
+                    .anchor(0.75f, 0.5f)
+                    .title("ME")
+                    .icon(BitmapDescriptorFactory.fromBitmap(createScaledMarker()));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            marker = googleMap.addMarker(markerOptions);
+            LocationManager lm = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
         }
 
         private void whereAmI() {
@@ -122,6 +120,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
             //Location Listener
             int minTime = 5000;//ms
             int minDist = 5;//meter
+            System.out.println("wheramI");
             locationMgr.requestLocationUpdates(provider, minTime, minDist, locationListener);
         }
         LocationListener locationListener = new LocationListener(){
@@ -187,7 +186,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                 latLng = null;
                 latLng = new LatLng(lat, lng);
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                googleMap.addMarker(marker);
+                marker.setPosition(latLng);
             }else{
             }
         }
