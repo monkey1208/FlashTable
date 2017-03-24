@@ -5,6 +5,7 @@
 
     <!-- Universal strings -->
     <string name="submit">確認</string>
+    <string name="cancel">取消</string>
 
     <!-- Strings related to alert -->
     <string name="alert_title">提醒</string>
@@ -34,6 +35,22 @@
     <string name="customer_detail_shop_cancel">店家已取消訂位（</string>
     <string name="customer_detail_self_cancel">自行取消訂位（</string>
     <string name="customer_detail_record_title">預約紀錄明細</string>
-    <string name="customer_detail_arrival_time">入座時間</string>
+    <string name="customer_detail_record_time">預約時間：</string>
+    <string name="customer_detail_record_arrival_time">入座時間：</string>
+    <string name="customer_detail_record_discount">95折</string>
+    <string name="customer_detail_record_gift">消費滿1999送法式草莓蛋糕乙份</string>
+    <string name="customer_detail_record_comment">我要評價及評論</string>
+
+    <!-- Strings related to customer reservation -->
+    <string name="customer_reservation_waiting">等待店家回應中&#8230;</string>
+    <string name="customer_reservation_no_response">店家無回應</string>
+    <string name="customer_reservation_seconds">秒</string>
+    <string name="customer_reservation_success">您已成功預約</string>
+    <string name="customer_reservation_persons">人位</string>
+    <string name="customer_reservation_15_minutes">請於15分鐘內到達</string>
+    <string name="customer_reservation_qr_code">提醒您！記得給店家掃描以確認預約喔</string>
+    <string name="customer_reservation_cancel">取消預約</string>
+    <string name="customer_reservation_time_left">還有</string>
+    <string name="customer_reservation_late">您的預約已逾時，店家可能隨時取消您的預約，請盡速到達</string>
 
 </resources>
