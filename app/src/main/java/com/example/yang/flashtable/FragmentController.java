@@ -1,11 +1,14 @@
 package com.example.yang.flashtable;
 
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
+import java.io.Serializable;
 
-public class FragmentController extends StoreMainActivity {
+
+public class FragmentController extends StoreMainActivity implements Serializable{
     private static final int FRAG_COUNT = 4;
     private static final int HOME = 0;
     private static final int RECENT = 1;
@@ -19,6 +22,7 @@ public class FragmentController extends StoreMainActivity {
     private int[] frag_stat;
     private int[] viewContainer;
 
+    private Bundle bundle;
     private FragmentManager fragmentManager;
 
     public FragmentController(FragmentManager fm){
@@ -28,8 +32,8 @@ public class FragmentController extends StoreMainActivity {
         for(int i=0;i<FRAG_COUNT;i++) viewContainer[i]= R.id.fragment_space;
         for(int i=0;i<FRAG_COUNT;i++) frag_stat[i]=DEAD;
         fragmentManager  = fm;
-        fragment[HOME] = new HomeFragment();
-        fragment[RECENT] = new RecentFragment();
+        fragment[HOME] = new StoreHomeFragment();
+        fragment[RECENT] = new StoreRecentFragment();
     }
     private void setActive(int mode){
         for(int i=0;i<FRAG_COUNT;i++){

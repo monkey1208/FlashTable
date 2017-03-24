@@ -15,8 +15,10 @@ public class AlertDialogController {
     private static int selected;
     private static AlertDialog alertDialog;
     public static void discountDialog(final Context context, final StoreInfo storeInfo,final TextView tv_discount,final TextView tv_gift){
+        //init view---------
         View item = LayoutInflater.from(context).inflate(R.layout.store_discount_list, null);
         List<StoreInfo.DiscountInfo> discountList = storeInfo.discountList;
+        //listview adapt----
         ListView lv_discount = (ListView)item.findViewById(R.id.lv_discount);
         DiscountDialogAdapter adapter = new DiscountDialogAdapter(context,discountList);
         lv_discount.setAdapter(adapter);
@@ -28,9 +30,13 @@ public class AlertDialogController {
                 selected = position;
             }
         });
+        //-------------------
+        //titleBar-----------
         View titleBar = LayoutInflater.from(context).inflate(R.layout.store_title_bar, null);
         TextView tv_title = (TextView)titleBar.findViewById(R.id.title);
         tv_title.setText("折扣優惠");
+        //-------------------
+        //action-------------
         alertDialog = new AlertDialog.Builder(context)
                 .setCustomTitle(titleBar)
                 .setView(item)
@@ -52,5 +58,6 @@ public class AlertDialogController {
             }
         });
         alertDialog.show();
+        //--------------------
     }
 }

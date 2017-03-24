@@ -1,16 +1,10 @@
 package com.example.yang.flashtable;
 
-import android.content.DialogInterface;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 public class StoreMainActivity extends AppCompatActivity {
 

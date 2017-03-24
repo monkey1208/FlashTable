@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="6">
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="245px"
+        android:layout_weight="1"
+        android:src="@drawable/bt_cancel_appoint"/>
+    <com.example.yang.flashtable.RoundedImageView
+        android:id="@+id/im_photo"
+        android:layout_width="0dp"
+        android:layout_height="245px"
+        android:layout_margin="10dp"
+        android:layout_weight="1"/>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="245px"
+        android:layout_weight="3"
+        android:weightSum="2"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.1"
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="10dp"
+            android:textSize="26sp"/>
+
+        <TextView
+            android:id="@+id/tv_number"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.9"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="10dp"
+            android:textSize="18sp"
+            android:text="預約100人" />
+    </LinearLayout>
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="245px"
+        android:layout_weight="1"
+        android:src="@drawable/bt_confirm_appoint"/>
+</LinearLayout>
