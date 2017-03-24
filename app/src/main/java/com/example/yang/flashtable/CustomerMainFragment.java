@@ -48,7 +48,8 @@ public class CustomerMainFragment extends Fragment {
     private List<RestaurantInfo> generateTestList(){
         List<RestaurantInfo> list = new ArrayList<>();
         for(int i = 0; i < 5; i++){
-            RestaurantInfo info = new RestaurantInfo("a", "a","b", new LatLng(0, 0));
+            LatLng latLng = new LatLng(25, 25);
+            RestaurantInfo info = new RestaurantInfo("a", "a","b", latLng);
             list.add(info);
         }
         return list;
