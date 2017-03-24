@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +48,8 @@ public class CustomerMainFragment extends Fragment {
     private List<RestaurantInfo> generateTestList(){
         List<RestaurantInfo> list = new ArrayList<>();
         for(int i = 0; i < 5; i++){
-            RestaurantInfo info = new RestaurantInfo("a", "a","b","a","a","a");
+            LatLng latLng = new LatLng(25, 25);
+            RestaurantInfo info = new RestaurantInfo("a", "a","b", latLng);
             list.add(info);
         }
         return list;
