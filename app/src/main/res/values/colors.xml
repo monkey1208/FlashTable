@@ -13,7 +13,7 @@
     <color name="textColorRed">#E41E1B</color>
     <color name="transparentGreen">#00FFFFFF</color>
     <color name="colorHalfTransparent">#80FFFFFF</color>
-
+    <color name="textColorOrangeDark">#EA5703</color>
     <color name="alertColor">#E68239</color>
 
     <!-- Other colors -->

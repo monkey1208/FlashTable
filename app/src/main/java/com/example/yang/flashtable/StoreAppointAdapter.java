@@ -40,7 +40,7 @@ public class StoreAppointAdapter extends BaseAdapter{
     @NonNull
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        convertView = inflater.inflate(R.layout.store_appoint_adapter, parent, false);
+        convertView = inflater.inflate(R.layout.store_appoint_row, parent, false);
 
         TextView textView = (TextView) convertView.findViewById(R.id.title);
         textView.setText(reservation_list.get(position).name);

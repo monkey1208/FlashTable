@@ -19,7 +19,7 @@ class StoreManageAdapter extends ArrayAdapter {
     private final Integer[] imgid;
 
     public StoreManageAdapter(Activity context, String[] itemname, Integer[] imgid) {
-        super(context, R.layout.store_manage_adapter, itemname);
+        super(context, R.layout.store_manage_row, itemname);
         // TODO Auto-generated constructor stub
         this.context=context;
         this.itemname=itemname;
@@ -29,7 +29,7 @@ class StoreManageAdapter extends ArrayAdapter {
     @NonNull
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater=context.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.store_manage_adapter, null,true);
+        View rowView = inflater.inflate(R.layout.store_manage_row, null,true);
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.store_manage_tv_title);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.store_manage_iv_icon);

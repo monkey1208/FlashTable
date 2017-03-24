@@ -1,4 +1,3 @@
-
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -21,13 +20,15 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="我的餐廳管理"
-            android:textSize="24sp"/>
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"/>
     </android.support.v7.widget.Toolbar>
 
     <ListView
         android:layout_below="@+id/store_manage_tb_toolbar"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_marginTop="12px"
         android:dividerHeight="12px"
         android:id="@id/android:list"/>
 </RelativeLayout>

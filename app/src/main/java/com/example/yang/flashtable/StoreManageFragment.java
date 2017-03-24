@@ -11,8 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class StoreManageFragment extends ListFragment {
 
+public class StoreManageFragment extends ListFragment {
     public  StoreManageFragment () {
         // Required empty public constructor
     }
