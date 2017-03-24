@@ -41,7 +41,8 @@ public class StoreManageFragment extends ListFragment {
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(v.getContext(),"Jump to reservation record", Toast.LENGTH_SHORT).show();
+                //Logout
+                Toast.makeText(v.getContext(),"Logout", Toast.LENGTH_SHORT).show();
                 return true;
             }
         };
@@ -50,6 +51,7 @@ public class StoreManageFragment extends ListFragment {
     }
 
     public void onListItemClick(ListView l, View v, int position, long id) {
+        StoreMainActivity.fragmentController.act(position+4);
         Toast.makeText(getContext(), "Jump to page "+itemname[position], Toast.LENGTH_SHORT).show();
     }
 

@@ -5,13 +5,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 
-public class FragmentController extends StoreMainActivity {
-    private static final int FRAG_COUNT = 4;
+public class FragmentController extends StoreMainActivity{
+    private static final int FRAG_COUNT = 7;
     private static final int HOME = 0;
     private static final int RECENT = 1;
     private static final int APPOINT = 2;
     private static final int MANAGE = 3;
-    private Fragment[] fragment;
+    private static final int MANAGE_SUCCESS = 4;
+    //private static final int MANAGE_OPENTIME = 5;
+    private static final int MANAGE_BILL = 6;
+    public Fragment[] fragment;
 
     private static final int DEAD = 0;
     private static final int ALIVE = 1;
@@ -32,6 +35,9 @@ public class FragmentController extends StoreMainActivity {
         fragment[RECENT] = new RecentFragment();
         fragment[APPOINT] = new StoreAppointFragment();
         fragment[MANAGE] = new StoreManageFragment();
+        fragment[MANAGE_SUCCESS] = new StoreManageSuccessFragment();
+        fragment[MANAGE_BILL] = new StoreManageBillFragment();
+
     }
     private void setActive(int mode){
         for(int i=0;i<FRAG_COUNT;i++){
@@ -59,6 +65,12 @@ public class FragmentController extends StoreMainActivity {
                 break;
             case MANAGE:
                 setActive(MANAGE);
+                break;
+            case MANAGE_SUCCESS:
+                setActive(MANAGE_SUCCESS);
+                break;
+            case MANAGE_BILL:
+                setActive(MANAGE_BILL);
                 break;
         }
     }

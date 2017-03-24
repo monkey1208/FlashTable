@@ -1,37 +1,39 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    tools:context="com.example.yang.flashtable.StoreManageFragment"
-    android:id="@+id/store_manage_fragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/store_manage_tb_toolbar"
+ <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#80FF6600"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" >
-        <TextView
-            android:id="@+id/store_manage_tv_toolbar_title"
+        android:layout_height="match_parent"
+        tools:context="com.example.yang.flashtable.StoreManageFragment"
+        android:id="@+id/store_manage_fragment" >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/store_manage_tb_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="我的餐廳管理"
-            android:textColor="#FFFFFF"
-            android:textSize="22sp"/>
-    </android.support.v7.widget.Toolbar>
+            android:background="#80FF6600"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" >
+            <TextView
+                android:id="@+id/store_manage_tv_toolbar_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="我的餐廳管理"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"/>
+        </android.support.v7.widget.Toolbar>
 
-    <ListView
-        android:layout_below="@+id/store_manage_tb_toolbar"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="12px"
-        android:dividerHeight="12px"
-        android:id="@id/android:list"/>
+        <ListView
+            android:layout_below="@+id/store_manage_tb_toolbar"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="12px"
+            android:dividerHeight="12px"
+            android:id="@id/android:list"/>
 </RelativeLayout>
+
+
+
 
 
 

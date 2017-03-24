@@ -22,11 +22,11 @@ public class StoreManageSuccessFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.store_manage_success_fragment, container, false);
-        Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_tb_toolbar);
+        Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_success_tb_toolbar);
         bar.setNavigationIcon(R.drawable.ic_back);
         bar.setNavigationOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //back to managment page
+                StoreMainActivity.fragmentController.act(3);
             }
         });
         setValues(v);
