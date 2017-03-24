@@ -20,6 +20,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD1qukcqJkUZtxiKApJlp6O8oiYP25fyrs"/>
+
         <activity
             android:name=".CustomerMainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -31,6 +32,10 @@
 
         <activity android:name=".CustomerReservationActivity"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity android:name=".CustomerCommentActivity"
+            android:theme="@style/AppTheme.LightActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

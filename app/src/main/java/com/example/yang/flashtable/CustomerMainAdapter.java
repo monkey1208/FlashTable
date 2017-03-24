@@ -17,7 +17,7 @@ public class CustomerMainAdapter extends ArrayAdapter<RestaurantInfo> {
     private Context c;
     private LayoutInflater inflater;
     public CustomerMainAdapter(Context context, List objects) {
-        super(context, R.layout.customer_main_adapter, objects);
+        super(context, R.layout.customer_main_item, objects);
         c = context;
         inflater = LayoutInflater.from(context);
     }
@@ -25,7 +25,7 @@ public class CustomerMainAdapter extends ArrayAdapter<RestaurantInfo> {
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = inflater.inflate(R.layout.customer_main_adapter, parent, false);
+        convertView = inflater.inflate(R.layout.customer_main_item, parent, false);
 
         if(convertView != null) {
             return convertView;

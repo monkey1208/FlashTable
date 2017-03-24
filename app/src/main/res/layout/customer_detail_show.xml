@@ -85,7 +85,7 @@
                 android:textSize="17sp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="5dp"/>
 
             <RatingBar
                 android:id="@+id/customer_detail_rb_record_rating"

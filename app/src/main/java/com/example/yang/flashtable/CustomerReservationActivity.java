@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -30,6 +32,8 @@ public class CustomerReservationActivity extends AppCompatActivity {
     String seconds, no_response, late;
     RatingBar rb_shop;
     LinearLayout ll_time_left;
+    Button bt_cancel, bt_arrive_cancel;
+    View.OnClickListener cancel_listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         tv_time = (TextView) findViewById(R.id.customer_reservation_tv_time);
         seconds = getResources().getString(R.string.customer_reservation_seconds);
         no_response = getResources().getString(R.string.customer_reservation_no_response);
+        bt_cancel = (Button) findViewById(R.id.customer_reservation_bt_cancel);
 
         // Success view
         tv_arrival_time = (TextView) findViewById(R.id.customer_reservation_tv_arrival_time);
@@ -64,11 +69,21 @@ public class CustomerReservationActivity extends AppCompatActivity {
         tv_gift = (TextView) findViewById(R.id.customer_reservation_tv_gift);
         late = getResources().getString(R.string.customer_reservation_late);
         ll_time_left = (LinearLayout) findViewById(R.id.customer_reservation_ll_time_left);
+        bt_arrive_cancel = (Button) findViewById(R.id.customer_reservation_bt_arrive_cancel);
     }
 
     private void initData() {
         gif_drawable.setSpeed(2.0f);
         startCountDown("waiting", 10000);
+
+        cancel_listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        };
+        bt_cancel.setOnClickListener(cancel_listener);
+        bt_arrive_cancel.setOnClickListener(cancel_listener);
     }
 
     private void reservationAccepted() {

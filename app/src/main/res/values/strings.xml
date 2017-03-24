@@ -37,8 +37,8 @@
     <string name="customer_detail_record_title">預約紀錄明細</string>
     <string name="customer_detail_record_time">預約時間：</string>
     <string name="customer_detail_record_arrival_time">入座時間：</string>
-    <string name="customer_detail_record_discount">95折</string>
-    <string name="customer_detail_record_gift">消費滿1999送法式草莓蛋糕乙份</string>
+    <string name="customer_detail_record_discount">暫無折扣</string>
+    <string name="customer_detail_record_gift">暫無優惠</string>
     <string name="customer_detail_record_comment">我要評價及評論</string>
 
     <!-- Strings related to customer reservation -->
@@ -52,5 +52,10 @@
     <string name="customer_reservation_cancel">取消預約</string>
     <string name="customer_reservation_time_left">還有</string>
     <string name="customer_reservation_late">您的預約已逾時，店家可能隨時取消您的預約，請盡速到達</string>
+
+    <!-- Strings related to customer comments -->
+    <string name="customer_comments_my_title">我的評價及評論</string>
+    <string name="customer_comments_title">評價及評論</string>
+
 
 </resources>
