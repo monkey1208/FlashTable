@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +20,9 @@ public class StoreRecentFragment extends Fragment {
     private View v;
     private List<CustomerAppointInfo> recentList;
     private ListView lv_recent;
-    public OnRecentFragmentListener listener;
+    private int selected;
 
     public StoreRecentFragment() {}
-
-    public interface OnRecentFragmentListener {
-        public void onRecentItemSelected(CustomerAppointInfo customerAppointInfo);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,17 +43,18 @@ public class StoreRecentFragment extends Fragment {
         lv_recent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                listener.onRecentItemSelected(recentList.get(position));
+                //listener.onRecentItemSelected(recentList.get(position));
+                selected = position;
+                StoreMainActivity.fragmentController.act(FragmentController.RECENT_CONFIRM);
             }
         });
         return v;
     }
 
-    @Override
-    public void onAttach(Activity activity){
-        super.onAttach(activity);
-        listener = (OnRecentFragmentListener) activity;
+    public CustomerAppointInfo getSelected(){
+        return recentList.get(selected);
     }
+
     private void func_test(){
         CustomerAppointInfo test1 = new CustomerAppointInfo("張庭維",100,10,R.drawable.ic_temp_user1);
         CustomerAppointInfo test2 = new CustomerAppointInfo("李承軒",0,1,R.drawable.ic_temp_user2);

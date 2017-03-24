@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-public class StoreMainActivity extends AppCompatActivity implements StoreRecentFragment.OnRecentFragmentListener{
+public class StoreMainActivity extends AppCompatActivity{
 
     private ImageButton[] button;
 
@@ -19,7 +19,7 @@ public class StoreMainActivity extends AppCompatActivity implements StoreRecentF
     private static final int MANAGE = 3;
     private static final int RECENT_CONFIRM = 4;
 
-    FragmentController fragmentController;
+    public static FragmentController fragmentController;
     private FragmentManager fragmentManager;
 
     private int current_stat=HOME;
@@ -79,11 +79,5 @@ public class StoreMainActivity extends AppCompatActivity implements StoreRecentF
         for(int i=0;i<PRIM_FRAG;i++)
             button[i].setBackgroundColor(getResources().getColor(R.color.btBottomColor));
         button[current_stat].setBackgroundColor(getResources().getColor(R.color.btBottomPressColor));
-    }
-
-
-    @Override
-    public void onRecentItemSelected(CustomerAppointInfo customerAppointInfo) {
-        fragmentController.act(RECENT_CONFIRM);
     }
 }

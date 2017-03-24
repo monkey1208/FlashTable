@@ -9,13 +9,16 @@ import java.io.Serializable;
 
 
 public class FragmentController extends StoreMainActivity {
-    private static final int FRAG_COUNT = 5;
-    private static final int HOME = 0;
-    private static final int RECENT = 1;
-    private static final int APPOINT = 2;
-    private static final int MANAGE = 3;
-    private static final int RECENT_CONFIRM = 4;
-    private Fragment[] fragment;
+    public static final int FRAG_COUNT = 5;
+    public static final int HOME = 0;
+    public static final int RECENT = 1;
+    public static final int APPOINT = 2;
+    public static final int MANAGE = 3;
+    public static final int RECENT_CONFIRM = 4;
+    public static Fragment[] fragment;
+
+    public static StoreRecentFragment storeRecentFragment;
+    public static StoreHomeFragment storeHomeFragment;
 
     private static final int DEAD = 0;
     private static final int ALIVE = 1;
@@ -23,7 +26,6 @@ public class FragmentController extends StoreMainActivity {
     private int[] frag_stat;
     private int[] viewContainer;
 
-    private Bundle bundle;
     private FragmentManager fragmentManager;
 
     public FragmentController(FragmentManager fm){
@@ -33,8 +35,10 @@ public class FragmentController extends StoreMainActivity {
         for(int i=0;i<FRAG_COUNT;i++) viewContainer[i]= R.id.fragment_space;
         for(int i=0;i<FRAG_COUNT;i++) frag_stat[i]=DEAD;
         fragmentManager  = fm;
-        fragment[HOME] = new StoreHomeFragment();
-        fragment[RECENT] = new StoreRecentFragment();
+        storeRecentFragment = new StoreRecentFragment();
+        storeHomeFragment = new StoreHomeFragment();
+        for(int i=0;i<FRAG_COUNT;i++)
+            initFragment(i);
         fragment[RECENT_CONFIRM] = new StoreRecentConfirmFragment();
     }
     private void setActive(int mode){
@@ -51,8 +55,8 @@ public class FragmentController extends StoreMainActivity {
             fragmentManager.beginTransaction().show(fragment[mode]).commit();
         frag_stat[mode] = SHOW;
     }
-    public void act(int current_stat){
-        switch (current_stat){
+    public void act(int select){
+        switch (select){
             case HOME:
                 setActive(HOME);
                 break;
@@ -60,8 +64,29 @@ public class FragmentController extends StoreMainActivity {
                 setActive(RECENT);
                 break;
             case RECENT_CONFIRM:
+                if(frag_stat[RECENT_CONFIRM]!=DEAD)
+                    kill(RECENT_CONFIRM);
                 setActive(RECENT_CONFIRM);
                 break;
         }
+    }
+    private void kill(int select){
+        fragmentManager.beginTransaction().remove(fragment[select]).commit();
+        initFragment(select);
+        frag_stat[select]=DEAD;
+    }
+    private void initFragment(int select){
+        switch (select){
+            case HOME:
+                fragment[select] = storeHomeFragment;
+                break;
+            case RECENT:
+                fragment[select] = storeRecentFragment;
+                break;
+            case RECENT_CONFIRM:
+                fragment[select] = new StoreRecentConfirmFragment();
+                break;
+        }
+
     }
 }
