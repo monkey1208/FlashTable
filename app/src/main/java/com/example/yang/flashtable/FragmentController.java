@@ -1,11 +1,8 @@
 package com.example.yang.flashtable;
 
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-
-import java.io.Serializable;
 
 
 public class FragmentController extends StoreMainActivity {
@@ -14,7 +11,7 @@ public class FragmentController extends StoreMainActivity {
     public static final int RECENT = 1;
     public static final int APPOINT = 2;
     public static final int MANAGE = 3;
-    public static final int RECENT_CONFIRM = 4;
+    public static final int CONFIRM = 4;
     public static Fragment[] fragment;
 
     public static StoreRecentFragment storeRecentFragment;
@@ -33,13 +30,13 @@ public class FragmentController extends StoreMainActivity {
         frag_stat = new int[FRAG_COUNT];
         viewContainer = new int[FRAG_COUNT];
         for(int i=0;i<FRAG_COUNT;i++) viewContainer[i]= R.id.fragment_space;
+        viewContainer[CONFIRM] = R.id.fragment_full;
         for(int i=0;i<FRAG_COUNT;i++) frag_stat[i]=DEAD;
         fragmentManager  = fm;
         storeRecentFragment = new StoreRecentFragment();
         storeHomeFragment = new StoreHomeFragment();
         for(int i=0;i<FRAG_COUNT;i++)
             initFragment(i);
-        fragment[RECENT_CONFIRM] = new StoreRecentConfirmFragment();
     }
     private void setActive(int mode){
         for(int i=0;i<FRAG_COUNT;i++){
@@ -63,10 +60,10 @@ public class FragmentController extends StoreMainActivity {
             case RECENT:
                 setActive(RECENT);
                 break;
-            case RECENT_CONFIRM:
-                if(frag_stat[RECENT_CONFIRM]!=DEAD)
-                    kill(RECENT_CONFIRM);
-                setActive(RECENT_CONFIRM);
+            case CONFIRM:
+                if(frag_stat[CONFIRM]!=DEAD)
+                    kill(CONFIRM);
+                setActive(CONFIRM);
                 break;
         }
     }
@@ -83,8 +80,8 @@ public class FragmentController extends StoreMainActivity {
             case RECENT:
                 fragment[select] = storeRecentFragment;
                 break;
-            case RECENT_CONFIRM:
-                fragment[select] = new StoreRecentConfirmFragment();
+            case CONFIRM:
+                fragment[select] = new StoreHomeConfirmFragment();
                 break;
         }
 

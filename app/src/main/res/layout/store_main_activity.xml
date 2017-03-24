@@ -51,16 +51,12 @@
     <FrameLayout
         android:id="@+id/fragment_space"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_above="@+id/store_ll_menu">
 
-        <FrameLayout
-            android:id="@+id/fragment_upper"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="670dp">
-
-        </FrameLayout>
     </FrameLayout>
-
+    <FrameLayout
+        android:id="@+id/fragment_full"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
 </RelativeLayout>

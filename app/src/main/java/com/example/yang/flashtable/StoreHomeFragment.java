@@ -25,11 +25,12 @@ import java.util.List;
 public class StoreHomeFragment extends Fragment {
 
     private ImageView im_photo;
+    private ImageButton bt_QRcode;
     private TextView tv_storename;
     private TextView tv_address;
     private TextView tv_discount;
     private TextView tv_gift;
-    private ImageButton but_active;
+    private ImageButton bt_active;
     private View v;
     private StoreInfo storeInfo;
 
@@ -65,10 +66,19 @@ public class StoreHomeFragment extends Fragment {
         tv_gift.setText(storeInfo.discountList.get(0).gift);
         //--------------
         //立即尋客button
-        but_active = (ImageButton)v.findViewById(R.id.bt_active);
-        but_active.setOnClickListener(new View.OnClickListener() {
+        bt_active = (ImageButton)v.findViewById(R.id.bt_active);
+        bt_active.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {AlertDialogController.discountDialog(getActivity(),storeInfo,tv_discount,tv_gift);
+            }
+        });
+        //--------------
+        //QRcode button-
+        bt_QRcode = (ImageButton)v.findViewById(R.id.bt_QRcode);
+        bt_QRcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StoreMainActivity.fragmentController.act(FragmentController.CONFIRM);
             }
         });
         //--------------

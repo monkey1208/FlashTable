@@ -44,8 +44,8 @@ public class StoreRecentFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //listener.onRecentItemSelected(recentList.get(position));
-                selected = position;
-                StoreMainActivity.fragmentController.act(FragmentController.RECENT_CONFIRM);
+                //selected = position;
+                //StoreMainActivity.fragmentController.act(FragmentController.RECENT_CONFIRM);
             }
         });
         return v;
