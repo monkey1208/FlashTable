@@ -22,6 +22,7 @@ public class RecentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         v =  inflater.inflate(R.layout.store_recent_fregment, container, false);
+
         return v;
     }
 

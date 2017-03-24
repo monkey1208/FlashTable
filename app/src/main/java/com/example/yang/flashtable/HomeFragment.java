@@ -3,6 +3,8 @@ package com.example.yang.flashtable;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,16 +24,14 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
 
+    private ImageView im_photo;
     private TextView tv_storename;
     private TextView tv_address;
     private TextView tv_discount;
     private TextView tv_gift;
     private ImageButton but_active;
     private View v;
-    private int count=0;
     private StoreInfo storeInfo;
-    private int selected;
-    private AlertDialog alertDialog;
 
     public HomeFragment() {
     }
@@ -43,64 +44,30 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //Test
         storeInfo = new StoreInfo("Tasty","台北市南港區");
         func_Test(storeInfo.discountList);
         v = inflater.inflate(R.layout.store_home_fragment, container, false);
+        //Image
+        im_photo = (ImageView)v.findViewById(R.id.im_photo);
+        Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.ic_temp_store);
+        im_photo.setImageBitmap(icon);
+
         tv_storename = (TextView)v.findViewById(R.id.tv_storename);
         tv_storename.setText(storeInfo.name);
         tv_address = (TextView)v.findViewById(R.id.tv_address);
         tv_address.setText(storeInfo.address);
         tv_discount = (TextView)v.findViewById(R.id.tv_discount);
-        tv_discount.setText(Integer.toString(storeInfo.discountList.get(0).discount));
+        tv_discount.setText(Integer.toString(storeInfo.discountList.get(0).discount)+"折");
         tv_gift = (TextView)v.findViewById(R.id.tv_gift);
         tv_gift.setText(storeInfo.discountList.get(0).gift);
         but_active = (ImageButton)v.findViewById(R.id.bt_active);
         but_active.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                discountDialog(getActivity());
+            public void onClick(View v) {AlertDialogController.discountDialog(getActivity(),storeInfo,tv_discount,tv_gift);
             }
         });
         return v;
-    }
-    private void discountDialog(Context context){
-        View item = LayoutInflater.from(context).inflate(R.layout.store_discount_dialog, null);
-        List<StoreInfo.DiscountInfo> discountList = new ArrayList<>();
-        discountList = storeInfo.discountList;
-
-        ListView lv_discount = (ListView)item.findViewById(R.id.lv_discount);
-        DiscountDialogAdapter adapter = new DiscountDialogAdapter(getActivity(),discountList);
-        lv_discount.setAdapter(adapter);
-        lv_discount.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selected = position;
-            }
-        });
-        View titleBar = LayoutInflater.from(context).inflate(R.layout.store_title_bar, null);
-        TextView tv_title = (TextView)titleBar.findViewById(R.id.title);
-        tv_title.setText("折扣優惠");
-        alertDialog = new AlertDialog.Builder(context)
-                .setCustomTitle(titleBar)
-                .setView(item)
-                .create();
-        ImageButton bt_confirm = (ImageButton)item.findViewById(R.id.bt_confirm);
-        bt_confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tv_discount.setText(Integer.toString(storeInfo.discountList.get(selected).discount));
-                tv_gift.setText(storeInfo.discountList.get(selected).gift);
-                alertDialog.dismiss();
-            }
-        });
-        ImageButton bt_cancel = (ImageButton)item.findViewById(R.id.bt_cancel);
-        bt_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
-        alertDialog.show();
     }
     public void func_Test(List<StoreInfo.DiscountInfo> list){
         StoreInfo.DiscountInfo temp1 = new StoreInfo.DiscountInfo(95,"蛋餅");

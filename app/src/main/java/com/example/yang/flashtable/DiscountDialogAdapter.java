@@ -54,7 +54,7 @@ public class DiscountDialogAdapter extends BaseAdapter{
             holder = (ViewHolder) convertView.getTag();
         }
         StoreInfo.DiscountInfo discountInfo = discount.get(position);
-        holder.tv_discount.setText(Integer.toString(discountInfo.discount)+" "+discountInfo.gift);
+        holder.tv_discount.setText(Integer.toString(discountInfo.discount)+"折 "+discountInfo.gift);
         return convertView;
     }
 }
