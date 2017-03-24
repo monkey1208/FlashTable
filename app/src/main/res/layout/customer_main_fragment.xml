@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context="com.example.yang.flashtable.CustomerMainActivity">
 
+    <ImageButton
+        android:id="@+id/customer_fab_map"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/ic_float_map"
+        />
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -22,7 +32,6 @@
 
 
                 <LinearLayout
-
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class CustomerCommentActivity extends AppCompatActivity {
 
     ListView lv_comments;
     CustomerCommentAdapter comment_adapter;
-    List<String> comments;
+    List<CustomerCommentInfo> comments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,9 @@ public class CustomerCommentActivity extends AppCompatActivity {
 
     private void initData() {
         comments = new ArrayList<>();
-        comments.add("e");
+        comments.add(new CustomerCommentInfo("Elise", "McDonald's", "BAD", 1));
+        comments.add(new CustomerCommentInfo("der3318", "McDonald's", "Great!! I can eat every day.", 5));
+        comments.add(new CustomerCommentInfo("wariard", "KFC", "", 4.5f));
         comment_adapter = new CustomerCommentAdapter(this, comments);
         lv_comments.setAdapter(comment_adapter);
 
@@ -49,5 +52,12 @@ public class CustomerCommentActivity extends AppCompatActivity {
             // Show the Up button in the action bar.
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+
+        return super.onOptionsItemSelected(item);
     }
 }
