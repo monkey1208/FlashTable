@@ -9,75 +9,53 @@
         android:layout_height="match_parent"
         android:padding="10dp"
         android:clipToPadding="false"
-        android:layout_marginBottom="40dp">
+        android:layout_marginBottom="90dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="15dp"
-                android:layout_marginTop="10dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="10dp">
-                <TextView
-                    android:id="@+id/customer_detail_tv_record_success"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:textColor="@color/textColorOrange"
-                    android:text="@string/customer_detail_success"/>
-
-                <!-- SPACER VIEW -->
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"/>
-
-                <ImageView
-                    android:id="@+id/customer_detail_iv_record_credit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="22dp"
-                    android:layout_gravity="bottom"
-                    android:src="@drawable/customer_detail_credit_plus"/>
-
-            </LinearLayout>
-
             <TextView
-                android:id="@+id/customer_detail_tv_record_time"
-                android:layout_width="match_parent"
+                android:id="@+id/customer_reservation_tv_success"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/customer_detail_record_time"
-                android:textColor="@color/textColorLighter"
+                android:paddingStart="20dp"
+                android:paddingEnd="10dp"
                 android:layout_marginBottom="5dp"
-                android:textSize="14sp"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"/>
-
+                android:layout_marginTop="10dp"
+                android:textSize="18sp"
+                android:textColor="@color/textColorOrange"
+                android:text="@string/customer_reservation_success"/>
 
             <TextView
-                android:id="@+id/customer_detail_tv_record_arrival_time"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/customer_detail_record_arrival_time"
-                android:textColor="@color/textColorLighter"
-                android:layout_marginBottom="20dp"
-                android:textSize="14sp"
                 android:paddingStart="20dp"
-                android:paddingEnd="20dp"/>
+                android:paddingEnd="10dp"
+                android:layout_marginBottom="15dp"
+                android:textSize="15sp"
+                android:textColor="@color/textColorOrange"
+                android:text="@string/customer_reservation_15_minutes"/>
 
-            <!-- SPACER VIEW -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/lightgray"
+            <ImageView
+                android:id="@+id/customer_reservation_iv_qr_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:src="@drawable/qr_code"
+                android:layout_gravity="center_horizontal"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/customer_reservation_qr_code"
+                android:textSize="14sp"
                 android:layout_marginBottom="20dp"/>
 
             <TextView
-                android:id="@+id/customer_detail_tv_record_shop"
+                android:id="@+id/customer_reservation_tv_shop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/customer_detail_shop"
@@ -88,7 +66,7 @@
                 android:layout_marginBottom="10dp"/>
 
             <RatingBar
-                android:id="@+id/customer_detail_rb_record_rating"
+                android:id="@+id/customer_reservation_rb_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/RatingBar"
@@ -114,11 +92,11 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="8dp"
                     android:src="@drawable/ic_discount"/>
 
                 <TextView
-                    android:id="@+id/customer_detail_tv_discount"
+                    android:id="@+id/customer_reservation_tv_discount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/customer_detail_record_discount"
@@ -143,7 +121,7 @@
                     android:src="@drawable/ic_gift"/>
 
                 <TextView
-                    android:id="@+id/customer_detail_tv_gift"
+                    android:id="@+id/customer_reservation_tv_gift"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/customer_detail_record_gift"
@@ -163,11 +141,50 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/customer_detail_bt_record_comment"
+        android:id="@+id/customer_reservation_bt_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/CustomerOrangeButton"
         android:layout_alignParentBottom="true"
-        android:text="@string/customer_detail_record_comment"/>
+        android:text="@string/customer_reservation_cancel"/>
+
+    <LinearLayout
+        android:id="@+id/customer_reservation_ll_time_left"
+        android:layout_above="@id/customer_reservation_bt_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:padding="10dp"
+        android:background="@color/white">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_time"
+            android:layout_marginEnd="5dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/customer_reservation_time_left"
+            android:textColor="@color/textColorOrange"
+            android:textSize="17sp"/>
+        <TextView
+            android:id="@+id/customer_reservation_tv_arrival_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/textColorOrange"
+            android:textSize="17sp"/>
+    </LinearLayout>
+
+    <!-- SPACER VIEW -->
+    <View
+        android:layout_above="@id/customer_reservation_ll_time_left"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/lightgray"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"/>
 
 </RelativeLayout>
