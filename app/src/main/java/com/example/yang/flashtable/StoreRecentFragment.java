@@ -19,7 +19,6 @@ public class StoreRecentFragment extends Fragment {
     private View v;
     private List<CustomerAppointInfo> recentList;
     private ListView lv_recent;
-    private FragmentController fragmentController;
     public OnRecentFragmentListener listener;
 
     public StoreRecentFragment() {}

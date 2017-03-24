@@ -8,12 +8,13 @@ import android.support.v4.app.FragmentManager;
 import java.io.Serializable;
 
 
-public class FragmentController extends StoreMainActivity implements Serializable{
-    private static final int FRAG_COUNT = 4;
+public class FragmentController extends StoreMainActivity {
+    private static final int FRAG_COUNT = 5;
     private static final int HOME = 0;
     private static final int RECENT = 1;
     private static final int APPOINT = 2;
     private static final int MANAGE = 3;
+    private static final int RECENT_CONFIRM = 4;
     private Fragment[] fragment;
 
     private static final int DEAD = 0;
@@ -34,6 +35,7 @@ public class FragmentController extends StoreMainActivity implements Serializabl
         fragmentManager  = fm;
         fragment[HOME] = new StoreHomeFragment();
         fragment[RECENT] = new StoreRecentFragment();
+        fragment[RECENT_CONFIRM] = new StoreRecentConfirmFragment();
     }
     private void setActive(int mode){
         for(int i=0;i<FRAG_COUNT;i++){
@@ -42,8 +44,9 @@ public class FragmentController extends StoreMainActivity implements Serializabl
                 frag_stat[i]=ALIVE;
             }
         }
-        if(frag_stat[mode]==DEAD)
-            fragmentManager.beginTransaction().add(viewContainer[mode],fragment[mode]).commit();
+        if(frag_stat[mode]==DEAD) {
+            fragmentManager.beginTransaction().add(viewContainer[mode], fragment[mode]).commit();
+        }
         else if(frag_stat[mode]==ALIVE)
             fragmentManager.beginTransaction().show(fragment[mode]).commit();
         frag_stat[mode] = SHOW;
@@ -53,8 +56,11 @@ public class FragmentController extends StoreMainActivity implements Serializabl
             case HOME:
                 setActive(HOME);
                 break;
-            case  RECENT:
+            case RECENT:
                 setActive(RECENT);
+                break;
+            case RECENT_CONFIRM:
+                setActive(RECENT_CONFIRM);
                 break;
         }
     }

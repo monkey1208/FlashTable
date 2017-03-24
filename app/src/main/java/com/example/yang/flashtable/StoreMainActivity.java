@@ -11,11 +11,13 @@ public class StoreMainActivity extends AppCompatActivity implements StoreRecentF
 
     private ImageButton[] button;
 
-    private static final int FRAG_COUNT = 4;
+    private static final int PRIM_FRAG = 4;
+    private static final int FRAG_COUNT = 5;
     private static final int HOME = 0;
     private static final int RECENT = 1;
     private static final int APPOINT = 2;
     private static final int MANAGE = 3;
+    private static final int RECENT_CONFIRM = 4;
 
     FragmentController fragmentController;
     private FragmentManager fragmentManager;
@@ -74,7 +76,7 @@ public class StoreMainActivity extends AppCompatActivity implements StoreRecentF
         super.onStart();
     }
     public void pressFeedBack(){
-        for(int i=0;i<FRAG_COUNT;i++)
+        for(int i=0;i<PRIM_FRAG;i++)
             button[i].setBackgroundColor(getResources().getColor(R.color.btBottomColor));
         button[current_stat].setBackgroundColor(getResources().getColor(R.color.btBottomPressColor));
     }
@@ -82,6 +84,6 @@ public class StoreMainActivity extends AppCompatActivity implements StoreRecentF
 
     @Override
     public void onRecentItemSelected(CustomerAppointInfo customerAppointInfo) {
-        Toast.makeText(getApplicationContext(),"Clicked "+ customerAppointInfo.name, Toast.LENGTH_LONG).show();
+        fragmentController.act(RECENT_CONFIRM);
     }
 }
