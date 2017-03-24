@@ -5,8 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
-public class StoreMainActivity extends AppCompatActivity {
+public class StoreMainActivity extends AppCompatActivity implements StoreRecentFragment.OnRecentFragmentListener{
 
     private ImageButton[] button;
 
@@ -76,5 +77,11 @@ public class StoreMainActivity extends AppCompatActivity {
         for(int i=0;i<FRAG_COUNT;i++)
             button[i].setBackgroundColor(getResources().getColor(R.color.btBottomColor));
         button[current_stat].setBackgroundColor(getResources().getColor(R.color.btBottomPressColor));
+    }
+
+
+    @Override
+    public void onRecentItemSelected(CustomerAppointInfo customerAppointInfo) {
+        Toast.makeText(getApplicationContext(),"Clicked "+ customerAppointInfo.name, Toast.LENGTH_LONG).show();
     }
 }
