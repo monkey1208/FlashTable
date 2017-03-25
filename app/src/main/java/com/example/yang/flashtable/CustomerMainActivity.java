@@ -81,7 +81,7 @@ public class CustomerMainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.customer_frame, fragment).commit();
     }
     private void setMapButton(){
-        fab_map = (FloatingActionButton)findViewById(R.id.customer_fab_map);
+        fab_map = (FloatingActionButton) findViewById(R.id.customer_fab_map);
         fab_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

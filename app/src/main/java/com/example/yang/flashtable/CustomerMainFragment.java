@@ -1,6 +1,10 @@
 package com.example.yang.flashtable;
 
 import android.app.Fragment;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -31,7 +35,8 @@ public class CustomerMainFragment extends Fragment {
     List<CustomerRestaurantInfo> restaurant_list;
     CustomerMainAdapter adapter;
     EditText et_search;
-
+    SqlHandler sqlHandler = null;
+    Bitmap image;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,15 +68,81 @@ public class CustomerMainFragment extends Fragment {
                 return true;
             }
         });
+        // initId();
+        openDB();
+        List<CustomerRestaurantInfo> list = generateTestList();
+        // insertDB(list);
+        // deletDB();
+        setList();
     }
+    
+    private void openDB(){
+        sqlHandler = new SqlHandler(view.getContext());
+    }
+    
+    private void insertDB(List<CustomerRestaurantInfo> infoList){
+        image = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_gift);
+        //System.out.println(infoList.size());
+        for(int i = 0; i < infoList.size(); i++){
+            System.out.println(infoList.get(i).id);
+            sqlHandler.insert(infoList.get(i), image);
+            //image = null;
+        }
+        image = null;
+    }
+    private List<CustomerRestaurantInfo> getListFromDB(){
+        List<CustomerRestaurantInfo> list = new ArrayList<>();
+        Cursor cursor = sqlHandler.getAll();
+        cursor.moveToFirst();
+        for (int i = 0; i < cursor.getCount(); i++) {
+            CustomerRestaurantInfo info = new CustomerRestaurantInfo(
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.NAME_COLUMN)),
+                    Integer.valueOf(cursor.getString(cursor.getColumnIndex(SqlHandler.ID_COLUMN))),
+                    new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)), cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN)))
+            );
+            /*info.detailInfo.setInfo(
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.ADDRESS_COLUMN)),
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.PHONE_COLUMN)),
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.TIME_COLUMN)),
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.CATEGORY_COLUMN)),
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.URL_COLUMN))
+            );*/
+            info.image = cursor.getBlob(cursor.getColumnIndex(SqlHandler.IMG_COLUMN));
+            list.add(info);
 
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return list;
+    }
+    private void deletDB(){
+        view.getContext().deleteDatabase(SqlHandler.DATABASE_NAME);
+    }
+    private void closeDB(){
+        sqlHandler.close();
+    }
+    private void setList(){
+        //restaurant_list = generateTestList();
+        restaurant_list = getListFromDB();
+        adapter = new CustomerMainAdapter(view.getContext(), restaurant_list);
+        lv_shops.setAdapter(adapter);
+    }
     private List<CustomerRestaurantInfo> generateTestList(){
         List<CustomerRestaurantInfo> list = new ArrayList<>();
-        for(int i = 0; i < 5; i++){
-            LatLng latLng = new LatLng(25, 25);
-            CustomerRestaurantInfo info = new CustomerRestaurantInfo("a", "a", "b", latLng);
+        for(int i = 1; i < 6; i++){
+            LatLng latLng = new LatLng(121.5, 25.01);
+            CustomerRestaurantInfo info = new CustomerRestaurantInfo("Restaurant "+Integer.toString(i), "discount", "offer", i,latLng);
+            info.detailInfo.setInfo("address", "0933278802", "10:00~20:00", "garbage store", "http://fluffs-press.herokuapp.com/");
             list.add(info);
+            latLng = null;
+            info = null;
         }
         return list;
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        closeDB();
     }
 }
