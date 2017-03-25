@@ -3,6 +3,7 @@ package com.example.yang.flashtable;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ public class RecentAdapter extends BaseAdapter{
     private Context context;
     private List<CustomerAppointInfo> list;
     private LayoutInflater layoutInflater;
+    ViewHolder holder;
 
     public RecentAdapter(Context context, List<CustomerAppointInfo> list){
         layoutInflater = LayoutInflater.from(context);
@@ -32,10 +34,12 @@ public class RecentAdapter extends BaseAdapter{
         public ImageView im_photo;
         public TextView tv_name;
         public TextView tv_number;
-        public ViewHolder(ImageView im,TextView tv1, TextView tv2){
+        public TextView tv_countdown;
+        public ViewHolder(ImageView im,TextView tv1, TextView tv2,TextView tv3){
             this.im_photo = im;
             this.tv_name = tv1;
             this.tv_number = tv2;
+            this.tv_countdown = tv3;
         }
     }
 
@@ -56,13 +60,13 @@ public class RecentAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
         if(convertView==null){
             convertView = layoutInflater.inflate(R.layout.store_recent_item, null);
             holder = new ViewHolder(
                     (ImageView) convertView.findViewById(R.id.im_photo),
                     (TextView) convertView.findViewById(R.id.tv_name),
-                    (TextView) convertView.findViewById(R.id.tv_number)
+                    (TextView) convertView.findViewById(R.id.tv_number),
+                    (TextView) convertView.findViewById(R.id.tv_countdown)
             );
             convertView.setTag(holder);
         }else{
