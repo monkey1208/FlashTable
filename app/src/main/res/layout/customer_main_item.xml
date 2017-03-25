@@ -1,52 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="3">
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:srcCompat="@mipmap/ic_launcher"
-        android:id="@+id/customer_main_adapter_iv"
-        android:layout_gravity="center"
-        android:layout_weight="1" />
+        android:id="@+id/customer_main_iv_shop"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_launcher"
+        android:layout_marginEnd="10dp"/>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:weightSum="4">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:text="RESTAURANT"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/customer_main_adapter_tv_name"
-            android:gravity="center_vertical"
-            android:layout_weight="1"/>
-        <TextView
-            android:text="ADDRESS"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:id="@+id/customer_main_tv_name"
+                android:text="@string/customer_detail_shop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textSize="17sp"
+                android:textColor="@color/textColorDark"/>
+
+            <TextView
+                android:id="@+id/customer_main_tv_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:textSize="15sp"
+                android:text="@string/customer_main_distance"/>
+
+            <ImageView
+                android:layout_toStartOf="@id/customer_main_tv_distance"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/ic_location_red"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"/>
+
+        </RelativeLayout>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/customer_main_adapter_tv_address"
+            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_weight="1"/>
-        <TextView
-            android:text="TIME"
+            android:layout_marginBottom="5dp">
+            <RatingBar
+                android:id="@+id/customer_main_rb_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                style="@style/RatingBarSmall"
+                android:layout_marginEnd="5dp"/>
+
+            <TextView
+                android:id="@+id/customer_main_tv_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/customer_main_price"
+                android:textSize="12sp"
+                android:textColor="@color/textColorLighter"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/customer_main_adapter_tv_time"
+            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_weight="1"/>
-        <TextView
-            android:text="STATUS"
+            android:layout_marginBottom="5dp">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/ic_discount"
+                android:layout_marginEnd="5dp"/>
+            
+            <TextView
+                android:id="@+id/customer_main_tv_discount"
+                android:text="@string/customer_detail_record_discount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/textColorOrange"/>
+            
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/customer_main_adapter_tv_status"
+            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_weight="1"/>
+            android:layout_marginBottom="10dp">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/ic_gift"
+                android:layout_marginEnd="5dp"/>
+            
+            <TextView
+                android:id="@+id/customer_main_tv_gift"
+                android:text="@string/customer_detail_record_gift"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/textColorOrange"/>
+            
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/customer_main_ll_reserve"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/textColorOrange"
+            android:padding="5dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="17dp"
+                android:src="@drawable/ic_customer_drawer_reservation"
+                android:tint="@color/white"
+                android:layout_marginEnd="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/customer_main_reserve"
+                android:textColor="@color/white"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+        
     </LinearLayout>
 </LinearLayout>

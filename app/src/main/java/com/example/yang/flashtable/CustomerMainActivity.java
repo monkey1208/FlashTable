@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageButton;
 
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -24,8 +23,11 @@ public class CustomerMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
-    private ImageButton fab_map;
+    private FloatingActionButton fab_map;
     private Fragment fragment;
+    private boolean map_showing;
+    private NavigationView nv_view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,27 +39,40 @@ public class CustomerMainActivity extends AppCompatActivity
 
     private void initView() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        nv_view = (NavigationView) findViewById(R.id.nav_view);
     }
 
     private void initData() {
         setDrawer();
         setMapButton();
-        setFragment("main");
+        navigate("main");
+        nv_view.getMenu().getItem(0).setChecked(true);
+        map_showing = false;
     }
 
-    private void setFragment(String input){
+    // Change setFragment to navigate for more general-purposed naming
+    private void navigate(String input){
         switch (input){
             case "main":
                 fab_map.setVisibility(View.VISIBLE);
                 fragment = new CustomerMainFragment();
+                map_showing = false;
+                fab_map.setImageResource(R.drawable.ic_float_map);
+                break;
+            case "detail":
+                // TODO: Uncheck all items
+                Intent intent = new Intent(this, CustomerDetailActivity.class);
+                startActivity(intent);
                 break;
             case "profile":
                 fab_map.setVisibility(View.GONE);
                 fragment = new CustomerProfileFragment();
                 break;
             case "map":
-                fab_map.setVisibility(View.GONE);
+                fab_map.setVisibility(View.VISIBLE);
                 fragment = new CustomerMapFragment();
+                map_showing = true;
+                fab_map.setImageResource(R.drawable.ic_float_back);
                 break;
             default:
                 break;
@@ -66,33 +81,34 @@ public class CustomerMainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.customer_frame, fragment).commit();
     }
     private void setMapButton(){
-        fab_map = (ImageButton) findViewById(R.id.customer_fab_map);
+        fab_map = (FloatingActionButton)findViewById(R.id.customer_fab_map);
         fab_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setFragment("map");
+                if (!map_showing) {
+                    navigate("map");
+                } else {
+                    navigate("main");
+                }
             }
         });
+        fab_map.setImageResource(R.drawable.ic_float_map);
     }
     private void setDrawer(){
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, null, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        ImageButton fab = (ImageButton) findViewById(R.id.customer_fab_menu);
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.customer_fab_menu);
+        fab.setImageResource(R.drawable.ic_float_menu);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 drawer.openDrawer(GravityCompat.START);
             }
         });
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    private void showDetail() {
-        Intent intent = new Intent(this, CustomerDetailActivity.class);
-        startActivity(intent);
+        nv_view = (NavigationView) findViewById(R.id.nav_view);
+        nv_view.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -130,12 +146,12 @@ public class CustomerMainActivity extends AppCompatActivity
 
         if (id == R.id.customer_drawer_reservation) {
             // Handle the camera action
-            setFragment("main");
+            navigate("main");
         } else if (id == R.id.customer_drawer_detail) {
-            showDetail();
+            navigate("detail");
 
         } else if (id == R.id.customer_drawer_profile) {
-            setFragment("profile");
+            navigate("profile");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

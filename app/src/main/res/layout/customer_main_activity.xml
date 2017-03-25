@@ -12,13 +12,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/customer_fab_menu"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="15dp"
-            android:background="@drawable/ic_float_menu"/>
+            android:layout_marginStart="15dp"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/customer_fab_map"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/ic_float_map"
+            />
 
         <FrameLayout
             android:id="@+id/customer_frame"
@@ -36,6 +45,6 @@
         android:fitsSystemWindows="true"
         android:background="@color/transparentWhite"
         app:headerLayout="@layout/customer_drawer_header"
-        app:menu="@menu/customer_drawer_item" />
+        app:menu="@menu/customer_drawer_menu" />
 
 </android.support.v4.widget.DrawerLayout>

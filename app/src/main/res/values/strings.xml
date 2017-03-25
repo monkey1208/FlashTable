@@ -6,9 +6,16 @@
     <!-- Universal strings -->
     <string name="submit">確認</string>
     <string name="cancel">取消</string>
+    <string name="search">搜尋</string>
 
     <!-- Strings related to alert -->
     <string name="alert_title">提醒</string>
+
+    <!-- String related to customer main -->
+    <string name="customer_main_price">均消$</string>
+    <string name="customer_main_price_per">/人</string>
+    <string name="customer_main_distance">50m</string>
+    <string name="customer_main_reserve">立即預約</string>
 
     <!-- Strings related to customer drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -30,10 +37,10 @@
     <string name="customer_detail_shop">店家名稱</string>
     <string name="customer_detail_location">店家地址</string>
     <string name="customer_detail_time">2017/02/14 08:00pm</string>
-    <string name="customer_detail_success">已成功訂位（</string>
-    <string name="customer_detail_persons">人）桌位</string>
-    <string name="customer_detail_shop_cancel">店家已取消訂位（</string>
-    <string name="customer_detail_self_cancel">自行取消訂位（</string>
+    <string name="customer_detail_success">已成功訂位(</string>
+    <string name="customer_detail_persons">人)桌位</string>
+    <string name="customer_detail_shop_cancel">店家已取消訂位(</string>
+    <string name="customer_detail_self_cancel">自行取消訂位(</string>
     <string name="customer_detail_record_title">預約紀錄明細</string>
     <string name="customer_detail_record_time">預約時間：</string>
     <string name="customer_detail_record_arrival_time">入座時間：</string>
