@@ -30,8 +30,8 @@ public class CustomerProfileFragment extends Fragment {
     }
 
     private void initView() {
-        ll_comments = (LinearLayout)  view.findViewById(R.id.customer_profile_ll_comments);
         ll_reservations = (LinearLayout) view.findViewById(R.id.customer_profile_ll_reservations);
+        ll_comments = (LinearLayout)  view.findViewById(R.id.customer_profile_ll_comments);
         bt_edit = (Button) view.findViewById(R.id.customer_profile_bt_edit);
         bt_about_credits = (Button) view.findViewById(R.id.customer_profile_bt_about_credit);
     }
@@ -41,6 +41,13 @@ public class CustomerProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), CustomerDetailActivity.class);
+                startActivity(intent);
+            }
+        });
+        ll_comments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), CustomerCommentActivity.class);
                 startActivity(intent);
             }
         });

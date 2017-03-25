@@ -51,6 +51,12 @@
         <item name="android:stepSize">0.5</item>
     </style>
 
+    <style name="RatingBarSmall">
+        <item name="android:progressDrawable">@drawable/rating_bar_small</item>
+        <item name="android:numStars">5</item>
+        <item name="android:stepSize">0.5</item>
+    </style>
+
     <!-- Style for customer orange button -->
     <style name="CustomerOrangeButton">
         <item name="android:background">@color/textColorOrange</item>

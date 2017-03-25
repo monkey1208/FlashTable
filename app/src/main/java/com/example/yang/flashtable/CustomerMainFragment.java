@@ -28,7 +28,7 @@ public class CustomerMainFragment extends Fragment {
     private Spinner spinner_dis, spinner_food, spinner_default;
     private SearchView searchView;
     private ListView listView;
-    private List<RestaurantInfo> restaurantList;
+    private List<CustomerRestaurantInfo> restaurantList;
     private CustomerMainAdapter adapter;
     private SqlHandler sqlHandler = null;
     private Bitmap image;
@@ -39,7 +39,7 @@ public class CustomerMainFragment extends Fragment {
         initId();
 
         openDB();
-        List<RestaurantInfo> list = generateTestList();
+        List<CustomerRestaurantInfo> list = generateTestList();
         //insertDB(list);
         //deletDB();
         setList();
@@ -56,7 +56,7 @@ public class CustomerMainFragment extends Fragment {
         sqlHandler = new SqlHandler(view.getContext());
 
     }
-    private void insertDB(List<RestaurantInfo> infoList){
+    private void insertDB(List<CustomerRestaurantInfo> infoList){
         image = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_gift);
         //System.out.println(infoList.size());
         for(int i = 0; i < infoList.size(); i++){
@@ -66,12 +66,12 @@ public class CustomerMainFragment extends Fragment {
         }
         image = null;
     }
-    private List<RestaurantInfo> getListFromDB(){
-        List<RestaurantInfo> list = new ArrayList<>();
+    private List<CustomerRestaurantInfo> getListFromDB(){
+        List<CustomerRestaurantInfo> list = new ArrayList<>();
         Cursor cursor = sqlHandler.getAll();
         cursor.moveToFirst();
         for (int i = 0; i < cursor.getCount(); i++) {
-            RestaurantInfo info = new RestaurantInfo(
+            CustomerRestaurantInfo info = new CustomerRestaurantInfo(
                     cursor.getString(cursor.getColumnIndex(SqlHandler.NAME_COLUMN)),
                     Integer.valueOf(cursor.getString(cursor.getColumnIndex(SqlHandler.ID_COLUMN))),
                     new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)), cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN)))
@@ -104,11 +104,11 @@ public class CustomerMainFragment extends Fragment {
         adapter = new CustomerMainAdapter(view.getContext(), restaurantList);
         listView.setAdapter(adapter);
     }
-    private List<RestaurantInfo> generateTestList(){
-        List<RestaurantInfo> list = new ArrayList<>();
+    private List<CustomerRestaurantInfo> generateTestList(){
+        List<CustomerRestaurantInfo> list = new ArrayList<>();
         for(int i = 1; i < 6; i++){
             LatLng latLng = new LatLng(121.5, 25.01);
-            RestaurantInfo info = new RestaurantInfo("Restaurant "+Integer.toString(i), "discount", "offer", i,latLng);
+            CustomerRestaurantInfo info = new CustomerRestaurantInfo("Restaurant "+Integer.toString(i), "discount", "offer", i,latLng);
             info.detailInfo.setInfo("address", "0933278802", "10:00~20:00", "garbage store", "http://fluffs-press.herokuapp.com/");
             list.add(info);
             latLng = null;

@@ -11,6 +11,7 @@
         android:paddingBottom="0dp"
         android:clipToPadding="false"
         android:dividerHeight="5dp"
-        android:divider="@color/lightgray"/>
+        android:divider="@color/lightgray"
+        android:background="@color/lightgray"/>
 
 </LinearLayout>

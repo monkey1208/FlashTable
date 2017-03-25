@@ -6,7 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by Yang on 2017/3/23.
  */
 
-public class RestaurantInfo {
+public class CustomerRestaurantInfo {
     int id;
     String name;
     String discount;
@@ -42,15 +42,15 @@ public class RestaurantInfo {
             this.url = url;
         }
     }
-    public RestaurantInfo(String name, String discount, String offer, int id,LatLng latLng){
-        this.id = id;
+
+    public CustomerRestaurantInfo(String name, String discount, String offer, int id, LatLng latLng){
         this.name = name;
         this.discount = discount;
         this.offer = offer;
         this.latLng = latLng;
         detailInfo = new DetailInfo();
     }
-    public RestaurantInfo(String name, int id, LatLng latLng){
+    public CustomerRestaurantInfo(String name, int id, LatLng latLng){
         this(name, "暫無折扣", "暫無優惠", id, latLng);
     }
 }

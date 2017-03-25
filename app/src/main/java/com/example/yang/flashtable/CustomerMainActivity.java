@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -65,7 +66,7 @@ public class CustomerMainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.customer_frame, fragment).commit();
     }
     private void setMapButton(){
-        fab_map = (FloatingActionButton)findViewById(R.id.customer_fab_map);
+        fab_map = (FloatingActionButton) findViewById(R.id.customer_fab_map);
         fab_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,7 +79,7 @@ public class CustomerMainActivity extends AppCompatActivity
                 this, drawer, null, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.customer_fab_menu);
+        ImageButton fab = (ImageButton) findViewById(R.id.customer_fab_menu);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

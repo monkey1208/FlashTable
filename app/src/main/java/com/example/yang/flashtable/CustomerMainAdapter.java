@@ -13,7 +13,7 @@ import java.util.List;
  * Created by Yang on 2017/3/23.
  */
 
-public class CustomerMainAdapter extends ArrayAdapter<RestaurantInfo> {
+public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
     private Context c;
     private LayoutInflater inflater;
     public CustomerMainAdapter(Context context, List objects) {

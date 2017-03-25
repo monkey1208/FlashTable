@@ -93,7 +93,7 @@ public class SqlHandler extends SQLiteOpenHelper {
     }
 
 
-    public void insert(RestaurantInfo info, Bitmap bitmap){
+    public void insert(CustomerRestaurantInfo info, Bitmap bitmap){
         Log.d("SQLite", "insert data");
         byte[] array = getBitmapAsByteArray(bitmap);
         ContentValues cv = new ContentValues();
