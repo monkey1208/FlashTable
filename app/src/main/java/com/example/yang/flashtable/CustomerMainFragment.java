@@ -70,10 +70,9 @@ public class CustomerMainFragment extends Fragment {
         });
         // initId();
         openDB();
-        List<CustomerRestaurantInfo> list = generateTestList();
         // insertDB(list);
         // deletDB();
-        setList();
+        // setList();
     }
     
     private void openDB(){
