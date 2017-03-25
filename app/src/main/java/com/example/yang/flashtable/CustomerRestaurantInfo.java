@@ -6,7 +6,7 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by Yang on 2017/3/23.
  */
 
-public class RestaurantInfo {
+public class CustomerRestaurantInfo {
     String name;
     String discount;
     String offer;
@@ -36,7 +36,7 @@ public class RestaurantInfo {
             this.url = url;
         }
     }
-    public RestaurantInfo(String name, String discount, String offer, LatLng latLng){
+    public CustomerRestaurantInfo(String name, String discount, String offer, LatLng latLng){
         this.name = name;
         this.discount = discount;
         this.offer = offer;
