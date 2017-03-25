@@ -1,19 +1,21 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.example.yang.flashtable.StoreRecentFragment">
     <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:background="@color/btBottomColor"
         android:text="即時動態"
         android:textColor="@color/white"
         android:textSize="30sp"
-        android:gravity="center_horizontal"/>
+        android:gravity="center_horizontal"
+        android:layout_alignParentTop="true"/>
     <ListView
         android:id="@+id/lv_recent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
-</LinearLayout>
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/title"></ListView>
+</RelativeLayout>
