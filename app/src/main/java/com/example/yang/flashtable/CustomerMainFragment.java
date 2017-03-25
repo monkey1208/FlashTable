@@ -78,17 +78,7 @@ public class CustomerMainFragment extends Fragment {
     private void openDB(){
         sqlHandler = new SqlHandler(view.getContext());
     }
-    
-    private void insertDB(List<CustomerRestaurantInfo> infoList){
-        image = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_gift);
-        //System.out.println(infoList.size());
-        for(int i = 0; i < infoList.size(); i++){
-            System.out.println(infoList.get(i).id);
-            sqlHandler.insert(infoList.get(i), image);
-            //image = null;
-        }
-        image = null;
-    }
+
     private List<CustomerRestaurantInfo> getListFromDB(){
         List<CustomerRestaurantInfo> list = new ArrayList<>();
         Cursor cursor = sqlHandler.getAll();
@@ -115,12 +105,7 @@ public class CustomerMainFragment extends Fragment {
 
         return list;
     }
-    private void deletDB(){
-        view.getContext().deleteDatabase(SqlHandler.DATABASE_NAME);
-    }
-    private void closeDB(){
-        sqlHandler.close();
-    }
+
     private void setList(){
         //restaurant_list = generateTestList();
         restaurant_list = getListFromDB();
@@ -138,6 +123,9 @@ public class CustomerMainFragment extends Fragment {
             info = null;
         }
         return list;
+    }
+    private void closeDB(){
+        sqlHandler.close();
     }
     @Override
     public void onDestroy() {
