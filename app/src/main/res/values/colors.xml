@@ -2,7 +2,7 @@
 <resources>
 
     <!-- App-related colors -->
-    <color name="colorPrimary">#FF6600</color>
+    <color name="colorPrimary">#EA5703</color>
     <color name="colorPrimaryDark">#1A1A1A</color>
     <color name="colorAccent">#F4A676</color>
     <color name="textColorDark">#1A1A1A</color>
@@ -15,7 +15,13 @@
     <color name="colorHalfTransparent">#80FFFFFF</color>
     <color name="textColorOrangeDark">#EA5703</color>
     <color name="alertColor">#E68239</color>
+
     <color name="colorOrangeLighter">#60EA5703</color>
+
+    <color name="btBottomColor">#7DEA5703</color>
+    <color name="btBottomPressColor">#B2EA5703</color>
+    <color name="btListviewPressColor">#1AEA5703</color>
+
 
     <!-- Other colors -->
     <color name="white">#FFFFFF</color>

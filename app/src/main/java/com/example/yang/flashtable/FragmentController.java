@@ -4,9 +4,8 @@ package com.example.yang.flashtable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
-
 public class FragmentController extends StoreMainActivity{
-    private static final int FRAG_COUNT = 10;
+    private static final int FRAG_COUNT = 11;
     private static final int HOME = 0;
     private static final int RECENT = 1;
     private static final int APPOINT = 2;
@@ -17,6 +16,9 @@ public class FragmentController extends StoreMainActivity{
     private static final int MANAGE_DISCOUNT = 7;
     private static final int MANAGE_STATISTIC = 8;
     private static final int MANAGE_RECORD = 9;
+    public static final int CONFIRM = 10;
+    public static StoreRecentFragment storeRecentFragment;
+    public static StoreHomeFragment storeHomeFragment;
 
     public Fragment[] fragment;
 
@@ -33,10 +35,11 @@ public class FragmentController extends StoreMainActivity{
         frag_stat = new int[FRAG_COUNT];
         viewContainer = new int[FRAG_COUNT];
         for(int i=0;i<FRAG_COUNT;i++) viewContainer[i]= R.id.fragment_space;
+        viewContainer[CONFIRM] = R.id.fragment_full;
         for(int i=0;i<FRAG_COUNT;i++) frag_stat[i]=DEAD;
         fragmentManager  = fm;
-        fragment[HOME] = new HomeFragment();
-        fragment[RECENT] = new RecentFragment();
+        fragment[HOME] = new StoreHomeFragment();
+        fragment[RECENT] = new StoreRecentFragment();
         fragment[APPOINT] = new StoreAppointFragment();
         fragment[MANAGE] = new StoreManageFragment();
         fragment[MANAGE_SUCCESS] = new StoreManageSuccessFragment();
@@ -45,6 +48,10 @@ public class FragmentController extends StoreMainActivity{
         fragment[MANAGE_DISCOUNT] = new StoreManageDiscountFragment();
         fragment[MANAGE_STATISTIC] = new StoreManageStatisticFragment();
         fragment[MANAGE_RECORD] = new StoreManageRecordFragment();
+        storeRecentFragment = new StoreRecentFragment();
+        storeHomeFragment = new StoreHomeFragment();
+        for(int i=0;i<FRAG_COUNT;i++)
+            initFragment(i);
     }
     private void setActive(int mode){
         for(int i=0;i<FRAG_COUNT;i++){
@@ -53,18 +60,19 @@ public class FragmentController extends StoreMainActivity{
                 frag_stat[i]=ALIVE;
             }
         }
-        if(frag_stat[mode]==DEAD)
-            fragmentManager.beginTransaction().add(viewContainer[mode],fragment[mode]).commit();
+        if(frag_stat[mode]==DEAD) {
+            fragmentManager.beginTransaction().add(viewContainer[mode], fragment[mode]).commit();
+        }
         else if(frag_stat[mode]==ALIVE)
             fragmentManager.beginTransaction().show(fragment[mode]).commit();
         frag_stat[mode] = SHOW;
     }
-    public void act(int current_stat){
-        switch (current_stat){
+    public void act(int select){
+        switch (select){
             case HOME:
                 setActive(HOME);
                 break;
-            case  RECENT:
+            case RECENT:
                 setActive(RECENT);
                 break;
             case APPOINT:
@@ -90,7 +98,30 @@ public class FragmentController extends StoreMainActivity{
                 break;
             case MANAGE_DISCOUNT:
                 setActive(MANAGE_DISCOUNT);
+            case CONFIRM:
+                if(frag_stat[CONFIRM]!=DEAD)
+                    kill(CONFIRM);
+                setActive(CONFIRM);
                 break;
         }
+    }
+    private void kill(int select){
+        fragmentManager.beginTransaction().remove(fragment[select]).commit();
+        initFragment(select);
+        frag_stat[select]=DEAD;
+    }
+    private void initFragment(int select){
+        switch (select){
+            case HOME:
+                fragment[select] = storeHomeFragment;
+                break;
+            case RECENT:
+                fragment[select] = storeRecentFragment;
+                break;
+            case CONFIRM:
+                fragment[select] = new StoreHomeConfirmFragment();
+                break;
+        }
+
     }
 }
