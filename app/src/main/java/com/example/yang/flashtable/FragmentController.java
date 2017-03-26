@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 
 
 public class FragmentController extends StoreMainActivity{
-    private static final int FRAG_COUNT = 7;
+    private static final int FRAG_COUNT = 10;
     private static final int HOME = 0;
     private static final int RECENT = 1;
     private static final int APPOINT = 2;
@@ -14,6 +14,10 @@ public class FragmentController extends StoreMainActivity{
     private static final int MANAGE_SUCCESS = 4;
     //private static final int MANAGE_OPENTIME = 5;
     private static final int MANAGE_BILL = 6;
+    private static final int MANAGE_DISCOUNT = 7;
+    private static final int MANAGE_STATISTIC = 8;
+    private static final int MANAGE_RECORD = 9;
+
     public Fragment[] fragment;
 
     private static final int DEAD = 0;
@@ -37,7 +41,9 @@ public class FragmentController extends StoreMainActivity{
         fragment[MANAGE] = new StoreManageFragment();
         fragment[MANAGE_SUCCESS] = new StoreManageSuccessFragment();
         fragment[MANAGE_BILL] = new StoreManageBillFragment();
-
+        fragment[MANAGE_DISCOUNT] = new StoreManageDiscountFragment();
+        fragment[MANAGE_STATISTIC] = new StoreManageStatisticFragment();
+        fragment[MANAGE_RECORD] = new StoreManageRecordFragment();
     }
     private void setActive(int mode){
         for(int i=0;i<FRAG_COUNT;i++){
@@ -71,6 +77,15 @@ public class FragmentController extends StoreMainActivity{
                 break;
             case MANAGE_BILL:
                 setActive(MANAGE_BILL);
+                break;
+            case MANAGE_STATISTIC:
+                setActive(MANAGE_STATISTIC);
+                break;
+            case MANAGE_RECORD:
+                setActive(MANAGE_RECORD);
+                break;
+            case MANAGE_DISCOUNT:
+                setActive(MANAGE_DISCOUNT);
                 break;
         }
     }

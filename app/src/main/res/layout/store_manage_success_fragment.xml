@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:background="#70DE5110"
+        android:background="#80FF6600"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme" >
 
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
             android:text="預約成功率"
-            android:textSize="24sp"
+            android:textSize="22sp"
             android:layout_gravity="center" />
     </android.support.v7.widget.Toolbar>
 
@@ -28,6 +28,7 @@
         android:id="@+id/store_manage_success_ll_rate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12px"
         android:orientation="horizontal"
         android:background="@color/colorHalfTransparent"
         android:layout_alignParentTop="true"
@@ -38,6 +39,7 @@
             android:layout_marginLeft="55px"
             android:paddingTop="10dp"
             android:layout_weight="7"
+            android:textSize="14sp"
             android:text="預約成功率"
             android:textColor="@color/textColor"/>
         <TextView
@@ -60,6 +62,7 @@
         android:id="@+id/store_manage_success_ll_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12px"
         android:layout_below="@id/store_manage_success_ll_rate"
         android:orientation="horizontal"
         android:background="@color/colorHalfTransparent">
@@ -70,6 +73,7 @@
             android:paddingTop="10dp"
             android:layout_weight="7"
             android:text="總預約數"
+            android:textSize="14sp"
             android:textColor="@color/textColor"/>
 
         <TextView
@@ -92,6 +96,7 @@
         android:id="@+id/store_manage_success_ll_fail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12px"
         android:layout_below="@id/store_manage_success_ll_amount"
         android:orientation="horizontal"
         android:background="@color/colorHalfTransparent">
@@ -102,6 +107,7 @@
             android:paddingTop="10dp"
             android:layout_weight="7"
             android:text="店內無空桌&amp;取消預約"
+            android:textSize="14sp"
             android:textColor="@color/textColor"/>
         <TextView
             android:id="@+id/store_manage_success_tv_fail"
@@ -123,6 +129,7 @@
         android:id="@+id/store_manage_success_ll_success"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12px"
         android:layout_below="@id/store_manage_success_ll_fail"
         android:orientation="horizontal"
         android:background="@color/colorHalfTransparent">
@@ -133,6 +140,7 @@
             android:paddingTop="10dp"
             android:layout_weight="7"
             android:text="成功預約"
+            android:textSize="14sp"
             android:textColor="@color/textColor"/>
         <TextView
             android:id="@+id/store_manage_success_tv_success"

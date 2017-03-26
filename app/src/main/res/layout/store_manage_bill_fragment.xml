@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="#70DE5110"
+        android:background="#80FF6600"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme">
 
@@ -20,7 +21,7 @@
             android:layout_gravity="center"
             android:text="應付帳款明細"
             android:textColor="#FFFFFF"
-            android:textSize="24sp" />
+            android:textSize="22sp" />
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
@@ -31,36 +32,75 @@
         android:layout_marginTop="6dp"
         android:background="@color/colorHalfTransparent"
         android:orientation="horizontal">
-        <Button
-            android:id="@+id/button2"
+
+        <LinearLayout
+            android:id="@+id/store_manage_bill_ll_prev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="上一期" />
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="5dp"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                app:srcCompat="@drawable/ic_back" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="上一期"
+                android:textSize="12sp"
+                android:textColor="@color/textColorLighter"
+                android:background="#00000000"/>
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="6"
+            android:layout_height="fill_parent"
+            android:layout_weight="7"
             android:gravity="center"
             android:textColor="@color/textColor"
+            android:background="#00000000"
             android:text="當期應付明細" />
 
-        <Button
-            android:id="@+id/button"
+
+        <LinearLayout
+            android:id="@+id/store_manage_bill_ll_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="下一期" />
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="下一期"
+                android:textSize="12sp"
+                android:textColor="@color/textColorLighter"
+                android:background="#00000000"/>
+            <ImageView
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginBottom="16dp"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                app:srcCompat="@drawable/ic_next" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <TextView
         android:id="@+id/store_manage_bill_tv_period"
         android:layout_width="match_parent"
         android:layout_height="135px"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="12px"
+        android:layout_marginBottom="12px"
         android:layout_below="@id/store_manage_bill_ll_top"
         android:background="@color/colorHalfTransparent"
         android:gravity="center"
@@ -70,7 +110,7 @@
     <LinearLayout
         android:id="@+id/store_manage_bill_ll_detail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="445px"
         android:orientation="vertical"
         android:layout_below="@+id/store_manage_bill_tv_period"
         android:layout_alignParentStart="true">
@@ -135,21 +175,19 @@
                 android:text="元" />
         </LinearLayout>
 
-        <view
-            android:background="@color/textColorLighter"
-            android:layout_height="1px"
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#80DDDDDD"
             android:layout_marginLeft="55px"
             android:layout_marginRight="55px"
-            android:layout_width="fill_parent">
-        </view>
+             />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:background="@color/colorHalfTransparent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true">
+            android:background="@color/colorHalfTransparent">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="135px"
@@ -176,6 +214,37 @@
 
         </LinearLayout>
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/store_manage_bill_rl"
+        android:layout_width="match_parent"
+        android:layout_height="215px"
+        android:layout_below="@id/store_manage_bill_ll_detail"
+        android:background="@color/colorHalfTransparent"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:id="@+id/store_manage_bill_bt_pay"
+            android:layout_width="200dp"
+            android:layout_height="32dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="55px"
+            android:background="@color/alertColor"
+            android:text="立即付款"
+            android:textSize="16sp"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="※請於5日內完成付款，如逾期該帳戶將被停用"
+            android:textSize="12sp"
+            android:layout_below="@+id/store_manage_bill_bt_pay"
+            android:layout_alignStart="@+id/store_manage_bill_bt_pay"
+            android:id="@+id/textView5" />
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

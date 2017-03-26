@@ -1,35 +1,31 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.yang.flashtable.StoreAppointFragment"
-    android:id="@+id/store_appoint_fragment">
-
-    <!-- TODO: Update blank fragment layout -->
-
+    android:orientation="vertical"
+    tools:context="com.example.yang.flashtable.StoreManageStatisticFragment">
     <android.support.v7.widget.Toolbar
-        android:id="@+id/shop_toolbar"
+        android:id="@+id/store_manage_statistic_tb_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#80FF6600"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme">
+        android:theme="?attr/actionBarTheme" >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
-            android:text="預約詳情"
-            android:textSize="22sp"
-            android:layout_gravity="center"
-            android:id="@+id/shop_toolbar_title" />
+            android:text="優惠統計詳情"
+            android:textSize="24sp"
+            android:layout_gravity="center" />
     </android.support.v7.widget.Toolbar>
 
     <ListView
+        android:layout_below="@+id/store_manage_statistic_tb_toolbar"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginTop="18px"
-        android:dividerHeight="18px"
+        android:layout_marginTop="12px"
+        android:dividerHeight="12px"
         android:id="@id/android:list"/>
 
-</LinearLayout>
+</RelativeLayout>

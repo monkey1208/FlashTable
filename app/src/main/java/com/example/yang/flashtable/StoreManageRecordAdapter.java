@@ -11,17 +11,21 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by 奕先 on 2017/3/25.
+ */
 
-public class StoreAppointAdapter extends BaseAdapter{
+public class StoreManageRecordAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private List<ReservationInfo> reservation_list = new ArrayList<>();
     private Context c;
 
-    public StoreAppointAdapter(Context c, List<ReservationInfo> reservation_list) {
+    public StoreManageRecordAdapter(Context c, List<ReservationInfo> reservation_list) {
         this.c = c;
         inflater = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.reservation_list = reservation_list;
     }
+
     @Override
     public int getCount() {
         return reservation_list.size();
@@ -40,10 +44,10 @@ public class StoreAppointAdapter extends BaseAdapter{
     @NonNull
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        convertView = inflater.inflate(R.layout.store_appoint_row, parent, false);
-        TextView tv1 = (TextView) convertView.findViewById(R.id.store_appoint_row_tv_name);
-        TextView tv2 = (TextView) convertView.findViewById(R.id.store_appoint_row_tv_date);
-        TextView tv3 = (TextView) convertView.findViewById(R.id.store_appoint_row_tv_state);
+        convertView = inflater.inflate(R.layout.store_manage_record_row, parent, false);
+        TextView tv1 = (TextView) convertView.findViewById(R.id.store_manage_record_row_tv_name);
+        TextView tv2 = (TextView) convertView.findViewById(R.id.store_manage_record_row_tv_date);
+        TextView tv3 = (TextView) convertView.findViewById(R.id.store_manage_record_row_tv_state);
         tv1.setText(reservation_list.get(position).name);
         tv2.setText("2017/07/21");
         int num = 6;

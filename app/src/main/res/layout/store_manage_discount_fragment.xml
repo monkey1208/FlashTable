@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.yang.flashtable.StoreManageDiscountFragment">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/store_manage_discount_tb_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:background="#80FF6600"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:text="折扣優惠"
+            android:textSize="22sp"
+            android:layout_gravity="center" />
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="145px"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/store_manage_discount_tb_toolbar"
+        android:layout_marginTop="12px"
+        android:orientation="horizontal"
+        android:id="@+id/store_manage_discount_ll_add"
+        android:background="@color/colorHalfTransparent">
+        <ImageView
+            android:layout_marginTop="10dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:paddingStart="55px"
+            android:paddingEnd="10px"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/icon_add"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="145px"
+            android:layout_weight="9"
+            android:paddingTop="12dp"
+            android:text="添加折扣優惠"
+            android:textColor="@color/textColor"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+    <ListView
+        android:layout_below="@+id/store_manage_discount_ll_add"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="12px"
+        android:dividerHeight="12px"
+        android:id="@id/android:list"/>
+
+</RelativeLayout>

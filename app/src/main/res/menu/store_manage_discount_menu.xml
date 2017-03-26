@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
-    <item android:id="@+id/store_manage_bill_menu"
-        android:title="登出"
+    <item android:id="@+id/store_manage_discount_menu"
+        android:title="刪除"
         android:orderInCategory="1"
         app:showAsAction="ifRoom" />
 
