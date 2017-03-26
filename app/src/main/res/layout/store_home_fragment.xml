@@ -8,7 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:weightSum="3"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -35,43 +37,48 @@
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
             android:layout_weight="1.5"
-            android:weightSum="3"
+            android:background="@color/colorHalfTransparent"
             android:orientation="vertical"
-            android:background="@color/colorHalfTransparent">
+            android:weightSum="3">
+
             <LinearLayout
-                android:layout_margin="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_margin="15dp"
                 android:layout_weight="1.2"
-                android:weightSum="4"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="4">
+
                 <com.example.yang.flashtable.RoundedImageView
                     android:id="@+id/im_photo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:scaleType="centerInside"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:scaleType="centerInside" />
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
-                    android:weightSum="2"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:weightSum="2">
+
                     <TextView
                         android:id="@+id/tv_storename"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_marginStart="15dp"
-                        android:textSize="28sp"
-                        android:layout_weight="1"/>
+                        android:layout_weight="0.9"
+                        android:paddingStart="15dp"
+                        android:textSize="24sp" />
+
                     <TextView
                         android:id="@+id/tv_address"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginStart="15dp"
-                        android:textSize="18sp"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1.1"
+                        android:paddingStart="15dp"
+                        android:paddingTop="5dp"
+                        android:textSize="18sp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -81,31 +88,32 @@
                 android:layout_height="0dp"
                 android:layout_margin="15dp"
                 android:layout_weight="1.8"
-                android:weightSum="4"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:weightSum="4">
+
                 <TextView
                     android:id="@+id/tv_discount"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:textSize="28sp"
+                    android:paddingEnd="15dp"
+                    android:paddingStart="15dp"
+                    android:text="discount"
                     android:textColor="@color/colorPrimary"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:text="discount"/>
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/tv_gift"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="3"
-                    android:textSize="28sp"
+                    android:paddingBottom="15dp"
+                    android:paddingEnd="15dp"
+                    android:paddingStart="15dp"
+                    android:paddingTop="0dp"
+                    android:text="gift"
                     android:textColor="@color/colorPrimary"
-                    android:paddingTop="10dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:layout_marginBottom="15dp"
-                    android:text="gift"/>
+                    android:textSize="20sp" />
             </LinearLayout>
         </LinearLayout>
 

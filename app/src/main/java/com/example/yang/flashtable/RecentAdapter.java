@@ -3,16 +3,17 @@ package com.example.yang.flashtable;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -22,9 +23,8 @@ public class RecentAdapter extends BaseAdapter{
     private List<CustomerAppointInfo> list;
     private LayoutInflater layoutInflater;
     private CustomerAppointInfo customerAppointInfo;
-    private View.OnClickListener confirmListener;
-    private View v;
-    ViewHolder holder;
+    private ViewHolder holder;
+    private Handler handler;
 
     public RecentAdapter(Context context, List<CustomerAppointInfo> list){
         layoutInflater = LayoutInflater.from(context);
@@ -67,8 +67,8 @@ public class RecentAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        v = convertView;
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        //holder init----------
         if(convertView==null){
             convertView = layoutInflater.inflate(R.layout.store_recent_item, null);
             holder = new ViewHolder(
@@ -84,41 +84,59 @@ public class RecentAdapter extends BaseAdapter{
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
+        //-------------------
+        //set text-----------
         customerAppointInfo = list.get(position);
-        Bitmap icon = BitmapFactory.decodeResource(context.getResources(),customerAppointInfo.im_id);
-        holder.im_photo.setImageBitmap(icon);
-        holder.tv_name.setText(customerAppointInfo.name+"("+ Integer.toString(customerAppointInfo.honor) +")");
-        holder.tv_number.setText("正向您即將預約("+customerAppointInfo.number+"人)");
-        holder.bt_confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ViewHolder holderClick = (ViewHolder)v.getTag();
-                holderClick.im_confirmed.setImageResource(R.drawable.ic_confirmed);
-                holderClick.bt_confirm.setImageResource(0);
-                holderClick.bt_confirm.setEnabled(false);
-                holderClick.bt_cancel.setImageResource(0);
-                holderClick.bt_cancel.setEnabled(false);
-                holderClick.im_photo.setImageResource(0);
-                holderClick.tv_name.setText("");
-                holderClick.tv_number.setText("");
-                holderClick.tv_countdown.setTextColor(context.getResources().getColor(R.color.transparentGreen));
-            }
-        });
-        holder.bt_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ViewHolder holderClick = (ViewHolder)v.getTag();
-                holderClick.im_confirmed.setImageResource(R.drawable.ic_confirmed_false);
-                holderClick.bt_confirm.setImageResource(0);
-                holderClick.bt_confirm.setEnabled(false);
-                holderClick.bt_cancel.setImageResource(0);
-                holderClick.bt_cancel.setEnabled(false);
-                holderClick.im_photo.setImageResource(0);
-                holderClick.tv_name.setText("");
-                holderClick.tv_number.setText("");
-                holderClick.tv_countdown.setTextColor(context.getResources().getColor(R.color.transparentGreen));
-            }
-        });
+        if(customerAppointInfo.stat == CustomerAppointInfo.READY){
+            Bitmap icon = BitmapFactory.decodeResource(context.getResources(),customerAppointInfo.im_id);
+            holder.im_photo.setImageBitmap(icon);
+            holder.tv_name.setText(customerAppointInfo.name+"("+ Integer.toString(customerAppointInfo.honor) +")");
+            holder.tv_number.setText("正向您即將預約("+customerAppointInfo.number+"人)");
+            holder.tv_countdown.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+            holder.im_confirmed.setImageResource(0);
+            holder.bt_confirm.setImageResource(R.drawable.bt_confirm_appoint);
+            holder.bt_cancel.setImageResource(R.drawable.bt_cancel_appoint);
+            holder.bt_confirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentController.storeRecentFragment.setItemStat(position,CustomerAppointInfo.CONFIRM,holder.im_confirmed);
+                }
+            });
+            holder.bt_cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentController.storeRecentFragment.setItemStat(position,CustomerAppointInfo.CANCEL,holder.im_confirmed);
+                }
+            });
+        }
+        else if(customerAppointInfo.stat == CustomerAppointInfo.CONFIRM){
+            holder.im_confirmed.setImageResource(R.drawable.ic_confirmed);
+            holder.bt_confirm.setImageResource(0);
+            holder.bt_confirm.setEnabled(false);
+            holder.bt_cancel.setImageResource(0);
+            holder.bt_cancel.setEnabled(false);
+            holder.im_photo.setImageResource(0);
+            holder.tv_name.setText("");
+            holder.tv_number.setText("");
+            holder.tv_countdown.setTextColor(context.getResources().getColor(R.color.transparentGreen));
+            Animation animation = AnimationUtils.loadAnimation(context,R.anim.store_slide_left2right);
+            holder.im_confirmed.setAnimation(animation);
+        }
+        else{
+            holder.im_confirmed.setImageResource(R.drawable.ic_confirmed_false);
+            holder.bt_confirm.setImageResource(0);
+            holder.bt_confirm.setEnabled(false);
+            holder.bt_cancel.setImageResource(0);
+            holder.bt_cancel.setEnabled(false);
+            holder.im_photo.setImageResource(0);
+            holder.tv_name.setText("");
+            holder.tv_number.setText("");
+            holder.tv_countdown.setTextColor(context.getResources().getColor(R.color.transparentGreen));
+            Animation animation = AnimationUtils.loadAnimation(context,R.anim.store_slide_right2left);
+            holder.im_confirmed.setAnimation(animation);
+            animation.setDuration(1000);
+            animation.startNow();
+        }
         holder.bt_confirm.setTag(holder);
         holder.bt_cancel.setTag(holder);
         return convertView;

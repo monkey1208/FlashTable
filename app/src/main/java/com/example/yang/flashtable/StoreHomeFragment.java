@@ -46,7 +46,7 @@ public class StoreHomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //Test
-        storeInfo = new StoreInfo("Tasty","台北市南港區");
+        storeInfo = new StoreInfo("西堤牛排 南港店","台北市南港區忠孝東路七段369號C1棟(CITYLINK南港店)");
         func_Test(storeInfo.discountList);
         //Start Here---------------------
         v = inflater.inflate(R.layout.store_home_fragment, container, false);
