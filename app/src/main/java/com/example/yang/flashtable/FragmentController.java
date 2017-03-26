@@ -5,17 +5,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 public class FragmentController extends StoreMainActivity{
-    private static final int FRAG_COUNT = 11;
-    private static final int HOME = 0;
-    private static final int RECENT = 1;
-    private static final int APPOINT = 2;
-    private static final int MANAGE = 3;
-    private static final int MANAGE_SUCCESS = 4;
-    private static final int MANAGE_OPENTIME = 5;
-    private static final int MANAGE_BILL = 6;
-    private static final int MANAGE_DISCOUNT = 7;
-    private static final int MANAGE_STATISTIC = 8;
-    private static final int MANAGE_RECORD = 9;
+    public static final int FRAG_COUNT = 11;
+    public static final int HOME = 0;
+    public static final int RECENT = 1;
+    public static final int APPOINT = 2;
+    public static final int MANAGE = 3;
+    public static final int MANAGE_SUCCESS = 4;
+    public static final int MANAGE_OPENTIME = 5;
+    public static final int MANAGE_BILL = 6;
+    public static final int MANAGE_DISCOUNT = 7;
+    public static final int MANAGE_STATISTIC = 8;
+    public static final int MANAGE_RECORD = 9;
     public static final int CONFIRM = 10;
     public static StoreRecentFragment storeRecentFragment;
     public static StoreHomeFragment storeHomeFragment;
