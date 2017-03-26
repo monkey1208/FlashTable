@@ -12,7 +12,7 @@ public class FragmentController extends StoreMainActivity{
     private static final int APPOINT = 2;
     private static final int MANAGE = 3;
     private static final int MANAGE_SUCCESS = 4;
-    //private static final int MANAGE_OPENTIME = 5;
+    private static final int MANAGE_OPENTIME = 5;
     private static final int MANAGE_BILL = 6;
     private static final int MANAGE_DISCOUNT = 7;
     private static final int MANAGE_STATISTIC = 8;
@@ -40,6 +40,7 @@ public class FragmentController extends StoreMainActivity{
         fragment[APPOINT] = new StoreAppointFragment();
         fragment[MANAGE] = new StoreManageFragment();
         fragment[MANAGE_SUCCESS] = new StoreManageSuccessFragment();
+        fragment[MANAGE_OPENTIME] = new StoreManageOpentimeFragment();
         fragment[MANAGE_BILL] = new StoreManageBillFragment();
         fragment[MANAGE_DISCOUNT] = new StoreManageDiscountFragment();
         fragment[MANAGE_STATISTIC] = new StoreManageStatisticFragment();
@@ -74,6 +75,9 @@ public class FragmentController extends StoreMainActivity{
                 break;
             case MANAGE_SUCCESS:
                 setActive(MANAGE_SUCCESS);
+                break;
+            case MANAGE_OPENTIME:
+                setActive(MANAGE_OPENTIME);
                 break;
             case MANAGE_BILL:
                 setActive(MANAGE_BILL);

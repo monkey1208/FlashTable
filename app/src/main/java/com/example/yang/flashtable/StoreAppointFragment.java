@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ public class StoreAppointFragment extends ListFragment {
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(v.getContext(),"Jump to reservation record", Toast.LENGTH_SHORT).show();
+                StoreMainActivity.fragmentController.act(9);
                 return true;
             }
         };
