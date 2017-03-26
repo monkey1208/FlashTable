@@ -17,6 +17,8 @@
     <!-- Other colors -->
     <color name="white">#FFFFFF</color>
     <color name="transparentWhite">#D8FFFFFF</color>
+    <color name="moreTransparentWhite">#90FFFFFF</color>
+    <color name="transparentBlack">#D0000000</color>
     <color name="darkpurple">#FF9933CC</color>
     <color name="darkdarkpurple">#332258</color>
     <color name="ivory">#FFFFF0</color><!--象牙色 -->

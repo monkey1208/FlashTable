@@ -41,7 +41,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:layout_gravity="center_vertical"
-                android:hint="@string/search"
                 android:ems="10"
                 android:background="@color/white"
                 android:textColor="@color/textColor"

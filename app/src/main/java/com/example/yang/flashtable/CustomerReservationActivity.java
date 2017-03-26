@@ -1,5 +1,6 @@
 package com.example.yang.flashtable;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -8,16 +9,25 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
+
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
 
 /**
  * Created by CS on 2017/3/23.
@@ -34,6 +44,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
     LinearLayout ll_time_left;
     Button bt_cancel, bt_arrive_cancel;
     View.OnClickListener cancel_listener;
+    ImageView iv_qr_code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +81,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         late = getResources().getString(R.string.customer_reservation_late);
         ll_time_left = (LinearLayout) findViewById(R.id.customer_reservation_ll_time_left);
         bt_arrive_cancel = (Button) findViewById(R.id.customer_reservation_bt_arrive_cancel);
+        iv_qr_code = (ImageView) findViewById(R.id.customer_reservation_iv_qr_code);
     }
 
     private void initData() {
@@ -91,6 +103,13 @@ public class CustomerReservationActivity extends AppCompatActivity {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         startCountDown("success", 10000);
+
+        try {
+            Bitmap bitmap = encodeAsBitmap("elisaroo");
+            iv_qr_code.setImageBitmap(bitmap);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
     }
 
     private void startCountDown(String state, int countdown_millis) {
@@ -127,5 +146,29 @@ public class CustomerReservationActivity extends AppCompatActivity {
                 }
             }.start();
         }
+    }
+
+    Bitmap encodeAsBitmap(String str) throws WriterException {
+        BitMatrix result;
+        try {
+            final int width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 250, getResources().getDisplayMetrics());
+            result = new MultiFormatWriter().encode(str,
+                    BarcodeFormat.QR_CODE, width, width, null);
+        } catch (IllegalArgumentException iae) {
+            // Unsupported format
+            return null;
+        }
+        int w = result.getWidth();
+        int h = result.getHeight();
+        int[] pixels = new int[w * h];
+        for (int y = 0; y < h; y++) {
+            int offset = y * w;
+            for (int x = 0; x < w; x++) {
+                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+            }
+        }
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, w, 0, 0, w, h);
+        return bitmap;
     }
 }

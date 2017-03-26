@@ -29,4 +29,11 @@ dependencies {
     compile 'com.google.android.gms:play-services:7.0.0'
     testCompile 'junit:junit:4.12'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.+'
+
+    compile "com.android.support:support-v4:+"
+    compile 'com.squareup.picasso:picasso:2.3.2'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.daimajia.slider:library:1.1.5@aar'
+
+    compile 'com.google.zxing:core:3.2.1'
 }
