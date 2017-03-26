@@ -1,6 +1,11 @@
 package com.example.yang.flashtable;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import com.google.android.gms.maps.model.LatLng;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * Created by Yang on 2017/3/23.
@@ -13,6 +18,7 @@ public class CustomerRestaurantInfo {
     String offer;
     LatLng latLng;
     DetailInfo detailInfo;
+    String image_url;
     byte[] image;
     public class DetailInfo{
         String email;
@@ -52,5 +58,13 @@ public class CustomerRestaurantInfo {
     }
     public CustomerRestaurantInfo(String name, int id, LatLng latLng){
         this(name, "暫無折扣", "暫無優惠", id, latLng);
+    }
+    public void turnBitmap2ByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
+        image =  outputStream.toByteArray();
+    }
+    public Bitmap getImage(){
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
 }

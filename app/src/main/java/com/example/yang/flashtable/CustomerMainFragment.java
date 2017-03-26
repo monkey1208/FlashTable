@@ -124,17 +124,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     private void openDB(){
         sqlHandler = new SqlHandler(view.getContext());
     }
-    
-    private void insertDB(List<CustomerRestaurantInfo> infoList){
-        image = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_gift);
-        //System.out.println(infoList.size());
-        for(int i = 0; i < infoList.size(); i++){
-            System.out.println(infoList.get(i).id);
-            sqlHandler.insert(infoList.get(i), image);
-            //image = null;
-        }
-        image = null;
-    }
+
     private List<CustomerRestaurantInfo> getListFromDB(){
         List<CustomerRestaurantInfo> list = new ArrayList<>();
         Cursor cursor = sqlHandler.getAll();
@@ -162,7 +152,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         return list;
     }
 
-    private void deletDB(){
+    private void deleteDB() {
         view.getContext().deleteDatabase(SqlHandler.DATABASE_NAME);
     }
     private void closeDB(){
@@ -227,7 +217,6 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         sl_restaurant.stopAutoCycle();
     }
 
-    // Functions to handle SlideLayout in show
     @Override
     public void onStop() {
         sl_restaurant.stopAutoCycle();

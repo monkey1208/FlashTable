@@ -8,7 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Yang on 2017/3/25.
@@ -75,10 +79,11 @@ public class SqlHandler extends SQLiteOpenHelper {
                 null  // ORDOR BY
         );
     }
-    public Cursor get(long rowId){
+    public Cursor get(int rowId){
         Cursor cursor = db.query(true,
                 DATABASE_TABLE,
-                new String[] {NAME_COLUMN, ID_COLUMN, LATITUDE_COLUMN, LONGITUDE_COLUMN, IMG_COLUMN},	//column
+                new String[] {NAME_COLUMN, ID_COLUMN, LATITUDE_COLUMN, LONGITUDE_COLUMN, IMG_COLUMN,
+                PHONE_COLUMN, EMAIL_COLUMN, TIME_COLUMN, CATEGORY_COLUMN, URL_COLUMN, ADDRESS_COLUMN, INTRO_COLUMN},	//column
                 ID_COLUMN+"="+ rowId,				//WHERE
                 null, // WHERE 的參數
                 null, // GROUP BY
@@ -91,11 +96,49 @@ public class SqlHandler extends SQLiteOpenHelper {
         }
         return cursor;
     }
+    public List<CustomerRestaurantInfo> getList(){
+        List<CustomerRestaurantInfo> list = new ArrayList<>();
+        Cursor cursor = getAll();
+        cursor.moveToFirst();
+        for (int i = 0; i < cursor.getCount(); i++) {
+            CustomerRestaurantInfo info = new CustomerRestaurantInfo(
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.NAME_COLUMN)),
+                    Integer.valueOf(cursor.getString(cursor.getColumnIndex(SqlHandler.ID_COLUMN))),
+                    new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)), cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN)))
+            );
 
+            info.image = cursor.getBlob(cursor.getColumnIndex(SqlHandler.IMG_COLUMN));
+            list.add(info);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return list;
+    }
+    public CustomerRestaurantInfo getDetail(int id){
+        Cursor cursor = get(id);
+        CustomerRestaurantInfo info = new CustomerRestaurantInfo(
+                cursor.getString(cursor.getColumnIndex(SqlHandler.NAME_COLUMN)),
+                Integer.valueOf(cursor.getString(cursor.getColumnIndex(SqlHandler.ID_COLUMN))),
+                new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)), cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN)))
+        );
+        info.detailInfo.setInfo(
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.ADDRESS_COLUMN)),
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.PHONE_COLUMN)),
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.TIME_COLUMN)),
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.CATEGORY_COLUMN)),
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.URL_COLUMN))
+            );
+        return info;
+    }
 
-    public void insert(CustomerRestaurantInfo info, Bitmap bitmap){
+    public void insertList(List<CustomerRestaurantInfo> list){
+        for(int i = 0;i<list.size(); i++){
+            insert(list.get(i));
+        }
+    }
+    public void insert(CustomerRestaurantInfo info){
         Log.d("SQLite", "insert data");
-        byte[] array = getBitmapAsByteArray(bitmap);
+        //byte[] array = getBitmapAsByteArray(bitmap);
         ContentValues cv = new ContentValues();
         cv.put(ID_COLUMN, info.id);
         cv.put(NAME_COLUMN, info.name);
@@ -108,17 +151,16 @@ public class SqlHandler extends SQLiteOpenHelper {
         cv.put(URL_COLUMN, info.detailInfo.url);
         cv.put(ADDRESS_COLUMN, info.detailInfo.address);
         cv.put(INTRO_COLUMN, info.detailInfo.intro);
-        cv.put(IMG_COLUMN, array);
+        cv.put(IMG_COLUMN, info.image);
         long id = db.insert(DATABASE_TABLE, null, cv);
-        array = null;
         cv = null;
         Log.d("SQLite", id+"");
     }
     public void deleteTable(){
         db.execSQL("DROP DATABASE " + DATABASE_TABLE);
     }
-    public void deleteDB(){
-        context.deleteDatabase(DATABASE_NAME);
+    public static void deleteDB(Context c){
+        c.deleteDatabase(DATABASE_NAME);
     }
     public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
