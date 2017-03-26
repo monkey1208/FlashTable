@@ -60,7 +60,7 @@ public class CustomerMainActivity extends AppCompatActivity
                 fab_map.setImageResource(R.drawable.ic_float_map);
                 break;
             case "detail":
-                // TODO: Uncheck all items
+                // TODO: Handle checked item properly.
                 Intent intent = new Intent(this, CustomerDetailActivity.class);
                 startActivity(intent);
                 break;

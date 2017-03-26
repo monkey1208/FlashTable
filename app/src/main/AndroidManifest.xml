@@ -23,27 +23,38 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD1qukcqJkUZtxiKApJlp6O8oiYP25fyrs" />
 
+        <activity android:name=".CustomerLoadingActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".CustomerMainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan">
 
         </activity>
-        <activity
-            android:name=".CustomerDetailActivity"
-            android:theme="@style/AppTheme.LightActionBar"></activity>
+
         <activity
             android:name=".CustomerReservationActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
         <activity
             android:name=".CustomerCommentActivity"
-            android:theme="@style/AppTheme.LightActionBar"></activity>
-        <activity android:name=".CustomerLoadingActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:theme="@style/AppTheme.LightActionBar">
+        </activity>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name=".CustomerDetailActivity"
+            android:theme="@style/AppTheme.LightActionBar">
+        </activity>
+
+        <activity android:name=".CustomerRatingActivity"
+            android:theme="@style/AppTheme.TransparentActionBar"
+            android:windowSoftInputMode="adjustPan">
         </activity>
     </application>
 

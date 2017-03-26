@@ -17,6 +17,7 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/customer_profile_iv_avatar"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
                 android:src="@drawable/default_avatar"
@@ -57,7 +58,7 @@
             android:text="@string/customer_profile_edit"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:textSize="15sp"/>
+            android:textSize="13sp"/>
 
         <Button
             android:id="@+id/customer_profile_bt_about_credit"

@@ -1,12 +1,14 @@
 package com.example.yang.flashtable;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ViewFlipper;
 
@@ -23,6 +25,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
     ListView lv_reservations;
     CustomerDetailAdapter reservation_adapter;
     List<CustomerDetailInfo> reservations;
+    Button bt_comment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +38,11 @@ public class CustomerDetailActivity extends AppCompatActivity {
 
     private void initView() {
         setupActionBar();
+        setTitle(getResources().getString(R.string.customer_detail_title));
 
         vf_flipper = (ViewFlipper) findViewById(R.id.customer_detail_vf_flipper);
         lv_reservations = (ListView) findViewById(R.id.customer_detail_lv_details);
+        bt_comment = (Button) findViewById(R.id.customer_detail_bt_record_comment);
     }
 
     private void initData() {
@@ -57,6 +62,13 @@ public class CustomerDetailActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapter_view, View view, int i, long l) {
                 showRecord(i);
+            }
+        });
+        bt_comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), CustomerRatingActivity.class);
+                startActivity(intent);
             }
         });
     }
