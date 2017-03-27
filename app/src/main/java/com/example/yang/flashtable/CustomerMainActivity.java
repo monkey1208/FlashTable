@@ -159,10 +159,4 @@ public class CustomerMainActivity extends AppCompatActivity
         return true;
     }
 
-    private void dialogEvent() {
-        final View view_dialog = LayoutInflater.from(this).inflate(R.layout.alert_dialog, null);
-        new AlertDialog.Builder(this)
-                .setView(view_dialog)
-                .show();
-    }
 }

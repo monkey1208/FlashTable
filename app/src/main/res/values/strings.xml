@@ -5,8 +5,26 @@
 
     <!-- Universal strings -->
     <string name="submit">確認送出</string>
+    <string name="ok">確認</string>
     <string name="cancel">取消</string>
+    <string name="back">返回</string>
     <string name="search">搜尋</string>
+    <string name="discount">折</string>
+
+    <!-- Strings related to login -->
+    <string name="login_as_customer">一般用戶登入</string>
+    <string name="login_as_store">店家後台登入</string>
+    <string name="login_store_title">店家專用管理後台</string>
+    <string name="login_account">帳號</string>
+    <string name="login_password">密碼</string>
+    <string name="login_submit">登入</string>
+    <string name="login_register">立即註冊</string>
+    <string name="login_apply">免費申請</string>
+    <string name="login_forgot_password">忘記密碼？</string>
+    <string name="login_success">歡迎，</string>
+    <string name="login_wait">請稍候</string>
+    <string name="login_error_typo">輸入帳號或密碼錯誤</string>
+    <string name="login_error_connection">登入失敗，請重試</string>
 
     <!-- Strings related to alert -->
     <string name="alert_title">提醒</string>
@@ -19,6 +37,8 @@
     <string name="customer_main_reserve">立即預約</string>
     <string name="customer_main_open">營業時間</string>
     <string name="customer_main_type">下午茶</string>
+    <string name="customer_main_info">店家資訊</string>
+    <string name="customer_main_info_content">詳細內容</string>
     <string-array name="customer_sp_sort">
         <item>預設排序</item>
         <item>依最新</item>
@@ -31,6 +51,10 @@
     </string-array>
     <string-array name="customer_sp_food">
         <item>全部美食分類</item>
+        <item>中式料理</item>
+        <item>日式料理</item>
+        <item>美式料理</item>
+        <item>韓式料理</item>
     </string-array>
 
     <!-- Strings related to customer drawer -->
@@ -53,10 +77,9 @@
     <string name="customer_detail_shop">店家名稱</string>
     <string name="customer_detail_location">店家地址</string>
     <string name="customer_detail_time">2017/02/14 08:00pm</string>
-    <string name="customer_detail_success">已成功訂位(</string>
+    <string name="customer_detail_success">成功訂位(</string>
     <string name="customer_detail_persons">人)桌位</string>
-    <string name="customer_detail_shop_cancel">店家已取消訂位(</string>
-    <string name="customer_detail_self_cancel">自行取消訂位(</string>
+    <string name="customer_detail_fail">訂位失敗(</string>
     <string name="customer_detail_record_title">預約紀錄明細</string>
     <string name="customer_detail_record_time">預約時間：</string>
     <string name="customer_detail_record_arrival_time">入座時間：</string>

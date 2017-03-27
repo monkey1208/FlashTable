@@ -9,17 +9,26 @@ import java.util.List;
  */
 
 public class CustomerDetailInfo {
+    // TODO: Store information can be read from phone
+
     String shop;
     String location;
+    float rating;
     String time;
-    int success_type;
+    int discount;
+    String gift;
+    boolean success;
     int persons;
 
-    public CustomerDetailInfo(String _shop, String _location, String _time, int _success_type, int _persons) {
+    public CustomerDetailInfo(String _shop, String _location, float _rating, String _time, int _discount,
+                              String _gift, boolean _success, int _persons) {
         shop = _shop;
         location = _location;
+        rating = _rating;
+        discount = _discount;
+        gift = _gift;
         time = _time;
-        success_type = _success_type;
+        success = _success;
         persons = _persons;
     }
 

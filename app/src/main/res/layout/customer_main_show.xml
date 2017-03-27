@@ -96,7 +96,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/customer_detail_record_discount"
-                    android:textSize="15sp"
+                    android:textSize="17sp"
                     android:textColor="@color/textColorOrange"/>
 
             </LinearLayout>
@@ -121,7 +121,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/customer_detail_record_gift"
-                    android:textSize="15sp"
+                    android:textSize="17sp"
                     android:textColor="@color/textColorOrange"/>
 
             </LinearLayout>
@@ -145,119 +145,28 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_location_orange"
-                    android:layout_marginEnd="10dp"/>
-
-                <TextView
-                    android:id="@+id/customer_main_tv_show_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="@color/textColorLighter"
-                    android:text="@string/customer_detail_location"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="10dp">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_phone"
-                    android:layout_marginEnd="10dp"/>
-
-                <TextView
-                    android:id="@+id/customer_main_tv_show_phone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="@color/textColorLighter"
-                    android:text="0981-219-560"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="20dp">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_time_small"
-                    android:layout_marginEnd="10dp"/>
-
-                <TextView
-                    android:id="@+id/customer_main_tv_show_open"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="@color/textColorLighter"
-                    android:text="@string/customer_main_open"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="10dp">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
                     android:src="@drawable/ic_tableware"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginEnd="5dp"/>
 
                 <TextView
-                    android:id="@+id/customer_main_tv_show_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="@color/textColorLighter"
-                    android:text="@string/customer_main_type"/>
+                    android:textSize="17sp"
+                    android:textColor="@color/textColor"
+                    android:text="@string/customer_main_info"/>
 
             </LinearLayout>
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/customer_main_tv_show_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/customer_main_info_content"
+                android:textSize="15sp"
+                android:textColor="@color/textColorLighter"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="10dp">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_shop"
-                    android:layout_marginEnd="10dp"/>
-
-                <TextView
-                    android:id="@+id/customer_main_tv_show_website"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="@color/textColorLighter"
-                    android:text="http://123123.com"
-                    android:layout_marginBottom="10dp"/>
-
-            </LinearLayout>
+                android:layout_marginBottom="20dp"/>
 
         </LinearLayout>
 

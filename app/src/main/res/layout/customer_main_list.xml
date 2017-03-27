@@ -42,7 +42,7 @@
                 android:gravity="center_vertical"
                 android:layout_gravity="center_vertical"
                 android:ems="10"
-                android:background="@color/white"
+                android:background="@drawable/round_rectangle_transparent_white"
                 android:textColor="@color/textColor"
                 android:textCursorDrawable="@null"
                 android:paddingStart="10dp"
@@ -57,8 +57,9 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:background="@color/colorPrimaryLight">
+        android:layout_height="40dp"
+        android:background="@color/colorPrimaryLight"
+        android:elevation="5dp">
 
         <Spinner
             android:id="@+id/customer_main_sp_distance"
@@ -66,7 +67,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/white"
-            android:layout_margin="1dp"/>
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginEnd="1dp"/>
         <Spinner
             android:id="@+id/customer_main_sp_food"
             android:layout_width="0dp"
@@ -81,7 +84,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/white"
-            android:layout_margin="1dp"/>
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginStart="1dp"/>
     </LinearLayout>
 
     <ListView

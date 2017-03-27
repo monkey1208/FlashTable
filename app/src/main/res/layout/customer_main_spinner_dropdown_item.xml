@@ -6,7 +6,7 @@
     android:padding="10dp"
     android:ellipsize="marquee"
     android:textColor="@color/white"
-    android:textSize="15sp"
+    android:textSize="13sp"
     android:textAlignment="center"
     android:background="@color/colorPrimaryLight"/>
     <!-- TODO: Background should be @drawable/customer_main_spinner_selector -->

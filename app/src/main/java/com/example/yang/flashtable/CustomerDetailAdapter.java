@@ -30,9 +30,8 @@ public class CustomerDetailAdapter extends BaseAdapter {
         context = _context;
         reservations = _reservations;
         success_types = new ArrayList<>();
-        success_types.add(_context.getString(R.string.customer_detail_self_cancel));
-        success_types.add(_context.getString(R.string.customer_detail_shop_cancel));
         success_types.add(_context.getString(R.string.customer_detail_success));
+        success_types.add(_context.getString(R.string.customer_detail_fail));
         persons = context.getResources().getString(R.string.customer_detail_persons);
     }
 
@@ -65,23 +64,16 @@ public class CustomerDetailAdapter extends BaseAdapter {
         tv_location.setText(reservations.get(position).location);
         tv_time.setText(reservations.get(position).time);
 
-        int success = reservations.get(position).success_type;
-        tv_success.setText(success_types.get(success) + reservations.get(position).persons + persons);
-        switch(success) {
-            case 0: // self_cancel
-                iv_credit.setImageResource(R.drawable.customer_detail_credit_minus);
-                tv_success.setTextColor(context.getResources().getColor(R.color.textColorRed));
-                break;
-            case 1: // shop_cancel
-                iv_credit.setImageResource(android.R.color.transparent);
-                tv_success.setTextColor(context.getResources().getColor(R.color.textColorRed));
-                break;
-            case 2: // success
-                iv_credit.setImageResource(R.drawable.customer_detail_credit_plus);
-                tv_success.setTextColor(context.getResources().getColor(R.color.textColorOrange));
-                break;
-            default:
-                break;
+        boolean success = reservations.get(position).success;
+        if (success) {
+            iv_credit.setImageResource(R.drawable.customer_detail_credit_plus);
+            tv_success.setTextColor(context.getResources().getColor(R.color.textColorOrange));
+            tv_success.setText(success_types.get(0) + reservations.get(position).persons + persons);
+        } else {
+            iv_credit.setImageResource(R.drawable.customer_detail_credit_minus);
+            tv_success.setTextColor(context.getResources().getColor(R.color.textColorRed));
+            tv_success.setText(success_types.get(1) + reservations.get(position).persons + persons);
         }
+
     }
 }
