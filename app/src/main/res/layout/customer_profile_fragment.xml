@@ -44,7 +44,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/customer_profile_credit"
-                    style="@style/ShadowedText"/>
+                    style="@style/ShadowedText"
+                    android:textSize="15sp"/>
 
             </LinearLayout>
 

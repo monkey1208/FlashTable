@@ -19,6 +19,19 @@
     <string name="customer_main_reserve">立即預約</string>
     <string name="customer_main_open">營業時間</string>
     <string name="customer_main_type">下午茶</string>
+    <string-array name="customer_sp_sort">
+        <item>預設排序</item>
+        <item>依最新</item>
+        <item>依距離</item>
+        <item>依評價</item>
+        <item>依折扣</item>
+    </string-array>
+    <string-array name="customer_sp_distance">
+        <item>距離&lt;1km</item>
+    </string-array>
+    <string-array name="customer_sp_food">
+        <item>全部美食分類</item>
+    </string-array>
 
     <!-- Strings related to customer drawer -->
     <string name="navigation_drawer_open">Open navigation drawer</string>

@@ -3,9 +3,7 @@ package com.example.yang.flashtable;
 import android.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -13,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -21,11 +20,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
-import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -41,7 +38,8 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
 
     View view;
     ViewFlipper vf_flipper;
-    Spinner spinner_dis, spinner_food, spinner_default;
+    Spinner sp_dis, sp_food, sp_sort;
+    ArrayAdapter<CharSequence> dis_adapter, food_adapter, sort_adapter;
     ListView lv_shops;
     List<CustomerRestaurantInfo> restaurant_list;
     CustomerMainAdapter adapter;
@@ -65,9 +63,9 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
 
     private void initView(){
         vf_flipper = (ViewFlipper) view.findViewById(R.id.customer_main_vf_flipper);
-        spinner_dis = (Spinner) view.findViewById(R.id.customer_main_sp_distance);
-        spinner_food = (Spinner) view.findViewById(R.id.customer_main_sp_food);
-        spinner_default = (Spinner) view.findViewById(R.id.customer_main_sp_default);
+        sp_dis = (Spinner) view.findViewById(R.id.customer_main_sp_distance);
+        sp_food = (Spinner) view.findViewById(R.id.customer_main_sp_food);
+        sp_sort = (Spinner) view.findViewById(R.id.customer_main_sp_sort);
         lv_shops = (ListView) view.findViewById(R.id.customer_main_lv);
         et_search = (EditText) view.findViewById(R.id.customer_main_et_search);
 
@@ -96,11 +94,20 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                 return true;
             }
         });
-        // initId();
+        dis_adapter = ArrayAdapter.createFromResource(getActivity().getBaseContext(),
+                R.array.customer_sp_distance, R.layout.customer_main_spinner_item);
+        dis_adapter.setDropDownViewResource(R.layout.customer_main_spinner_dropdown_item);
+        sp_dis.setAdapter(dis_adapter);
+        food_adapter = ArrayAdapter.createFromResource(getActivity().getBaseContext(),
+                R.array.customer_sp_food, R.layout.customer_main_spinner_item);
+        food_adapter.setDropDownViewResource(R.layout.customer_main_spinner_dropdown_item);
+        sp_food.setAdapter(food_adapter);
+        sort_adapter = ArrayAdapter.createFromResource(getActivity().getBaseContext(),
+                R.array.customer_sp_sort, R.layout.customer_main_spinner_item);
+        sort_adapter.setDropDownViewResource(R.layout.customer_main_spinner_dropdown_item);
+        sp_sort.setAdapter(sort_adapter);
+
         openDB();
-        // insertDB(list);
-        // deletDB();
-        // setList();
 
         // TODO: Override back button so that it will return to main if at show
 
