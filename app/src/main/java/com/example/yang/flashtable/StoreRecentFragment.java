@@ -59,7 +59,7 @@ public class StoreRecentFragment extends Fragment {
         lv_recent = (ListView) v.findViewById(R.id.lv_recent);
         recentAdapter = new RecentAdapter(getActivity(),recentList);
         lv_recent.setAdapter(recentAdapter);
-        lv_recent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*lv_recent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 item_view = view;
@@ -78,7 +78,7 @@ public class StoreRecentFragment extends Fragment {
                     }
                 });
             }
-        });
+        });*/
         //------------------
         return v;
     }
@@ -93,10 +93,8 @@ public class StoreRecentFragment extends Fragment {
         recentList.add(test1);
         recentList.add(test2);
     }
-    public void setItemStat(int position,int stat,ImageView im_animation){
+    public void setItemStat(int position,ImageView im_animation){
         selected = position;
-        recentList.get(selected).stat = stat;
-        recentAdapter.notifyDataSetChanged();
 
         waitingList.add(selected);
         size=waitingList.size();

@@ -15,7 +15,6 @@ public class StoreAppointFragment extends ListFragment {
     public  StoreAppointFragment () {
         // Required empty public constructor
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

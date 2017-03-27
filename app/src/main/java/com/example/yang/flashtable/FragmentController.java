@@ -19,6 +19,8 @@ public class FragmentController extends StoreMainActivity{
     public static final int CONFIRM = 10;
     public static StoreRecentFragment storeRecentFragment;
     public static StoreHomeFragment storeHomeFragment;
+    public static StoreAppointFragment storeAppointFragment;
+    public static StoreManageFragment storeManageFragment;
 
     public Fragment[] fragment;
 
@@ -50,6 +52,8 @@ public class FragmentController extends StoreMainActivity{
         fragment[MANAGE_RECORD] = new StoreManageRecordFragment();
         storeRecentFragment = new StoreRecentFragment();
         storeHomeFragment = new StoreHomeFragment();
+        storeAppointFragment = new StoreAppointFragment();
+        storeManageFragment = new StoreManageFragment();
         for(int i=0;i<FRAG_COUNT;i++)
             initFragment(i);
     }
@@ -118,9 +122,34 @@ public class FragmentController extends StoreMainActivity{
             case RECENT:
                 fragment[select] = storeRecentFragment;
                 break;
+            case APPOINT:
+                fragment[select] = storeAppointFragment;
+                break;
+            case MANAGE:
+                fragment[select] = storeManageFragment;
+                break;
+            case MANAGE_SUCCESS:
+                fragment[select] = new StoreManageSuccessFragment();
+                break;
+            case MANAGE_OPENTIME:
+                fragment[select] = new StoreManageOpentimeFragment();
+                break;
+            case MANAGE_BILL:
+                fragment[select] = new StoreManageBillFragment();
+                break;
+            case MANAGE_STATISTIC:
+                fragment[select] = new StoreManageStatisticFragment();
+                break;
+            case MANAGE_RECORD:
+                fragment[select] = new StoreManageRecordFragment();
+                break;
+            case MANAGE_DISCOUNT:
+                fragment[select] = new StoreManageDiscountFragment();
+                break;
             case CONFIRM:
                 fragment[select] = new StoreHomeConfirmFragment();
                 break;
+
         }
 
     }
