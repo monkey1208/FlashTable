@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -29,6 +30,9 @@ import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +51,6 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     CustomerMainAdapter adapter;
     EditText et_search;
     SqlHandler sqlHandler = null;
-    Bitmap image;
 
     // Views for show
     ImageButton ib_show_back;
@@ -78,7 +81,6 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     }
 
     private void initData(){
-        //restaurant_list = generateTestList();
         openDB();
         restaurant_list = getListFromDB();
         adapter = new CustomerMainAdapter(view.getContext(), restaurant_list);
@@ -126,9 +128,6 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         return sqlHandler.getList();
     }
 
-    private void deleteDB() {
-        view.getContext().deleteDatabase(SqlHandler.DATABASE_NAME);
-    }
     private void closeDB(){
         sqlHandler.close();
     }
@@ -201,4 +200,19 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     public void onPageSelected(int position) {}
     @Override
     public void onPageScrollStateChanged(int state) {}
+
+    private class ApiPromotion extends AsyncTask<Float, Void, String>{
+        HttpClient httpClient = new DefaultHttpClient();
+        @Override
+        protected String doInBackground(Float... params) {
+            String latlng = params[0].toString()+","+params[1].toString();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+    }
 }

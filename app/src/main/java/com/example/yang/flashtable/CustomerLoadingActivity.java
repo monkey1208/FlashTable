@@ -5,10 +5,9 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -17,14 +16,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,11 +64,6 @@ public class CustomerLoadingActivity extends AppCompatActivity {
             }else{
                 openDB();
                 getServerShop();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 System.gc();
                 return server_version;
             }
@@ -139,10 +130,10 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                         info.detailInfo.setInfo(address, intro);
                         info.turnBitmap2ByteArray(image);
                         sql_handler.insert(info);
-                        //Log.d(getLocalClassName(), "name=" + name + " intro=" + intro);
-                        /*if(!image.isRecycled()){
+
+                        if(!image.isRecycled()){
                             image.recycle();
-                        }*/
+                        }
                     }
                     //publishProgress(Integer.toString(100*i/size)+"%");
                 }

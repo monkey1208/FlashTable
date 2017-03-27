@@ -49,6 +49,8 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
             ll_reserve = (LinearLayout) convertView.findViewById(R.id.customer_main_ll_reserve);
             iv_shop.setImageBitmap(info.getImage());
             tv_shop.setText(info.name);
+            tv_price.setText("均消$"+Integer.toString(info.consumption));
+
             setView(position);
             return convertView;
         }
