@@ -76,6 +76,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     }
 
     private void initData(){
+        // openDB();
         restaurant_list = generateTestList();
         adapter = new CustomerMainAdapter(view.getContext(), restaurant_list);
         lv_shops.setAdapter(adapter);
@@ -94,6 +95,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                 return true;
             }
         });
+
         dis_adapter = ArrayAdapter.createFromResource(getActivity().getBaseContext(),
                 R.array.customer_sp_distance, R.layout.customer_main_spinner_item);
         dis_adapter.setDropDownViewResource(R.layout.customer_main_spinner_dropdown_item);
@@ -106,8 +108,6 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                 R.array.customer_sp_sort, R.layout.customer_main_spinner_item);
         sort_adapter.setDropDownViewResource(R.layout.customer_main_spinner_dropdown_item);
         sp_sort.setAdapter(sort_adapter);
-
-        openDB();
 
         // TODO: Override back button so that it will return to main if at show
 
@@ -133,30 +133,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     }
 
     private List<CustomerRestaurantInfo> getListFromDB(){
-        List<CustomerRestaurantInfo> list = new ArrayList<>();
-        Cursor cursor = sqlHandler.getAll();
-        cursor.moveToFirst();
-        for (int i = 0; i < cursor.getCount(); i++) {
-            CustomerRestaurantInfo info = new CustomerRestaurantInfo(
-                    cursor.getString(cursor.getColumnIndex(SqlHandler.NAME_COLUMN)),
-                    Integer.valueOf(cursor.getString(cursor.getColumnIndex(SqlHandler.ID_COLUMN))),
-                    new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)), cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN)))
-            );
-            /*info.detailInfo.setInfo(
-                    cursor.getString(cursor.getColumnIndex(SqlHandler.ADDRESS_COLUMN)),
-                    cursor.getString(cursor.getColumnIndex(SqlHandler.PHONE_COLUMN)),
-                    cursor.getString(cursor.getColumnIndex(SqlHandler.TIME_COLUMN)),
-                    cursor.getString(cursor.getColumnIndex(SqlHandler.CATEGORY_COLUMN)),
-                    cursor.getString(cursor.getColumnIndex(SqlHandler.URL_COLUMN))
-            );*/
-            info.image = cursor.getBlob(cursor.getColumnIndex(SqlHandler.IMG_COLUMN));
-            list.add(info);
-
-            cursor.moveToNext();
-        }
-        cursor.close();
-
-        return list;
+        return sqlHandler.getList();
     }
 
     private void deleteDB() {
@@ -165,12 +142,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     private void closeDB(){
         sqlHandler.close();
     }
-    private void setList(){
-        //restaurant_list = generateTestList();
-        restaurant_list = getListFromDB();
-        adapter = new CustomerMainAdapter(view.getContext(), restaurant_list);
-        lv_shops.setAdapter(adapter);
-    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -181,8 +153,8 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         List<CustomerRestaurantInfo> list = new ArrayList<>();
         for(int i = 1; i < 6; i++){
             LatLng latLng = new LatLng(121.5, 25.01);
-            CustomerRestaurantInfo info = new CustomerRestaurantInfo("Restaurant "+Integer.toString(i), "discount", "offer", i,latLng);
-            info.detailInfo.setInfo("address", "0933278802", "10:00~20:00", "garbage store", "http://fluffs-press.herokuapp.com/");
+            CustomerRestaurantInfo info = new CustomerRestaurantInfo("Restaurant "+Integer.toString(i), i, 100, "tag", latLng);
+            info.detailInfo.setInfo("address", "garbage store");
             list.add(info);
             latLng = null;
             info = null;

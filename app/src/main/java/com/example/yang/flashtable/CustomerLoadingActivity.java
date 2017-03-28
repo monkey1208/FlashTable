@@ -51,6 +51,8 @@ public class CustomerLoadingActivity extends AppCompatActivity {
         setContentView(R.layout.customer_loading_layout);
 
         progress_tv = (TextView)CustomerLoadingActivity.this.findViewById(R.id.customer_loading_tv);
+        //SqlHandler.deleteDB(this);
+        //setVersion("0");
         new ApiUpdate().execute();
     }
     public void setProgress(String input){
@@ -58,14 +60,10 @@ public class CustomerLoadingActivity extends AppCompatActivity {
     }
     private class ApiUpdate extends AsyncTask<String, String, String>{
         HttpClient httpClient = new DefaultHttpClient();
-        TextView progress_tv;
-
 
         @Override
         protected String doInBackground(String... strings) {
-
             //check data version
-
             //if need update, do update, or else return
             String current_version = getCurrentVersion();
             String server_version = checkServerVersion();
@@ -75,15 +73,13 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                 //don't need to update
                 return null;
             }else{
+                openDB();
                 getServerShop();
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                List<CustomerRestaurantInfo> update_list = requestUpdate(current_version);
-                openDB();
-                insertDB(update_list);
                 System.gc();
                 return server_version;
             }
@@ -91,18 +87,13 @@ public class CustomerLoadingActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String version) {
             super.onPostExecute(version);
-            //save the newest version.
+            setProgress("100%");
             if(version != null){
-                //setVersion(version);
+                setVersion(version);
             }
             Intent intent = new Intent(CustomerLoadingActivity.this, CustomerMainActivity.class);
             startActivity(intent);
             CustomerLoadingActivity.this.finish();
-        }
-        private List<CustomerRestaurantInfo> requestUpdate(String version){
-            //API
-            List<CustomerRestaurantInfo> list = new ArrayList<>();
-            return list;
         }
 
         @Override
@@ -121,6 +112,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                 JSONArray jsonArray = new JSONArray(shop_list_json);
                 int size = Integer.valueOf(jsonArray.getJSONObject(0).get("size").toString());
                 for(int i = 1; i<=size; i++){
+                    CustomerRestaurantInfo info = null;
                     String id = jsonArray.getJSONObject(i).get("shop_id").toString();
                     request = null;
 
@@ -142,22 +134,24 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                         }
                         String name = shop_object.get("name").toString();
                         String intro = shop_object.get("intro").toString();
-                        String phone = shop_object.get("phone_number").toString();
-                        String email = shop_object.get("email").toString();
                         String location = shop_object.get("location").toString();
+                        String tag = shop_object.get("tag").toString();
+                        int consumption = Integer.valueOf(shop_object.get("consumption").toString());
+                        String address = shop_object.get("address").toString();
                         String []tmp = location.split(",");
                         String lat = tmp[0];
                         String lng = tmp[1];
                         LatLng latlng = new LatLng(Float.parseFloat(lat), Float.parseFloat(lng));
-
-                        //CustomerRestaurantInfo info = new CustomerRestaurantInfo();
+                        info = new CustomerRestaurantInfo(name, Integer.valueOf(id), consumption, tag, latlng);
+                        info.detailInfo.setInfo(address, intro);
+                        info.turnBitmap2ByteArray(image);
+                        sql_handler.insert(info);
                         //Log.d(getLocalClassName(), "name=" + name + " intro=" + intro);
-                        //Log.d(getLocalClassName(), handler.handleResponse(http_response));
-                        if(!image.isRecycled()){
+                        /*if(!image.isRecycled()){
                             image.recycle();
-                        }
+                        }*/
                     }
-                    publishProgress(Integer.toString(100*i/size)+"%");
+                    //publishProgress(Integer.toString(100*i/size)+"%");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -190,20 +184,6 @@ public class CustomerLoadingActivity extends AppCompatActivity {
         private void openDB(){
             sql_handler = new SqlHandler(CustomerLoadingActivity.this);
         }
-        private void insertDB(List<CustomerRestaurantInfo> infoList){
-            Bitmap image = BitmapFactory.decodeResource(CustomerLoadingActivity.this.getResources(), R.drawable.ic_gift);
-            for(int i = 0; i < infoList.size(); i++){
-                System.out.println(infoList.get(i).id);
-                infoList.get(i).turnBitmap2ByteArray(image);
-            }
-            sql_handler.insertList(infoList);
-            if(!image.isRecycled()){
-                image.recycle();
-            }
-        }
-        private void insertDB(CustomerRestaurantInfo info){
-            sql_handler.insert(info);
-        }
         private Bitmap getBitmapFromURL(String imageUrl)
         {
             try
@@ -214,7 +194,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                 connection.connect();
                 InputStream input = connection.getInputStream();
                 BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = 4;
+                options.inSampleSize = 2;
                 Bitmap bitmap = BitmapFactory.decodeStream(input, null, options);
                 connection.disconnect();
                 return bitmap;
@@ -227,13 +207,14 @@ public class CustomerLoadingActivity extends AppCompatActivity {
         }
         
 
-        private void setVersion(String version){
-            SharedPreferences preferences = getSharedPreferences("VERSION", MODE_PRIVATE);
-            preferences.edit().putString("version", version).commit();
-        }
-        private String getCurrentVersion() {
-            SharedPreferences preferences = getSharedPreferences("VERSION", MODE_PRIVATE);
-            return preferences.getString("version", "0");
-        }
+
+    }
+    private void setVersion(String version){
+        SharedPreferences preferences = getSharedPreferences("VERSION", MODE_PRIVATE);
+        preferences.edit().putString("version", version).commit();
+    }
+    private String getCurrentVersion() {
+        SharedPreferences preferences = getSharedPreferences("VERSION", MODE_PRIVATE);
+        return preferences.getString("version", "0");
     }
 }

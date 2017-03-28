@@ -37,6 +37,7 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
+            CustomerRestaurantInfo info = getItem(position);
             convertView = inflater.inflate(R.layout.customer_main_item, parent, false);
             iv_shop = (ImageView) convertView.findViewById(R.id.customer_main_iv_shop);
             tv_shop = (TextView) convertView.findViewById(R.id.customer_main_tv_name);
@@ -46,6 +47,8 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
             tv_gift = (TextView) convertView.findViewById(R.id.customer_main_tv_gift);
             rb_rating = (RatingBar) convertView.findViewById(R.id.customer_main_rb_rating);
             ll_reserve = (LinearLayout) convertView.findViewById(R.id.customer_main_ll_reserve);
+            iv_shop.setImageBitmap(info.getImage());
+            tv_shop.setText(info.name);
             setView(position);
             return convertView;
         }

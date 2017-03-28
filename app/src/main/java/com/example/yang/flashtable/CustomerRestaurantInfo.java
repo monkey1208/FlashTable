@@ -14,50 +14,42 @@ import java.io.ByteArrayOutputStream;
 public class CustomerRestaurantInfo {
     int id;
     String name;
-    String discount;
+    int discount;
     String offer;
     LatLng latLng;
+    int consumption;
     DetailInfo detailInfo;
     String image_url;
-    byte[] image;
+    String category;
+    byte[] image = null;
     public class DetailInfo{
-        String email;
         String address;
-        String phone;
-        String time;
-        String category;
-        String url;
         String intro;
         public DetailInfo(){
-            this(null, null, null, null, null, null, null);
+            this(null, null);
         }
-        public DetailInfo(String address, String phone, String time, String category, String url, String intro, String email){
+        public DetailInfo(String address, String intro){
             this.address = address;
-            this.phone = phone;
-            this.time = time;
-            this.category = category;
-            this.url = url;
             this.intro = intro;
-            this.email = email;
         }
-        public void setInfo(String address, String phone, String time, String category, String url){
+        public void setInfo(String address, String intro){
             this.address = address;
-            this.phone = phone;
-            this.time = time;
-            this.category = category;
-            this.url = url;
+            this.intro = intro;
         }
     }
 
-    public CustomerRestaurantInfo(String name, String discount, String offer, int id, LatLng latLng){
+    public CustomerRestaurantInfo(String name, int discount, String offer, int id, int consumption, String tag,LatLng latLng){
         this.name = name;
         this.discount = discount;
         this.offer = offer;
         this.latLng = latLng;
+        this.id = id;
+        this.category = tag;
+        this.consumption = consumption;
         detailInfo = new DetailInfo();
     }
-    public CustomerRestaurantInfo(String name, int id, LatLng latLng){
-        this(name, "暫無折扣", "暫無優惠", id, latLng);
+    public CustomerRestaurantInfo(String name, int id, int consumption, String tag, LatLng latLng){
+        this(name, 100, "暫無優惠", id, consumption, tag, latLng);
     }
     public void turnBitmap2ByteArray(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

@@ -197,7 +197,7 @@ public class LoginActivity extends AppCompatActivity {
             else {
                 Toast.makeText(LoginActivity.this,
                         getResources().getString(R.string.login_success) + _userID,  Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(LoginActivity.this, CustomerMainActivity.class);
+                Intent intent = new Intent(LoginActivity.this, CustomerLoadingActivity.class);
                 LoginActivity.this.startActivity(intent);
                 LoginActivity.this.finish();
             }
