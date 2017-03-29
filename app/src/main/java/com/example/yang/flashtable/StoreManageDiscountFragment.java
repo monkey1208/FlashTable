@@ -1,7 +1,6 @@
 package com.example.yang.flashtable;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -77,6 +76,7 @@ public class StoreManageDiscountFragment extends ListFragment {
         add.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 //Add New Discount
+                AlertDialogController.addDiscountDialog(getContext());
                 Toast.makeText(v.getContext(),"Add new discount", Toast.LENGTH_SHORT).show();
             }
         });
@@ -86,8 +86,6 @@ public class StoreManageDiscountFragment extends ListFragment {
 
     public void onListItemClick(ListView l, View v, int position, long id) {
         //To each record detail
-        LinearLayout item = (LinearLayout)l.getItemAtPosition(position);
-        item.setBackgroundColor(Color.parseColor("#F4A676"));
         Toast.makeText(getContext(), "Jump to page ", Toast.LENGTH_SHORT).show();
     }
 

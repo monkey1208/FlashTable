@@ -10,12 +10,13 @@
         android:background="@color/btBottomColor"
         android:text="即時動態"
         android:textColor="@color/white"
-        android:textSize="30sp"
-        android:gravity="center_horizontal"
+        android:textSize="24sp"
+        android:gravity="center"
         android:layout_alignParentTop="true"/>
     <ListView
         android:id="@+id/lv_recent"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/title"></ListView>
+        android:layout_marginTop="12px"
+        android:layout_below="@+id/title"/>
 </RelativeLayout>

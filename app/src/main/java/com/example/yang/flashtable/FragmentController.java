@@ -98,6 +98,7 @@ public class FragmentController extends StoreMainActivity{
                 break;
             case MANAGE_DISCOUNT:
                 setActive(MANAGE_DISCOUNT);
+                break;
             case CONFIRM:
                 if(frag_stat[CONFIRM]!=DEAD)
                     kill(CONFIRM);

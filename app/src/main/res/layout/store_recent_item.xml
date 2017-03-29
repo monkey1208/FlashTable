@@ -2,72 +2,80 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="245px"
+    android:layout_height="88dp"
+    android:layout_marginTop="12dp"
     android:descendantFocusability="blocksDescendants"
-    android:weightSum="6">
+    android:background="@color/colorHalfTransparent"
+    android:weightSum="8">
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="245px">
+        android:layout_height="88dp">
         <LinearLayout
             android:id="@+id/ll_whole"
-            android:layout_width="0dp"
-            android:layout_height="245px"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="88dp"
+            android:layout_weight="0.46"
             android:orientation="vertical">
             <ImageButton
                 android:id="@+id/bt_cancel"
-                android:layout_height="67dp"
-                android:layout_width="match_parent"
+                android:layout_marginTop="15dp"
+                android:layout_height="34dp"
+                android:layout_width="34dp"
+                android:layout_marginStart="16dp"
                 android:background="@color/transparentGreen"
                 android:scaleType="centerInside"
                 android:focusableInTouchMode="true"
                 android:src="@drawable/bt_cancel_appoint"/>
             <TextView
                 android:id="@+id/tv_countdown"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
                 android:text="hello"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/textColor"/>
         </LinearLayout>
 
         <com.example.yang.flashtable.RoundedImageView
             android:id="@+id/im_photo"
-            android:layout_width="0dp"
-            android:layout_height="245px"
-            android:layout_margin="10dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="20dp"
+            android:layout_height="70dp"
             android:layout_weight="1"/>
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="245px"
+            android:layout_width="wrap_content"
+            android:layout_height="88dp"
             android:layout_weight="3"
             android:weightSum="2"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/tv_name"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_weight="1.1"
-                android:layout_marginTop="25dp"
+                android:layout_weight="1"
+                android:layout_marginTop="15dp"
                 android:layout_marginStart="5dp"
-                android:layout_marginEnd="10dp"
-                android:textSize="26sp"/>
+                android:paddingTop="3dp"
+                android:textSize="16sp"
+                android:textColor="@color/textColor"/>
 
             <TextView
                 android:id="@+id/tv_number"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.9"
+                android:layout_weight="1"
                 android:layout_marginStart="5dp"
-                android:layout_marginEnd="10dp"
-                android:textSize="18sp"
+                android:textSize="14sp"
+                android:textColor="@color/textColorOrange"
                 android:text="預約100人" />
         </LinearLayout>
         <ImageButton
             android:id="@+id/bt_confirm"
-            android:layout_width="0dp"
-            android:layout_height="245px"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
+            android:layout_gravity="center_vertical"
             android:background="@color/transparentGreen"
             android:scaleType="centerInside"
             android:focusableInTouchMode="true"
@@ -77,6 +85,6 @@
     <ImageView
         android:id="@+id/im_confirmed"
         android:layout_width="match_parent"
-        android:layout_height="245px"
-        android:scaleType="centerInside"/>
+        android:layout_height="88dp"
+        android:scaleType="centerInside" />
 </FrameLayout>

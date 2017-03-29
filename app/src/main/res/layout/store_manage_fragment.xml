@@ -27,8 +27,8 @@
             android:layout_below="@+id/store_manage_tb_toolbar"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_marginTop="12px"
-            android:dividerHeight="12px"
+            android:layout_marginTop="3dp"
+            android:dividerHeight="3dp"
             android:id="@id/android:list"/>
 </RelativeLayout>
 
