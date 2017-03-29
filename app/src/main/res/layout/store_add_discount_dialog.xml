@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/store_add_discount_dialog_tv_no_discount"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:paddingEnd="30dp"
+        android:paddingStart="30dp"
+        android:text="暫無優惠"
+        android:textColor="@color/textColor"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="打"
+            android:textColor="@color/textColor"
+            android:textSize="16sp"/>
+
+        <ImageButton
+            android:id="@+id/store_add_discount_dialog_ib_minus"
+            android:layout_width="55dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:scaleType="centerInside"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_minus"
+            android:background="@color/transparentGreen"/>
+
+        <TextView
+            android:id="@+id/store_add_discount_dialog_tv_discount_num"
+            android:layout_width="30dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_height="30dp"
+            android:layout_weight="0.35"
+            android:text="95" />
+
+        <ImageButton
+            android:id="@+id/store_add_discount_dialog_ib_plus"
+            android:layout_width="55dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_weight="1"
+            android:background="@color/transparentGreen"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/ic_plus" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="end|center_vertical"
+            android:layout_weight="1"
+            android:text="折"
+            android:textColor="@color/textColor"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingEnd="30dp"
+        android:paddingStart="30dp"
+        android:text="編輯來店禮"
+        android:gravity="center_vertical"
+        android:textColor="@color/textColor"
+        android:textSize="16sp"/>
+
+    <EditText
+        android:id="@+id/store_add_discount_dialog_et_gift"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:background="@drawable/store_add_discount_dialog_et_bg"
+        android:ems="4"
+        android:inputType="textMultiLine"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"
+        android:hint="ex：50元飲料乙杯\n(輸入內文以25字為上限)"
+        android:textSize="14sp"
+        android:textColor="@color/textColorLight"
+        android:textColorHint="#AAAAAA"/>
+
+    <ImageButton
+        android:id="@+id/store_add_discount_dialog_bt_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/bt_confirm"
+        android:background="@color/transparentGreen"/>
+
+    <ImageButton
+        android:id="@+id/store_add_discount_dialog_bt_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/bt_cancel"
+        android:background="@color/transparentGreen"/>
+
+
+</LinearLayout>

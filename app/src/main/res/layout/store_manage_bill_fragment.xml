@@ -178,9 +178,9 @@
         <ImageView
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="#80DDDDDD"
-            android:layout_marginLeft="55px"
-            android:layout_marginRight="55px"
+            android:background="#90DDDDDD"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
              />
 
         <LinearLayout

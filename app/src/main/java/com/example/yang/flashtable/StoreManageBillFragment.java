@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 public class StoreManageBillFragment extends Fragment {
     public StoreManageBillFragment() {
         // Required empty public constructor
@@ -59,7 +58,7 @@ public class StoreManageBillFragment extends Fragment {
         prev_bt.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 //Check if the bill wad paid
-                setValues(v);
+                //setValues(v);
                 Toast.makeText(v.getContext(),"Previous", Toast.LENGTH_SHORT).show();
             }
         });
@@ -67,7 +66,7 @@ public class StoreManageBillFragment extends Fragment {
         next_bt.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 //Check if the bill wad paid
-                setValues(v);
+               // setValues(v);
                 Toast.makeText(v.getContext(),"Next", Toast.LENGTH_SHORT).show();
             }
         });

@@ -33,7 +33,7 @@ public class StoreHomeConfirmFragment extends Fragment {
         tv_test = (TextView)v.findViewById(R.id.tv_name);
         tv_test.setText("張庭維 信譽無限");
         tv_number = (TextView)v.findViewById(R.id.tv_number);
-        tv_number.setText("預約100人已到達");
+        tv_number.setText("100");
         bt_click = (ImageButton)v.findViewById(R.id.bt_click);
         iv_photo = (ImageView)v.findViewById(R.id.iv_photo);
         Bitmap icon = BitmapFactory.decodeResource(getContext().getResources(),R.drawable.ic_temp_user1);
