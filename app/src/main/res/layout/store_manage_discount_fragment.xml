@@ -23,12 +23,11 @@
             android:textSize="22sp"
             android:layout_gravity="center" />
     </android.support.v7.widget.Toolbar>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="145px"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/store_manage_discount_tb_toolbar"
+        android:layout_below="@id/store_manage_discount_tb_toolbar"
         android:layout_marginTop="12px"
         android:orientation="horizontal"
         android:id="@+id/store_manage_discount_ll_add"

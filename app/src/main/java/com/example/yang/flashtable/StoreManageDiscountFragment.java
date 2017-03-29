@@ -12,8 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -23,6 +25,9 @@ import static android.R.id.list;
 
 
 public class StoreManageDiscountFragment extends ListFragment {
+
+    public static List<StoreDiscountInfo> discountList = StoreMainActivity.storeInfo.discountList;
+    private StoreManageDiscountAdapter adapter;
 
     public StoreManageDiscountFragment() {
         // Required empty public constructor
@@ -39,17 +44,10 @@ public class StoreManageDiscountFragment extends ListFragment {
         // Inflate the layout for this fragment
         final View v = inflater.inflate(R.layout.store_manage_discount_fragment, container, false);
 
-        List<StoreDiscountInfo> mlist = new ArrayList<>();
-        setValues(mlist);
-        StoreManageDiscountAdapter adapter = new StoreManageDiscountAdapter(getActivity(),mlist);
-        setListAdapter(adapter);
-
         ListView lv =(ListView) v.findViewById(list);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-            }
-        });
+
+        adapter = new StoreManageDiscountAdapter(getContext(),discountList);
+        lv.setAdapter(adapter);
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_discount_tb_toolbar);
         bar.inflateMenu(R.menu.store_manage_discount_menu);
@@ -86,19 +84,10 @@ public class StoreManageDiscountFragment extends ListFragment {
 
     public void onListItemClick(ListView l, View v, int position, long id) {
         //To each record detail
-        LinearLayout item = (LinearLayout)l.getItemAtPosition(position);
-        item.setBackgroundColor(Color.parseColor("#F4A676"));
-        Toast.makeText(getContext(), "Jump to page ", Toast.LENGTH_SHORT).show();
+        discountList.get(position).isDefault = true;
+        discountList.get(StoreMainActivity.storeInfo.discountDefault).isDefault = false;
+        adapter.notifyDataSetChanged();
+        StoreMainActivity.storeInfo.discountDefault = position;
     }
 
-    private void setValues(List<StoreDiscountInfo> list){
-        StoreDiscountInfo tmp = new StoreDiscountInfo("9折", "", 30, false);
-        list.add(tmp);
-        tmp = new StoreDiscountInfo("85折", "無", 15, false);
-        list.add(tmp);
-        tmp = new StoreDiscountInfo("77折", "無", 7, false);
-        list.add(tmp);
-        tmp = new StoreDiscountInfo("(暫無優惠)", "", 6, true);
-        list.add(tmp);
-    }
 }

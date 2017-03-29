@@ -51,13 +51,13 @@ public class StoreManageStatisticFragment extends ListFragment {
     private void getValues(List<StoreDiscountInfo> list){
         //Set discount detail
         //list should be sorted by count!!!!!!
-        StoreDiscountInfo tmp = new StoreDiscountInfo("9折", "", 30, false);
+        StoreDiscountInfo tmp = new StoreDiscountInfo(9, "", 30, false);
         list.add(tmp);
-        tmp = new StoreDiscountInfo("85折", "無", 15, false);
+        tmp = new StoreDiscountInfo(85, "無", 15, false);
         list.add(tmp);
-        tmp = new StoreDiscountInfo("77折", "無", 7, false);
+        tmp = new StoreDiscountInfo(77, "無", 7, false);
         list.add(tmp);
-        tmp = new StoreDiscountInfo("(暫無優惠)", "", 6, true);
+        tmp = new StoreDiscountInfo(100, "", 6, true);
         list.add(tmp);
     }
 }

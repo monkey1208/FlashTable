@@ -1,22 +1,14 @@
 package com.example.yang.flashtable;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -32,7 +24,7 @@ public class StoreRecentFragment extends Fragment {
     private ListView lv_recent;
     private View item_view;
     private int selected;
-    private RecentAdapter recentAdapter;
+    private StoreRecentAdapter recentAdapter;
     private List<Integer> waitingList;
     private int size;
     private boolean active=true;
@@ -57,7 +49,7 @@ public class StoreRecentFragment extends Fragment {
         waitingList = new ArrayList<>();
         //listview---------
         lv_recent = (ListView) v.findViewById(R.id.lv_recent);
-        recentAdapter = new RecentAdapter(getActivity(),recentList);
+        recentAdapter = new StoreRecentAdapter(getActivity(),recentList);
         lv_recent.setAdapter(recentAdapter);
         /*lv_recent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -90,10 +82,15 @@ public class StoreRecentFragment extends Fragment {
     private void func_test(){
         CustomerAppointInfo test1 = new CustomerAppointInfo("張庭維",100,10,R.drawable.ic_temp_user1);
         CustomerAppointInfo test2 = new CustomerAppointInfo("李承軒",0,1,R.drawable.ic_temp_user2);
+        CustomerAppointInfo test3 = new CustomerAppointInfo("陳奕先",10,90,R.drawable.ic_temp_user1);
+        test3.expireTime = test3.expireTime-45000;
+        test2.expireTime = test2.expireTime-50000;
+        test1.expireTime = test1.expireTime-55000;
         recentList.add(test1);
         recentList.add(test2);
+        recentList.add(test3);
     }
-    public void setItemStat(int position,ImageView im_animation){
+    public void setItemStat(int position){
         selected = position;
 
         waitingList.add(selected);
@@ -120,9 +117,11 @@ public class StoreRecentFragment extends Fragment {
                             for(int i = 0;i<waitingList.size();i++) {
                                 recentList.remove(recentList.get(waitingList.get(i)));
                             }
-                            recentAdapter = new RecentAdapter(getActivity(), recentList);
+                            recentAdapter = new StoreRecentAdapter(getActivity(), recentList);
                             lv_recent.setAdapter(recentAdapter);
+                            Toast.makeText(getContext(),Integer.toString(waitingList.size()),Toast.LENGTH_SHORT).show();
                             waitingList.clear();
+                            Toast.makeText(getContext(),Integer.toString(waitingList.size()),Toast.LENGTH_SHORT).show();
                         }
                     }
                 }.start();

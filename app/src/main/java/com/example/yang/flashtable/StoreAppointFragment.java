@@ -32,7 +32,7 @@ public class StoreAppointFragment extends ListFragment {
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                StoreMainActivity.fragmentController.act(9);
+                StoreMainActivity.fragmentController.act(FragmentController.MANAGE_RECORD);
                 return true;
             }
         };
@@ -42,11 +42,11 @@ public class StoreAppointFragment extends ListFragment {
 
     private  List<ReservationInfo> get_reservation_info(){
         List<ReservationInfo> list = new ArrayList<>();
-        ReservationInfo tmp = new ReservationInfo("Chen");
+        ReservationInfo tmp = new ReservationInfo("Chen",10);
         list.add(tmp);
-        tmp = new ReservationInfo("Yi");
+        tmp = new ReservationInfo("Yi",100);
         list.add(tmp);
-        tmp = new ReservationInfo("Shan");
+        tmp = new ReservationInfo("Shan",1);
         list.add(tmp);
         return list;
     }

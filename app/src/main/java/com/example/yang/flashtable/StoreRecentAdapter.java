@@ -22,12 +22,15 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class RecentAdapter extends ArrayAdapter<CustomerAppointInfo> {
+public class StoreRecentAdapter extends ArrayAdapter<CustomerAppointInfo> {
 
     private Context context;
     private List<CustomerAppointInfo> list;
     private LayoutInflater layoutInflater;
     //private CustomerAppointInfo customerAppointInfo;
+    private final int CONFIRMED = 0;
+    private final int CANCELED = 1;
+
     private List<ViewHolder> lstholder;
     private Handler handler;
     private Runnable countDownRunnable = new Runnable() {
@@ -43,7 +46,7 @@ public class RecentAdapter extends ArrayAdapter<CustomerAppointInfo> {
         }
     };
 
-    public RecentAdapter(Context context, List<CustomerAppointInfo> list){
+    public StoreRecentAdapter(Context context, List<CustomerAppointInfo> list){
         super(context,0,list);
         layoutInflater = LayoutInflater.from(context);
         lstholder = new ArrayList<>();
@@ -70,6 +73,8 @@ public class RecentAdapter extends ArrayAdapter<CustomerAppointInfo> {
         public ImageButton bt_confirm;
         public ImageButton bt_cancel;
         public ImageView im_confirmed;
+        public boolean stat = true;
+        public int position;
         public CustomerAppointInfo customerAppointInfo;
         public ViewHolder(ImageView im,TextView name, TextView number,TextView countdown,ImageButton confirm,ImageButton cancel,ImageView im_confirmed){
             this.im_photo = im;
@@ -80,8 +85,9 @@ public class RecentAdapter extends ArrayAdapter<CustomerAppointInfo> {
             this.bt_cancel = cancel;
             this.im_confirmed = im_confirmed;
         }
-        public void setData(CustomerAppointInfo info,final int position){
+        public void setData(CustomerAppointInfo info,int pos){
             customerAppointInfo = info;
+            this.position = pos;
             Bitmap icon = BitmapFactory.decodeResource(context.getResources(),customerAppointInfo.im_id);
             im_photo.setImageBitmap(icon);
             tv_name.setText(customerAppointInfo.name+"("+ Integer.toString(customerAppointInfo.honor) +")");
@@ -90,42 +96,17 @@ public class RecentAdapter extends ArrayAdapter<CustomerAppointInfo> {
             im_confirmed.setImageResource(0);
             bt_confirm.setImageResource(R.drawable.bt_confirm_appoint);
             bt_cancel.setImageResource(R.drawable.bt_cancel_appoint);
+            final ViewHolder holder =this;
             bt_confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ViewHolder Clickholder = (ViewHolder) v.getTag();
-                    Clickholder.im_confirmed.setImageResource(R.drawable.ic_confirmed);
-                    Clickholder.bt_confirm.setImageResource(0);
-                    Clickholder.bt_confirm.setEnabled(false);
-                    Clickholder.bt_cancel.setImageResource(0);
-                    Clickholder.bt_cancel.setEnabled(false);
-                    Clickholder.im_photo.setImageResource(0);
-                    Clickholder.tv_name.setText("");
-                    Clickholder.tv_number.setText("");
-                    Clickholder.tv_countdown.setTextColor(context.getResources().getColor(R.color.transparentGreen));
-                    Animation animation = AnimationUtils.loadAnimation(context,R.anim.store_slide_left2right);
-                    Clickholder.im_confirmed.setAnimation(animation);
-                    FragmentController.storeRecentFragment.setItemStat(position,Clickholder.im_confirmed);
+                    setClick(holder,CONFIRMED);
                 }
             });
             bt_cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ViewHolder Clickholder = (ViewHolder)v.getTag();
-                    Clickholder.im_confirmed.setImageResource(R.drawable.ic_confirmed_false);
-                    Clickholder.bt_confirm.setImageResource(0);
-                    Clickholder.bt_confirm.setEnabled(false);
-                    Clickholder.bt_cancel.setImageResource(0);
-                    Clickholder.bt_cancel.setEnabled(false);
-                    Clickholder.im_photo.setImageResource(0);
-                    Clickholder.tv_name.setText("");
-                    Clickholder.tv_number.setText("");
-                    Clickholder.tv_countdown.setTextColor(context.getResources().getColor(R.color.transparentGreen));
-                    Animation animation = AnimationUtils.loadAnimation(context,R.anim.store_slide_right2left);
-                    Clickholder.im_confirmed.setAnimation(animation);
-                    animation.setDuration(1000);
-                    animation.startNow();
-                    FragmentController.storeRecentFragment.setItemStat(position,Clickholder.im_confirmed);
+                    setClick(holder,CANCELED);
                 }
             });
             this.bt_confirm.setTag(this);
@@ -137,11 +118,58 @@ public class RecentAdapter extends ArrayAdapter<CustomerAppointInfo> {
                 int seconds = (int) (timeDiff / 1000);
                 tv_countdown.setText(seconds + "s");
             } else {
-                tv_countdown.setText("Expired!!");
+                if(stat) {
+                    im_confirmed.setImageResource(R.drawable.ic_confirmed_false);
+                    bt_confirm.setImageResource(0);
+                    bt_confirm.setEnabled(false);
+                    bt_cancel.setImageResource(0);
+                    bt_cancel.setEnabled(false);
+                    im_photo.setImageResource(0);
+                    tv_name.setText("");
+                    tv_number.setText("");
+                    tv_countdown.setTextColor(context.getResources().getColor(R.color.transparentGreen));
+                    Animation animation = AnimationUtils.loadAnimation(context, R.anim.store_slide_right2left);
+                    im_confirmed.setAnimation(animation);
+                    animation.setDuration(1000);
+                    animation.startNow();
+                    //FragmentController.storeRecentFragment.setItemStat(position);
+                    stat = false;
+                }
             }
         }
-        public void setTest(){
-            tv_countdown.setText("HELLO");
+    }
+    public void setClick(ViewHolder holder,int stat){
+        int [] srcId = {R.drawable.ic_confirmed,R.drawable.ic_confirmed_false};
+        int [] AnimId = {R.anim.store_slide_left2right,R.anim.store_slide_right2left};
+        if(stat == CONFIRMED){
+            holder.im_confirmed.setImageResource(R.drawable.ic_confirmed);
+            holder.bt_confirm.setImageResource(0);
+            holder.bt_confirm.setEnabled(false);
+            holder.bt_cancel.setImageResource(0);
+            holder.bt_cancel.setEnabled(false);
+            holder.im_photo.setImageResource(0);
+            holder.tv_name.setText("");
+            holder.tv_number.setText("");
+            holder.tv_countdown.setTextColor(context.getResources().getColor(R.color.transparentGreen));
+            Animation animation = AnimationUtils.loadAnimation(context,R.anim.store_slide_left2right);
+            holder.im_confirmed.setAnimation(animation);
+            FragmentController.storeRecentFragment.setItemStat(holder.position);
+        }
+        if(stat == CANCELED){
+            holder.im_confirmed.setImageResource(R.drawable.ic_confirmed_false);
+            holder.bt_confirm.setImageResource(0);
+            holder.bt_confirm.setEnabled(false);
+            holder.bt_cancel.setImageResource(0);
+            holder.bt_cancel.setEnabled(false);
+            holder.im_photo.setImageResource(0);
+            holder.tv_name.setText("");
+            holder.tv_number.setText("");
+            holder.tv_countdown.setTextColor(context.getResources().getColor(R.color.transparentGreen));
+            Animation animation = AnimationUtils.loadAnimation(context, R.anim.store_slide_right2left);
+            holder.im_confirmed.setAnimation(animation);
+            animation.setDuration(1000);
+            animation.startNow();
+            FragmentController.storeRecentFragment.setItemStat(holder.position);
         }
     }
 

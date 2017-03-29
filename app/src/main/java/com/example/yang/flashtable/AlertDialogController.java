@@ -12,22 +12,21 @@ import android.widget.TextView;
 import java.util.List;
 
 public class AlertDialogController {
-    private static int selected;
     private static AlertDialog alertDialog;
+    private static StoreHomeDiscountDialogAdapter adapter;
     public static void discountDialog(final Context context, final StoreInfo storeInfo,final TextView tv_discount,final TextView tv_gift){
         //init view---------
         View item = LayoutInflater.from(context).inflate(R.layout.store_discount_list, null);
-        List<StoreInfo.DiscountInfo> discountList = storeInfo.discountList;
+        List<StoreDiscountInfo> discountList = storeInfo.discountList;
         //listview adapt----
         ListView lv_discount = (ListView)item.findViewById(R.id.lv_discount);
-        DiscountDialogAdapter adapter = new DiscountDialogAdapter(context,discountList);
+        adapter = new StoreHomeDiscountDialogAdapter(context,discountList);
         lv_discount.setAdapter(adapter);
         lv_discount.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                parent.getChildAt(selected).setBackgroundColor(context.getResources().getColor(R.color.white));
-                parent.getChildAt(position).setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
-                selected = position;
+                StoreMainActivity.storeInfo.discountCurrent = position;
+                adapter.notifyDataSetChanged();
             }
         });
         //-------------------
@@ -45,8 +44,8 @@ public class AlertDialogController {
         bt_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tv_discount.setText(Integer.toString(storeInfo.discountList.get(selected).discount)+"折");
-                tv_gift.setText(storeInfo.discountList.get(selected).gift);
+                tv_discount.setText(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).discount)+"折");
+                tv_gift.setText(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
                 alertDialog.dismiss();
             }
         });

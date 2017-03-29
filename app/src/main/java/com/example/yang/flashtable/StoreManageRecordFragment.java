@@ -64,9 +64,9 @@ public class StoreManageRecordFragment extends ListFragment {
     }
 
     private void setValues(List<ReservationInfo> list){
-        ReservationInfo tmp = new ReservationInfo("Cindy Chen");
+        ReservationInfo tmp = new ReservationInfo("Cindy Chen",100);
         list.add(tmp);
-        tmp = new ReservationInfo("Bing Bing");
+        tmp = new ReservationInfo("Bing Bing",10);
         list.add(tmp);
     }
 }

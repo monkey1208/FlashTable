@@ -26,14 +26,14 @@
                 android:id="@+id/store_appoint_row_iv_icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/iv_deault_picture"
                 android:layout_alignParentTop="true"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:src="@drawable/iv_deault_picture" />
         </android.support.v7.widget.CardView>
 
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical">
             <TextView
@@ -66,7 +66,47 @@
                 android:text="" />
 
         </LinearLayout>
-
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <FrameLayout
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center">
+                <ImageButton
+                    android:id="@+id/bt_cancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/bt_store_appoint_cancel"
+                    android:background="@color/transparentGreen"
+                    android:layout_gravity="center"/>
+            </FrameLayout>
+            <FrameLayout
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tv_remaining_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="15dp"
+                        android:gravity="center"
+                        android:text="剩餘到達時間"
+                        android:textSize="12sp"/>
+                    <TextView
+                        android:id="@+id/tv_countdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="25dp"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:text="12:40"/>
+                </LinearLayout>
+            </FrameLayout>
+        </FrameLayout>
     </LinearLayout>
 
 

@@ -15,6 +15,7 @@ import java.util.List;
 public class StoreAppointAdapter extends BaseAdapter{
     private LayoutInflater inflater;
     private List<ReservationInfo> reservation_list = new ArrayList<>();
+    private List<ViewHolder> lstholder = new ArrayList<>();
     private Context c;
 
     public StoreAppointAdapter(Context c, List<ReservationInfo> reservation_list) {
@@ -40,15 +41,37 @@ public class StoreAppointAdapter extends BaseAdapter{
     @NonNull
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        convertView = inflater.inflate(R.layout.store_appoint_row, parent, false);
-        TextView tv1 = (TextView) convertView.findViewById(R.id.store_appoint_row_tv_name);
-        TextView tv2 = (TextView) convertView.findViewById(R.id.store_appoint_row_tv_date);
-        TextView tv3 = (TextView) convertView.findViewById(R.id.store_appoint_row_tv_state);
-        tv1.setText(reservation_list.get(position).name);
-        tv2.setText("2017/07/21");
-        int num = 6;
-        tv3.setText("已成功向您預約("+num+")人桌位");
+        ViewHolder holder;
+        if(convertView==null) {
+            convertView = inflater.inflate(R.layout.store_appoint_row, parent, false);
+            holder = new ViewHolder((TextView) convertView.findViewById(R.id.store_appoint_row_tv_name),
+                    (TextView) convertView.findViewById(R.id.store_appoint_row_tv_date),
+                    (TextView) convertView.findViewById(R.id.store_appoint_row_tv_state));
+            convertView.setTag(holder);
+            synchronized (lstholder) {
+                lstholder.add(holder);
+            }
+        }
+        else
+            holder = (ViewHolder) convertView.getTag();
+        holder.setData(reservation_list.get(position));
+
         return  convertView;
 
+    }
+    private class ViewHolder{
+        TextView tv_name;
+        TextView tv_date;
+        TextView tv_state;
+        public ViewHolder(TextView tv_name,TextView tv_date,TextView tv_state){
+            this.tv_name = tv_name;
+            this.tv_date = tv_date;
+            this.tv_state = tv_state;
+        }
+        public void setData(ReservationInfo info){
+            tv_name.setText(info.name);
+            tv_date.setText("2017/07/21");
+            tv_state.setText("已成功向您預約("+Integer.toString(info.number)+")人桌位");
+        }
     }
 }

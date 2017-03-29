@@ -52,7 +52,7 @@ public class StoreManageFragment extends ListFragment {
 
     public void onListItemClick(ListView l, View v, int position, long id) {
         StoreMainActivity.fragmentController.act(position+4);
-        Toast.makeText(getContext(), "Jump to page "+itemname[position], Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Jump to page "+Integer.toString(position), Toast.LENGTH_SHORT).show();
     }
 
     String[] itemname ={

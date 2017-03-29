@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -19,10 +20,10 @@ import java.util.List;
 
 public class StoreManageDiscountAdapter extends BaseAdapter {
     private LayoutInflater inflater;
-    private final Activity context;
+    private final Context context;
     private final List<StoreDiscountInfo> list;
 
-    public StoreManageDiscountAdapter(Activity context, List<StoreDiscountInfo> list) {
+    public StoreManageDiscountAdapter(Context context, List<StoreDiscountInfo> list) {
         // TODO Auto-generated constructor stub
         this.context=context;
         this.list = list;
@@ -49,15 +50,18 @@ public class StoreManageDiscountAdapter extends BaseAdapter {
         view = inflater.inflate(R.layout.store_manage_discount_row, null,true);
 
         TextView tv = (TextView) view.findViewById(R.id.store_manage_discount_row_tv_description);
-        tv.setText(list.get(position).name+" "+list.get(position).description);
+        tv.setText(Integer.toString(list.get(position).discount)+" "+list.get(position).description);
 
         LinearLayout row = (LinearLayout)view.findViewById(R.id.store_manage_discount_row);
         ImageView _default = (ImageView) view.findViewById(R.id.store_manage_discount_row_iv_default);
         if(list.get(position).isDefault){
             _default.setImageResource(R.drawable.icon_default_discount);
             TextView to_default = (TextView) view.findViewById(R.id.store_manage_discount_row_tv_todefault);
+            view.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
             row.removeView(to_default);
+            Toast.makeText(context,Integer.toString(position),Toast.LENGTH_SHORT).show();
         }else{
+            view.setBackgroundColor(context.getResources().getColor(R.color.colorHalfTransparent));
             row.removeView(_default);
         }
         return view;

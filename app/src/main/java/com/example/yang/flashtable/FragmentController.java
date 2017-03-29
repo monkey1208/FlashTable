@@ -40,16 +40,6 @@ public class FragmentController extends StoreMainActivity{
         viewContainer[CONFIRM] = R.id.fragment_full;
         for(int i=0;i<FRAG_COUNT;i++) frag_stat[i]=DEAD;
         fragmentManager  = fm;
-        fragment[HOME] = new StoreHomeFragment();
-        fragment[RECENT] = new StoreRecentFragment();
-        fragment[APPOINT] = new StoreAppointFragment();
-        fragment[MANAGE] = new StoreManageFragment();
-        fragment[MANAGE_SUCCESS] = new StoreManageSuccessFragment();
-        fragment[MANAGE_OPENTIME] = new StoreManageOpentimeFragment();
-        fragment[MANAGE_BILL] = new StoreManageBillFragment();
-        fragment[MANAGE_DISCOUNT] = new StoreManageDiscountFragment();
-        fragment[MANAGE_STATISTIC] = new StoreManageStatisticFragment();
-        fragment[MANAGE_RECORD] = new StoreManageRecordFragment();
         storeRecentFragment = new StoreRecentFragment();
         storeHomeFragment = new StoreHomeFragment();
         storeAppointFragment = new StoreAppointFragment();
@@ -102,6 +92,7 @@ public class FragmentController extends StoreMainActivity{
                 break;
             case MANAGE_DISCOUNT:
                 setActive(MANAGE_DISCOUNT);
+                break;
             case CONFIRM:
                 if(frag_stat[CONFIRM]!=DEAD)
                     kill(CONFIRM);
@@ -149,7 +140,6 @@ public class FragmentController extends StoreMainActivity{
             case CONFIRM:
                 fragment[select] = new StoreHomeConfirmFragment();
                 break;
-
         }
 
     }

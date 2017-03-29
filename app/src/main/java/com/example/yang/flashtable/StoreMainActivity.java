@@ -11,14 +11,13 @@ import android.widget.Toast;
 public class StoreMainActivity extends AppCompatActivity{
 
     private ImageButton[] button;
+    public static StoreInfo storeInfo;
 
     private static final int PRIM_FRAG = 4;
-    private static final int FRAG_COUNT = 5;
     private static final int HOME = 0;
     private static final int RECENT = 1;
     private static final int APPOINT = 2;
     private static final int MANAGE = 3;
-    private static final int RECENT_CONFIRM = 4;
 
     public static FragmentController fragmentController;
     private FragmentManager fragmentManager;
@@ -28,7 +27,10 @@ public class StoreMainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        button = new ImageButton[FRAG_COUNT];
+        //arguments init
+        storeInfo = new StoreInfo("西堤牛排 南港店","台北市南港區忠孝東路七段369號C1棟(CITYLINK南港店)");
+
+        button = new ImageButton[PRIM_FRAG];
         setContentView(R.layout.store_main_activity);
         fragmentManager = getSupportFragmentManager();
         fragmentController = new FragmentController(fragmentManager);
