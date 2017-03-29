@@ -20,11 +20,11 @@ import java.util.List;
 public class StoreManageStatisticAdapter extends BaseAdapter{
     private LayoutInflater inflater;
     private List<StoreDiscountInfo> discount_list = new ArrayList<>();
-    private Context c;
+    private Context context;
 
-    public StoreManageStatisticAdapter(Context c, List<StoreDiscountInfo> discount_list) {
-        this.c = c;
-        inflater = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public StoreManageStatisticAdapter(Context context, List<StoreDiscountInfo> discount_list) {
+        this.context = context;
+        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.discount_list = discount_list;
     }
     @Override

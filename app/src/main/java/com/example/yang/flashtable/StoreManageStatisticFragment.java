@@ -30,9 +30,8 @@ public class StoreManageStatisticFragment extends ListFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.store_manage_statistic_fragment, container, false);
-        List<StoreDiscountInfo> list = new ArrayList<>();
-        getValues(list);
-        StoreManageStatisticAdapter adapter = new StoreManageStatisticAdapter(getActivity(), list);
+
+        StoreManageStatisticAdapter adapter = new StoreManageStatisticAdapter(getActivity(), StoreMainActivity.storeInfo.discountList);
         setListAdapter(adapter);
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_statistic_tb_toolbar);
@@ -46,18 +45,5 @@ public class StoreManageStatisticFragment extends ListFragment {
             }
         });
         return v;
-    }
-
-    private void getValues(List<StoreDiscountInfo> list){
-        //Set discount detail
-        //list should be sorted by count!!!!!!
-        StoreDiscountInfo tmp = new StoreDiscountInfo(9, "", 30, false);
-        list.add(tmp);
-        tmp = new StoreDiscountInfo(85, "無", 15, false);
-        list.add(tmp);
-        tmp = new StoreDiscountInfo(77, "無", 7, false);
-        list.add(tmp);
-        tmp = new StoreDiscountInfo(100, "", 6, true);
-        list.add(tmp);
     }
 }

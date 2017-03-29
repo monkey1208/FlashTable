@@ -24,7 +24,6 @@ public class StoreManageDiscountAdapter extends BaseAdapter {
     private final List<StoreDiscountInfo> list;
 
     public StoreManageDiscountAdapter(Context context, List<StoreDiscountInfo> list) {
-        // TODO Auto-generated constructor stub
         this.context=context;
         this.list = list;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -59,7 +58,6 @@ public class StoreManageDiscountAdapter extends BaseAdapter {
             TextView to_default = (TextView) view.findViewById(R.id.store_manage_discount_row_tv_todefault);
             view.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
             row.removeView(to_default);
-            Toast.makeText(context,Integer.toString(position),Toast.LENGTH_SHORT).show();
         }else{
             view.setBackgroundColor(context.getResources().getColor(R.color.colorHalfTransparent));
             row.removeView(_default);

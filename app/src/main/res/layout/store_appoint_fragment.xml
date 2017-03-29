@@ -6,8 +6,6 @@
     tools:context="com.example.yang.flashtable.StoreAppointFragment"
     android:id="@+id/store_appoint_fragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/shop_toolbar"
         android:layout_width="match_parent"
