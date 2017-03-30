@@ -25,8 +25,9 @@ public class DialogBuilder {
 
     private Dialog dialog;
     private TextView tv_content;
-    private Button bt_submit;
-    private LinearLayout ll_content;
+    private Button bt_submit, bt_cancel;
+    private LinearLayout ll_content, ll_buttons;
+    private  DialogEventListener event_listener;
 
     public DialogBuilder(Context _context) {
         context = _context;
@@ -38,23 +39,44 @@ public class DialogBuilder {
         dialog = new Dialog(context, R.style.Dialog);
         dialog.setContentView(R.layout.alert_dialog);
 
-        // Window dialog_window = dialog.getWindow();
-        // WindowManager.LayoutParams lp = dialog_window.getAttributes();
-        // lp.alpha = 0.7f; // Transparency
-
         tv_content = (TextView) dialog.findViewById(R.id.alert_tv_content);
         ll_content = (LinearLayout) dialog.findViewById(R.id.alert_ll_content);
+        ll_buttons = (LinearLayout) dialog.findViewById(R.id.alert_ll_buttons);
         bt_submit = (Button) dialog.findViewById(R.id.alert_bt_submit);
+        bt_cancel = (Button) dialog.findViewById(R.id.alert_bt_cancel);
+    }
+
+    public void dialogEvent(String _content, String _mode, final DialogEventListener event_listener) {
         bt_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (event_listener != null)
+                    event_listener.clickEvent(true, 0);
                 dialog.hide();
             }
         });
-    }
 
-    public void dialogEvent(String _content) {
-        tv_content.setText(_content);
+        switch (_mode) {
+            case "normal":
+                if (bt_cancel.getParent() != null) ll_buttons.removeView(bt_cancel);
+                tv_content.setText(_content);
+                break;
+            case "withCancel":
+                if (bt_cancel.getParent() == null) ll_buttons.addView(bt_cancel);
+                bt_cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (event_listener != null)
+                            event_listener.clickEvent(false, 0);
+                        dialog.hide();
+                    }
+                });
+                tv_content.setText(_content);
+                break;
+            case "personsPicker":
+                break;
+
+        }
         dialog.show();
     }
 

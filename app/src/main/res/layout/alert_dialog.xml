@@ -34,16 +34,42 @@
             android:layout_marginBottom="20dp"
             android:layout_marginTop="20dp"/>
 
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/alert_ll_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_margin="2dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="0dp"
+        android:orientation="vertical">
+
         <Button
             android:id="@+id/alert_bt_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/round_rectangle_orange"
             android:text="@string/ok"
             android:textColor="@color/white"
-            android:layout_marginBottom="20dp"
+            android:padding="10dp"/>
+
+        <Button
+            android:id="@+id/alert_bt_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/round_rectangle_white_orange"
+            android:text="@string/cancel"
+            android:textColor="@color/colorPrimary"
             android:padding="10dp"/>
 
     </LinearLayout>
-    
+
 </LinearLayout>

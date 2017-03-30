@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
         Pattern pattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(password);
 
-        return !matcher.find();
+        return (!matcher.find() && !password.equals(""));
     }
 
     private void customerLogin() {
@@ -145,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (fail != 0) {
-            dialog_builder.dialogEvent(getResources().getString(R.string.login_error_typo));
+            dialog_builder.dialogEvent(getResources().getString(R.string.login_error_typo), "normal", null);
         } else {
             new CustomerAPILogin().execute(account, password);
         }
@@ -193,7 +193,8 @@ public class LoginActivity extends AppCompatActivity {
                 progress_dialog.dismiss();
             }
 
-            if(_userID == null)  dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection));
+            if(_userID == null)
+                dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
             else {
                 Toast.makeText(LoginActivity.this,
                         getResources().getString(R.string.login_success) + _userID,  Toast.LENGTH_LONG).show();
