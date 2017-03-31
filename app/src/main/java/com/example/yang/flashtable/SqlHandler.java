@@ -127,6 +127,7 @@ public class SqlHandler extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(SqlHandler.ADDRESS_COLUMN)),
                     cursor.getString(cursor.getColumnIndex(SqlHandler.INTRO_COLUMN))
             );
+        info.image = cursor.getBlob(cursor.getColumnIndex(SqlHandler.IMG_COLUMN));
         return info;
     }
 

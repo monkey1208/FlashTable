@@ -49,7 +49,7 @@ public class CustomerRestaurantInfo {
         detailInfo = new DetailInfo();
     }
     public CustomerRestaurantInfo(String name, int id, int consumption, String tag, LatLng latLng){
-        this(name, 100, "暫無優惠", id, consumption, tag, latLng);
+        this(name, 101, "暫無優惠", id, consumption, tag, latLng);
     }
     public void turnBitmap2ByteArray(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
