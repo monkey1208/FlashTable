@@ -83,7 +83,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     TextView tv_show_name, tv_show_consumption, tv_show_discount, tv_show_offer, tv_show_location, tv_show_category, tv_show_intro;
 
     final int FINE_LOCATION_CODE = 13;
-
+    LatLng current_location;
 
     @Nullable
     @Override
@@ -164,7 +164,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
 
     private void setListView(List<CustomerRestaurantInfo> res_list) {
         System.out.println("set list!");
-        adapter = new CustomerMainAdapter(view.getContext(), res_list);
+        adapter = new CustomerMainAdapter(view.getContext(), res_list, current_location);
         adapter.notifyDataSetChanged();
         lv_shops.setAdapter(adapter);
         lv_shops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -304,7 +304,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         }
     }
 
-    private class CurrentLocation {
+    private class CurrentLocation implements LocationListener {
         String provider;
         public void execute(){
             locationMgr = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
@@ -322,10 +322,25 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                 if(location != null) {
                     new ApiPromotion().execute(location.getLatitude(), location.getLongitude());
                 }else{
-                    new ApiPromotion().execute(24.0, 121.0);
+                    locationMgr.requestLocationUpdates(provider, 0, 0, this);
                 }
             }
         }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            if(location != null){
+                new ApiPromotion().execute(location.getLatitude(), location.getLongitude());
+            }else{
+                new ApiPromotion().execute(24.0, 121.0);
+            }
+        }
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) { }
+        @Override
+        public void onProviderEnabled(String s) { }
+        @Override
+        public void onProviderDisabled(String s) { }
     }
 
     private class ApiPromotion extends AsyncTask<Double, Void, String> {
@@ -333,7 +348,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         List<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
         @Override
         protected String doInBackground(Double... params) {
-            //Location location = locationMgr.getLastKnownLocation(provider);
+            current_location = new LatLng(params[0], params[1]);
             String lat = String.valueOf(params[0]);
             String lng = String.valueOf(params[1]);
             String latlng = lat + "," + lng;//need current location

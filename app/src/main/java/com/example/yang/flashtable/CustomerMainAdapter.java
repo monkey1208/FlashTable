@@ -2,6 +2,7 @@ package com.example.yang.flashtable;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
@@ -26,11 +29,15 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
     TextView tv_shop, tv_price, tv_distance, tv_discount, tv_gift;
     RatingBar rb_rating;
     LinearLayout ll_reserve;
+    Location current_location;
 
-    public CustomerMainAdapter(Context context, List objects) {
+    public CustomerMainAdapter(Context context, List objects, LatLng current_latlng) {
         super(context, R.layout.customer_main_item, objects);
         c = context;
         inflater = LayoutInflater.from(context);
+        this.current_location = new Location("");
+        current_location.setLatitude(current_latlng.latitude);
+        current_location.setLongitude(current_latlng.longitude);
     }
 
     @NonNull
@@ -63,6 +70,16 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
                 }
             }
             tv_gift.setText(info.offer);
+
+            Location loc_shop = new Location("");
+            loc_shop.setLatitude(info.latLng.latitude);
+            loc_shop.setLongitude(info.latLng.longitude);
+            float dis = current_location.distanceTo(loc_shop);
+            if(dis>1000){
+                tv_distance.setText((int)dis/1000+"."+(int)(dis%1000)/100+"km");
+            }else {
+                tv_distance.setText((int)dis+"m");
+            }
             setView(position);
             return convertView;
         }
