@@ -111,6 +111,13 @@ public class LoginActivity extends AppCompatActivity {
                 customerLogin();
             }
         });
+        customer_bt_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, CustomerRegisterActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Store
         store_ll_back.setOnClickListener(new View.OnClickListener() {

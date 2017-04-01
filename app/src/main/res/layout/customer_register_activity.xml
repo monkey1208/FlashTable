@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/customer_bg_reservation">
+
+    <ViewFlipper
+        android:id="@+id/customer_register_vf_flipper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <include layout="@layout/customer_register_info" />
+        <include layout="@layout/customer_register_verify" />
+    </ViewFlipper>
+
+</LinearLayout>
