@@ -50,7 +50,7 @@ public class StoreManageRecordFragment extends ListFragment {
         bar.setNavigationIcon(d);
         bar.setNavigationOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                StoreMainActivity.fragmentController.act(3);
+                StoreMainActivity.fragmentController.act(FragmentController.MANAGE);
             }
         });
 
@@ -64,9 +64,9 @@ public class StoreManageRecordFragment extends ListFragment {
     }
 
     private void setValues(List<ReservationInfo> list){
-        ReservationInfo tmp = new ReservationInfo("Cindy Chen",100);
+        ReservationInfo tmp = new ReservationInfo("Cindy Chen",100,System.currentTimeMillis());
         list.add(tmp);
-        tmp = new ReservationInfo("Bing Bing",10);
+        tmp = new ReservationInfo("Bing Bing",10,System.currentTimeMillis());
         list.add(tmp);
     }
 }

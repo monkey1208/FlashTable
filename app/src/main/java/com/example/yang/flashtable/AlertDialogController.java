@@ -14,13 +14,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AlertDialogController {
-    private static AlertDialog alertDialog;
 
+    private static AlertDialog alertDialog;
     private static StoreHomeDiscountDialogAdapter adapter;
     private static View titleBar;
+    public static final int NOTICE1_APPOINT = 0;
+    public static final int NOTICE2_APPOINT = 1;
+    public static final int NOTICELIST_APPOINT = 2;
+    public static int listPosition = -1;
+    public static int result = 0;
 
     public static void discountDialog(final Context context, final StoreInfo storeInfo,final TextView tv_discount,final TextView tv_gift){
         //init view---------
@@ -52,6 +58,7 @@ public class AlertDialogController {
             public void onClick(View v) {
                 tv_discount.setText(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).discount)+"折");
                 tv_gift.setText(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
+                //TODO: notify server dicount change
                 alertDialog.dismiss();
             }
         });
@@ -150,7 +157,60 @@ public class AlertDialogController {
         alertDialog.show();
         setDialogSize(context, 0.75, 0.3);
     }
+    public static void listConfirmDialog(final Context context, String title, List<String> items, final int mode, final int position){
+        StoreMainActivity.alertDialogController.result = 0;
+        View view = LayoutInflater.from(context).inflate(R.layout.store_dialog_list, null);
+        setTitle(context, title, 18);
+        alertDialog = new AlertDialog.Builder(context)
+                .setCustomTitle(titleBar)
+                .setView(view)
+                .create();
+        setBackground(context);
+        ListView lv_item = (ListView) view.findViewById(R.id.lv_item);
+        final StoreDialogAdapter adapter = new StoreDialogAdapter(context, items);
+        lv_item.setAdapter(adapter);
+        lv_item.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                listPosition = position;
+                adapter.notifyDataSetChanged();
+            }
+        });
 
+        ImageButton bt_confirm = (ImageButton) view.findViewById(R.id.bt_confirm);
+        bt_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                List<String> items = new ArrayList<String>();
+                switch (mode){
+                    case NOTICE1_APPOINT:
+                        items.add("選擇店內已無空位\n會影響您的定位成功率");
+                        StoreMainActivity.alertDialogController.listConfirmDialog(context,"提醒",items,NOTICE2_APPOINT,position);
+                        break;
+                    case NOTICE2_APPOINT:
+                        items.add("未見該客戶");
+                        items.add("店內已無空位");
+                        StoreMainActivity.alertDialogController.listConfirmDialog(context,"取消原因",items,NOTICELIST_APPOINT,position);
+                        break;
+                    case NOTICELIST_APPOINT:
+                        //TODO: send FAIL msg
+                        StoreMainActivity.fragmentController.storeAppointFragment.appointList.remove(position);
+                        StoreMainActivity.fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
+                        break;
+                }
+            }
+        });
+        ImageButton bt_cancel = (ImageButton) view.findViewById(R.id.bt_cancel);
+        bt_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+        setDialogSize(context, 0.75, 0.5);
+    }
     //Change dialog size
     //Must be called after alertdialog.show()
     //relativeWidth(Height) is the rate relative to width/height of device screen

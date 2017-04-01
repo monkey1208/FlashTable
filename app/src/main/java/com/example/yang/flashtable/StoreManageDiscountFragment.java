@@ -66,7 +66,7 @@ public class StoreManageDiscountFragment extends ListFragment {
         bar.setNavigationIcon(d);
         bar.setNavigationOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                StoreMainActivity.fragmentController.act(3);
+                StoreMainActivity.fragmentController.act(FragmentController.MANAGE);
             }
         });
 
@@ -78,7 +78,6 @@ public class StoreManageDiscountFragment extends ListFragment {
                 Toast.makeText(v.getContext(),"Add new discount", Toast.LENGTH_SHORT).show();
             }
         });
-
         return v;
     }
 

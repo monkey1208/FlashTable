@@ -40,15 +40,17 @@ public class StoreManageSuccessFragment extends Fragment {
     }
 
     void setValues(View v){
-        TextView tv1 = (TextView)v.findViewById(R.id.store_manage_success_tv_rate);
-        TextView tv2 = (TextView)v.findViewById(R.id.store_manage_success_tv_amount);
-        TextView tv3 = (TextView)v.findViewById(R.id.store_manage_success_tv_fail);
-        TextView tv4 = (TextView)v.findViewById(R.id.store_manage_success_tv_success);
+        TextView tv_rate = (TextView)v.findViewById(R.id.store_manage_success_tv_rate);
+        TextView tv_total = (TextView)v.findViewById(R.id.store_manage_success_tv_amount);
+        TextView tv_fail = (TextView)v.findViewById(R.id.store_manage_success_tv_fail);
+        TextView tv_success = (TextView)v.findViewById(R.id.store_manage_success_tv_success);
         //Get values from server
-        tv1.setText("75");
-        tv2.setText("200");
-        tv3.setText("50");
-        tv4.setText("150");
+        StoreInfo storeInfo = StoreMainActivity.storeInfo;
+        double rate = ((double)storeInfo.successAppointment/(double)storeInfo.totalAppointment)*(double)100;
+        tv_rate.setText(Double.toString(rate));
+        tv_total.setText(Integer.toString(storeInfo.totalAppointment));
+        tv_fail.setText(Integer.toString(storeInfo.totalAppointment-storeInfo.successAppointment));
+        tv_success.setText(Integer.toString(storeInfo.successAppointment));
     }
 
 }

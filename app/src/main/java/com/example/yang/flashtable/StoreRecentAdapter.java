@@ -11,10 +11,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -27,7 +25,6 @@ public class StoreRecentAdapter extends ArrayAdapter<CustomerAppointInfo> {
     private Context context;
     private List<CustomerAppointInfo> list;
     private LayoutInflater layoutInflater;
-    //private CustomerAppointInfo customerAppointInfo;
     private final int CONFIRMED = 0;
     private final int CANCELED = 1;
 
@@ -40,7 +37,6 @@ public class StoreRecentAdapter extends ArrayAdapter<CustomerAppointInfo> {
                 long currentTime = System.currentTimeMillis();
                 for (ViewHolder holder : lstholder) {
                     holder.updateTimeRemaining(currentTime);
-                    //holder.setTest();
                 }
             }
         }
@@ -55,7 +51,7 @@ public class StoreRecentAdapter extends ArrayAdapter<CustomerAppointInfo> {
         this.list = list;
         countDown();
     }
-    public void countDown(){
+    private void countDown(){
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -99,14 +95,13 @@ public class StoreRecentAdapter extends ArrayAdapter<CustomerAppointInfo> {
             final ViewHolder holder =this;
             bt_confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    setClick(holder,CONFIRMED);
+                public void onClick(View v) {setClick(holder,CONFIRMED,customerAppointInfo);
                 }
             });
             bt_cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setClick(holder,CANCELED);
+                    setClick(holder,CANCELED,customerAppointInfo);
                 }
             });
             this.bt_confirm.setTag(this);
@@ -138,7 +133,7 @@ public class StoreRecentAdapter extends ArrayAdapter<CustomerAppointInfo> {
             }
         }
     }
-    public void setClick(ViewHolder holder,int stat){
+    private void setClick(ViewHolder holder,int stat,CustomerAppointInfo info){
         int [] srcId = {R.drawable.ic_confirmed,R.drawable.ic_confirmed_false};
         int [] AnimId = {R.anim.store_slide_left2right,R.anim.store_slide_right2left};
         if(stat == CONFIRMED){
@@ -153,6 +148,7 @@ public class StoreRecentAdapter extends ArrayAdapter<CustomerAppointInfo> {
             holder.tv_countdown.setTextColor(context.getResources().getColor(R.color.transparentGreen));
             Animation animation = AnimationUtils.loadAnimation(context,R.anim.store_slide_left2right);
             holder.im_confirmed.setAnimation(animation);
+            StoreMainActivity.storeInfo.addAppointment(info);
             FragmentController.storeRecentFragment.setItemStat(holder.position);
         }
         if(stat == CANCELED){

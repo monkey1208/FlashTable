@@ -41,6 +41,7 @@ public class StoreHomeConfirmFragment extends Fragment {
         bt_click.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                StoreMainActivity.storeInfo.addSuccessAppointment();
                 StoreMainActivity.fragmentController.act(FragmentController.HOME);
             }
         });

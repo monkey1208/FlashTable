@@ -86,7 +86,7 @@ public class StoreHomeFragment extends Fragment {
     }
     public void func_Test(List<StoreDiscountInfo> list){
         StoreDiscountInfo temp1 = new StoreDiscountInfo(95,"蛋餅");
-        StoreDiscountInfo temp2 = new StoreDiscountInfo(85,"可愛臭臭人");
+        StoreDiscountInfo temp2 = new StoreDiscountInfo(85,"可愛臭臭人",10,false);
         StoreDiscountInfo temp3 = new StoreDiscountInfo(75,"肥宅臭臭人");
         list.add(temp1);
         list.add(temp2);
