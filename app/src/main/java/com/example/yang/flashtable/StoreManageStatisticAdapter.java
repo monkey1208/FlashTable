@@ -11,11 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-
-/**
- * Created by 奕先 on 2017/3/25.
- */
 
 public class StoreManageStatisticAdapter extends BaseAdapter{
     private LayoutInflater inflater;
@@ -26,6 +24,12 @@ public class StoreManageStatisticAdapter extends BaseAdapter{
         this.context = context;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.discount_list = discount_list;
+        Collections.sort(this.discount_list,
+                new Comparator<StoreDiscountInfo>() {
+                    public int compare(StoreDiscountInfo o1, StoreDiscountInfo o2) {
+                        return o2.count - o1.count;
+                    }
+                });
     }
     @Override
     public int getCount() {

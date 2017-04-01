@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StoreAppointFragment extends ListFragment {
+    public static List<ReservationInfo> appointList = new ArrayList<>();
+    public static StoreAppointAdapter adapter;
     public  StoreAppointFragment () {
         // Required empty public constructor
     }
@@ -24,8 +26,8 @@ public class StoreAppointFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.store_appoint_fragment, container, false);
-        List<ReservationInfo> list = get_reservation_info();
-        StoreAppointAdapter adapter = new StoreAppointAdapter(getContext(), list);
+        appointList = get_reservation_info();
+        adapter = new StoreAppointAdapter(getContext(), appointList);
         setListAdapter(adapter);
         Toolbar bar = (Toolbar)v.findViewById(R.id.shop_toolbar);
         bar.inflateMenu(R.menu.shop_reservation_menu);
@@ -42,11 +44,11 @@ public class StoreAppointFragment extends ListFragment {
 
     private  List<ReservationInfo> get_reservation_info(){
         List<ReservationInfo> list = new ArrayList<>();
-        ReservationInfo tmp = new ReservationInfo("Chen",10);
+        ReservationInfo tmp = new ReservationInfo("Chen",10,System.currentTimeMillis()-1000);
         list.add(tmp);
-        tmp = new ReservationInfo("Yi",100);
+        tmp = new ReservationInfo("Yi",100,System.currentTimeMillis()-2000);
         list.add(tmp);
-        tmp = new ReservationInfo("Shan",1);
+        tmp = new ReservationInfo("Shan",1,System.currentTimeMillis()-3000);
         list.add(tmp);
         return list;
     }

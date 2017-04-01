@@ -77,7 +77,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerInside"
-                    android:src="@drawable/bt_store_appoint_cancel"
                     android:background="@color/transparentGreen"
                     android:layout_gravity="center"/>
             </FrameLayout>
@@ -101,8 +100,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
                         android:gravity="center"
-                        android:textSize="13sp"
-                        android:text="12:40"/>
+                        android:textSize="13sp"/>
                 </LinearLayout>
             </FrameLayout>
         </FrameLayout>

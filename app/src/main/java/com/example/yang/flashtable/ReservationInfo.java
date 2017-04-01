@@ -8,9 +8,11 @@ public class ReservationInfo {
     public String name;
     public int number;
     public long due_time;
-    public ReservationInfo(String name,int number){
+    public boolean isActive;
+    public ReservationInfo(String name,int number,long current){
         this.name = name;
         this.number = number;
-        this.due_time = 60000;
+        this.due_time = current + 12*1000;
+        this.isActive = true;
     }
 }

@@ -51,26 +51,6 @@ public class StoreRecentFragment extends Fragment {
         lv_recent = (ListView) v.findViewById(R.id.lv_recent);
         recentAdapter = new StoreRecentAdapter(getActivity(),recentList);
         lv_recent.setAdapter(recentAdapter);
-        /*lv_recent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                item_view = view;
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        final TextView tv_countdown = (TextView)item_view.findViewById(R.id.tv_countdown);
-                        new CountDownTimer(60000, 1000) {
-                            public void onTick(long millisUntilFinished) {
-                                tv_countdown.setText(millisUntilFinished / 1000+"s");
-                            }
-                            public void onFinish() {
-                                tv_countdown.setText("done!");
-                            }
-                        }.start();
-                    }
-                });
-            }
-        });*/
         //------------------
         return v;
     }
@@ -111,7 +91,7 @@ public class StoreRecentFragment extends Fragment {
                             Collections.sort(waitingList,
                                     new Comparator<Integer>() {
                                         public int compare(Integer o1, Integer o2) {
-                                            return o2-o1;
+                                            return o1-o2;
                                         }
                                     });
                             for(int i = 0;i<waitingList.size();i++) {
@@ -119,9 +99,7 @@ public class StoreRecentFragment extends Fragment {
                             }
                             recentAdapter = new StoreRecentAdapter(getActivity(), recentList);
                             lv_recent.setAdapter(recentAdapter);
-                            Toast.makeText(getContext(),Integer.toString(waitingList.size()),Toast.LENGTH_SHORT).show();
                             waitingList.clear();
-                            Toast.makeText(getContext(),Integer.toString(waitingList.size()),Toast.LENGTH_SHORT).show();
                         }
                     }
                 }.start();

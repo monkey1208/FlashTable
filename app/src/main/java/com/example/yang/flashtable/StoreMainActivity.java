@@ -20,6 +20,7 @@ public class StoreMainActivity extends AppCompatActivity{
     private static final int MANAGE = 3;
 
     public static FragmentController fragmentController;
+    public static AlertDialogController alertDialogController = new AlertDialogController();
     private FragmentManager fragmentManager;
 
     private int current_stat=HOME;
@@ -27,7 +28,9 @@ public class StoreMainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //arguments init
+        //TODO: Get Store Info
+        //TODO: start a thread getting updating request
+        //arguments init temp
         storeInfo = new StoreInfo("西堤牛排 南港店","台北市南港區忠孝東路七段369號C1棟(CITYLINK南港店)");
 
         button = new ImageButton[PRIM_FRAG];

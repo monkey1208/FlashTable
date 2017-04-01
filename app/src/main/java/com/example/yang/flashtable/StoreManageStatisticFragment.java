@@ -41,7 +41,7 @@ public class StoreManageStatisticFragment extends ListFragment {
         bar.setNavigationIcon(d);
         bar.setNavigationOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                StoreMainActivity.fragmentController.act(3);
+                StoreMainActivity.fragmentController.act(FragmentController.MANAGE);
             }
         });
         return v;
