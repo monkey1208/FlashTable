@@ -3,9 +3,11 @@ package com.example.yang.flashtable;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -15,6 +17,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -27,6 +30,9 @@ public class CustomerMainActivity extends AppCompatActivity
     private Fragment fragment;
     private boolean map_showing;
     private NavigationView nv_view;
+    public final int COARSE_PERMISSION_CODE = 11;
+    public final int FINE_LOCATION_MAP_CODE = 12;
+    public final int FINE_LOCATION_MAIN_CODE = 13;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +163,31 @@ public class CustomerMainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case FINE_LOCATION_MAP_CODE :
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+
+                    ((CustomerMapFragment)fragment).setMap();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT)
+                            .show();
+                }
+                break;
+            case FINE_LOCATION_MAIN_CODE :
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    ((CustomerMainFragment)fragment).getShopStatus(true);
+                } else {
+                    ((CustomerMainFragment)fragment).getShopStatus(false);
+                }
+
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
 }

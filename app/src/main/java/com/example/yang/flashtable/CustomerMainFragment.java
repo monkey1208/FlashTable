@@ -8,8 +8,11 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Criteria;
+import android.location.GpsStatus;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -69,6 +72,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     CustomerMainAdapter adapter;
     EditText et_search;
     SqlHandler sqlHandler = null;
+    LocationManager locationMgr;
 
     // Views for show
     ImageButton ib_show_back;
@@ -78,12 +82,16 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     // Textview in restaurant detail
     TextView tv_show_name, tv_show_consumption, tv_show_discount, tv_show_offer, tv_show_location, tv_show_category, tv_show_intro;
 
+    final int FINE_LOCATION_CODE = 13;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.customer_main_fragment, container, false);
         initView();
-        getShopStatus();
+        gpsPermission();
+        //getShopStatus(false);
         initData();
         return view;
     }
@@ -153,7 +161,9 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             }
         });
     }
-    private void setListView(List<CustomerRestaurantInfo> res_list){
+
+    private void setListView(List<CustomerRestaurantInfo> res_list) {
+        System.out.println("set list!");
         adapter = new CustomerMainAdapter(view.getContext(), res_list);
         adapter.notifyDataSetChanged();
         lv_shops.setAdapter(adapter);
@@ -164,10 +174,18 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             }
         });
     }
-    private void getShopStatus(){
+
+    public void getShopStatus(boolean active) {
         openDB();
-        new ApiPromotion().execute();
+
+        if (active == true) {
+            new CurrentLocation().execute();
+        }else{
+            new ApiPromotion().execute(24.05, 121.545);
+        }
+
     }
+
 
     // DB related functions
     private void openDB() {
@@ -191,7 +209,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     private List<CustomerRestaurantInfo> generateTestList() {
         List<CustomerRestaurantInfo> list = new ArrayList<>();
         for (int i = 1; i < 6; i++) {
-            LatLng latLng = new LatLng(121.5, 25.01);
+            LatLng latLng = new LatLng(25.01, 121.5);
             CustomerRestaurantInfo info = new CustomerRestaurantInfo("Restaurant " + Integer.toString(i), i, 100, "tag", latLng);
             info.detailInfo.setInfo("address", "garbage store");
             list.add(info);
@@ -246,7 +264,6 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         tv_show_location.setText(info.detailInfo.address);
         tv_show_category.setText(info.category);
         tv_show_intro.setText(info.detailInfo.intro);
-
     }
 
     private void closeRestaurantDetail() {
@@ -276,19 +293,53 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     @Override
     public void onPageScrollStateChanged(int state) {
     }
+    private void gpsPermission(){
+        if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            getShopStatus(true);
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    FINE_LOCATION_CODE);
+        }
+    }
 
-    private class ApiPromotion extends AsyncTask<Float, Void, String> {
-        HttpClient httpClient = new DefaultHttpClient();
-        LocationManager locationMgr;
+    private class CurrentLocation {
         String provider;
+        public void execute(){
+            locationMgr = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setAltitudeRequired(false);
+            criteria.setBearingRequired(false);
+            criteria.setCostAllowed(true);
+            criteria.setPowerRequirement(Criteria.POWER_LOW);
+            provider = locationMgr.getBestProvider(criteria, true);
+            criteria = null;
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            } else{
+                Location location = locationMgr.getLastKnownLocation(provider);
+                if(location != null) {
+                    new ApiPromotion().execute(location.getLatitude(), location.getLongitude());
+                }else{
+                    new ApiPromotion().execute(24.0, 121.0);
+                }
+            }
+        }
+    }
+
+    private class ApiPromotion extends AsyncTask<Double, Void, String> {
+        HttpClient httpClient = new DefaultHttpClient();
         List<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
         @Override
-        protected String doInBackground(Float... params) {
+        protected String doInBackground(Double... params) {
             //Location location = locationMgr.getLastKnownLocation(provider);
-            String latlng = "24.778289,120.988108";//need current location
+            String lat = String.valueOf(params[0]);
+            String lng = String.valueOf(params[1]);
+            String latlng = lat + "," + lng;//need current location
+            Log.d("APIPromotion", "latlng = "+latlng);
             List<Description> list = getPromotionId(latlng);
             for(int i = 0; i < list.size(); i++) {
-                System.out.println("ADD");
                 CustomerRestaurantInfo info = sqlHandler.getDetail(list.get(i).shop_id);
                 info.discount = list.get(i).discount;
                 info.offer = list.get(i).offer;
@@ -342,6 +393,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             }
             return list;
         }
+
         private class Description {
             public Description(int shop_id, int discount, String offer){
                 this.shop_id = shop_id;

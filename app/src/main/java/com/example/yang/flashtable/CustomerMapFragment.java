@@ -2,7 +2,9 @@ package com.example.yang.flashtable;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -38,6 +40,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class CustomerMapFragment extends Fragment implements OnMapReadyCallback {
     private View view;
     private FloatingActionButton fab_my_position;
+    public final int COARSE_PERMISSION_CODE = 11;
+    public final int FINE_LOCATION_CODE = 12;
+    private GoogleMap googleMap;
 
     @Nullable
     @Override
@@ -61,21 +66,36 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
+        gpsPermission();
 
-        final GPSService gpsService = new GPSService(getActivity(), googleMap);
-        gpsService.execute();
+    }
+    public void setMap(){
+        final CustomerGps gps = new CustomerGps(getActivity(), googleMap, true);
+        gps.execute();
         fab_my_position.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gpsService.goToMyPosition();
+                gps.goToMyPosition();
             }
         });
-        gpsService.setMarker(new LatLng(25.05, 121.545));
+        gps.setMarker(new LatLng(25.05, 121.545));
     }
 
 
-
-    public class GPSService {
+    private void gpsPermission(){
+        if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            setMap();
+        } else {
+            // Show rationale and request permission.
+            // No explanation needed, we can request the permission.
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    FINE_LOCATION_CODE);
+        }
+    }
+    public class CustomerGps {
         private static final String TAG = "GPSService";
         private LocationManager locationMgr;
         private String provider;
@@ -83,29 +103,33 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
         private LatLng latLng = null;
         private MarkerOptions markerOptions;
         private Marker marker;
-        private final int COARSE_PERMISSION_CODE = 11;
-        private final int FINE_LOCATION_CODE = 12;
         private Activity c;
+        private boolean map_active;
 
-        public GPSService(Activity c, GoogleMap googleMap) {
+        public CustomerGps(Activity c, GoogleMap googleMap, boolean map_active) {
             this.c = c;
-            this.googleMap = googleMap;
+            if (map_active == true)
+                this.googleMap = googleMap;
+            this.map_active = map_active;
+        }
+        public void execute() {
+            gpsUpdate();
         }
 
-        public void execute() {
-            init();
+        private void gpsUpdate() {
+            if (map_active == true) {
+                initMarker();
+            }
             if (initLocationProvider()) {
+                Log.d("DEBUG", "PROVIDER");
                 whereAmI();
             } else {
-
-            }
-            if (askpermission() == false) {
-                System.out.println("GPS_permission_denied!");
-                return;
+                Toast.makeText(c, "No Location Provider", Toast.LENGTH_SHORT).show();
+                Log.d("CustomerGps", "No Location Provider");
             }
         }
 
-        private void init() {
+        private void initMarker() {
             markerOptions = new MarkerOptions();
             latLng = new LatLng(25.021918, 121.535285);
             markerOptions.anchor(0.75f, 0.5f)
@@ -127,7 +151,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
             }
             locationMgr.addGpsStatusListener(gpsListener);
             //Location Listener
-            int minTime = 500;//ms
+            int minTime = 0;//ms
             int minDist = 3;//meter
             locationMgr.requestLocationUpdates(provider, minTime, minDist, locationListener);
         }
@@ -142,15 +166,18 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                 location = locationMgr.getLastKnownLocation(provider);
                 updateWithNewLocation(location);
             }
+
             @Override
             public void onProviderDisabled(String provider) {
                 Log.d("CustomerMapFragment", "Disable");
                 updateWithNewLocation(null);
             }
+
             @Override
             public void onProviderEnabled(String provider) {
                 Log.d("CustomerMapFragment", "Enable");
             }
+
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
                 switch (status) {
@@ -191,34 +218,41 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                 }
             }
         };
+
         private void updateWithNewLocation(Location location) {
             if (location != null) {
                 //經度
                 double lng = location.getLongitude();
                 //緯度
                 double lat = location.getLatitude();
-                Log.d(TAG, "new location latlng=("+lat+","+lng+")");
+                Log.d(TAG, "new location latlng=(" + lat + "," + lng + ")");
                 latLng = null;
                 latLng = new LatLng(lat, lng);
-                if(latLng != null) {
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                    marker.setPosition(latLng);
+                if (latLng != null) {
+                    if (map_active == true) {
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        marker.setPosition(latLng);
+                    } else {
+
+                    }
                 }
-            }else{
             }
         }
-        public void goToMyPosition(){
-            if(latLng != null){
+
+        public void goToMyPosition() {
+            if (latLng != null) {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
             }
         }
-        public Marker setMarker(LatLng latLng){
-            MarkerOptions options =new MarkerOptions();
+
+        public Marker setMarker(LatLng latLng) {
+            MarkerOptions options = new MarkerOptions();
             options.position(latLng)
                     .icon(BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_restaurant)));
             Marker restaurant_marker = googleMap.addMarker(options);
             return restaurant_marker;
         }
+
         private boolean initLocationProvider() {
             locationMgr = (LocationManager) c.getSystemService(c.LOCATION_SERVICE);
 
@@ -230,11 +264,12 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
             criteria.setPowerRequirement(Criteria.POWER_LOW);
             provider = locationMgr.getBestProvider(criteria, true);
             if (provider != null) {
-                Log.d(TAG, "Provider: "+provider);
+                Log.d(TAG, "Provider: " + provider);
                 return true;
             }
             return false;
         }
+
         private Bitmap createScaledMarker(int resource) {
             int height = 120;
             int width = 120;
@@ -242,25 +277,6 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
             Bitmap b = bitmapdraw.getBitmap();
             return Bitmap.createScaledBitmap(b, width, height, false);
         }
-        private boolean askpermission(){
-            if (ActivityCompat.checkSelfPermission(c, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(c, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        FINE_LOCATION_CODE);
-                if (ActivityCompat.checkSelfPermission(c, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                    return false;
-                }
-            }
-            if (ActivityCompat.checkSelfPermission(c, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(c, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
-                        COARSE_PERMISSION_CODE);
-
-                if (ActivityCompat.checkSelfPermission(c, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                    return false;
-                }
-            }
-            return true;
-        }
 
     }
-
 }
