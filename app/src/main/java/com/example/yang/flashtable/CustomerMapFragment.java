@@ -14,6 +14,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,13 +37,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class CustomerMapFragment extends Fragment implements OnMapReadyCallback {
     private View view;
+    private FloatingActionButton fab_my_position;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.customer_map_fragment, container, false);
-        if(view != null){
+        fab_my_position = (FloatingActionButton) view.findViewById(R.id.customer_fab_my_position);
+        fab_my_position.setImageResource(R.drawable.ic_customer_map_mylocation);
+        if (view != null) {
             return view;
-        }else {
+        } else {
             return super.onCreateView(inflater, container, savedInstanceState);
         }
     }
@@ -57,22 +62,25 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        GPSService gpsService = new GPSService(getActivity(), googleMap);
+        final GPSService gpsService = new GPSService(getActivity(), googleMap);
         gpsService.execute();
+        fab_my_position.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gpsService.goToMyPosition();
+            }
+        });
+        gpsService.setMarker(new LatLng(25.05, 121.545));
     }
-    private Bitmap createScaledMarker(){
-        int height = 120;
-        int width = 120;
-        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.customer_map_me);
-        Bitmap b=bitmapdraw.getBitmap();
-        return Bitmap.createScaledBitmap(b, width, height, false);
-    }
+
+
+
     public class GPSService {
         private static final String TAG = "GPSService";
         private LocationManager locationMgr;
         private String provider;
         private GoogleMap googleMap;
-        private LatLng latLng;
+        private LatLng latLng = null;
         private MarkerOptions markerOptions;
         private Marker marker;
         private final int COARSE_PERMISSION_CODE = 11;
@@ -91,21 +99,22 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
             } else {
 
             }
-            if(askpermission() == false){
+            if (askpermission() == false) {
                 System.out.println("GPS_permission_denied!");
                 return;
             }
         }
-        private void init(){
+
+        private void init() {
             markerOptions = new MarkerOptions();
-            LatLng latLng = new LatLng(25.021918, 121.535285);
-            markerOptions.position(latLng)
-                    .anchor(0.75f, 0.5f)
+            latLng = new LatLng(25.021918, 121.535285);
+            markerOptions.anchor(0.75f, 0.5f)
+                    .position(latLng)
                     .title("ME")
-                    .icon(BitmapDescriptorFactory.fromBitmap(createScaledMarker()));
+                    .icon(BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.customer_map_me)));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
             marker = googleMap.addMarker(markerOptions);
-            LocationManager lm = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
+
         }
 
         private void whereAmI() {
@@ -118,24 +127,29 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
             }
             locationMgr.addGpsStatusListener(gpsListener);
             //Location Listener
-            int minTime = 5000;//ms
-            int minDist = 5;//meter
-            System.out.println("wheramI");
+            int minTime = 500;//ms
+            int minDist = 3;//meter
             locationMgr.requestLocationUpdates(provider, minTime, minDist, locationListener);
         }
-        LocationListener locationListener = new LocationListener(){
+
+        LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                System.out.println("Able");
+                Log.d("CustomerMapFragment", "location change");
+                if (ActivityCompat.checkSelfPermission(c, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(c, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                location = locationMgr.getLastKnownLocation(provider);
                 updateWithNewLocation(location);
             }
             @Override
             public void onProviderDisabled(String provider) {
-                System.out.println("Disable");
+                Log.d("CustomerMapFragment", "Disable");
                 updateWithNewLocation(null);
             }
             @Override
             public void onProviderEnabled(String provider) {
+                Log.d("CustomerMapFragment", "Enable");
             }
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -183,12 +197,27 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                 double lng = location.getLongitude();
                 //緯度
                 double lat = location.getLatitude();
+                Log.d(TAG, "new location latlng=("+lat+","+lng+")");
                 latLng = null;
                 latLng = new LatLng(lat, lng);
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                marker.setPosition(latLng);
+                if(latLng != null) {
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                    marker.setPosition(latLng);
+                }
             }else{
             }
+        }
+        public void goToMyPosition(){
+            if(latLng != null){
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            }
+        }
+        public Marker setMarker(LatLng latLng){
+            MarkerOptions options =new MarkerOptions();
+            options.position(latLng)
+                    .icon(BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_restaurant)));
+            Marker restaurant_marker = googleMap.addMarker(options);
+            return restaurant_marker;
         }
         private boolean initLocationProvider() {
             locationMgr = (LocationManager) c.getSystemService(c.LOCATION_SERVICE);
@@ -201,10 +230,17 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
             criteria.setPowerRequirement(Criteria.POWER_LOW);
             provider = locationMgr.getBestProvider(criteria, true);
             if (provider != null) {
-                System.out.println("Provider: "+provider);
+                Log.d(TAG, "Provider: "+provider);
                 return true;
             }
             return false;
+        }
+        private Bitmap createScaledMarker(int resource) {
+            int height = 120;
+            int width = 120;
+            BitmapDrawable bitmapdraw = (BitmapDrawable) c.getResources().getDrawable(resource);
+            Bitmap b = bitmapdraw.getBitmap();
+            return Bitmap.createScaledBitmap(b, width, height, false);
         }
         private boolean askpermission(){
             if (ActivityCompat.checkSelfPermission(c, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -224,6 +260,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
             }
             return true;
         }
+
     }
 
 }

@@ -50,7 +50,19 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
             iv_shop.setImageBitmap(info.getImage());
             tv_shop.setText(info.name);
             tv_price.setText("均消$"+Integer.toString(info.consumption));
-
+            int discount = info.discount;
+            if( discount == 101 ||discount == 100) {
+                tv_discount.setText("暫無折扣");
+            }else{
+                int dis = discount/10;
+                int point = discount%10;
+                if(point == 0){
+                    tv_discount.setText(dis+"折");
+                }else{
+                    tv_discount.setText(discount+"折");
+                }
+            }
+            tv_gift.setText(info.offer);
             setView(position);
             return convertView;
         }
