@@ -24,10 +24,32 @@
     <string name="login_success">歡迎，</string>
     <string name="login_wait">請稍候</string>
     <string name="login_error_typo">輸入帳號或密碼錯誤</string>
-    <string name="login_error_connection">登入失敗，請重試</string>
+    <string name="login_error_connection">連線失敗，請重試</string>
 
     <!-- Strings related to alert -->
     <string name="alert_title">提醒</string>
+
+    <!-- Strings related to customer register -->
+    <string name="customer_register_title">一般帳號資料填寫：</string>
+    <string name="customer_register_username">帳號名稱</string>
+    <string name="customer_register_password">密碼</string>
+    <string name="customer_register_password_again">確認密碼</string>
+    <string name="customer_register_cellphone">手機號碼</string>
+    <string name="customer_register_cellphone_code">※系統將發送驗證碼至此號碼</string>
+    <string name="customer_register_enter_code">輸入發送給您的4位數驗證號碼：</string>
+    <string name="customer_register_again_code">重新發送</string>
+    <string name="customer_register_again_code_at">於</string>
+    <string name="customer_register_again_code_wait">秒後可重新發送驗證碼</string>
+    <string name="customer_register_cellphone_hint">+886&#8211;912&#8211;345&#8211;678</string>
+    <string name="customer_register_error_username">帳號名稱錯誤</string>
+    <string name="customer_register_error_password">密碼格式錯誤(只可包含英數字)</string>
+    <string name="customer_register_error_password_again">兩次密碼不符合</string>
+    <string name="customer_register_error_cellphone">手機格式錯誤</string>
+    <string name="customer_register_error_username_used">此帳號已被註冊</string>
+    <string name="customer_register_error_cellphone_used">此手機號碼已被認證</string>
+    <string name="customer_register_error_verify_length">請輸入4位數驗證號碼</string>
+    <string name="customer_register_error_verify_wrong">驗證碼不正確</string>
+    <string name="customer_register_success">成功註冊，請登入</string>
 
     <!-- String related to customer main -->
     <string name="customer_main_no_info">尚未提供</string>
