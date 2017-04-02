@@ -6,12 +6,12 @@ public class CustomerAppointInfo {
     public int honor;
     public int number;
     public int im_id;
-    public long expireTime;
+    public int expireTime;
     public CustomerAppointInfo(String name,int honor,int number,int im_id){
         this.name=name;
         this.honor=honor;
         this.number=number;
         this.im_id=im_id;
-        this.expireTime = System.currentTimeMillis()+60000;
+        this.expireTime = 60;
     }
 }
