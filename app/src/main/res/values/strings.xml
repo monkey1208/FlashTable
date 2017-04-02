@@ -60,7 +60,7 @@
     <string name="customer_main_reserve">立即預約</string>
     <string name="customer_main_open">營業時間</string>
     <string name="customer_main_type">下午茶</string>
-    <string name="customer_main_info">店家資訊</string>
+    <string name="customer_main_info">店家說明</string>
     <string name="customer_main_info_content">詳細內容</string>
     <string-array name="customer_sp_sort">
         <item>預設排序</item>
@@ -128,6 +128,9 @@
     <!-- Strings related to customer comments -->
     <string name="customer_comments_my_title">我的評價及評論</string>
     <string name="customer_comments_title">評價及評論</string>
+    <string name="customer_comments_success">成功留下評論！</string>
+    <string name="customer_comments_error_no_rating">您尚未選擇評分喔</string>
+    <string name="customer_comments_error_not_sent">填寫的內容尚未送出，確定回到上一頁嗎？</string>
 
     <!-- Strings related to customer rating -->
     <string name="customer_rating_title">評價及評論</string>

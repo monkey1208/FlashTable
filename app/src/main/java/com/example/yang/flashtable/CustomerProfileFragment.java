@@ -50,6 +50,8 @@ public class CustomerProfileFragment extends Fragment {
     ImageView iv_avatar;
     Button bt_edit, bt_about_credits;
 
+    private String credits;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,12 +71,15 @@ public class CustomerProfileFragment extends Fragment {
         iv_avatar = (ImageView) view.findViewById(R.id.customer_profile_iv_avatar);
         bt_edit = (Button) view.findViewById(R.id.customer_profile_bt_edit);
         bt_about_credits = (Button) view.findViewById(R.id.customer_profile_bt_about_credit);
+
+        credits = getResources().getString(R.string.customer_profile_credit);
     }
 
     private void initData() {
         getUserInfo();
 
         tv_username.setText(username);
+        tv_credit.setText(credits + "-");
         new CustomerAPICredits().execute(userID);
 
         ll_reservations.setOnClickListener(new View.OnClickListener() {
@@ -110,17 +115,7 @@ public class CustomerProfileFragment extends Fragment {
     }
 
     class CustomerAPICredits extends AsyncTask<String, Void, String> {
-        private ProgressDialog progress_dialog = new ProgressDialog(CustomerProfileFragment.this.getActivity());
         private String status = null;
-
-        @Override
-        protected void onPreExecute() {
-            // TODO: Style this.
-
-            progress_dialog.setMessage(getResources().getString(R.string.login_wait));
-            // progress_dialog.setContentView(R.layout.progress_dialog);
-            progress_dialog.show();
-        }
 
         @Override
         protected String doInBackground(String... params) {
@@ -151,10 +146,8 @@ public class CustomerProfileFragment extends Fragment {
             if(status == null || status.equals("-1") || _content == null)
                 dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
             else {
-                tv_credit.append(_content);
+                tv_credit.setText(credits + _content);
             }
-            if (progress_dialog.isShowing())
-                progress_dialog.dismiss();
         }
     }
 }
