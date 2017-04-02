@@ -9,6 +9,14 @@
         <item name="android:textSize">17sp</item>
     </style>
 
+    <style name="AppFullScreenTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
     <style name="AppTheme.NoActionBar" parent="android:Theme.Holo.Light">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

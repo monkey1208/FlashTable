@@ -1,26 +1,28 @@
 package com.example.yang.flashtable;
 
+import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
 import java.util.List;
+
+import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
 
 public class StoreHomeFragment extends Fragment {
 
@@ -33,6 +35,9 @@ public class StoreHomeFragment extends Fragment {
     private ImageButton bt_active;
     private View v;
     private StoreInfo storeInfo;
+
+    private static final int SCAN_REQUEST_ZXING_SCANNER = 1;
+    private static final int RC_HANDLE_CAMERA_PERM = 2;
 
     public StoreHomeFragment() {
     }
@@ -78,7 +83,10 @@ public class StoreHomeFragment extends Fragment {
         bt_QRcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StoreMainActivity.fragmentController.act(FragmentController.CONFIRM);
+                requestCameraPermission();
+                Intent intent = new Intent(getContext(), QrcodeScannerActivity.class);
+                startActivityForResult(intent, SCAN_REQUEST_ZXING_SCANNER);
+                //StoreMainActivity.fragmentController.act(FragmentController.CONFIRM);
             }
         });
         //--------------
@@ -91,5 +99,35 @@ public class StoreHomeFragment extends Fragment {
         list.add(temp1);
         list.add(temp2);
         list.add(temp3);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.v(LOG_TAG, "onActivityResult(): requestCode = " + requestCode);
+        if (requestCode == SCAN_REQUEST_ZXING_SCANNER) {
+            if(resultCode == Activity.RESULT_OK){
+                String mResult = data.getStringExtra(QrcodeScannerActivity.SCAN_RESULT);
+                Toast.makeText(getContext(),mResult, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            IntentResult result = IntentIntegrator.parseActivityResult(
+                    requestCode, resultCode, data);
+            if(result != null && result.getContents() != null) {
+             //   mResult = result.getContents();
+             //   mTxtResult.setText(mResult);
+            }
+        }
+    }
+
+    private void requestCameraPermission() {
+        Log.w("www", "Camera permission is not granted. Requesting permission");
+
+        final String[] permissions = new String[]{Manifest.permission.CAMERA};
+
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                Manifest.permission.CAMERA)) {
+            ActivityCompat.requestPermissions(getActivity(), permissions, 2);
+            return;
+        }
     }
 }
