@@ -56,8 +56,14 @@ public class CustomerCommentAdapter extends BaseAdapter {
 
     private void setView(int position) {
         CustomerCommentInfo comment = comments.get(position);
-        tv_shop.setText(comment.shop);
-        tv_user.setText(comment.user);
+        if (comment.shop != null) {
+            tv_shop.setText(comment.shop);
+            tv_shop.setBackgroundResource(android.R.color.transparent);
+        }
+        if (comment.user != null) {
+            tv_user.setText(comment.user);
+            tv_user.setBackgroundResource(android.R.color.transparent);
+        }
         rb_rating.setRating(comment.rating);
         rb_rating.setIsIndicator(true);
 

@@ -25,6 +25,7 @@
     <string name="login_wait">請稍候</string>
     <string name="login_error_typo">輸入帳號或密碼錯誤</string>
     <string name="login_error_connection">連線失敗，請重試</string>
+    <string name="login_error_invalid">帳號/密碼無效，請重試</string>
 
     <!-- Strings related to alert -->
     <string name="alert_title">提醒</string>
