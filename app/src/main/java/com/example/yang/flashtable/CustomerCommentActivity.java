@@ -35,9 +35,6 @@ public class CustomerCommentActivity extends AppCompatActivity {
 
     SharedPreferences user;
     String userID;
-
-    String user_name, shop_name;
-
     DialogBuilder dialog_builder;
 
     ListView lv_comments;
@@ -74,7 +71,9 @@ public class CustomerCommentActivity extends AppCompatActivity {
     }
 
     private void getComments() {
-        new CustomerAPIGetComments().execute(userID);
+        comment_adapter = new CustomerCommentAdapter(CustomerCommentActivity.this, comments);
+        lv_comments.setAdapter(comment_adapter);
+        new APIComments().execute(userID);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -96,211 +95,60 @@ public class CustomerCommentActivity extends AppCompatActivity {
         lv_comments.setAdapter(comment_adapter);
     }
 
-    // APIs
-    class CustomerAPIGetComments extends AsyncTask<String, Void, JSONArray> {
+
+    class APIComments extends AsyncTask<String, Void, Void> {
         private ProgressDialog progress_dialog = new ProgressDialog(CustomerCommentActivity.this);
         private String status = null;
-        private int size = -1;
-
         @Override
         protected void onPreExecute() {
-            // TODO: Style this.
-
-            progress_dialog.setMessage(getResources().getString(R.string.login_wait));
-            // progress_dialog.setContentView(R.layout.progress_dialog);
+            progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
             progress_dialog.show();
         }
-
         @Override
-        protected JSONArray doInBackground(String... params) {
-            JSONArray content = null;
+        protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet request = new HttpGet(
-                        "https://flash-table.herokuapp.com/api/user_comments?user_id=" + params[0]);
+                HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/user_comments?user_id=" + params[0]);
                 request.addHeader("Content-Type", "application/json");
-                HttpResponse response = httpClient.execute(request);
-                ResponseHandler<String> handler = new BasicResponseHandler();
-                String httpResponse = handler.handleResponse(response);
-                JSONArray responseJSON = new JSONArray(httpResponse);
+                JSONArray responseJSON = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
                 status = responseJSON.getJSONObject(0).getString("status_code");
-                if (status.equals("0")) {
-                    size = responseJSON.getJSONObject(0).getInt("size");
-                    content = responseJSON;
-                }
-            } catch (Exception e) {
-                Log.d("GetCode", "Request exception:" + e.getMessage());
-            } finally {
-                httpClient.getConnectionManager().shutdown();
-            }
-            return content;
-        }
-
-        @Override
-        protected void onPostExecute(JSONArray content) {
-
-            if (status.equals("-1") || status == null || content == null || size == -1)
-                dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
-            else if (size > 0) {
-                try {
-                    for (int i = 1; i <= size; i++) {
-                        String comment_id = content.getJSONObject(i).getString("comment_id");
-                        new CustomerAPIGetCommentContent().execute(comment_id, Integer.toString(i-1));
+                if( status.equals("0") ) {
+                    int size = Integer.parseInt( responseJSON.getJSONObject(0).getString("size") );
+                    for(int i = 1 ; i <= size ; i++) {
+                        HttpGet requestInfo = new HttpGet( "https://flash-table.herokuapp.com/api/comment_info?comment_id=" + responseJSON.getJSONObject(i).getString("comment_id") );
+                        requestInfo.addHeader("Content-Type", "application/json");
+                        JSONObject responseInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestInfo) ) );
+                        status =  responseInfo.getString("status_code");
+                        if( !status.equals("0") )   break;
+                        String body = responseInfo.getString("body"), score = responseInfo.getString("score"), user_id = responseInfo.getString("user_id"), shop_id = responseInfo.getString("shop_id");
+                        HttpGet requestUser = new HttpGet("https://flash-table.herokuapp.com/api/user_info?user_id=" + user_id);
+                        requestUser.addHeader("Content-Type", "application/json");
+                        JSONObject responseUser = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestUser) ) );
+                        status = responseUser.getString("status_code");
+                        if( !status.equals("0") )   break;
+                        String userAccount = responseUser.getString("account");
+                        HttpGet requestShop = new HttpGet("https://flash-table.herokuapp.com/api/shop_info?shop_id=" + shop_id);
+                        requestShop.addHeader("Content-Type", "application/json");
+                        JSONObject responseShop = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestShop) ) );
+                        status = responseShop.getString("status_code");
+                        if( !status.equals("0") )   break;
+                        String shopName = responseShop.getString("name");
+                        comments.add( new CustomerCommentInfo( userAccount, shopName, body, Float.parseFloat(score) / 2, Integer.parseInt(user_id), Integer.parseInt(shop_id) ) );
                     }
-
-                } catch (Exception e) {
-                    Log.d("GetCode", "Request exception:" + e.getMessage());
-                }
-            }
-
-            if (progress_dialog.isShowing())
-                progress_dialog.dismiss();
-        }
-    }
-
-    class CustomerAPIGetCommentContent extends AsyncTask<String, Void, CustomerCommentInfo> {
-        private ProgressDialog progress_dialog = new ProgressDialog(CustomerCommentActivity.this);
-        private String status = null;
-        private int index;
-
-        @Override
-        protected void onPreExecute() {
-            // TODO: Style this.
-
-            progress_dialog.setMessage(getResources().getString(R.string.login_wait));
-            // progress_dialog.setContentView(R.layout.progress_dialog);
-            progress_dialog.show();
-        }
-
-        @Override
-        protected CustomerCommentInfo doInBackground(String... params) {
-            CustomerCommentInfo content = null;
-            index = Integer.parseInt(params[1]);
-            HttpClient httpClient = new DefaultHttpClient();
-            try {
-                HttpGet request = new HttpGet(
-                        "https://flash-table.herokuapp.com/api/comment_info?comment_id=" + params[0]);
-                request.addHeader("Content-Type", "application/json");
-                HttpResponse response = httpClient.execute(request);
-                ResponseHandler<String> handler = new BasicResponseHandler();
-                String httpResponse = handler.handleResponse(response);
-                JSONObject responseJSON = new JSONObject(httpResponse);
-                status = responseJSON.getString("status_code");
-                if (status.equals("0")) {
-                    content = new CustomerCommentInfo(null,
-                            null,
-                            responseJSON.getString("body"),
-                            (float) responseJSON.getInt("score") / 2,
-                            responseJSON.getInt("user_id"), responseJSON.getInt("shop_id"));
                 }
             } catch (Exception e) {
+                status = null;
                 Log.d("GetCode", "Request exception:" + e.getMessage());
             } finally {
                 httpClient.getConnectionManager().shutdown();
             }
-            return content;
+            return null;
         }
         @Override
-        protected void onPostExecute(CustomerCommentInfo _content) {
-
-            if(status.equals("-1") || _content == null)
-                dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
-            else {
-                try {
-                    new CustomerAPIGetCustomer().execute(Integer.toString(_content.userID), Integer.toString(index));
-                    new CustomerAPIGetShop().execute(Integer.toString(_content.shopID), Integer.toString(index));
-
-                    comments.add(_content);
-
-                    // TODO: Change to set once?
-                    comment_adapter = new CustomerCommentAdapter(CustomerCommentActivity.this, comments);
-                    lv_comments.setAdapter(comment_adapter);
-                } catch (Exception e) {
-                    Log.e("GET_COMMENT", e.toString());
-                }
-            }
-
-            if (progress_dialog.isShowing())
-                progress_dialog.dismiss();
-        }
-    }
-
-    class CustomerAPIGetCustomer extends AsyncTask<String, Void, String> {
-        private String status = null;
-        private int index;
-
-        @Override
-        protected String doInBackground(String... params) {
-            String content = null;
-            index = Integer.parseInt(params[1]);
-            HttpClient httpClient = new DefaultHttpClient();
-            try {
-                HttpGet request = new HttpGet(
-                        "https://flash-table.herokuapp.com/api/user_info?user_id=" + params[0]);
-                request.addHeader("Content-Type", "application/json");
-                HttpResponse response = httpClient.execute(request);
-                ResponseHandler<String> handler = new BasicResponseHandler();
-                String httpResponse = handler.handleResponse(response);
-                JSONObject responseJSON = new JSONObject(httpResponse);
-                status = responseJSON.getString("status_code");
-                if (status.equals("0")) {
-                    content = responseJSON.getString("account");
-                }
-            } catch (Exception e) {
-                Log.d("GetCode", "Request exception:" + e.getMessage());
-            } finally {
-                httpClient.getConnectionManager().shutdown();
-            }
-            return content;
-        }
-        @Override
-        protected void onPostExecute(String _content) {
-
-            if(status.equals("-1") || _content == null)
-                dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
-            else {
-                comments.get(index).user = _content;
-            }
-        }
-    }
-
-    class CustomerAPIGetShop extends AsyncTask<String, Void, String> {
-        private String status = null;
-        private int index;
-
-        @Override
-        protected String doInBackground(String... params) {
-            String content = null;
-            index = Integer.parseInt(params[1]);
-            HttpClient httpClient = new DefaultHttpClient();
-            try {
-                HttpGet request = new HttpGet(
-                        "https://flash-table.herokuapp.com/api/shop_info?shop_id=" + params[0]);
-                request.addHeader("Content-Type", "application/json");
-                HttpResponse response = httpClient.execute(request);
-                ResponseHandler<String> handler = new BasicResponseHandler();
-                String httpResponse = handler.handleResponse(response);
-                JSONObject responseJSON = new JSONObject(httpResponse);
-                status = responseJSON.getString("status_code");
-                if (status.equals("0")) {
-                    content = responseJSON.getString("name");
-                }
-            } catch (Exception e) {
-                Log.d("GetCode", "Request exception:" + e.getMessage());
-            } finally {
-                httpClient.getConnectionManager().shutdown();
-            }
-            return content;
-        }
-        @Override
-        protected void onPostExecute(String _content) {
-
-            if(status.equals("-1") || _content == null)
-                dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
-            else {
-                comments.get(index).shop = _content;
-                updateComments();
-            }
+        protected void onPostExecute(Void _params) {
+            if( status == null  || !status.equals("0") )    dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
+            else    updateComments();
+            progress_dialog.dismiss();
         }
     }
 
