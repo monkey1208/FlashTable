@@ -19,9 +19,12 @@ public class CustomerDetailInfo {
     String gift;
     boolean success;
     int persons;
+    String shop_info;
+    String category;
+    int shop_id;
 
     public CustomerDetailInfo(String _shop, String _location, float _rating, String _time, int _discount,
-                              String _gift, boolean _success, int _persons) {
+                              String _gift, boolean _success, int _persons, String _shop_info, String _category, int _shop_id) {
         shop = _shop;
         location = _location;
         rating = _rating;
@@ -30,6 +33,9 @@ public class CustomerDetailInfo {
         time = _time;
         success = _success;
         persons = _persons;
+        shop_info = _shop_info;
+        category = _category;
+        shop_id = _shop_id;
     }
 
 

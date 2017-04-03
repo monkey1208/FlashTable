@@ -27,6 +27,7 @@
     <string name="login_wait">請稍候</string>
     <string name="login_error_typo">輸入帳號或密碼錯誤</string>
     <string name="login_error_connection">連線失敗，請重試</string>
+    <string name="login_error_invalid">帳號/密碼無效，請重試</string>
 
     <!-- Strings related to alert -->
     <string name="alert_title">提醒</string>
@@ -61,7 +62,7 @@
     <string name="customer_main_reserve">立即預約</string>
     <string name="customer_main_open">營業時間</string>
     <string name="customer_main_type">下午茶</string>
-    <string name="customer_main_info">店家資訊</string>
+    <string name="customer_main_info">店家說明</string>
     <string name="customer_main_info_content">詳細內容</string>
     <string-array name="customer_sp_sort">
         <item>預設排序</item>
@@ -93,7 +94,7 @@
 
     <!-- Strings related to customer profile -->
     <string name="customer_profile_name">使用者名稱</string>
-    <string name="customer_profile_credit">信譽分數：100</string>
+    <string name="customer_profile_credit">信譽分數：</string>
     <string name="customer_profile_reservations">預約紀錄</string>
     <string name="customer_profile_comments">我的評論</string>
     <string name="customer_profile_edit">編輯</string>
@@ -129,6 +130,9 @@
     <!-- Strings related to customer comments -->
     <string name="customer_comments_my_title">我的評價及評論</string>
     <string name="customer_comments_title">評價及評論</string>
+    <string name="customer_comments_success">成功留下評論！</string>
+    <string name="customer_comments_error_no_rating">您尚未選擇評分喔</string>
+    <string name="customer_comments_error_not_sent">填寫的內容尚未送出，確定回到上一頁嗎？</string>
 
     <!-- Strings related to customer rating -->
     <string name="customer_rating_title">評價及評論</string>

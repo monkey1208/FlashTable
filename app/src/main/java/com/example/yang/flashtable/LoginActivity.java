@@ -2,6 +2,7 @@ package com.example.yang.flashtable;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -36,6 +37,8 @@ import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private String preference_account, preference_password;
+
     ViewFlipper vf_flipper;
     DialogBuilder dialog_builder;
 
@@ -61,6 +64,13 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.login_activity);
+
+        // If there is a preferred account (for customer), start main.
+        if(checkCustomerPreference()){
+            Intent intent = new Intent(LoginActivity.this, CustomerMainActivity.class);
+            LoginActivity.this.startActivity(intent);
+            LoginActivity.this.finish();
+        }
 
         initView();
         initData();
@@ -154,12 +164,32 @@ public class LoginActivity extends AppCompatActivity {
         if (fail != 0) {
             dialog_builder.dialogEvent(getResources().getString(R.string.login_error_typo), "normal", null);
         } else {
+            preference_account = account;
+            preference_password = password;
             new CustomerAPILogin().execute(account, password);
         }
     }
 
+    private void setCustomerLoginPreference(String userID){
+        //Set SharedPreference with userId, account, password
+        SharedPreferences preferences = this.getSharedPreferences("USER", MODE_PRIVATE);
+        preferences.edit().putString("userID", userID)
+                .putString("account", preference_account)
+                .putString("password", preference_password)
+                .apply();
+    }
+
+    private boolean checkCustomerPreference(){
+        SharedPreferences preferences = this.getSharedPreferences("USER", MODE_PRIVATE);
+        if(preferences.contains("userID")){
+            return true;
+        }
+        return false;
+    }
+
     class CustomerAPILogin extends AsyncTask<String, Void, String> {
         private ProgressDialog progress_dialog = new ProgressDialog(LoginActivity.this);
+        private String status = null;
 
         @Override
         protected void onPreExecute() {
@@ -172,7 +202,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            String userID = null;
+            String _userID = null;
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet request = new HttpGet(
@@ -182,17 +212,16 @@ public class LoginActivity extends AppCompatActivity {
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 String httpResponse = handler.handleResponse(response);
                 JSONObject responseJSON = new JSONObject(httpResponse);
-                if (responseJSON.getString("status_code").equals("0")) {
-                    userID = responseJSON.getString("user_id");
-                } else if (responseJSON.getString("status_code").equals("-1")) {
-                    // invalid account/password
-                }
+                status = responseJSON.getString("status_code");
+                if (status.equals("0"))
+                    _userID = responseJSON.getString("user_id");
+
             } catch (Exception e) {
                 Log.d("GetCode", "Request exception:" + e.getMessage());
             } finally {
                 httpClient.getConnectionManager().shutdown();
             }
-            return userID;
+            return _userID;
         }
         @Override
         protected void onPostExecute(String _userID) {
@@ -200,11 +229,14 @@ public class LoginActivity extends AppCompatActivity {
                 progress_dialog.dismiss();
             }
 
-            if(_userID == null)
+            if(status == null)
                 dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
+            else if (_userID == null)
+                dialog_builder.dialogEvent(getResources().getString(R.string.login_error_invalid), "normal", null);
             else {
                 Toast.makeText(LoginActivity.this,
-                        getResources().getString(R.string.login_success) + _userID,  Toast.LENGTH_LONG).show();
+                        getResources().getString(R.string.login_success) + customer_et_account.getText().toString(),  Toast.LENGTH_LONG).show();
+                setCustomerLoginPreference(_userID);
                 Intent intent = new Intent(LoginActivity.this, CustomerLoadingActivity.class);
                 LoginActivity.this.startActivity(intent);
                 LoginActivity.this.finish();
