@@ -22,6 +22,7 @@ public class StoreMainActivity extends AppCompatActivity{
 
     public static FragmentController fragmentController;
     public static AlertDialogController alertDialogController = new AlertDialogController();
+    public static APIHandler apiHandler = new APIHandler();
     private FragmentManager fragmentManager;
 
     private int current_stat=HOME;

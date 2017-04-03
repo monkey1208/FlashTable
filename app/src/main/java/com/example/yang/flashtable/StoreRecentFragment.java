@@ -70,42 +70,10 @@ public class StoreRecentFragment extends Fragment {
         recentList.add(test2);
         recentList.add(test3);
     }
-    public void setItemStat(int position){
+    public void removeItem(int position){
         selected = position;
         recentList.remove(position);
         recentAdapter.notifyDataSetChanged();
-        //recentAdapter.killTimer();
-        /*waitingList.add(selected);
-        size=waitingList.size();
 
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                new CountDownTimer(1500, 10) {
-                    int cur = size;
-                    boolean active_local = true;
-                    public void onTick(long millisUntilFinished) {
-                        if(cur != waitingList.size())
-                            active_local = false;
-                        Log.e("TEST",Integer.toString(waitingList.size()));}
-                    public void onFinish() {
-                        if(active_local){
-                            Collections.sort(waitingList,
-                                    new Comparator<Integer>() {
-                                        public int compare(Integer o1, Integer o2) {
-                                            return o1-o2;
-                                        }
-                                    });
-                            for(int i = 0;i<waitingList.size();i++) {
-                                recentList.remove(recentList.get(waitingList.get(i)));
-                            }
-                            recentAdapter = new StoreRecentAdapter(getActivity(), recentList);
-                            lv_recent.setAdapter(recentAdapter);
-                            waitingList.clear();
-                        }
-                    }
-                }.start();
-            }
-        });*/
     }
 }

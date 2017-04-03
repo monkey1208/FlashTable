@@ -32,6 +32,7 @@ public class StoreRecentAdapter extends BaseAdapter{
                 if (list.get(i).expireTime > 0)
                     list.get(i).expireTime--;
                 else {
+                    StoreMainActivity.apiHandler.postRequestDeny();
                     list.remove(i);
                     i--;
                 }
@@ -100,14 +101,15 @@ public class StoreRecentAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 StoreMainActivity.storeInfo.addAppointment(info);
-                FragmentController.storeRecentFragment.setItemStat(position);
+                FragmentController.storeRecentFragment.removeItem(position);
             }
         });
         holder.bt_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentController.storeRecentFragment.setItemStat(position);
+                FragmentController.storeRecentFragment.removeItem(position);
                 //TODO: send cancel message
+                StoreMainActivity.apiHandler.postRequestDeny();
             }
         });
         holder.bt_confirm.setTag(this);

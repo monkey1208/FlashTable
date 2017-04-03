@@ -16,11 +16,10 @@ public class StoreInfo {
         totalAppointment = 200;
         successAppointment = 99;
     }
-    public void addAppointment(CustomerAppointInfo cinfo){
+    public void addAppointment(CustomerAppointInfo info){
         //TODO: notify server new appointment
-        ReservationInfo info = new ReservationInfo(cinfo.name,cinfo.number,System.currentTimeMillis());
-        StoreMainActivity.fragmentController.storeAppointFragment.appointList.add(info);
-        StoreMainActivity.fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
+        StoreMainActivity.apiHandler.postSession(info);
+
         totalAppointment = totalAppointment +1;
         return;
     }
@@ -28,6 +27,7 @@ public class StoreInfo {
         //TODO: notify server new appointment
         successAppointment = successAppointment+1;
     }
+    public int id;
     public String name;
     public String address;
     public int discountDefault;

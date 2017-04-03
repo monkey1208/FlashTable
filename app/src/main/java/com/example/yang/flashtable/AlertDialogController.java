@@ -20,7 +20,7 @@ import java.util.List;
 public class AlertDialogController {
 
     private static AlertDialog alertDialog;
-    private static StoreHomeDiscountDialogAdapter adapter;
+    public static StoreHomeDiscountDialogAdapter adapter;
     private static View titleBar;
     public static final int NOTICE1_APPOINT = 0;
     public static final int NOTICE2_APPOINT = 1;
@@ -31,10 +31,9 @@ public class AlertDialogController {
     public static void discountDialog(final Context context, final StoreInfo storeInfo,final TextView tv_discount,final TextView tv_gift){
         //init view---------
         View item = LayoutInflater.from(context).inflate(R.layout.store_discount_list, null);
-        List<StoreDiscountInfo> discountList = storeInfo.discountList;
         //listview adapt----
         ListView lv_discount = (ListView)item.findViewById(R.id.lv_discount);
-        adapter = new StoreHomeDiscountDialogAdapter(context,discountList);
+        adapter = new StoreHomeDiscountDialogAdapter(context,storeInfo.discountList);
         lv_discount.setAdapter(adapter);
         lv_discount.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -59,6 +58,7 @@ public class AlertDialogController {
                 tv_discount.setText(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).discount)+"折");
                 tv_gift.setText(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
                 //TODO: notify server dicount change
+                StoreMainActivity.apiHandler.changePromotions();
                 alertDialog.dismiss();
             }
         });
@@ -195,6 +195,7 @@ public class AlertDialogController {
                         break;
                     case NOTICELIST_APPOINT:
                         //TODO: send FAIL msg
+                        StoreMainActivity.apiHandler.postSessionDeny();
                         StoreMainActivity.fragmentController.storeAppointFragment.appointList.remove(position);
                         StoreMainActivity.fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
                         break;
