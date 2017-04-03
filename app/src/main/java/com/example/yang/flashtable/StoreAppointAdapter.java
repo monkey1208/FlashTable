@@ -18,19 +18,19 @@ import java.util.TimerTask;
 
 public class StoreAppointAdapter extends BaseAdapter{
     private LayoutInflater inflater;
-    private List<ReservationInfo> reservation_list = new ArrayList<>();
-    private List<ViewHolder> lstholder = new ArrayList<>();
+    private List<ReservationInfo> list = new ArrayList<>();
     private Context context;
     private Handler handler = new Handler();
     private Runnable countDownRunnable = new Runnable() {
         @Override
         public void run() {
-            synchronized (lstholder){
-                long currentTime = System.currentTimeMillis();
-                for (ViewHolder holder : lstholder) {
-                    holder.updateTimeRemaining(currentTime);
+            for(int i=0;i<list.size();i++){
+                long timeDiff = list.get(i).due_time - System.currentTimeMillis();
+                if(timeDiff <= 0) {
+                    list.get(i).isActive = false;
                 }
             }
+            notifyDataSetChanged();
         }
     };
     private static final int TIMEOUT = 0;
@@ -39,12 +39,12 @@ public class StoreAppointAdapter extends BaseAdapter{
     public StoreAppointAdapter(Context context, List<ReservationInfo> reservation_list) {
         this.context = context;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.reservation_list = reservation_list;
+        this.list = reservation_list;
         countDown();
     }
     @Override
     public int getCount() {
-        return reservation_list.size();
+        return list.size();
     }
 
     @Override
@@ -71,13 +71,10 @@ public class StoreAppointAdapter extends BaseAdapter{
                     (TextView) convertView.findViewById(R.id.tv_remaining_time),
                     (ImageButton) convertView.findViewById(R.id.bt_cancel));
             convertView.setTag(holder);
-            synchronized (lstholder) {
-                lstholder.add(holder);
-            }
         }
         else
             holder = (ViewHolder) convertView.getTag();
-        holder.setData(reservation_list.get(position));
+        holder.setData(list.get(position));
 
         return  convertView;
     }
@@ -104,6 +101,7 @@ public class StoreAppointAdapter extends BaseAdapter{
             tv_name.setText(info.name);
             tv_date.setText("2017/07/21");
             tv_state.setText("已成功向您預約("+Integer.toString(info.number)+")人桌位");
+            tv_countdown.setText(Integer.toString((int)((info.due_time - System.currentTimeMillis())/1000)));
             if(info.isActive) {
                 buttonControl(this, WAITING);
                 bt_cancel.setOnClickListener(new View.OnClickListener() {
@@ -115,16 +113,6 @@ public class StoreAppointAdapter extends BaseAdapter{
             }
             else
                 buttonControl(this,TIMEOUT);
-        }
-        public void updateTimeRemaining(long currenttime){
-            long timeDiff = info.due_time - currenttime;
-            if (timeDiff > 0) {
-                int seconds = (int) (timeDiff / 1000);
-                tv_countdown.setText(seconds + "s");
-            } else {
-                buttonControl(this,TIMEOUT);
-                info.isActive = false;
-            }
         }
     }
     private void countDown(){

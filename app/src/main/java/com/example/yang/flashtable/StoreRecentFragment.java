@@ -65,17 +65,19 @@ public class StoreRecentFragment extends Fragment {
         CustomerAppointInfo test1 = new CustomerAppointInfo("張庭維",100,10,R.drawable.ic_temp_user1);
         CustomerAppointInfo test2 = new CustomerAppointInfo("李承軒",0,1,R.drawable.ic_temp_user2);
         CustomerAppointInfo test3 = new CustomerAppointInfo("陳奕先",10,90,R.drawable.ic_temp_user1);
-        test3.expireTime = test3.expireTime-45000;
-        test2.expireTime = test2.expireTime-50000;
-        test1.expireTime = test1.expireTime-55000;
+        test3.expireTime = test3.expireTime-6;
+        test2.expireTime = test2.expireTime-2;
+        test1.expireTime = test1.expireTime-6;
         recentList.add(test1);
         recentList.add(test2);
         recentList.add(test3);
     }
     public void setItemStat(int position){
         selected = position;
-
-        waitingList.add(selected);
+        recentList.remove(position);
+        recentAdapter.notifyDataSetChanged();
+        //recentAdapter.killTimer();
+        /*waitingList.add(selected);
         size=waitingList.size();
 
         handler.post(new Runnable() {
@@ -106,7 +108,7 @@ public class StoreRecentFragment extends Fragment {
                     }
                 }.start();
             }
-        });
+        });*/
     }
 
     public int getStatusBarHeight() {

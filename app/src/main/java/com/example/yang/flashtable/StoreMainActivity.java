@@ -3,6 +3,7 @@ package com.example.yang.flashtable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -30,11 +31,12 @@ public class StoreMainActivity extends AppCompatActivity{
         //TODO: start a thread getting updating request
         //arguments init temp
         storeInfo = new StoreInfo("西堤牛排 南港店","台北市南港區忠孝東路七段369號C1棟(CITYLINK南港店)");
-
         button = new ImageButton[PRIM_FRAG];
         setContentView(R.layout.store_main_activity);
         fragmentManager = getSupportFragmentManager();
         fragmentController = new FragmentController(fragmentManager);
+        fragmentController.act(RECENT);
+        fragmentController.act(APPOINT);
         fragmentController.act(current_stat);
         init_bt_button();
     }
