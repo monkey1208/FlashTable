@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Flash Table</string>
 
+    <string name="server_domain">flash-table.herokuapp.com</string>
+
     <string name="title_activity_customer_main">CustomerMainActivity</string>
 
     <!-- Universal strings -->

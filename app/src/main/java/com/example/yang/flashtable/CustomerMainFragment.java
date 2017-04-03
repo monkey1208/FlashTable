@@ -4,15 +4,10 @@ import android.Manifest;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Criteria;
-import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -44,7 +39,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -54,6 +48,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -84,6 +79,8 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
 
     final int FINE_LOCATION_CODE = 13;
     LatLng current_location;
+
+    ApiPromotion api_promotion;
 
     @Nullable
     @Override
@@ -180,8 +177,9 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
 
         if (active == true) {
             new CurrentLocation().execute();
-        }else{
-            new ApiPromotion().execute(24.05, 121.545);
+        } else {
+            api_promotion = new ApiPromotion();
+            api_promotion.execute(24.05, 121.545);
         }
 
     }
@@ -293,7 +291,8 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     @Override
     public void onPageScrollStateChanged(int state) {
     }
-    private void gpsPermission(){
+
+    private void gpsPermission() {
         if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             getShopStatus(true);
@@ -306,7 +305,8 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
 
     private class CurrentLocation implements LocationListener {
         String provider;
-        public void execute(){
+
+        public void execute() {
             locationMgr = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
             Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -317,11 +317,11 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             provider = locationMgr.getBestProvider(criteria, true);
             criteria = null;
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            } else{
+            } else {
                 Location location = locationMgr.getLastKnownLocation(provider);
-                if(location != null) {
+                if (location != null) {// 3 minutes~~
                     new ApiPromotion().execute(location.getLatitude(), location.getLongitude());
-                }else{
+                } else {
                     locationMgr.requestLocationUpdates(provider, 0, 0, this);
                 }
             }
@@ -329,11 +329,14 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
 
         @Override
         public void onLocationChanged(Location location) {
-            if(location != null){
+            if (location != null) {
                 new ApiPromotion().execute(location.getLatitude(), location.getLongitude());
-            }else{
+            } else {
                 new ApiPromotion().execute(24.0, 121.0);
             }
+            if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            }
+            locationMgr.removeUpdates(this);
         }
         @Override
         public void onStatusChanged(String s, int i, Bundle bundle) { }
@@ -375,7 +378,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             List<Description> list = new ArrayList<>();
             NameValuePair nameValuePair = new BasicNameValuePair("location", latlng);
             String s = nameValuePair.toString();
-            HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/surrounding_promotions"+"?"+s);
+            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/surrounding_promotions"+"?"+s);
             request.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse http_response = httpClient.execute(request);
@@ -385,11 +388,14 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                 if(jsonArray.getJSONObject(0).get("status_code").equals("0")) {
                     int size = Integer.valueOf(jsonArray.getJSONObject(0).get("size").toString());
                     for(int i = 1; i <= size; i++){
+                        if(isCancelled()){
+                            return list;
+                        }
                         String id = jsonArray.getJSONObject(i).get("promotion_id").toString();
                         nameValuePair = null;
                         nameValuePair = new BasicNameValuePair("promotion_id", id);
                         s = nameValuePair.toString();
-                        request = new HttpGet("https://flash-table.herokuapp.com/api/promotion_info"+"?"+s);
+                        request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/promotion_info"+"?"+s);
                         request.addHeader("Content-Type", "application/json");
                         http_response = httpClient.execute(request);
                         json = handler.handleResponse(http_response);

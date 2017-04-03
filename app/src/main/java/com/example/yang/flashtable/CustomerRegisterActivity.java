@@ -277,7 +277,7 @@ public class CustomerRegisterActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpPost request = new HttpPost(
-                        "https://flash-table.herokuapp.com/api/new_user");
+                        "https://"+getString(R.string.server_domain)+"/api/new_user");
                 StringEntity se = new StringEntity("{ \"account\":\"" + params[0] +
                         "\", \"password\":\"" + params[1] +
                         "\", \"phone_number\":\"" + params[2]+ "\"}", HTTP.UTF_8);
@@ -346,7 +346,7 @@ public class CustomerRegisterActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpPost request = new HttpPost(
-                        "https://flash-table.herokuapp.com/api/sign_up");
+                        "https://"+getString(R.string.server_domain)+"/api/sign_up");
                 StringEntity se = new StringEntity("{ \"verification_id\":\"" + params[0] +
                         "\", \"verification_code\":\"" + params[1] + "\"}", HTTP.UTF_8);
                 request.addHeader("Content-Type", "application/json");

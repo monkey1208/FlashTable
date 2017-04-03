@@ -37,4 +37,5 @@ dependencies {
     compile 'com.daimajia.slider:library:1.1.5@aar'
 
     compile 'com.google.zxing:core:3.2.1'
+
 }
