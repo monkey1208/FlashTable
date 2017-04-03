@@ -37,6 +37,7 @@ public class StoreManageFragment extends ListFragment {
         });
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_tb_toolbar);
+        bar.setPadding(0,getStatusBarHeight(),0,0);
         bar.inflateMenu(R.menu.store_manage_menu);
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -72,4 +73,13 @@ public class StoreManageFragment extends ListFragment {
             R.drawable.ic_store_manage_statistic,
             R.drawable.ic_store_manage_record,
     };
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
 }

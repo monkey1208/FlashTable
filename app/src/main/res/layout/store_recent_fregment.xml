@@ -6,8 +6,8 @@
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:background="@color/btBottomColor"
+        android:layout_height="80dp"
+        android:background="#80FF6600"
         android:text="即時動態"
         android:textColor="@color/white"
         android:textSize="24sp"
@@ -17,6 +17,7 @@
         android:id="@+id/lv_recent"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_marginTop="12px"
+        android:layout_marginTop="5dp"
+        android:dividerHeight="5dp"
         android:layout_below="@+id/title"/>
 </RelativeLayout>

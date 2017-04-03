@@ -33,8 +33,12 @@ public class StoreHomeFragment extends Fragment {
     private TextView tv_discount;
     private TextView tv_gift;
     private ImageButton bt_active;
+    private GifImageView bt_active_gif;
+    private TextView tv_active;
+    private TextView tv_active_remind;
     private View v;
     private StoreInfo storeInfo;
+
 
     private static final int SCAN_REQUEST_ZXING_SCANNER = 1;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
@@ -55,6 +59,7 @@ public class StoreHomeFragment extends Fragment {
         func_Test(storeInfo.discountList);
         //Start Here---------------------
         v = inflater.inflate(R.layout.store_home_fragment, container, false);
+        v.setPadding(0,getStatusBarHeight(),0,0);
         //Image---------
         im_photo = (ImageView)v.findViewById(R.id.im_photo);
         Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.ic_temp_store);
@@ -71,10 +76,21 @@ public class StoreHomeFragment extends Fragment {
         tv_gift.setText(storeInfo.discountList.get(0).description);
         //--------------
         //立即尋客button
+        bt_active_gif = (GifImageView)v.findViewById(R.id.bt_active_gif);
+        tv_active = (TextView)v.findViewById(R.id.tv_active);
+        tv_active_remind = (TextView)v.findViewById(R.id.tv_active_remind);
         bt_active = (ImageButton)v.findViewById(R.id.bt_active);
         bt_active.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {AlertDialogController.discountDialog(getActivity(),storeInfo,tv_discount,tv_gift);
+            public void onClick(View v) {
+                AlertDialogController.discountDialog(getActivity(),storeInfo,tv_discount,tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+            }
+        });
+
+        bt_active_gif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Stop", Toast.LENGTH_SHORT).show();
             }
         });
         //--------------
@@ -120,14 +136,21 @@ public class StoreHomeFragment extends Fragment {
     }
 
     private void requestCameraPermission() {
-        Log.w("www", "Camera permission is not granted. Requesting permission");
-
         final String[] permissions = new String[]{Manifest.permission.CAMERA};
 
         if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                 Manifest.permission.CAMERA)) {
             ActivityCompat.requestPermissions(getActivity(), permissions, 2);
-            return;
         }
     }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
 }

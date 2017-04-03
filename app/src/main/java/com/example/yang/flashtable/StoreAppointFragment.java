@@ -30,6 +30,7 @@ public class StoreAppointFragment extends ListFragment {
         adapter = new StoreAppointAdapter(getContext(), appointList);
         setListAdapter(adapter);
         Toolbar bar = (Toolbar)v.findViewById(R.id.shop_toolbar);
+        bar.setPadding(0,getStatusBarHeight(), 0,0);
         bar.inflateMenu(R.menu.shop_reservation_menu);
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -51,5 +52,14 @@ public class StoreAppointFragment extends ListFragment {
         tmp = new ReservationInfo("Shan",1,System.currentTimeMillis()-3000);
         list.add(tmp);
         return list;
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }

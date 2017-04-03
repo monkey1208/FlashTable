@@ -15,9 +15,9 @@
             android:theme="?attr/actionBarTheme" >
             <TextView
                 android:id="@+id/store_manage_tv_toolbar_title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:layout_gravity="center"
                 android:text="我的餐廳管理"
                 android:textColor="#FFFFFF"
                 android:textSize="22sp"/>
