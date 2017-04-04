@@ -2,6 +2,7 @@ package com.example.yang.flashtable;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -88,7 +89,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         view = inflater.inflate(R.layout.customer_main_fragment, container, false);
         initView();
         gpsPermission();
-        //getShopStatus(false);
+        getShopStatus(false);
         initData();
         return view;
     }
@@ -201,20 +202,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //closeDB();
-    }
-
-    private List<CustomerRestaurantInfo> generateTestList() {
-        List<CustomerRestaurantInfo> list = new ArrayList<>();
-        for (int i = 1; i < 6; i++) {
-            LatLng latLng = new LatLng(25.01, 121.5);
-            CustomerRestaurantInfo info = new CustomerRestaurantInfo("Restaurant " + Integer.toString(i), i, 100, "tag", latLng);
-            info.detailInfo.setInfo("address", "garbage store");
-            list.add(info);
-            latLng = null;
-            info = null;
-        }
-        return list;
+        closeDB();
     }
 
     private void showRestaurantDetail(int position) {
@@ -319,7 +307,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             } else {
                 Location location = locationMgr.getLastKnownLocation(provider);
-                if (location != null) {// 3 minutes~~
+                if (location != null) {
                     new ApiPromotion().execute(location.getLatitude(), location.getLongitude());
                 } else {
                     locationMgr.requestLocationUpdates(provider, 0, 0, this);
@@ -349,6 +337,13 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     private class ApiPromotion extends AsyncTask<Double, Void, String> {
         HttpClient httpClient = new DefaultHttpClient();
         List<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
+        private ProgressDialog progress_dialog = new ProgressDialog(view.getContext());
+        private String status = null;
+        @Override
+        protected void onPreExecute() {
+            progress_dialog.setMessage( "載入中..." );
+            progress_dialog.show();
+        }
         @Override
         protected String doInBackground(Double... params) {
             current_location = new LatLng(params[0], params[1]);
@@ -361,6 +356,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                 CustomerRestaurantInfo info = sqlHandler.getDetail(list.get(i).shop_id);
                 info.discount = list.get(i).discount;
                 info.offer = list.get(i).offer;
+                info.promotion_id = list.get(i).promotion_id;
                 restaurantInfoList.add(info);
             }
 
@@ -370,6 +366,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         @Override
         protected void onPostExecute(String s) {
             setListView(restaurantInfoList);
+            progress_dialog.dismiss();
             super.onPostExecute(s);
 
         }
@@ -389,7 +386,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                     int size = Integer.valueOf(jsonArray.getJSONObject(0).get("size").toString());
                     for(int i = 1; i <= size; i++){
                         if(isCancelled()){
-                            return list;
+                            return null;
                         }
                         String id = jsonArray.getJSONObject(i).get("promotion_id").toString();
                         nameValuePair = null;
@@ -402,7 +399,8 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                         JSONObject jsonObject = new JSONObject(json);
                         Description description = new Description(Integer.valueOf(jsonObject.get("shop_id").toString()),
                                 Integer.valueOf(jsonObject.get("name").toString()),
-                                jsonObject.get("description").toString());
+                                jsonObject.get("description").toString(),
+                                id);
                         list.add(description);
                     }
                 }
@@ -416,11 +414,13 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         }
 
         private class Description {
-            public Description(int shop_id, int discount, String offer){
+            public Description(int shop_id, int discount, String offer, String promotion_id){
                 this.shop_id = shop_id;
                 this.discount = discount;
                 this.offer = offer;
+                this.promotion_id = promotion_id;
             }
+            String promotion_id;
             int shop_id;
             int discount;
             String offer;

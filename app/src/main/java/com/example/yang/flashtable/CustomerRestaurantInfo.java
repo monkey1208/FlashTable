@@ -20,6 +20,7 @@ public class CustomerRestaurantInfo {
     int consumption;
     DetailInfo detailInfo;
     String image_url;
+    String promotion_id;
     String category;
     byte[] image = null;
     public class DetailInfo{

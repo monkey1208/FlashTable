@@ -86,12 +86,13 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
         return convertView;
     }
 
-    private void setView(int position) {
+    private void setView(final int position) {
         rb_rating.setIsIndicator(true);
         ll_reserve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(c, CustomerReservationActivity.class);
+                intent.putExtra("promotion_id", getItem(position).promotion_id);
                 c.startActivity(intent);
             }
         });
