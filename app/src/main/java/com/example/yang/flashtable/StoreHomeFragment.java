@@ -2,6 +2,7 @@ package com.example.yang.flashtable;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,21 +22,33 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.View.resolveSize;
 import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
 
 public class StoreHomeFragment extends Fragment {
 
+    private static Context context;
     private ImageView im_photo;
     private ImageButton bt_QRcode;
     private TextView tv_storename;
@@ -52,6 +65,7 @@ public class StoreHomeFragment extends Fragment {
     private boolean alertdialog_active = false;
 
     public StoreHomeFragment() {
+        context = getContext();
     }
 
     @Override
@@ -147,30 +161,24 @@ public class StoreHomeFragment extends Fragment {
         }
     }
     public class APIpromotion extends AsyncTask<String,Void,Void> {
-        private String stat = "";
-
         @Override
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_promotions?shop_id="+params[0]);
                 JSONArray responsePromotion = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(get)));
-                //stat = Integer.toString(responsePromotion.length());
                 for(int i=1;i<responsePromotion.length();i++){
                     int id = responsePromotion.getJSONObject(i).getInt("promotion_id");
                     HttpGet getPromotion = new HttpGet("https://flash-table.herokuapp.com/api/promotion_info?promotion_id="+Integer.toString(id));
                     JSONObject promotion = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getPromotion)));
-                    stat += promotion.toString();
                     int discount = promotion.getInt("name");
                     String description = promotion.getString("description");
                     StoreDiscountInfo info = new StoreDiscountInfo(id,discount,description);
                     StoreMainActivity.storeInfo.discountList.add(info);
                 }
             } catch (JSONException e) {
-                //stat = "-1";
                 e.printStackTrace();
             } catch (IOException e) {
-                //stat = "-2";
                 e.printStackTrace();
             }finally {
                 httpClient.getConnectionManager().shutdown();
@@ -181,8 +189,7 @@ public class StoreHomeFragment extends Fragment {
         protected void onPostExecute(Void _params) {
             if(alertdialog_active)
                 StoreMainActivity.alertDialogController.adapter.notifyDataSetChanged();
-            Toast.makeText(getContext(),Integer.toString(StoreMainActivity.storeInfo.discountList.size()),Toast.LENGTH_LONG).show();
-            Toast.makeText(getContext(),stat,Toast.LENGTH_LONG).show();
         }
     }
+
 }

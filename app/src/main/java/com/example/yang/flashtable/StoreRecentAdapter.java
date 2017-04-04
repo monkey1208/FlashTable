@@ -23,38 +23,11 @@ public class StoreRecentAdapter extends BaseAdapter{
     private Context context;
     private List<CustomerAppointInfo> list = new ArrayList<>();
     private LayoutInflater layoutInflater;
-    private Timer timer = new Timer();
-    private Handler handler = new Handler();
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            for(int i=0;i<list.size();i++) {
-                if (list.get(i).expireTime > 0)
-                    list.get(i).expireTime--;
-                else {
-                    StoreMainActivity.apiHandler.postRequestDeny();
-                    list.remove(i);
-                    i--;
-                }
-            }
-            notifyDataSetChanged();
-        }
-    };
-
-    private void countDown(){
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(runnable);
-            }
-        },0,1000);
-    }
 
     public StoreRecentAdapter(Context context,List<CustomerAppointInfo> list){
         this.context =context;
         this.list = list;
         layoutInflater = LayoutInflater.from(context);
-        countDown();
     }
     @Override
     public int getCount() {

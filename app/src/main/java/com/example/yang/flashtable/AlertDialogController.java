@@ -2,6 +2,7 @@ package com.example.yang.flashtable;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -14,6 +15,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +41,7 @@ public class AlertDialogController {
     public static final int NOTICELIST_APPOINT = 2;
     public static int listPosition = -1;
     public static int result = 0;
+
 
     public static void discountDialog(final Context context, final StoreInfo storeInfo,final TextView tv_discount,final TextView tv_gift){
         //init view---------
@@ -58,6 +73,7 @@ public class AlertDialogController {
                 tv_discount.setText(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).discount)+"折");
                 tv_gift.setText(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
                 //TODO: notify server dicount change
+                new APIpromotion_modify().execute(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
                 StoreMainActivity.apiHandler.changePromotions();
                 alertDialog.dismiss();
             }
@@ -72,6 +88,30 @@ public class AlertDialogController {
         alertDialog.show();
 
         setDialogSize(context, 0.8, 0.8);
+    }
+    public static class APIpromotion_modify extends AsyncTask<String,Void,Void> {
+        private String result = "-1";
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/activate_promotion");
+                List<NameValuePair> param = new ArrayList<NameValuePair>();
+                param.add(new BasicNameValuePair("promotion_id",params[0]));
+                post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
+                HttpResponse response = httpClient.execute(post);
+                HttpEntity resEntity = response.getEntity();
+                if(resEntity != null)
+                    result = resEntity.toString();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     public static void addDiscountDialog(final Context context){
