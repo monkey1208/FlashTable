@@ -323,6 +323,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     break;
                 case "reject":
                     timer.cancel();
+                    CustomerReservationActivity.this.finish();
                     break;
                 default:
                     reservationAccepted();
