@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.yang.flashtable.StoreAppointFragment"
+    android:id="@+id/store_appoint_fragment">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/shop_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#80FF6600"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:text="預約詳情"
+            android:textSize="22sp"
+            android:layout_gravity="center"
+            android:id="@+id/shop_toolbar_title" />
+    </android.support.v7.widget.Toolbar>
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="5dp"
+        android:dividerHeight="5dp"
+        android:id="@id/android:list"/>
+
+</LinearLayout>

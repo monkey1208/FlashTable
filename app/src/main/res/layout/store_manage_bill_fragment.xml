@@ -1,0 +1,250 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.yang.flashtable.StoreManageBillFragment">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/store_manage_bill_tb_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="#80FF6600"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="應付帳款明細"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp" />
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/store_manage_bill_ll_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/store_manage_bill_tb_toolbar"
+        android:layout_marginTop="6dp"
+        android:background="@color/colorHalfTransparent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/store_manage_bill_ll_prev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="5dp"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                app:srcCompat="@drawable/ic_back" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="上一期"
+                android:textSize="12sp"
+                android:textColor="@color/textColorLighter"
+                android:background="#00000000"/>
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="7"
+            android:gravity="center"
+            android:textColor="@color/textColor"
+            android:background="#00000000"
+            android:text="當期應付明細" />
+
+
+        <LinearLayout
+            android:id="@+id/store_manage_bill_ll_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="下一期"
+                android:textSize="12sp"
+                android:textColor="@color/textColorLighter"
+                android:background="#00000000"/>
+            <ImageView
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginBottom="16dp"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                app:srcCompat="@drawable/ic_next" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/store_manage_bill_tv_period"
+        android:layout_width="match_parent"
+        android:layout_height="135px"
+        android:layout_marginTop="12px"
+        android:layout_marginBottom="12px"
+        android:layout_below="@id/store_manage_bill_ll_top"
+        android:background="@color/colorHalfTransparent"
+        android:gravity="center"
+        android:text="TextView"
+        android:textColor="@color/textColor"/>
+
+    <LinearLayout
+        android:id="@+id/store_manage_bill_ll_detail"
+        android:layout_width="match_parent"
+        android:layout_height="445px"
+        android:orientation="vertical"
+        android:layout_below="@+id/store_manage_bill_tv_period"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/colorHalfTransparent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="55px"
+                android:paddingTop="10dp"
+                android:layout_weight="7"
+                android:text="成功預約"
+                android:textColor="@color/textColor"/>
+            <TextView
+                android:id="@+id/store_manage_bill_tv_success"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/textColorOrangeDark"
+                android:text="" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="135px"
+                android:layout_marginRight="55px"
+                android:layout_weight="1"
+                android:textColor="@color/textColor"
+                android:text="人" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/colorHalfTransparent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="55px"
+                android:paddingTop="10dp"
+                android:layout_weight="7"
+                android:text="預約成交費"
+                android:textColor="@color/textColor"/>
+            <TextView
+                android:id="@+id/store_manage_bill_tv_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/textColorOrangeDark"
+                android:text="" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="135px"
+                android:layout_marginRight="55px"
+                android:layout_weight="1"
+                android:textColor="@color/textColor"
+                android:text="元" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#90DDDDDD"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+             />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="@color/colorHalfTransparent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="135px"
+                android:layout_marginLeft="55px"
+                android:paddingTop="10dp"
+                android:layout_weight="7"
+                android:text="應付帳款"
+                android:textColor="@color/textColor"/>
+            <TextView
+                android:id="@+id/store_manage_bill_tv_totalmoney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/textColorOrangeDark"
+                android:text="" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="135px"
+                android:layout_marginRight="55px"
+                android:layout_weight="1"
+                android:textColor="@color/textColor"
+                android:text="元" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/store_manage_bill_rl"
+        android:layout_width="match_parent"
+        android:layout_height="215px"
+        android:layout_below="@id/store_manage_bill_ll_detail"
+        android:background="@color/colorHalfTransparent"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:id="@+id/store_manage_bill_bt_pay"
+            android:layout_width="200dp"
+            android:layout_height="32dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="55px"
+            android:background="@color/alertColor"
+            android:text="立即付款"
+            android:textSize="16sp"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="※請於5日內完成付款，如逾期該帳戶將被停用"
+            android:textSize="12sp"
+            android:layout_below="@+id/store_manage_bill_bt_pay"
+            android:layout_alignStart="@+id/store_manage_bill_bt_pay"
+            android:id="@+id/textView5" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
