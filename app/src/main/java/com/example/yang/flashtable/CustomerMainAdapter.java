@@ -93,6 +93,8 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
             public void onClick(View view) {
                 Intent intent = new Intent(c, CustomerReservationActivity.class);
                 intent.putExtra("promotion_id", getItem(position).promotion_id);
+                intent.putExtra("discount", getItem(position).discount);
+                intent.putExtra("offer", getItem(position).offer);
                 c.startActivity(intent);
             }
         });

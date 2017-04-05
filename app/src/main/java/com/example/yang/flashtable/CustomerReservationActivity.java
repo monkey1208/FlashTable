@@ -1,5 +1,6 @@
 package com.example.yang.flashtable;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -66,9 +67,12 @@ public class CustomerReservationActivity extends AppCompatActivity {
     RatingBar rb_shop;
     LinearLayout ll_time_left;
     Button bt_cancel, bt_arrive_cancel;
-    View.OnClickListener cancel_listener;
+    View.OnClickListener cancel_listener, cancel_arrive_listener;
     ImageView iv_qr_code;
 
+
+    String discount;
+    String offer;
     String promotion_id;
     String request_id;
     String session_id = null;
@@ -82,6 +86,8 @@ public class CustomerReservationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         promotion_id = getIntent().getStringExtra("promotion_id");
+        discount = getIntent().getStringExtra("discount");
+        offer = getIntent().getStringExtra("offer");
         // Set to fullscreen.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -118,29 +124,35 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
     private void initData() {
         gif_drawable.setSpeed(2.0f);
-        startCountDown("waiting", 30000);
+        startCountDown("waiting", 60000);
 
         cancel_listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 timer.cancel();
-                if(session_id == null) {
-                    new ApiCancel("request").execute(request_id);
-                }else{
-                    new ApiCancel("session").execute(session_id);
-                }
+                new ApiCancel("request").execute(request_id);
+                finish();
+            }
+        };
+        cancel_arrive_listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timer.cancel();
+                new ApiCancel("session").execute(session_id);
                 finish();
             }
         };
         bt_cancel.setOnClickListener(cancel_listener);
-        bt_arrive_cancel.setOnClickListener(cancel_listener);
+        bt_arrive_cancel.setOnClickListener(cancel_arrive_listener);
     }
 
     private void reservationAccepted() {
         vf_flipper.setDisplayedChild(1);
+        tv_discount.setText(discount);
+        tv_gift.setText(offer);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-        startCountDown("success", 30000);
+        startCountDown("success", 60000*15);
 
         try {
             Bitmap bitmap = encodeAsBitmap("session_id="+session_id);
@@ -175,7 +187,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                 String time_left;
                 long pre_millis = countdown_millis;
                 public void onTick(long millis_left) {
-                    if((pre_millis-millis_left)>2000 && request_flag == true){
+                    if((pre_millis-millis_left)>2000 && session_flag == true){
                         pre_millis = millis_left;
                         new ApiSessionSuccess().execute();
                     }
@@ -236,7 +248,6 @@ public class CustomerReservationActivity extends AppCompatActivity {
                 HttpResponse httpResponse = httpClient.execute(httpPost);
                 HttpEntity resEntity = httpResponse.getEntity();
                 String result = EntityUtils.toString(resEntity);
-                //String json = handler.handleResponse(httpResponse);
                 System.out.println(result);
                 JSONObject jsonObject = new JSONObject(result);
                 String status_code = jsonObject.get("status_code").toString();
@@ -251,7 +262,6 @@ public class CustomerReservationActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             return r_id;
         }
 
@@ -299,7 +309,18 @@ public class CustomerReservationActivity extends AppCompatActivity {
                             int size = Integer.valueOf(request_object.get("size").toString());
                             if(size == 0){
                                 //no request -> request is rejected
-                                return "reject";
+                                request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+param.toString());
+                                request.addHeader("Content-Type", "application/json");
+                                response = httpClient.execute(request);
+                                session_response = handler.handleResponse(response);
+                                session_array = new JSONArray(session_response);
+                                session_object = session_array.getJSONObject(0);
+                                if(session_object.get("status_code").equals("0")) {
+                                    if (session_object.get("size").equals("0")) {
+                                        return "reject";
+                                    }
+                                }
+                                return session_array.getJSONObject(1).get("session_id").toString();
                             }else{
                                 for(int i = 1; i <= size; i++){
                                     if(request_array.getJSONObject(i).get("request_id").toString().equals(request_id)){
@@ -336,6 +357,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     CustomerReservationActivity.this.finish();
                     break;
                 default:
+                    timer.cancel();
                     session_id = s;
                     reservationAccepted();
             }
@@ -391,10 +413,13 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            request_flag = true;
+            session_flag = true;
             switch (s){
                 case "finish":
+                    //QRCODE SUCCESS
                     timer.cancel();
+                    Intent intent = new Intent(CustomerReservationActivity.this, CustomerRatingActivity.class);
+                    startActivity(intent);
                     CustomerReservationActivity.this.finish();
                     break;
                 default:
@@ -409,18 +434,23 @@ public class CustomerReservationActivity extends AppCompatActivity {
         ResponseHandler<String> handler = new BasicResponseHandler();
         boolean request_session_flag;
         public ApiCancel(String flag){
-            if(flag.equals("request"))
+            if(flag.equals("request")) {
                 request_session_flag = true;
-            else
+            }
+            else {
                 request_session_flag = false;
+            }
         }
         @Override
         protected Void doInBackground(String... id) {
-            NameValuePair param = new BasicNameValuePair("request_id", id[0]);
+
+
             HttpPost httpPost;
             if(request_session_flag) {
+                NameValuePair param = new BasicNameValuePair("request_id", id[0]);
                 httpPost = new HttpPost("http://" + getString(R.string.server_domain) + "/api/cancel_request?" + param.toString());
             }else{
+                NameValuePair param = new BasicNameValuePair("session_id", id[0]);
                 httpPost = new HttpPost("http://" + getString(R.string.server_domain) + "/api/cancel_session?" + param.toString());
             }
             httpPost.addHeader("Content-Type", "application/json");

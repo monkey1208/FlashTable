@@ -151,13 +151,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                 closeRestaurantDetail();
             }
         });
-        bt_show_reserve.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CustomerReservationActivity.class);
-                startActivity(intent);
-            }
-        });
+
     }
 
     private void setListView(List<CustomerRestaurantInfo> res_list) {
@@ -203,11 +197,11 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         closeDB();
     }
 
-    private void showRestaurantDetail(int position) {
+    private void showRestaurantDetail(final int position) {
         // TODO: Fix issues - sometimes selected ListView flickers on setDisplayedChild()
         sl_restaurant.removeAllSliders();
 
-        CustomerRestaurantInfo info = adapter.getItem(position);
+        final CustomerRestaurantInfo info = adapter.getItem(position);
         vf_flipper.setDisplayedChild(1);
 
         HashMap<String, Integer> image_map = new HashMap<>();
@@ -248,6 +242,16 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         tv_show_location.setText(info.detailInfo.address);
         tv_show_category.setText(info.category);
         tv_show_intro.setText(info.detailInfo.intro);
+        bt_show_reserve.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CustomerReservationActivity.class);
+                intent.putExtra("promotion_id", info.promotion_id);
+                intent.putExtra("discount", info.discount);
+                intent.putExtra("offer", info.offer);
+                startActivity(intent);
+            }
+        });
     }
 
     private void closeRestaurantDetail() {
