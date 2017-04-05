@@ -20,9 +20,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.google.zxing.Result;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import me.dm7.barcodescanner.core.DisplayUtils;
 import me.dm7.barcodescanner.core.IViewFinder;
@@ -63,7 +76,6 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Backkkkkk", Toast.LENGTH_SHORT).show() ;
                 finish();
             }
         });
@@ -112,7 +124,12 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
     @Override
     public void handleResult(Result result) {
         Log.v(LOG_TAG, result.getText() + ", " + result.getBarcodeFormat().toString());
+        String session = result.toString();
+        String session_id = session.substring(session.indexOf("=")+1);
 
+        AlertDialogController.warningConfirmDialog(mScannerView.getContext(), "提醒", "恭喜掃描成功");
+
+        //finish_session(session_id);
         Intent returnIntent = new Intent();
         returnIntent.putExtra(SCAN_RESULT, result.toString());
         returnIntent.putExtra(SCAN_FORMAT, result.getBarcodeFormat().toString());
@@ -273,8 +290,6 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
 
 
     private void requestCameraPermission() {
-        Log.w("www", "Camera permission is not granted. Requesting permission");
-
         final String[] permissions = new String[]{Manifest.permission.CAMERA};
 
         if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -292,4 +307,30 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         }
         return result;
     }
+
+    public void finish_session(String session_id){
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/finish_session");
+            List<NameValuePair> param = new ArrayList<>();
+            param.add(new BasicNameValuePair("session_id", session_id));
+            post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
+            HttpResponse response = httpClient.execute(post);
+            HttpEntity resEntity = response.getEntity();
+            if(resEntity != null) {
+                JSONObject jsonResponse = new JSONObject(resEntity.toString());
+                if(jsonResponse.getInt("status_code") == 0) {
+                    AlertDialogController.warningConfirmDialog(getApplicationContext(), "提醒", "恭喜掃描成功");
+                }else{
+                    AlertDialogController.warningConfirmDialog(getApplicationContext(), "提醒", "掃描失敗，請再試一次");
+                }
+            }
+        } catch (Exception e) {
+            AlertDialogController.warningConfirmDialog(getApplicationContext(), "提醒", "網路連線失敗，請檢察您的網路");
+            e.printStackTrace();
+        }
+    }
+
+
+
 }

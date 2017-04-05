@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StoreManageRecordFragment extends ListFragment {
+    public static StoreManageRecordAdapter adapter;
+    public static List<ReservationInfo> list;
+
     public StoreManageRecordFragment() {
         // Required empty public constructor
     }
@@ -31,10 +34,11 @@ public class StoreManageRecordFragment extends ListFragment {
         // Inflate the layout for this fragment
         final View v = inflater.inflate(R.layout.store_manage_record_fragment, container, false);
 
-        List<ReservationInfo> list = new ArrayList<>();
-        setValues(list);
-        StoreManageRecordAdapter adapter = new StoreManageRecordAdapter(getActivity(), list);
+        list = new ArrayList<>();
+       // setValues(list);
+        adapter = new StoreManageRecordAdapter(getActivity(), list);
         setListAdapter(adapter);
+        new APIHandler.APIRecordDetail().execute();
 
         ListView lv =(ListView) v.findViewById(android.R.id.list);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -54,6 +58,7 @@ public class StoreManageRecordFragment extends ListFragment {
                 StoreMainActivity.fragmentController.act(FragmentController.MANAGE);
             }
         });
+
 
         return v;
 

@@ -6,6 +6,7 @@ import java.util.List;
 public class StoreInfo {
 
     public List<StoreDiscountInfo> discountList;
+    public static List<ReservationInfo> recordsList;
     public StoreInfo(String n,String a){
         name = n;
         address = a;

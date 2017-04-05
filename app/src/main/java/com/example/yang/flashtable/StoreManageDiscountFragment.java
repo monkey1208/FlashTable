@@ -22,7 +22,7 @@ import static android.R.id.list;
 public class StoreManageDiscountFragment extends ListFragment {
 
     public static List<StoreDiscountInfo> discountList = StoreMainActivity.storeInfo.discountList;
-    private StoreManageDiscountAdapter adapter;
+    public static StoreManageDiscountAdapter adapter;
 
     public StoreManageDiscountFragment() {
         // Required empty public constructor
@@ -70,7 +70,6 @@ public class StoreManageDiscountFragment extends ListFragment {
         LinearLayout add = (LinearLayout)v.findViewById(R.id.store_manage_discount_ll_add);
         add.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                //Add New Discount
                 AlertDialogController.addDiscountDialog(getContext());
             }
         });

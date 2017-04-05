@@ -186,11 +186,13 @@ public class AlertDialogController {
         bt_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String tv_name = tv_discount_num.getText().toString();
                 String gift_content = et_gift.getText().toString();
-                //Add new discount of the store
+                new APIHandler.Post_promotion().execute(tv_name, gift_content, String.valueOf(1));
                 alertDialog.dismiss();
             }
         });
+
         ImageButton bt_cancel = (ImageButton)item.findViewById(R.id.store_add_discount_dialog_bt_cancel);
         bt_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -227,6 +229,7 @@ public class AlertDialogController {
         alertDialog.show();
         setDialogSize(context, 0.75, 0.3);
     }
+
 
     public static void listConfirmDialog(final Context context, String title, List<String> items, final int mode, final int position){
         StoreMainActivity.alertDialogController.result = 0;
@@ -465,6 +468,20 @@ public class AlertDialogController {
             alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.store_alert_dialog_bg);
         } catch(NullPointerException e) {
             Toast.makeText(context, "Set alert dialog error", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public static class Finish_session extends AsyncTask<String,Void,Void> {
+        int record_id;
+        @Override
+        protected Void doInBackground(String... params) {
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void _params){
         }
     }
 }
