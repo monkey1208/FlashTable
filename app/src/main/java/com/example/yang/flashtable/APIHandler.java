@@ -25,13 +25,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -326,47 +322,7 @@ public class APIHandler {
         }
     }
 
-    public static class APIRecordDetail extends AsyncTask<Object, Void, Void> {
-        List<ReservationInfo> list = new ArrayList<>();
-        @Override
-        protected Void doInBackground(Object... params) {
-            HttpClient httpClient = new DefaultHttpClient();
-            try {
-                HttpGet getRecordsInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ String.valueOf(1));
-                JSONArray recordsInfo = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordsInfo)));
-                for (int i = 1; i < recordsInfo.length(); i++) {
-                    JSONObject jsonItem = recordsInfo.getJSONObject(i);
-                    int record_id = jsonItem.getInt("record_id");
-                    HttpGet getRecordInfo = new HttpGet("https://flash-table.herokuapp.com/api/record_info?record_id="+record_id);
-                    JSONObject recordInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordInfo)));
-                    int num = recordInfo.getInt("number");
-                    String is_success = recordInfo.getString("is_succ");
 
-                    String time = recordInfo.getString("created_at");
-                    DateFormat df = new SimpleDateFormat("EEE MMM dd h:mm:ss yyyy", Locale.getDefault());
-                    Date date =  df.parse(time);
-                    df = new SimpleDateFormat("yyyy/MM/dd  ahh:mm", Locale.getDefault());
-                    time = df.format(date);
-
-                    int user_id = recordInfo.getInt("user_id");
-                    HttpGet getUserInfo = new HttpGet("https://flash-table.herokuapp.com/api/user_info?user_id="+user_id);
-                    JSONObject userInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getUserInfo)));
-                    String account = userInfo.getString("account");
-                    int point = userInfo.getInt("point");
-                    final ReservationInfo info = new ReservationInfo(account, num, point, time, is_success);
-                    list.add(info);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void _params){
-            StoreManageRecordFragment.list.addAll(list);
-            StoreManageRecordFragment.adapter.notifyDataSetChanged();
-        }
-    }
 
     public static class Post_promotion extends AsyncTask<String,Void,Void> {
         int new_promotion_id;
@@ -401,7 +357,7 @@ public class APIHandler {
         @Override
         protected void onPostExecute(Void _params){
             StoreDiscountInfo info = new StoreDiscountInfo(new_promotion_id, Integer.valueOf(name), description);
-            StoreManageDiscountFragment.discountList.add(info);
+            StoreMainActivity.storeInfo.discountList.add(info);
             StoreManageDiscountFragment.adapter.notifyDataSetChanged();
         }
     }

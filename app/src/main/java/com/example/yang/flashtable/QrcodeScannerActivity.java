@@ -1,9 +1,7 @@
 package com.example.yang.flashtable;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -13,10 +11,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -94,47 +88,22 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         mScannerView.stopCamera();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.store_qrcode_scan_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_flash:
-                if (mScannerView != null) {
-                    boolean isFlashOn = mScannerView.getFlash();
-                    if (isFlashOn) {
-                        mScannerView.setFlash(false);
-                        item.setIcon(R.drawable.ic_flash_on_white_24dp);
-                    } else {
-                        mScannerView.setFlash(true);
-                        item.setIcon(R.drawable.ic_flash_off_white_24dp);
-                    }
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     public void handleResult(Result result) {
-        Log.v(LOG_TAG, result.getText() + ", " + result.getBarcodeFormat().toString());
         String session = result.toString();
         String session_id = session.substring(session.indexOf("=")+1);
 
-        AlertDialogController.warningConfirmDialog(getApplicationContext(), "提醒", "恭喜掃描成功");
-        //mScannerView.resumeCameraPreview(this);
-        //finish_session(session_id);
-       Intent returnIntent = new Intent();
+        mScannerView.stopCamera();
+        finish_session(session_id);
+        mScannerView.setResultHandler(this);
+        mScannerView.startCamera();
+
+        /*Intent returnIntent = new Intent();
         returnIntent.putExtra(SCAN_RESULT, result.toString());
         returnIntent.putExtra(SCAN_FORMAT, result.getBarcodeFormat().toString());
         setResult(Activity.RESULT_OK, returnIntent);
-        finish();
+        finish();*/
     }
 
 
@@ -320,13 +289,13 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
             if(resEntity != null) {
                 JSONObject jsonResponse = new JSONObject(resEntity.toString());
                 if(jsonResponse.getInt("status_code") == 0) {
-                    AlertDialogController.warningConfirmDialog(getApplicationContext(), "提醒", "恭喜掃描成功");
+                    AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "恭喜掃描成功");
                 }else{
-                    AlertDialogController.warningConfirmDialog(getApplicationContext(), "提醒", "掃描失敗，請再試一次");
+                    AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "掃描失敗，請再試一次");
                 }
             }
         } catch (Exception e) {
-            AlertDialogController.warningConfirmDialog(getApplicationContext(), "提醒", "網路連線失敗，請檢察您的網路");
+            AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "網路連線失敗，請檢查您的網路");
             e.printStackTrace();
         }
     }
