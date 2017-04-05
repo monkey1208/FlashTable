@@ -20,7 +20,6 @@ public class StoreInfo {
     public void addAppointment(CustomerAppointInfo info){
         //TODO: notify server new appointment
         StoreMainActivity.apiHandler.postSession(info);
-
         totalAppointment = totalAppointment +1;
         return;
     }

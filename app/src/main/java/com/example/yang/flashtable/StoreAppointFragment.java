@@ -26,7 +26,7 @@ public class StoreAppointFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.store_appoint_fragment, container, false);
-        appointList = get_reservation_info();
+        //appointList = get_reservation_info();
         adapter = new StoreAppointAdapter(getContext(), appointList);
         setListAdapter(adapter);
         Toolbar bar = (Toolbar)v.findViewById(R.id.shop_toolbar);

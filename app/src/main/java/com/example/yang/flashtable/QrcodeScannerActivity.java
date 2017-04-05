@@ -127,10 +127,10 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         String session = result.toString();
         String session_id = session.substring(session.indexOf("=")+1);
 
-        AlertDialogController.warningConfirmDialog(mScannerView.getContext(), "提醒", "恭喜掃描成功");
-
+        AlertDialogController.warningConfirmDialog(getApplicationContext(), "提醒", "恭喜掃描成功");
+        //mScannerView.resumeCameraPreview(this);
         //finish_session(session_id);
-        Intent returnIntent = new Intent();
+       Intent returnIntent = new Intent();
         returnIntent.putExtra(SCAN_RESULT, result.toString());
         returnIntent.putExtra(SCAN_FORMAT, result.getBarcodeFormat().toString());
         setResult(Activity.RESULT_OK, returnIntent);

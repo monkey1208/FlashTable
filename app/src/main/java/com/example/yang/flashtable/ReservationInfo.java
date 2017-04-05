@@ -5,6 +5,7 @@ package com.example.yang.flashtable;
  */
 
 public class ReservationInfo {
+    public int id;
     public String name;
     public int number;
     public long due_time;

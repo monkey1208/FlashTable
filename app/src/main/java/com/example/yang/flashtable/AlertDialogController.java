@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -62,6 +63,7 @@ public class AlertDialogController {
     public static int listPosition = -1;
     public static int opentime_choose_result;
     public static int result = 0;
+    private static boolean first = true;
     private static final String[] month_to_Chinese = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"};
 
 
@@ -103,6 +105,16 @@ public class AlertDialogController {
                 bt_active_gif.setVisibility(View.VISIBLE);
                 bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
                 StoreHomeFragment.tv_active_running.setText("開啟中");
+
+                bt_active.setEnabled(false);
+                if(first) {
+                    bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
+                    first = false;
+                }
+                bt_active_gif.setVisibility(View.VISIBLE);
+                bt_active_gif.setEnabled(true);
+                tv_active.setText("開啟中");
+
                 tv_active_remind.setText("按下後暫停");
                 alertDialog.dismiss();
             }
@@ -260,8 +272,10 @@ public class AlertDialogController {
                 switch (mode){
                     case NOTICELIST_APPOINT:
                         //TODO: send FAIL msg
-                        fragmentController.storeAppointFragment.appointList.remove(position);
-                        fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
+                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id));
+                        StoreMainActivity.apiHandler.postSessionDeny( StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id);
+                        StoreMainActivity.fragmentController.storeAppointFragment.appointList.remove(position);
+                        StoreMainActivity.fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
                         break;
                 }
             }
@@ -303,13 +317,16 @@ public class AlertDialogController {
                         List<String> items = new ArrayList<String>();
                         items.add("未見該客戶");
                         items.add("店內已無空位");
+                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id));
                         StoreMainActivity.alertDialogController.listConfirmDialog(context,"取消原因",items,NOTICELIST_APPOINT, position);
                         break;
                     case NOTICELIST_APPOINT:
                         //TODO: send FAIL msg
-                        StoreMainActivity.apiHandler.postSessionDeny();
+                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id));
+                        StoreMainActivity.apiHandler.postSessionDeny( StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id);
                         StoreMainActivity.fragmentController.storeAppointFragment.appointList.remove(position);
                         StoreMainActivity.fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
+                        break;
                 }
             }
         });
