@@ -24,6 +24,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,8 +61,8 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.login_activity);
-
         // If there is a preferred account (for customer), start main.
+
         String type = checkPreference();
         if(type != null) {
             if (type.equals("customer"))
@@ -188,7 +189,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void startCustomer() {
-        Intent intent = new Intent(LoginActivity.this, CustomerMainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, CustomerLoadingActivity.class);
         LoginActivity.this.startActivity(intent);
         LoginActivity.this.finish();
     }
