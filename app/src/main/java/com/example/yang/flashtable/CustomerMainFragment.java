@@ -50,8 +50,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 /**
  * Created by Yang on 2017/3/23.
@@ -68,7 +71,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     CustomerMainAdapter adapter;
     EditText et_search;
     SqlHandler sqlHandler = null;
-    LocationManager locationMgr;
+    LocationManager locationManager;
 
     // Views for show
     ImageButton ib_show_back;
@@ -80,6 +83,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
 
     final int FINE_LOCATION_CODE = 13;
     LatLng current_location;
+    Location my_location;
 
     ApiPromotion api_promotion;
 
@@ -91,6 +95,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         gpsPermission();
         getShopStatus(false);
         initData();
+        setSpinner();
         return view;
     }
 
@@ -163,6 +168,68 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             @Override
             public void onItemClick(AdapterView<?> adapter_view, View view, int i, long l) {
                 showRestaurantDetail(i);
+            }
+        });
+    }
+    private void setSpinner(){
+        sp_dis.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i){
+                    case 0://0.5km
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                System.out.println("NOONONO");
+            }
+        });
+
+        //sp_food.setOnItemSelectedListener();
+
+        sp_sort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i){
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        adapter.sort(new Comparator<CustomerRestaurantInfo>() {
+                            @Override
+                            public int compare(CustomerRestaurantInfo info1, CustomerRestaurantInfo info2) {
+                                Location l1 = new Location("");
+                                l1.setLatitude(info1.latLng.latitude);
+                                l1.setLongitude(info1.latLng.longitude);
+                                Location l2 = new Location("");
+                                l2.setLatitude(info2.latLng.latitude);
+                                l2.setLongitude(info2.latLng.longitude);
+                                if(my_location.distanceTo(l1)>my_location.distanceTo(l2)) {
+                                    return 1;
+                                }
+                                return -1;
+                            }
+                        });
+                        adapter.notifyDataSetChanged();
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
     }
@@ -293,47 +360,88 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         }
     }
 
-    private class CurrentLocation implements LocationListener {
-        String provider;
-
+    private class CurrentLocation {
         public void execute() {
-            locationMgr = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            criteria.setAltitudeRequired(false);
-            criteria.setBearingRequired(false);
-            criteria.setCostAllowed(true);
-            criteria.setPowerRequirement(Criteria.POWER_LOW);
-            provider = locationMgr.getBestProvider(criteria, true);
-            criteria = null;
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            } else {
-                Location location = locationMgr.getLastKnownLocation(provider);
-                if (location != null) {
-                    new ApiPromotion().execute(location.getLatitude(), location.getLongitude());
-                } else {
-                    locationMgr.requestLocationUpdates(provider, 0, 0, this);
-                }
-            }
-        }
-
-        @Override
-        public void onLocationChanged(Location location) {
+            Location location = getLocation();
+            my_location = location;
             if (location != null) {
                 new ApiPromotion().execute(location.getLatitude(), location.getLongitude());
             } else {
                 new ApiPromotion().execute(24.0, 121.0);
             }
-            if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            }
-            locationMgr.removeUpdates(this);
         }
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) { }
-        @Override
-        public void onProviderEnabled(String s) { }
-        @Override
-        public void onProviderDisabled(String s) { }
+        public Location getLocation() {
+            Location location = null;
+            try {
+                locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+
+                // getting GPS status
+                boolean isGPSEnabled = locationManager
+                        .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+                // getting network status
+                boolean isNetworkEnabled = locationManager
+                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+                if (!isGPSEnabled && !isNetworkEnabled) {
+                    // no network provider is enabled
+                } else {
+                    if (isNetworkEnabled) {
+                        locationManager.requestLocationUpdates(
+                                LocationManager.NETWORK_PROVIDER,
+                                0,
+                                0, listener);
+                        Log.d("Network", "Network Enabled");
+                        if (locationManager != null) {
+                            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                                return null;
+                            }
+                            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                        }
+                    }
+                    // if GPS Enabled get lat/long using GPS Services
+                    if (isGPSEnabled) {
+                        if (location == null) {
+                            locationManager.requestLocationUpdates(
+                                    LocationManager.GPS_PROVIDER,
+                                    0,
+                                    0,  listener);
+                            Log.d("GPS", "GPS Enabled");
+                            if (locationManager != null) {
+                                location = locationManager
+                                        .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                            }
+                            locationManager.removeUpdates(listener);
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return location;
+        }
+        LocationListener listener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.d("CurrentLocation", location.getLatitude()+","+location.getLongitude());
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+            }
+        };
     }
 
     private class ApiPromotion extends AsyncTask<Double, Void, String> {

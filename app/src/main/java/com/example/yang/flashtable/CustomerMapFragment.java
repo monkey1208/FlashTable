@@ -54,6 +54,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.LOCATION_SERVICE;
+
 /**
  * Created by Yang on 2017/3/23.
  */
@@ -94,7 +96,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
         gpsPermission();
 
     }
-    public void setMap(){
+
+    public void setMap() {
         new ApiPromotion(gps).execute(24.0, 121.0);
         gps.execute();
         fab_my_position.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +110,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
     }
 
 
-    private void gpsPermission(){
+    private void gpsPermission() {
         if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             setMap();
@@ -119,9 +122,10 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                     FINE_LOCATION_CODE);
         }
     }
+
     public class CustomerGps {
         private static final String TAG = "GPSService";
-        private LocationManager locationMgr;
+        private LocationManager locationManager;
         private String provider;
         private GoogleMap googleMap;
         private LatLng latLng = null;
@@ -137,16 +141,18 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
             this.googleMap = googleMap;
             init();
         }
-        private void init(){
+
+        private void init() {
             googleMap.setOnMarkerClickListener(markerClickListener);
-            bottom_sheet = (View)view.findViewById(R.id.customer_map_bottom_sheet);
+            bottom_sheet = (View) view.findViewById(R.id.customer_map_bottom_sheet);
             bottom_sheet_behavior = BottomSheetBehavior.from(bottom_sheet);
 
         }
+
         GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                if(!marker.getSnippet().equals("me")) {
+                if (!marker.getSnippet().equals("me")) {
                     if (pre_marker != null) {
                         //Set prevMarker back to default color
                         pre_marker.setIcon(BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_restaurant)));
@@ -176,19 +182,26 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
         }
 
         private void gpsUpdate() {
-            initMarker();
-            if (initLocationProvider()) {
-                Log.d("DEBUG", "PROVIDER");
-                whereAmI();
-            } else {
-                Toast.makeText(c, "No Location Provider", Toast.LENGTH_SHORT).show();
-                Log.d("CustomerGps", "No Location Provider");
+            if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
             }
+            initMarker();
+            Location location = getLocation();
+            updateWithNewLocation(location);
         }
 
         private void initMarker() {
             markerOptions = new MarkerOptions();
-            latLng = new LatLng(25.021918, 121.535285);
+            if (latLng == null) {
+                latLng = new LatLng(25.021918, 121.535285);
+            }
             markerOptions.anchor(0.75f, 0.5f)
                     .position(latLng)
                     .snippet("me")
@@ -198,83 +211,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
 
         }
 
-        private void whereAmI() {
-            //取得上次已知的位置
-            Location location = locationMgr.getLastKnownLocation(provider);
-            updateWithNewLocation(location);
-            //GPS Listener
-            if (ActivityCompat.checkSelfPermission(c, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            locationMgr.addGpsStatusListener(gpsListener);
-            //Location Listener
-            int minTime = 0;//ms
-            int minDist = 3;//meter
-            locationMgr.requestLocationUpdates(provider, minTime, minDist, locationListener);
-        }
 
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                Log.d("CustomerMapFragment", "location change");
-                if (ActivityCompat.checkSelfPermission(c, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(c, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                location = locationMgr.getLastKnownLocation(provider);
-                updateWithNewLocation(location);
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-                Log.d("CustomerMapFragment", "Disable");
-                updateWithNewLocation(null);
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-                Log.d("CustomerMapFragment", "Enable");
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-                switch (status) {
-                    case LocationProvider.OUT_OF_SERVICE:
-                        Log.v(TAG, "Status Changed: Out of Service");
-                        Toast.makeText(c, "Status Changed: Out of Service", Toast.LENGTH_SHORT).show();
-                        break;
-                    case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                        Log.v(TAG, "Status Changed: Temporarily Unavailable");
-                        Toast.makeText(c, "Status Changed: Temporarily Unavailable", Toast.LENGTH_SHORT).show();
-                        break;
-                    case LocationProvider.AVAILABLE:
-                        Log.v(TAG, "Status Changed: Available");
-                        Toast.makeText(c, "Status Changed: Available", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        };
-        GpsStatus.Listener gpsListener = new GpsStatus.Listener() {
-            @Override
-            public void onGpsStatusChanged(int event) {
-                switch (event) {
-                    case GpsStatus.GPS_EVENT_STARTED:
-                        Log.d(TAG, "GPS_EVENT_STARTED");
-                        Toast.makeText(c, "GPS_EVENT_STARTED", Toast.LENGTH_SHORT).show();
-                        break;
-                    case GpsStatus.GPS_EVENT_STOPPED:
-                        Log.d(TAG, "GPS_EVENT_STOPPED");
-                        Toast.makeText(c, "GPS_EVENT_STOPPED", Toast.LENGTH_SHORT).show();
-                        break;
-                    case GpsStatus.GPS_EVENT_FIRST_FIX:
-                        Log.d(TAG, "GPS_EVENT_FIRST_FIX");
-                        Toast.makeText(c, "GPS_EVENT_FIRST_FIX", Toast.LENGTH_SHORT).show();
-                        break;
-                    case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-                        Log.d(TAG, "GPS_EVENT_SATELLITE_STATUS");
-                        break;
-                }
-            }
-        };
 
         private void updateWithNewLocation(Location location) {
             if (location != null) {
@@ -286,11 +223,11 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                 latLng = null;
                 latLng = new LatLng(lat, lng);
                 if (latLng != null) {
-                    moveMap(latLng);
                     marker.setPosition(latLng);
                 }
             }
         }
+
         private void moveMap(LatLng place) {
             CameraPosition cameraPosition =
                     new CameraPosition.Builder()
@@ -299,6 +236,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                             .build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
+
         public void goToMyPosition() {
             if (latLng != null) {
                 moveMap(latLng);
@@ -309,26 +247,107 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
             MarkerOptions options = new MarkerOptions();
             options.position(latLng)
                     .icon(BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_restaurant)))
-                    .snippet(index+"");
+                    .snippet(index + "");
             Marker restaurant_marker = googleMap.addMarker(options);
             return restaurant_marker;
         }
 
-        private boolean initLocationProvider() {
-            locationMgr = (LocationManager) c.getSystemService(c.LOCATION_SERVICE);
+        public Location getLocation() {
+            Location location = null;
+            try {
+                locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
-            Criteria criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            criteria.setAltitudeRequired(false);
-            criteria.setBearingRequired(false);
-            criteria.setCostAllowed(true);
-            criteria.setPowerRequirement(Criteria.POWER_LOW);
-            provider = locationMgr.getBestProvider(criteria, true);
-            if (provider != null) {
-                Log.d(TAG, "Provider: " + provider);
-                return true;
+                // getting GPS status
+                boolean isGPSEnabled = locationManager
+                        .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+                // getting network status
+                boolean isNetworkEnabled = locationManager
+                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+                if (!isGPSEnabled && !isNetworkEnabled) {
+                    // no network provider is enabled
+                } else {
+                    if (isNetworkEnabled) {
+                        locationManager.requestLocationUpdates(
+                                LocationManager.NETWORK_PROVIDER,
+                                0,
+                                0, new LocationListener() {
+                                    @Override
+                                    public void onLocationChanged(Location location) {
+                                        updateWithNewLocation(location);
+                                        Log.d("DEBUG", location.getLatitude()+","+location.getLongitude());
+                                    }
+
+                                    @Override
+                                    public void onStatusChanged(String s, int i, Bundle bundle) {
+                                        Log.d("DEBUG", "change");
+                                    }
+
+                                    @Override
+                                    public void onProviderEnabled(String s) {
+                                        Log.d("DEBUG", "enable");
+                                    }
+
+                                    @Override
+                                    public void onProviderDisabled(String s) {
+                                        Log.d("DEBUG", "disable");
+                                    }
+                                });
+                        Log.d("Network", "Network Enabled");
+                        if (locationManager != null) {
+                            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                                return null;
+                            }
+                            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                        }
+                    }
+                    // if GPS Enabled get lat/long using GPS Services
+                    if (isGPSEnabled) {
+                        if (location == null) {
+                            locationManager.requestLocationUpdates(
+                                    LocationManager.GPS_PROVIDER,
+                                    0,
+                                    0,  new LocationListener() {
+                                        @Override
+                                        public void onLocationChanged(Location location) {
+                                            updateWithNewLocation(location);
+                                            Log.d("DEBUG", location.getLatitude()+","+location.getLongitude());
+                                        }
+
+                                        @Override
+                                        public void onStatusChanged(String s, int i, Bundle bundle) {
+                                            Log.d("DEBUG", "change");
+                                        }
+
+                                        @Override
+                                        public void onProviderEnabled(String s) {
+                                            Log.d("DEBUG", "enable");
+                                        }
+
+                                        @Override
+                                        public void onProviderDisabled(String s) {
+                                            Log.d("DEBUG", "disable");
+                                        }
+                                    });
+                            Log.d("GPS", "GPS Enabled");
+                            if (locationManager != null) {
+                                location = locationManager
+                                        .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                            }
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            return false;
+
+
+            return location;
         }
 
         private Bitmap createScaledMarker(int resource) {
@@ -340,21 +359,24 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
         }
 
     }
+
     private class ApiPromotion extends AsyncTask<Double, Void, String> {
         HttpClient httpClient = new DefaultHttpClient();
         CustomerGps gps;
-        public ApiPromotion(CustomerGps gps){
+
+        public ApiPromotion(CustomerGps gps) {
             this.gps = gps;
         }
+
         @Override
         protected String doInBackground(Double... params) {
             SqlHandler sqlHandler = new SqlHandler(getActivity());
             String lat = String.valueOf(params[0]);
             String lng = String.valueOf(params[1]);
             String latlng = lat + "," + lng;//need current location
-            Log.d("APIPromotion", "latlng = "+latlng);
+            Log.d("APIPromotion", "latlng = " + latlng);
             List<Description> list = getPromotionId(latlng);
-            for(int i = 0; i < list.size(); i++) {
+            for (int i = 0; i < list.size(); i++) {
                 CustomerRestaurantInfo info = sqlHandler.getDetail(list.get(i).shop_id);
                 info.discount = list.get(i).discount;
                 info.offer = list.get(i).offer;
@@ -366,7 +388,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
 
         @Override
         protected void onPostExecute(String s) {
-            for(int i = 0; i < restaurantInfoList.size(); i++){
+            for (int i = 0; i < restaurantInfoList.size(); i++) {
                 gps.setMarker(restaurantInfoList.get(i).latLng, i);
                 System.out.println(restaurantInfoList.get(i).latLng.longitude);
                 System.out.println(restaurantInfoList.get(i).latLng.latitude);
@@ -375,25 +397,25 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
 
         }
 
-        private List<Description> getPromotionId(String latlng){
+        private List<Description> getPromotionId(String latlng) {
             List<Description> list = new ArrayList<>();
             NameValuePair nameValuePair = new BasicNameValuePair("location", latlng);
             String s = nameValuePair.toString();
-            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/surrounding_promotions"+"?"+s);
+            HttpGet request = new HttpGet("https://" + getString(R.string.server_domain) + "/api/surrounding_promotions" + "?" + s);
             request.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse http_response = httpClient.execute(request);
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 String json = handler.handleResponse(http_response);
                 JSONArray jsonArray = new JSONArray(json);
-                if(jsonArray.getJSONObject(0).get("status_code").equals("0")) {
+                if (jsonArray.getJSONObject(0).get("status_code").equals("0")) {
                     int size = Integer.valueOf(jsonArray.getJSONObject(0).get("size").toString());
-                    for(int i = 1; i <= size; i++){
+                    for (int i = 1; i <= size; i++) {
                         String id = jsonArray.getJSONObject(i).get("promotion_id").toString();
                         nameValuePair = null;
                         nameValuePair = new BasicNameValuePair("promotion_id", id);
                         s = nameValuePair.toString();
-                        request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/promotion_info"+"?"+s);
+                        request = new HttpGet("https://" + getString(R.string.server_domain) + "/api/promotion_info" + "?" + s);
                         request.addHeader("Content-Type", "application/json");
                         http_response = httpClient.execute(request);
                         json = handler.handleResponse(http_response);
@@ -414,14 +436,17 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
         }
 
         private class Description {
-            public Description(int shop_id, int discount, String offer){
+            public Description(int shop_id, int discount, String offer) {
                 this.shop_id = shop_id;
                 this.discount = discount;
                 this.offer = offer;
             }
+
             int shop_id;
             int discount;
             String offer;
         }
     }
+
+
 }
