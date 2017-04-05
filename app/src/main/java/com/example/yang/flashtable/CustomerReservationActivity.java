@@ -1,5 +1,6 @@
 package com.example.yang.flashtable;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -43,6 +44,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -71,7 +73,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
     ImageView iv_qr_code;
 
 
-    String discount;
+    int discount;
     String offer;
     String promotion_id;
     String request_id;
@@ -85,17 +87,58 @@ public class CustomerReservationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        promotion_id = getIntent().getStringExtra("promotion_id");
-        discount = getIntent().getStringExtra("discount");
-        offer = getIntent().getStringExtra("offer");
+
         // Set to fullscreen.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.customer_reservation_activity);
-        new ApiRequest().execute();
         initView();
         initData();
+        if(!GetBlockInfo.getBlockStatus(this)) {
+            promotion_id = getIntent().getStringExtra("promotion_id");
+            discount = getIntent().getIntExtra("discount", 101);
+            offer = getIntent().getStringExtra("offer");
+            new ApiRequest().execute();
+        }else{
+            session_id = GetBlockInfo.getSession(this);
+            discount = GetBlockInfo.getDiscount(this);
+            offer = GetBlockInfo.getOffer(this);
+            long time = GetBlockInfo.getTime(this);
+            long remain_time = 15*60000+time-Calendar.getInstance().getTimeInMillis();
+            if(remain_time<0){
+                remain_time = 0;
+            }
+            reservationAccepted((int)remain_time);
+        }
+
+    }
+    public static class GetBlockInfo{
+
+
+        public static boolean getBlockStatus(Context c){
+            SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
+            if(pref.getString("block", "false").equals("true")){
+                return true;
+            }
+            return false;
+        }
+        public static long getTime(Context c){
+            SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
+            return pref.getLong("block_time", 0);
+        }
+        public static String getSession(Context c){
+            SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
+            return pref.getString("session", "");
+        }
+        public static int getDiscount(Context c){
+            SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
+            return pref.getInt("discount", 101);
+        }
+        public static String getOffer(Context c){
+            SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
+            return pref.getString("offer", "N");
+        }
     }
 
     private void initView() {
@@ -124,7 +167,6 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
     private void initData() {
         gif_drawable.setSpeed(2.0f);
-        startCountDown("waiting", 60000);
 
         cancel_listener = new View.OnClickListener() {
             @Override
@@ -138,6 +180,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 timer.cancel();
+                clearBlockPreference();
                 new ApiCancel("session").execute(session_id);
                 finish();
             }
@@ -146,20 +189,71 @@ public class CustomerReservationActivity extends AppCompatActivity {
         bt_arrive_cancel.setOnClickListener(cancel_arrive_listener);
     }
 
-    private void reservationAccepted() {
+    private void reservationAccepted(int sec) {
         vf_flipper.setDisplayedChild(1);
-        tv_discount.setText(discount);
+        if( discount == 101 ||discount == 100) {
+            tv_discount.setText("暫無折扣");
+        }else{
+            int dis = discount/10;
+            int point = discount%10;
+            if(point == 0){
+                tv_discount.setText(dis+"折");
+            }else{
+                tv_discount.setText(discount+"折");
+            }
+        }
         tv_gift.setText(offer);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-        startCountDown("success", 60000*15);
-
+        startCountDown("success", sec);
         try {
             Bitmap bitmap = encodeAsBitmap("session_id="+session_id);
             iv_qr_code.setImageBitmap(bitmap);
         } catch (WriterException e) {
             e.printStackTrace();
         }
+    }
+    private void requestSuccess(){
+        setBlockPreference();
+        timer.cancel();
+        reservationAccepted(60000*15);
+    }
+    private void requestRejected(){
+        timer.cancel();
+        new DialogBuilder(this).dialogEvent("餐廳已拒絕你的訂位", "normal", finish_listener);
+    }
+    private void qrRejected(){
+        timer.cancel();
+        clearBlockPreference();
+        new DialogBuilder(this).dialogEvent("餐廳已取消你的訂位", "normal", finish_listener);
+    }
+    private void qrSuccess(){
+        clearBlockPreference();
+        timer.cancel();
+        Intent intent = new Intent(CustomerReservationActivity.this, CustomerRatingActivity.class);
+        startActivity(intent);
+        CustomerReservationActivity.this.finish();
+    }
+    DialogEventListener finish_listener = new DialogEventListener() {
+        @Override
+        public void clickEvent(boolean ok, int status) {
+            finish();
+        }
+    };
+
+    private void setBlockPreference(){
+        SharedPreferences pref = getSharedPreferences("BLOCK", MODE_PRIVATE);
+        pref.edit().putLong("block_time", Calendar.getInstance().getTimeInMillis())
+                .putString("block", "true")
+                .putString("session", session_id)
+                .putInt("discount", discount)
+                .putString("offer", offer)
+                .commit();
+
+    }
+    private void clearBlockPreference(){
+        SharedPreferences pref = getSharedPreferences("BLOCK", MODE_PRIVATE);
+        pref.edit().clear().commit();
     }
 
     private void startCountDown(String state, final int countdown_millis) {
@@ -269,6 +363,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             request_id = s;
             new ApiRequestSuccess().execute();
+            startCountDown("waiting", 60000);
             super.onPostExecute(s);
         }
 
@@ -330,7 +425,6 @@ public class CustomerReservationActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        //continue here~~~~
                     }else{
                         //accept
                         return session_array.getJSONObject(1).get("session_id").toString();
@@ -353,13 +447,13 @@ public class CustomerReservationActivity extends AppCompatActivity {
                 case "waiting":
                     break;
                 case "reject":
-                    timer.cancel();
-                    CustomerReservationActivity.this.finish();
+                    Toast.makeText(CustomerReservationActivity.this, "Rejected", Toast.LENGTH_SHORT).show();
+                    requestRejected();
                     break;
                 default:
-                    timer.cancel();
                     session_id = s;
-                    reservationAccepted();
+                    requestSuccess();
+                    break;
             }
 
             super.onPostExecute(s);
@@ -416,11 +510,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
             session_flag = true;
             switch (s){
                 case "finish":
-                    //QRCODE SUCCESS
-                    timer.cancel();
-                    Intent intent = new Intent(CustomerReservationActivity.this, CustomerRatingActivity.class);
-                    startActivity(intent);
-                    CustomerReservationActivity.this.finish();
+                    new ApiRecord().execute();
                     break;
                 default:
                     break;
@@ -470,6 +560,52 @@ public class CustomerReservationActivity extends AppCompatActivity {
             return null;
         }
     }
+    class ApiRecord extends AsyncTask<Void, Void, String>{
+        HttpClient httpClient = new DefaultHttpClient();
+        ResponseHandler<String> handler = new BasicResponseHandler();
+        @Override
+        protected String doInBackground(Void... voids) {
+            NameValuePair param = new BasicNameValuePair("user_id", getUserId());
+            HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_records?" + param.toString());
+            httpGet.addHeader("Content-Type", "application/json");
+            try {
+                HttpResponse httpResponse = httpClient.execute(httpGet);
+                String json = handler.handleResponse(httpResponse);
+                System.out.println("record:"+json);
+                JSONArray jsonArray = new JSONArray(json);
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                if(jsonObject.get("status_code").equals("0")){
+                    int last = Integer.valueOf(jsonObject.get("size").toString());
+                    String record_id = jsonArray.getJSONObject(last).getString("record_id");
+                    param = new BasicNameValuePair("record_id", record_id);
+                    httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/record_info?" + param.toString());
+                    httpResponse = httpClient.execute(httpGet);
+                    json = handler.handleResponse(httpResponse);
+                    System.out.println("record:"+json);
+                    jsonObject = new JSONObject(json);
+                    if(jsonObject.getString("status_code").equals("0")){
+                        return jsonObject.getString("is_succ");
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return "false";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if(s.equals("true")){
+                qrSuccess();
+            }else{
+                qrRejected();
+            }
+            super.onPostExecute(s);
+        }
+    }
+
     private String getUserId(){
         SharedPreferences preferences = getSharedPreferences("USER", MODE_PRIVATE);
         return preferences.getString("userID", "");

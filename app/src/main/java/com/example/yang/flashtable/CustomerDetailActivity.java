@@ -211,6 +211,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
+            SqlHandler sqlHandler = new SqlHandler(CustomerDetailActivity.this);
             try {
                 HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/user_records?user_id=" + params[0]);
                 request.addHeader("Content-Type", "application/json");
@@ -235,7 +236,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         if( !status.equals("0") )   break;
                         String promotion_discount = responsePromotion.getString("name");
                         String promotion_gift = responsePromotion.getString("description");
-
+                        /*
                         HttpGet requestShop = new HttpGet("https://flash-table.herokuapp.com/api/shop_info?shop_id=" + shop_id);
                         requestShop.addHeader("Content-Type", "application/json");
                         JSONObject responseShop = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestShop) ) );
@@ -245,9 +246,15 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         String shop_address = responseShop.getString("address");
                         String shop_intro = responseShop.getString("intro");
                         String shop_category = responseShop.getString("tag");
+                        */
+                        CustomerRestaurantInfo info = sqlHandler.getDetail(Integer.valueOf(shop_id));
+                        String shop_name = info.name;
+                        String shop_address = info.detailInfo.address;
+                        String shop_intro = info.detailInfo.intro;
+                        String shop_category = info.category;
 
                         HttpGet requestShopRating = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + shop_id);
-                        requestShop.addHeader("Content-Type", "application/json");
+                        requestShopRating.addHeader("Content-Type", "application/json");
                         JSONArray responseShopRating = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(requestShopRating) ) );
                         status = responseShopRating.getJSONObject(0).getString("status_code");
                         if( !status.equals("0") )   break;

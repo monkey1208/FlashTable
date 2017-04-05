@@ -3,6 +3,7 @@ package com.example.yang.flashtable;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -40,7 +41,7 @@ public class CustomerMainActivity extends AppCompatActivity
         setContentView(R.layout.customer_main_activity);
         initView();
         initData();
-
+        checkBlock();
     }
 
     private void initView() {
@@ -115,6 +116,13 @@ public class CustomerMainActivity extends AppCompatActivity
         });
         nv_view = (NavigationView) findViewById(R.id.nav_view);
         nv_view.setNavigationItemSelectedListener(this);
+    }
+    private void checkBlock(){
+        if(CustomerReservationActivity.GetBlockInfo.getBlockStatus(this)){
+            //Go to block page
+            Intent intent = new Intent(this, CustomerReservationActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override

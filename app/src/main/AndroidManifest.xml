@@ -25,7 +25,8 @@
 
         <activity android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -34,36 +35,43 @@
 
         <activity android:name=".CustomerRegisterActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".CustomerLoadingActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             </activity>
 
         <activity
             android:name=".CustomerMainActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait">
         </activity>
 
         <activity
             android:name=".CustomerReservationActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
         </activity>
 
         <activity
             android:name=".CustomerCommentActivity"
-            android:theme="@style/AppTheme.LightActionBar">
+            android:theme="@style/AppTheme.LightActionBar"
+            android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".CustomerDetailActivity"
-            android:theme="@style/AppTheme.LightActionBar">
+            android:theme="@style/AppTheme.LightActionBar"
+            android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".CustomerRatingActivity"
             android:theme="@style/AppTheme.TransparentActionBar"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 
