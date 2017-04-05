@@ -71,10 +71,12 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
     String promotion_id;
     String request_id;
+    String session_id = null;
 
     CountDownTimer timer;
 
     boolean request_flag = true;//true means no request
+    boolean session_flag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +124,11 @@ public class CustomerReservationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 timer.cancel();
-                new ApiCancel().execute(request_id);
+                if(session_id == null) {
+                    new ApiCancel("request").execute(request_id);
+                }else{
+                    new ApiCancel("session").execute(session_id);
+                }
                 finish();
             }
         };
@@ -134,10 +140,10 @@ public class CustomerReservationActivity extends AppCompatActivity {
         vf_flipper.setDisplayedChild(1);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-        startCountDown("success", 10000);
+        startCountDown("success", 900000);
 
         try {
-            Bitmap bitmap = encodeAsBitmap("elisaroo");
+            Bitmap bitmap = encodeAsBitmap("session_id="+session_id);
             iv_qr_code.setImageBitmap(bitmap);
         } catch (WriterException e) {
             e.printStackTrace();
@@ -152,7 +158,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                 public void onTick(long millis_left) {
                     if((pre_millis-millis_left)>2000 && request_flag == true){
                         pre_millis = millis_left;
-                        new ApiCheckSuccess().execute();
+                        new ApiRequestSuccess().execute();
                     }
                     time_left = (millis_left / 1000) + seconds;
                     tv_time.setText(time_left);
@@ -161,13 +167,18 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     time_left = 0 + seconds;
                     tv_time.setText(time_left);
                     tv_status.setText(no_response);
-                    new ApiCancel().execute(request_id);
+                    new ApiCancel("request").execute(request_id);
                 }
             }.start();
         } else if (state.equals("success")) {
             timer = new CountDownTimer(countdown_millis, 1000) {
                 String time_left;
+                long pre_millis = countdown_millis;
                 public void onTick(long millis_left) {
+                    if((pre_millis-millis_left)>2000 && request_flag == true){
+                        pre_millis = millis_left;
+                        new ApiSessionSuccess().execute();
+                    }
                     time_left =
                             String.format(Locale.CHINESE, "%02d:%02d",
                                     TimeUnit.MILLISECONDS.toMinutes(millis_left) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis_left)),
@@ -210,7 +221,6 @@ public class CustomerReservationActivity extends AppCompatActivity {
     }
     class ApiRequest extends AsyncTask<Void, Void, String>{
         HttpClient httpClient = new DefaultHttpClient();
-        ResponseHandler<String> handler = new BasicResponseHandler();
         @Override
         protected String doInBackground(Void... voids) {
             HttpPost httpPost = new HttpPost("http://"+getString(R.string.server_domain)+"/api/new_request");
@@ -248,13 +258,13 @@ public class CustomerReservationActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             request_id = s;
-            new ApiCheckSuccess().execute();
+            new ApiRequestSuccess().execute();
             super.onPostExecute(s);
         }
 
 
     }
-    class ApiCheckSuccess extends AsyncTask<Void, Void, String>{
+    class ApiRequestSuccess extends AsyncTask<Void, Void, String>{
         HttpClient httpClient = new DefaultHttpClient();
 
         @Override
@@ -326,6 +336,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     CustomerReservationActivity.this.finish();
                     break;
                 default:
+                    session_id = s;
                     reservationAccepted();
             }
 
@@ -333,13 +344,85 @@ public class CustomerReservationActivity extends AppCompatActivity {
         }
     }
 
+    class ApiSessionSuccess extends AsyncTask<Void, Void, String>{
+        HttpClient httpClient = new DefaultHttpClient();
+
+        @Override
+        protected void onPreExecute() {
+            session_flag = false;
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            NameValuePair param = new BasicNameValuePair("user_id", getUserId());
+            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+param.toString());
+            request.addHeader("Content-Type", "application/json");
+            try {
+                HttpResponse response = httpClient.execute(request);
+                ResponseHandler<String> handler = new BasicResponseHandler();
+                String session_response = handler.handleResponse(response);
+                JSONArray session_array = new JSONArray(session_response);
+                JSONObject session_object = session_array.getJSONObject(0);
+                System.out.println("session = "+session_response);
+                if(session_object.get("status_code").equals("0")){
+                    int size = Integer.valueOf(session_object.get("size").toString());
+                    if(size == 0){
+                        //no sessions => rejected
+                        //Do something when rejected.
+                        return "finish";
+                    }else{
+                        //accept
+                        for(int i = 1; i <= size; i++){
+                            if(session_id.equals(session_array.getJSONObject(i).get("session_id").toString())){
+                                return "waiting";
+                            }
+                        }
+                        return "finish";
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return "waiting";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            request_flag = true;
+            switch (s){
+                case "finish":
+                    timer.cancel();
+                    CustomerReservationActivity.this.finish();
+                    break;
+                default:
+                    break;
+            }
+
+            super.onPostExecute(s);
+        }
+    }
     class ApiCancel extends AsyncTask<String, Void, Void>{
         HttpClient httpClient = new DefaultHttpClient();
         ResponseHandler<String> handler = new BasicResponseHandler();
+        boolean request_session_flag;
+        public ApiCancel(String flag){
+            if(flag.equals("request"))
+                request_session_flag = true;
+            else
+                request_session_flag = false;
+        }
         @Override
         protected Void doInBackground(String... id) {
             NameValuePair param = new BasicNameValuePair("request_id", id[0]);
-            HttpPost httpPost = new HttpPost("http://"+getString(R.string.server_domain)+"/api/cancel_request?"+param.toString());
+            HttpPost httpPost;
+            if(request_session_flag) {
+                httpPost = new HttpPost("http://" + getString(R.string.server_domain) + "/api/cancel_request?" + param.toString());
+            }else{
+                httpPost = new HttpPost("http://" + getString(R.string.server_domain) + "/api/cancel_session?" + param.toString());
+            }
             httpPost.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse httpResponse = httpClient.execute(httpPost);

@@ -178,14 +178,12 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
 
         if (active == true) {
             new CurrentLocation().execute();
-        } else {
-            api_promotion = new ApiPromotion();
-            api_promotion.execute(24.05, 121.545);
-        }
+        } //else {
+            //api_promotion = new ApiPromotion();
+            //api_promotion.execute(24.05, 121.545);
+        //}
 
     }
-
-
     // DB related functions
     private void openDB() {
         sqlHandler = new SqlHandler(view.getContext());

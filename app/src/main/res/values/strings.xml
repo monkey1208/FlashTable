@@ -54,6 +54,17 @@
     <string name="customer_register_error_verify_wrong">驗證碼不正確</string>
     <string name="customer_register_success">成功註冊，請登入</string>
 
+    <!-- Strings related to store register -->
+    <string name="store_register_title">商家申請資料填寫：</string>
+    <string name="store_register_username">帳號名稱</string>
+    <string name="store_register_password">密碼</string>
+    <string name="store_register_password_again">確認密碼</string>
+    <string name="store_register_name">店家名稱</string>
+    <string name="store_register_address">店家地址</string>
+    <string name="store_register_contact">聯絡人姓名</string>
+    <string name="store_register_phone">聯絡電話</string>
+    <string name="store_register_email">電子信箱</string>
+
     <!-- String related to customer main -->
     <string name="customer_main_no_info">尚未提供</string>
     <string name="customer_main_price">均消$</string>

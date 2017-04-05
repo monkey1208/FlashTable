@@ -3,14 +3,10 @@ package com.example.yang.flashtable;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ContextThemeWrapper;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -66,10 +62,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.login_activity);
 
         // If there is a preferred account (for customer), start main.
-        if(checkCustomerPreference()){
-            Intent intent = new Intent(LoginActivity.this, CustomerMainActivity.class);
-            LoginActivity.this.startActivity(intent);
-            LoginActivity.this.finish();
+        String type = checkPreference();
+        if(type != null) {
+            if (type.equals("customer"))
+                startCustomer();
+            else if (type.equals("store"))
+                startStore();
         }
 
         initView();
@@ -134,6 +132,19 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) { vf_flipper.setDisplayedChild(0); }
         });
+        store_bt_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                storeLogin();
+            }
+        });
+        store_bt_apply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, StoreRegisterActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private boolean isAccountValid(String account) {
@@ -147,6 +158,38 @@ public class LoginActivity extends AppCompatActivity {
         Matcher matcher = pattern.matcher(password);
 
         return (!matcher.find() && !password.equals(""));
+    }
+
+    private void startStore() {
+        // TODO: Start store main
+        Toast.makeText(this, "START STORE", Toast.LENGTH_LONG).show();
+    }
+
+    private void storeLogin() {
+        String account = store_et_account.getText().toString();
+        String password = store_et_password.getText().toString();
+
+        int fail = 0;
+
+        if (!isAccountValid(account)) {
+            fail = 1;
+        } else if (!isPasswordValid(password)) {
+            fail = 2;
+        }
+
+        if (fail != 0) {
+            dialog_builder.dialogEvent(getResources().getString(R.string.login_error_typo), "normal", null);
+        } else {
+            preference_account = account;
+            preference_password = password;
+            new StoreAPILogin().execute(account, password);
+        }
+    }
+
+    private void startCustomer() {
+        Intent intent = new Intent(LoginActivity.this, CustomerMainActivity.class);
+        LoginActivity.this.startActivity(intent);
+        LoginActivity.this.finish();
     }
 
     private void customerLogin() {
@@ -170,21 +213,22 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void setCustomerLoginPreference(String userID){
+    private void setLoginPreference(String userID, String type){
         //Set SharedPreference with userId, account, password
         SharedPreferences preferences = this.getSharedPreferences("USER", MODE_PRIVATE);
         preferences.edit().putString("userID", userID)
+                .putString("type", type)
                 .putString("account", preference_account)
                 .putString("password", preference_password)
                 .apply();
     }
 
-    private boolean checkCustomerPreference(){
+    private String checkPreference(){
         SharedPreferences preferences = this.getSharedPreferences("USER", MODE_PRIVATE);
-        if(preferences.contains("userID")){
-            return true;
+        if(preferences.contains("userID")) {
+            return preferences.getString("type", "");
         }
-        return false;
+        else return null;
     }
 
     class CustomerAPILogin extends AsyncTask<String, Void, String> {
@@ -236,45 +280,65 @@ public class LoginActivity extends AppCompatActivity {
             else {
                 Toast.makeText(LoginActivity.this,
                         getResources().getString(R.string.login_success) + customer_et_account.getText().toString(),  Toast.LENGTH_LONG).show();
-                setCustomerLoginPreference(_userID);
-                Intent intent = new Intent(LoginActivity.this, CustomerLoadingActivity.class);
-                LoginActivity.this.startActivity(intent);
-                LoginActivity.this.finish();
+                setLoginPreference(_userID, "customer");
+
+                startCustomer();
             }
         }
     }
 
     class StoreAPILogin extends AsyncTask<String, Void, String> {
+        private ProgressDialog progress_dialog = new ProgressDialog(LoginActivity.this);
+        private String status = null;
+
+        @Override
+        protected void onPreExecute() {
+            // TODO: Style this.
+
+            progress_dialog.setMessage(getResources().getString(R.string.login_wait));
+            // progress_dialog.setContentView(R.layout.progress_dialog);
+            progress_dialog.show();
+        }
+
         @Override
         protected String doInBackground(String... params) {
-            String userID = null;
+            String _userID = null;
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet request = new HttpGet("https://fluffs-press.herokuapp.com/api/login?account=" + params[0] + "&password=" + params[1]);
+                HttpGet request = new HttpGet(
+                        "https://flash-table.herokuapp.com/api/shop_login?account=" + params[0] + "&password=" + params[1]);
                 request.addHeader("Content-Type", "application/json");
                 HttpResponse response = httpClient.execute(request);
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 String httpResponse = handler.handleResponse(response);
                 JSONObject responseJSON = new JSONObject(httpResponse);
-                if (responseJSON.getString("status").equals("ok"))
-                    userID = responseJSON.getString("user_id");
+                status = responseJSON.getString("status_code");
+                if (status.equals("0"))
+                    _userID = responseJSON.getString("shop_id");
+
             } catch (Exception e) {
                 Log.d("GetCode", "Request exception:" + e.getMessage());
             } finally {
                 httpClient.getConnectionManager().shutdown();
             }
-            return userID;
+            return _userID;
         }
         @Override
         protected void onPostExecute(String _userID) {
-            if(_userID == null)  Toast.makeText(LoginActivity.this, "User/Password not Found or Connection Error",  Toast.LENGTH_LONG).show();
-            else {
-                // TODO: Change to store activity
+            if (progress_dialog.isShowing()) {
+                progress_dialog.dismiss();
+            }
 
-                Toast.makeText(LoginActivity.this, "Welcome, User No." + _userID,  Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(LoginActivity.this, CustomerMainActivity.class);
-                LoginActivity.this.startActivity(intent);
-                LoginActivity.this.finish();
+            if(status == null)
+                dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
+            else if (_userID == null)
+                dialog_builder.dialogEvent(getResources().getString(R.string.login_error_invalid), "normal", null);
+            else {
+                Toast.makeText(LoginActivity.this,
+                        getResources().getString(R.string.login_success) + store_et_account.getText().toString(),  Toast.LENGTH_LONG).show();
+                setLoginPreference(_userID, "store");
+
+                startStore();
             }
         }
     }
