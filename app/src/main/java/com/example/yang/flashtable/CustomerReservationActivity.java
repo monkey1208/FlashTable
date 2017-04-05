@@ -116,7 +116,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
     private void initData() {
         gif_drawable.setSpeed(2.0f);
-        startCountDown("waiting", 10000);
+        startCountDown("waiting", 60000);
 
         cancel_listener = new View.OnClickListener() {
             @Override
