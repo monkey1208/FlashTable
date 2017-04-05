@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,7 @@ public class StoreRecentAdapter extends BaseAdapter{
         holder.bt_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                StoreMainActivity.apiHandler.postRequestDeny(list.get(position).id,list.get(position).name);
                 FragmentController.storeRecentFragment.removeItem(position);
                 //TODO: send cancel message
                 //new APIHandler().postRequestDeny(list.get(position).id);
@@ -106,5 +108,8 @@ public class StoreRecentAdapter extends BaseAdapter{
             this.bt_cancel = cancel;
             this.im_confirmed = im_confirmed;
         }
+    }
+    public void postRequestDeny(int id){
+        Toast.makeText(context,Integer.toString(id),Toast.LENGTH_LONG).show();
     }
 }

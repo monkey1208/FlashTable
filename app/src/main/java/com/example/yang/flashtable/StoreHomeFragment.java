@@ -115,12 +115,19 @@ public class StoreHomeFragment extends Fragment {
             }
         });
 
-        /*bt_active_gif.setOnClickListener(new View.OnClickListener() {
+        bt_active_gif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "Stop", Toast.LENGTH_SHORT).show();
+                tv_active.setText("立即尋客");
+                tv_active_remind.setText("");
+                bt_active.setVisibility(View.VISIBLE);
+                bt_active.setEnabled(true);
+                bt_active_gif.setVisibility(View.INVISIBLE);
+                bt_active_gif.setEnabled(false);
+                StoreMainActivity.apiHandler.postPromotionInactive();
             }
-        });*/
+        });
         //--------------
         //QRcode button-
         bt_QRcode = (ImageButton)v.findViewById(R.id.bt_QRcode);
