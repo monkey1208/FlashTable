@@ -22,6 +22,8 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.List;
 
+import pl.droidsonroids.gif.GifImageView;
+
 import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
 
 public class StoreHomeFragment extends Fragment {
@@ -35,6 +37,7 @@ public class StoreHomeFragment extends Fragment {
     private ImageButton bt_active;
     private GifImageView bt_active_gif;
     private TextView tv_active;
+    public static TextView tv_active_running;
     private TextView tv_active_remind;
     private View v;
     private StoreInfo storeInfo;
@@ -77,8 +80,10 @@ public class StoreHomeFragment extends Fragment {
         //--------------
         //立即尋客button
         bt_active_gif = (GifImageView)v.findViewById(R.id.bt_active_gif);
+        bt_active_gif.setVisibility(View.INVISIBLE);
         tv_active = (TextView)v.findViewById(R.id.tv_active);
         tv_active_remind = (TextView)v.findViewById(R.id.tv_active_remind);
+        tv_active_running = (TextView)v.findViewById(R.id.tv_active_running);
         bt_active = (ImageButton)v.findViewById(R.id.bt_active);
         bt_active.setOnClickListener(new View.OnClickListener() {
             @Override

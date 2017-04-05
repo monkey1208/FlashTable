@@ -29,6 +29,7 @@ public class StoreManageBillFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.store_manage_bill_fragment, container, false);
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_bill_tb_toolbar);
+        bar.setPadding(0, getStatusBarHeight(), 0, 0);
         bar.inflateMenu(R.menu.store_manage_menu);
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -92,6 +93,15 @@ public class StoreManageBillFragment extends Fragment {
         tv2.setText("10");
         tv3.setText("50");
         tv4.setText("500");
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
 }

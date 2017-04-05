@@ -44,6 +44,7 @@ public class StoreManageRecordFragment extends ListFragment {
         });
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_record_tb_toolbar);
+        bar.setPadding(0, getStatusBarHeight(), 0, 0);
         Drawable dr = getResources().getDrawable(R.drawable.icon_back_white);
         Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
         Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 50, 50, true));
@@ -68,5 +69,14 @@ public class StoreManageRecordFragment extends ListFragment {
         list.add(tmp);
         tmp = new ReservationInfo("Bing Bing",10,System.currentTimeMillis());
         list.add(tmp);
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }

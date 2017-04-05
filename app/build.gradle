@@ -21,6 +21,7 @@ android {
 
 repositories {
     maven { url "https://jitpack.io" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
 
 dependencies {
@@ -38,4 +39,6 @@ dependencies {
 
     compile 'me.dm7.barcodescanner:zxing:1.8.4'
     compile 'com.journeyapps:zxing-android-embedded:3.4.0'
+
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
 }

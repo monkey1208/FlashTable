@@ -33,18 +33,18 @@
         android:id="@+id/store_manage_discount_ll_add"
         android:background="@color/colorHalfTransparent">
         <ImageView
-            android:layout_marginTop="10dp"
+            android:layout_gravity="center_vertical"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:paddingStart="55px"
-            android:paddingEnd="10px"
+            android:paddingStart="20dp"
+            android:paddingEnd="5dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/icon_add"/>
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="145px"
+            android:layout_height="55dp"
             android:layout_weight="9"
-            android:paddingTop="12dp"
+            android:gravity="center_vertical"
             android:text="添加折扣優惠"
             android:textColor="@color/textColor"
             android:textSize="16sp"/>

@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import pl.droidsonroids.gif.GifImageView;
+
 import static com.example.yang.flashtable.StoreMainActivity.fragmentController;
 import static com.example.yang.flashtable.StoreManageOpentimeFragment.tv_time_choose;
 
@@ -80,8 +82,11 @@ public class AlertDialogController {
                 tv_gift.setText(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
                 //TODO: notify server dicount change
                 bt_active.setVisibility(View.INVISIBLE);
-                bt_active_gif.setGifImageResource(R.drawable.bt_activate_animate);
-                tv_active.setText("開啟中");
+                tv_active.setVisibility(View.INVISIBLE);
+
+                bt_active_gif.setVisibility(View.VISIBLE);
+                bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
+                StoreHomeFragment.tv_active_running.setText("開啟中");
                 tv_active_remind.setText("按下後暫停");
                 alertDialog.dismiss();
             }
@@ -274,7 +279,7 @@ public class AlertDialogController {
             }
         });
         alertDialog.show();
-        setDialogSize(context, 0.8, 0.45);
+        setDialogSize(context, 0.72, 0.45);
     }
 
 
