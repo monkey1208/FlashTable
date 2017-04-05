@@ -161,8 +161,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void startStore() {
-        // TODO: Start store main
-        Toast.makeText(this, "START STORE", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(LoginActivity.this, StoreMainActivity.class);
+        LoginActivity.this.startActivity(intent);
+        LoginActivity.this.finish();
     }
 
     private void storeLogin() {
