@@ -64,6 +64,9 @@
     <string name="store_register_contact">聯絡人姓名</string>
     <string name="store_register_phone">聯絡電話</string>
     <string name="store_register_email">電子信箱</string>
+    <string name="store_register_error_email">電子信箱格式錯誤</string>
+    <string name="store_register_error_exists">此帳號已存在</string>
+    <string name="store_register_success">申請成功，請耐心等待核准！</string>
 
     <!-- String related to customer main -->
     <string name="customer_main_no_info">尚未提供</string>

@@ -49,7 +49,7 @@ dependencies {
     compile 'com.journeyapps:zxing-android-embedded:3.4.0'
 
 
-    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.+'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
 
     compile files('libs/httpclient-4.2.3.jar')
     compile files('libs/httpcore-4.2.3.jar')
