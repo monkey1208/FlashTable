@@ -82,7 +82,7 @@ public class StoreRecentAdapter extends BaseAdapter{
             public void onClick(View v) {
                 FragmentController.storeRecentFragment.removeItem(position);
                 //TODO: send cancel message
-                StoreMainActivity.apiHandler.postRequestDeny();
+                //new APIHandler().postRequestDeny(list.get(position).id);
             }
         });
         holder.bt_confirm.setTag(this);

@@ -40,12 +40,11 @@ public class StoreRecentFragment extends Fragment {
                 if (recentList.get(i).expireTime > 0)
                     recentList.get(i).expireTime--;
                 else {
-                    StoreMainActivity.apiHandler.postRequestDeny();
+                    //new APIHandler().postRequestDeny(recentList.get(i).id);
                     recentList.remove(i);
                     i--;
                 }
             }
-            //Toast.makeText(getContext(),Integer.toString(waitingList.size()),Toast.LENGTH_SHORT).show();
             for(int i=0;i<waitingList.size();i++)
                 recentList.add(waitingList.get(i));
             waitingList.clear();
@@ -79,7 +78,7 @@ public class StoreRecentFragment extends Fragment {
                              Bundle savedInstanceState) {
         //test-------------
         recentList = new ArrayList<>();
-        func_test();
+        //func_test();
         //init-------------
         v =  inflater.inflate(R.layout.store_recent_fregment, container, false);
         handler = new Handler();

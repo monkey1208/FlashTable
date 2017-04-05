@@ -5,17 +5,25 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.widget.Toast;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -33,6 +41,7 @@ public class APIHandler {
     private boolean stat = false;
     private int sum = 0;
 
+    public APIHandler(){}
     public APIHandler(Context context){
         this.context = context;
     }
@@ -148,8 +157,9 @@ public class APIHandler {
         isActive = true;
         return;
     }
-    public void postRequestDeny(){
-
+    public static void postRequestDeny(int id){
+        //new APIrequest_deny().execute(Integer.toString(id));
+        return;
     }
     public void postSession(CustomerAppointInfo cinfo){
         ReservationInfo info = new ReservationInfo(cinfo.name,cinfo.number,System.currentTimeMillis());
@@ -158,6 +168,30 @@ public class APIHandler {
     }
     public void postSessionDeny(){
 
+    }
+    public static class APIrequest_deny extends AsyncTask<String,Void,Void> {
+        private String result = "-1";
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/cancel_request");
+                List<NameValuePair> param = new ArrayList<NameValuePair>();
+                param.add(new BasicNameValuePair("request_id",params[0]));
+                post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
+                HttpResponse response = httpClient.execute(post);
+                HttpEntity resEntity = response.getEntity();
+                if(resEntity != null)
+                    result = resEntity.toString();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }
 
