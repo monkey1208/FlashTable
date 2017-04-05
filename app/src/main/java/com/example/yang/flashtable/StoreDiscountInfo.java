@@ -5,10 +5,17 @@ package com.example.yang.flashtable;
  */
 
 public class StoreDiscountInfo {
+    int id;
     int discount;
     String description;
     int count;
     boolean isDefault;
+    public StoreDiscountInfo(int id,int discount, String description){
+        this.id = id;
+        this.discount = discount;
+        this.description = description;
+        this.isDefault = false;
+    }
     public StoreDiscountInfo(int discount, String description, int count, boolean isDefault){
         this.discount = discount;
         this.description = description;

@@ -15,23 +15,59 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class StoreRecentFragment extends Fragment {
 
     private View v;
-    private Handler handler;
-    private List<CustomerAppointInfo> recentList;
+    public static List<CustomerAppointInfo> recentList;
     private ListView lv_recent;
     private View item_view;
     private int selected;
     private StoreRecentAdapter recentAdapter;
-    private List<Integer> waitingList;
+    private List<CustomerAppointInfo> waitingList = new ArrayList<>();
     private int size;
     private boolean active=true;
     public int test = 10;
+    private Timer timer = new Timer();
+    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
 
+            for(int i=0;i<recentList.size();i++) {
+                if (recentList.get(i).expireTime > 0)
+                    recentList.get(i).expireTime--;
+                else {
+                    //new APIHandler().postRequestDeny(recentList.get(i).id);
+                    recentList.remove(i);
+                    i--;
+                }
+            }
+            for(int i=0;i<waitingList.size();i++)
+                recentList.add(waitingList.get(i));
+            waitingList.clear();
+
+            recentAdapter.notifyDataSetChanged();
+        }
+    };
+    private void countDown(){
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(runnable);
+            }
+        },0,1000);
+    }
     public StoreRecentFragment() {}
 
+    public void addRequest2List(final List<CustomerAppointInfo> list){
+        waitingList.clear();
+        for(int i=0;i<list.size();i++)
+            waitingList.add(list.get(i));
+        return;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +78,7 @@ public class StoreRecentFragment extends Fragment {
                              Bundle savedInstanceState) {
         //test-------------
         recentList = new ArrayList<>();
-        func_test();
+        //func_test();
         //init-------------
         v =  inflater.inflate(R.layout.store_recent_fregment, container, false);
         TextView title = (TextView)v.findViewById(R.id.title);
@@ -53,6 +89,7 @@ public class StoreRecentFragment extends Fragment {
         lv_recent = (ListView) v.findViewById(R.id.lv_recent);
         recentAdapter = new StoreRecentAdapter(getActivity(),recentList);
         lv_recent.setAdapter(recentAdapter);
+        countDown();
         //------------------
         return v;
     }
@@ -72,43 +109,10 @@ public class StoreRecentFragment extends Fragment {
         recentList.add(test2);
         recentList.add(test3);
     }
-    public void setItemStat(int position){
+    public void removeItem(int position){
         selected = position;
         recentList.remove(position);
         recentAdapter.notifyDataSetChanged();
-        //recentAdapter.killTimer();
-        /*waitingList.add(selected);
-        size=waitingList.size();
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                new CountDownTimer(1500, 10) {
-                    int cur = size;
-                    boolean active_local = true;
-                    public void onTick(long millisUntilFinished) {
-                        if(cur != waitingList.size())
-                            active_local = false;
-                        Log.e("TEST",Integer.toString(waitingList.size()));}
-                    public void onFinish() {
-                        if(active_local){
-                            Collections.sort(waitingList,
-                                    new Comparator<Integer>() {
-                                        public int compare(Integer o1, Integer o2) {
-                                            return o1-o2;
-                                        }
-                                    });
-                            for(int i = 0;i<waitingList.size();i++) {
-                                recentList.remove(recentList.get(waitingList.get(i)));
-                            }
-                            recentAdapter = new StoreRecentAdapter(getActivity(), recentList);
-                            lv_recent.setAdapter(recentAdapter);
-                            waitingList.clear();
-                        }
-                    }
-                }.start();
-            }
-        });*/
     }
 
     public int getStatusBarHeight() {

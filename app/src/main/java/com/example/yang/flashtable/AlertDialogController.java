@@ -2,6 +2,7 @@ package com.example.yang.flashtable;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -16,6 +17,19 @@ import android.widget.Toast;
 
 import com.github.mikephil.charting.data.BarData;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,7 +48,7 @@ import static com.example.yang.flashtable.StoreManageOpentimeFragment.tv_time_ch
 public class AlertDialogController {
 
     private static AlertDialog alertDialog;
-    private static StoreHomeDiscountDialogAdapter adapter;
+    public static StoreHomeDiscountDialogAdapter adapter;
     private static View titleBar;
     public static final int NOTICE1_APPOINT = 0;
     public static final int NOTICE2_APPOINT = 1;
@@ -50,13 +64,13 @@ public class AlertDialogController {
     public static int result = 0;
     private static final String[] month_to_Chinese = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"};
 
+
     public static void discountDialog(final Context context, final StoreInfo storeInfo, final TextView tv_discount, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind){
         //init view---------
         View item = LayoutInflater.from(context).inflate(R.layout.store_discount_list, null);
-        List<StoreDiscountInfo> discountList = storeInfo.discountList;
         //listview adapt----
         ListView lv_discount = (ListView)item.findViewById(R.id.lv_discount);
-        adapter = new StoreHomeDiscountDialogAdapter(context,discountList);
+        adapter = new StoreHomeDiscountDialogAdapter(context,storeInfo.discountList);
         lv_discount.setAdapter(adapter);
         lv_discount.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -81,6 +95,8 @@ public class AlertDialogController {
                 tv_discount.setText(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).discount)+"折");
                 tv_gift.setText(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
                 //TODO: notify server dicount change
+                new APIpromotion_modify().execute(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
+                StoreMainActivity.apiHandler.changePromotions();
                 bt_active.setVisibility(View.INVISIBLE);
                 tv_active.setVisibility(View.INVISIBLE);
 
@@ -101,6 +117,30 @@ public class AlertDialogController {
         alertDialog.show();
 
         setDialogSize(context, 0.8, 0.8);
+    }
+    public static class APIpromotion_modify extends AsyncTask<String,Void,Void> {
+        private String result = "-1";
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/activate_promotion");
+                List<NameValuePair> param = new ArrayList<NameValuePair>();
+                param.add(new BasicNameValuePair("promotion_id",params[0]));
+                post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
+                HttpResponse response = httpClient.execute(post);
+                HttpEntity resEntity = response.getEntity();
+                if(resEntity != null)
+                    result = resEntity.toString();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
     public static void addDiscountDialog(final Context context){
@@ -262,6 +302,11 @@ public class AlertDialogController {
                         items.add("店內已無空位");
                         StoreMainActivity.alertDialogController.listConfirmDialog(context,"取消原因",items,NOTICELIST_APPOINT, position);
                         break;
+                    case NOTICELIST_APPOINT:
+                        //TODO: send FAIL msg
+                        StoreMainActivity.apiHandler.postSessionDeny();
+                        StoreMainActivity.fragmentController.storeAppointFragment.appointList.remove(position);
+                        StoreMainActivity.fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
                 }
             }
         });
