@@ -28,6 +28,7 @@ public class StoreRecentFragment extends Fragment {
     private int selected;
     private StoreRecentAdapter recentAdapter;
     private List<CustomerAppointInfo> waitingList = new ArrayList<>();
+    private List<Integer> deleteList = new ArrayList<>();
     private int size;
     private boolean active=true;
     public int test = 10;

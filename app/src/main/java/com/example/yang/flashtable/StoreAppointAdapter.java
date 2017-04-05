@@ -107,7 +107,7 @@ public class StoreAppointAdapter extends BaseAdapter{
                 bt_cancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        StoreMainActivity.alertDialogController.confirmCancelDialog(context,"提醒","選擇未見該客戶\n將扣除客戶的信譽分數喔",AlertDialogController.NOTICE1_APPOINT,position);
+                        AlertDialogController.confirmCancelDialog(context,"提醒","選擇未見該客戶\n將扣除客戶的信譽分數喔",AlertDialogController.NOTICE1_APPOINT,position);
                     }
                 });
             }

@@ -132,10 +132,21 @@ public class APIHandler {
                     }
                 }
             }
+            if(stat){
+                for (int i = 0; i < StoreMainActivity.fragmentController.storeAppointFragment.appointList.size(); i++) {
+                    if (StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(i).name.equals(account)) {
+                        stat = false;
+                        break;
+                    }
+                }
+            }
             sum++;
             if (stat)
                 temp.add(newInfoList.get(j));
         }
+        Log.d("Update","recent: "+Integer.toString(StoreMainActivity.fragmentController.storeRecentFragment.recentList.size())
+                +" del: "+Integer.toString(deleteList.size())
+                +" session: "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.size()));
         deleteList.clear();
         newInfoList = temp;
         return;
@@ -160,12 +171,12 @@ public class APIHandler {
                             thread.start();
                         }
                         //handlerPost("getting "+Integer.toString(request_id.size())+" new info del: "+Integer.toString(deleteList.size()));
-                        Log.d("Update","getting "+Integer.toString(request_id.size())+" new info del: "+Integer.toString(deleteList.size()));
+                        Log.d("Update","getting "+Integer.toString(request_id.size())+" new info");
                         while(sum!=request_id.size())continue;
                         checkListBeforeShow(newInfoList);
                         //handlerPost("get "+Integer.toString(newInfoList.size())+" new info del: "+Integer.toString(deleteList.size()));
                         //for(int i=0;i<deleteList.size();i++)
-                        Log.d("Update","get "+Integer.toString(newInfoList.size())+" new info del: "+Integer.toString(deleteList.size()));
+                        Log.d("Update","get "+Integer.toString(newInfoList.size())+" new info");
                         StoreMainActivity.fragmentController.storeRecentFragment.addRequest2List(newInfoList);
                     }
                 }).start();
