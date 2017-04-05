@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,6 +81,8 @@ public class StoreRecentFragment extends Fragment {
         //func_test();
         //init-------------
         v =  inflater.inflate(R.layout.store_recent_fregment, container, false);
+        TextView title = (TextView)v.findViewById(R.id.title);
+        title.setPadding(0, getStatusBarHeight(), 0, 0);
         handler = new Handler();
         waitingList = new ArrayList<>();
         //listview---------
@@ -111,5 +113,14 @@ public class StoreRecentFragment extends Fragment {
         selected = position;
         recentList.remove(position);
         recentAdapter.notifyDataSetChanged();
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }

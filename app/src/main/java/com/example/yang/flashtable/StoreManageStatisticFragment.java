@@ -10,9 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class StoreManageStatisticFragment extends ListFragment {
 
     public StoreManageStatisticFragment() {
@@ -35,6 +32,7 @@ public class StoreManageStatisticFragment extends ListFragment {
         setListAdapter(adapter);
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_statistic_tb_toolbar);
+        bar.setPadding(0,getStatusBarHeight(),0,0);
         Drawable dr = getResources().getDrawable(R.drawable.icon_back_white);
         Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
         Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 50, 50, true));
@@ -45,5 +43,14 @@ public class StoreManageStatisticFragment extends ListFragment {
             }
         });
         return v;
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }

@@ -28,18 +28,18 @@
         android:id="@+id/store_manage_success_ll_rate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12px"
+        android:layout_marginTop="4dp"
         android:orientation="horizontal"
         android:weightSum="9"
         android:background="@color/colorHalfTransparent">
 
         <TextView
             android:layout_width="200dp"
-            android:layout_height="135px"
-            android:layout_marginLeft="55px"
-            android:paddingTop="10dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="25dp"
+            android:gravity="center_vertical"
             android:layout_weight="7"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:text="預約成功率"
             android:textColor="@color/textColor"/>
         <TextView
@@ -52,8 +52,8 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="135px"
-            android:layout_marginRight="55px"
+            android:layout_height="50dp"
+            android:layout_marginEnd="25dp"
             android:layout_weight="1"
             android:text="%" />
 
@@ -63,20 +63,20 @@
         android:id="@+id/store_manage_success_ll_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12px"
+        android:layout_marginTop="4dp"
         android:background="@color/colorHalfTransparent"
         android:orientation="horizontal"
         android:weightSum="9">
 
         <TextView
             android:layout_width="200dp"
-            android:layout_height="135px"
-            android:layout_marginLeft="55px"
+            android:layout_height="50dp"
+            android:layout_marginStart="25dp"
             android:layout_weight="7"
-            android:paddingTop="10dp"
+            android:gravity="center_vertical"
             android:text="總預約數"
             android:textColor="@color/textColor"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/store_manage_success_tv_amount"
@@ -88,10 +88,10 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="135px"
-            android:layout_marginRight="55px"
+            android:layout_height="50dp"
+            android:layout_marginEnd="25dp"
             android:layout_weight="1"
-            android:paddingTop="10dp"
+            android:gravity="center_vertical"
             android:text="人" />
     </LinearLayout>
 
@@ -99,18 +99,18 @@
         android:id="@+id/store_manage_success_ll_fail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12px"
+        android:layout_marginTop="4dp"
         android:orientation="horizontal"
         android:weightSum="9"
         android:background="@color/colorHalfTransparent">
         <TextView
             android:layout_width="200dp"
-            android:layout_height="135px"
-            android:layout_marginLeft="55px"
-            android:paddingTop="10dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="25dp"
+            android:gravity="center_vertical"
             android:layout_weight="7"
             android:text="店內無空桌&amp;取消預約"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="@color/textColor"/>
         <TextView
             android:id="@+id/store_manage_success_tv_fail"
@@ -121,9 +121,9 @@
             android:text="" />
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="135px"
-            android:layout_marginRight="55px"
-            android:paddingTop="10dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="25dp"
+            android:gravity="center_vertical"
             android:layout_weight="1"
             android:text="人" />
     </LinearLayout>
@@ -132,19 +132,18 @@
         android:id="@+id/store_manage_success_ll_success"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12px"
-        android:layout_below="@id/store_manage_success_ll_fail"
+        android:layout_marginTop="4dp"
         android:orientation="horizontal"
         android:weightSum="9"
         android:background="@color/colorHalfTransparent">
         <TextView
             android:layout_width="200dp"
-            android:layout_height="135px"
-            android:layout_marginLeft="55px"
-            android:paddingTop="10dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="25dp"
+            android:gravity="center_vertical"
             android:layout_weight="7"
             android:text="成功預約"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textColor="@color/textColor"/>
         <TextView
             android:id="@+id/store_manage_success_tv_success"
@@ -155,9 +154,9 @@
             android:text="" />
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="135px"
-            android:layout_marginRight="55px"
-            android:paddingTop="10dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="25dp"
+            android:gravity="center_vertical"
             android:layout_weight="1"
             android:text="人" />
     </LinearLayout>

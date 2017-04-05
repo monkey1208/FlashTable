@@ -6,19 +6,25 @@
         android:id="@+id/lv_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"></ListView>
+        android:layout_alignParentTop="true"/>
     <ImageButton
         android:id="@+id/bt_confirm"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_below="@id/lv_item"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         android:scaleType="centerInside"
-        android:src="@drawable/bt_confirm"
+        android:src="@drawable/bt_confirm_and_send"
         android:background="@color/transparentGreen"/>
     <ImageButton
         android:id="@+id/bt_cancel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="20dp"
         android:layout_below="@id/bt_confirm"
         android:scaleType="centerInside"
         android:src="@drawable/bt_cancel"

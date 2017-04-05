@@ -10,14 +10,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static android.R.id.list;
@@ -49,6 +45,7 @@ public class StoreManageDiscountFragment extends ListFragment {
         lv.setAdapter(adapter);
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_discount_tb_toolbar);
+        bar.setPadding(0, getStatusBarHeight(), 0, 0);
         bar.inflateMenu(R.menu.store_manage_discount_menu);
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -75,7 +72,6 @@ public class StoreManageDiscountFragment extends ListFragment {
             public void onClick(View v) {
                 //Add New Discount
                 AlertDialogController.addDiscountDialog(getContext());
-                Toast.makeText(v.getContext(),"Add new discount", Toast.LENGTH_SHORT).show();
             }
         });
         return v;
@@ -86,6 +82,15 @@ public class StoreManageDiscountFragment extends ListFragment {
         discountList.get(StoreMainActivity.storeInfo.discountDefault).isDefault = false;
         adapter.notifyDataSetChanged();
         StoreMainActivity.storeInfo.discountDefault = position;
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
 }

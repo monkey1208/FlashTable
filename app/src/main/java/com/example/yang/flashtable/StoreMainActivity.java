@@ -1,13 +1,11 @@
 package com.example.yang.flashtable;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 public class StoreMainActivity extends AppCompatActivity{
 
@@ -92,4 +90,5 @@ public class StoreMainActivity extends AppCompatActivity{
             button[i].setBackgroundColor(getResources().getColor(R.color.btBottomColor));
         button[current_stat].setBackgroundColor(getResources().getColor(R.color.btBottomPressColor));
     }
+
 }

@@ -6,12 +6,9 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,9 +107,7 @@ public class StoreAppointAdapter extends BaseAdapter{
                 bt_cancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        List<String> items = new ArrayList<String>();
-                        items.add("選擇未見該客戶\n將扣除客戶的信譽分數喔");
-                        StoreMainActivity.alertDialogController.listConfirmDialog(context,"提醒",items,AlertDialogController.NOTICE1_APPOINT,position);
+                        StoreMainActivity.alertDialogController.confirmCancelDialog(context,"提醒","選擇未見該客戶\n將扣除客戶的信譽分數喔",AlertDialogController.NOTICE1_APPOINT,position);
                     }
                 });
             }

@@ -9,7 +9,6 @@
         android:id="@+id/store_manage_record_tb_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12px"
         android:background="#80FF6600"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme" >
@@ -26,6 +25,7 @@
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:dividerHeight="12px"
+        android:layout_marginTop="5dp"
+        android:dividerHeight="5dp"
         android:id="@id/android:list"/>
 </LinearLayout>

@@ -25,6 +25,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="設為預設"
+        android:paddingEnd="10dp"
         android:textSize="14sp"
         android:textColor="@color/textColorOrange"/>
 
