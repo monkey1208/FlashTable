@@ -422,7 +422,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             int point = info.discount % 10;
             int discount = info.discount / 10;
             if (point != 0) {
-                tv_show_discount.setText(discount + point + "折");
+                tv_show_discount.setText(info.discount + "折");
             } else {
                 tv_show_discount.setText(discount + "折");
             }
