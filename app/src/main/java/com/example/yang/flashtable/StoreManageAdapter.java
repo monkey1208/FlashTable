@@ -9,9 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-/**
- * Created by 奕先 on 2017/3/23.
- */
 
 class StoreManageAdapter extends ArrayAdapter {
     private final Activity context;

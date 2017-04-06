@@ -1,6 +1,7 @@
 package com.example.yang.flashtable;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,13 +46,20 @@ public class StoreManageRecordAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         convertView = inflater.inflate(R.layout.store_manage_record_row, parent, false);
-        TextView tv1 = (TextView) convertView.findViewById(R.id.store_manage_record_row_tv_name);
-        TextView tv2 = (TextView) convertView.findViewById(R.id.store_manage_record_row_tv_date);
-        TextView tv3 = (TextView) convertView.findViewById(R.id.store_manage_record_row_tv_state);
-        tv1.setText(reservation_list.get(position).name);
-        tv2.setText("2017/07/21");
-        int num = 6;
-        tv3.setText("已成功向您預約("+num+")人桌位");
+        TextView tv_name= (TextView) convertView.findViewById(R.id.store_manage_record_row_tv_name);
+        TextView tv_date = (TextView) convertView.findViewById(R.id.store_manage_record_row_tv_date);
+        TextView tv_state = (TextView) convertView.findViewById(R.id.store_manage_record_row_tv_state);
+        TextView tv_point= (TextView) convertView.findViewById(R.id.store_manage_record_row_tv_point);
+        tv_name.setText(reservation_list.get(position).name);
+        tv_point.setText("（信譽"+reservation_list.get(position).point+"）");
+        tv_date.setText(reservation_list.get(position).record_time);
+        if(reservation_list.get(position).is_succ.equals("true")){
+            tv_state.setTextColor(Color.parseColor("#E41E1B"));
+            tv_state.setText("預約 ("+reservation_list.get(position).number+") 人已到達");
+        }else {
+            tv_state.setTextColor(Color.parseColor("#6DBD61"));
+            tv_state.setText("店家已取消預約 (" +reservation_list.get(position).number + ") 人桌位");
+        }
         return  convertView;
 
     }
