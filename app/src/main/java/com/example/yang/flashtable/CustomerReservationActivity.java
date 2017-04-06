@@ -72,7 +72,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
     View.OnClickListener cancel_listener, cancel_arrive_listener;
     ImageView iv_qr_code;
 
-
+    int persons;
     int discount;
     String offer;
     String promotion_id;
@@ -99,6 +99,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
             promotion_id = getIntent().getStringExtra("promotion_id");
             discount = getIntent().getIntExtra("discount", 101);
             offer = getIntent().getStringExtra("offer");
+            persons = getIntent().getIntExtra("persons", 1);
             new ApiRequest().execute();
         }else{
             session_id = GetBlockInfo.getSession(this);
@@ -333,7 +334,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
             List<NameValuePair> params = new ArrayList<>();
             System.out.println("userid="+getUserId()+"  promotion_id="+promotion_id);
             params.add(new BasicNameValuePair("user_id", getUserId()));
-            params.add(new BasicNameValuePair("number", "1"));
+            params.add(new BasicNameValuePair("number", Integer.toString(persons)));
             params.add(new BasicNameValuePair("promotion_id", promotion_id));
             String r_id = null;
             try {

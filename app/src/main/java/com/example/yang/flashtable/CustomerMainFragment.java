@@ -65,6 +65,7 @@ import static android.content.Context.LOCATION_SERVICE;
 
 public class CustomerMainFragment extends Fragment implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
+    DialogBuilder dialog_builder;
     View view;
     ViewFlipper vf_flipper;
     Spinner sp_dis, sp_food, sp_sort;
@@ -128,6 +129,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     private void initData() {
         //restaurant_list = getListFromDB();
         //setListView(restaurant_list);
+        dialog_builder = new DialogBuilder(getActivity());
         et_search.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View view, int key_code, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && key_code == KeyEvent.KEYCODE_ENTER) {
@@ -434,11 +436,20 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         bt_show_reserve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CustomerReservationActivity.class);
-                intent.putExtra("promotion_id", info.promotion_id);
-                intent.putExtra("discount", info.discount);
-                intent.putExtra("offer", info.offer);
-                startActivity(intent);
+                dialog_builder.dialogEvent("請選擇人數", "personsPicker",
+                        new DialogEventListener() {
+                            @Override
+                            public void clickEvent(boolean ok, int status) {
+                                if (ok) {
+                                    Intent intent = new Intent(getActivity(), CustomerReservationActivity.class);
+                                    intent.putExtra("promotion_id", info.promotion_id);
+                                    intent.putExtra("discount", info.discount);
+                                    intent.putExtra("offer", info.offer);
+                                    intent.putExtra("persons", status);
+                                    startActivity(intent);
+                                }
+                            }
+                        });
             }
         });
     }
