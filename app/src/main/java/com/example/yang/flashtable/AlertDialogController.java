@@ -98,6 +98,7 @@ public class AlertDialogController {
                 tv_gift.setText(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
                 //TODO: notify server dicount change
                 new APIpromotion_modify().execute(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
+                StoreMainActivity.fragmentController.storeAppointFragment.startUpdate();
                 StoreMainActivity.apiHandler.changePromotions();
                 bt_active.setVisibility(View.INVISIBLE);
                 tv_active.setVisibility(View.INVISIBLE);

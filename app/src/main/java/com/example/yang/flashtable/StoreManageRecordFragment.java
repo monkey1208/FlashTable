@@ -115,9 +115,9 @@ public class StoreManageRecordFragment extends ListFragment {
                     String is_success = recordInfo.getString("is_succ");
 
                     String time = recordInfo.getString("created_at");
-                    DateFormat df = new SimpleDateFormat("EEE MMM dd h:mm:ss yyyy", Locale.getDefault());
+                    DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
                     Date date =  df.parse(time);
-                    df = new SimpleDateFormat("yyyy/MM/dd  ahh:mm", Locale.getDefault());
+                    df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.getDefault());
                     time = df.format(date);
 
                     int user_id = recordInfo.getInt("user_id");

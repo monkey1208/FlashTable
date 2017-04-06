@@ -3,6 +3,7 @@ package com.example.yang.flashtable;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,6 +108,7 @@ public class StoreAppointAdapter extends BaseAdapter{
                 bt_cancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Log.d("PressButton","Pressed"+Integer.toString(position));
                         AlertDialogController.confirmCancelDialog(context,"提醒","選擇未見該客戶\n將扣除客戶的信譽分數喔",AlertDialogController.NOTICE1_APPOINT,position);
                     }
                 });

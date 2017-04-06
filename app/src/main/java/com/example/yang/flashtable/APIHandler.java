@@ -164,7 +164,10 @@ public class APIHandler {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        while(!stat) continue;
+                        while(!stat) {
+                            //Log.d("Update",Boolean.toString(stat));
+                            continue;
+                        }
                         newInfoList.clear();
                         for(int i=0;i<request_id.size();i++){
                             ThreadGetDetail thread = new ThreadGetDetail(request_id.get(i));

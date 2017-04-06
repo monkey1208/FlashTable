@@ -69,6 +69,7 @@ public class StoreHomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -119,6 +120,7 @@ public class StoreHomeFragment extends Fragment {
                 bt_active_gif.setVisibility(View.INVISIBLE);
                 bt_active_gif.setEnabled(false);
                 StoreMainActivity.apiHandler.postPromotionInactive();
+                StoreMainActivity.fragmentController.storeAppointFragment.stopTimer();
             }
         });
         //--------------
