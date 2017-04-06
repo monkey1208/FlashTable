@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -50,6 +51,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -65,6 +68,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     View view;
     ViewFlipper vf_flipper;
     Spinner sp_dis, sp_food, sp_sort;
+    String filter_mode = "all";
     ArrayAdapter<CharSequence> dis_adapter, food_adapter, sort_adapter;
     ListView lv_shops;
     List<CustomerRestaurantInfo> restaurant_list;
@@ -160,6 +164,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     }
 
     private void setListView(List<CustomerRestaurantInfo> res_list) {
+        restaurant_list = res_list;
         System.out.println("set list!");
         adapter = new CustomerMainAdapter(view.getContext(), res_list, current_location);
         adapter.notifyDataSetChanged();
@@ -193,37 +198,76 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             }
         });
 
-        //sp_food.setOnItemSelectedListener();
+        sp_food.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                CustomerMainAdapter category_adapter = null;
+                switch (i){
+                    case 0:
+                        filter_mode = "all";
+                        category_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(category_adapter);
+                        break;
+                    case 1:
+                        filter_mode = "chinese";
+                        category_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(category_adapter);
+                        adapter.notifyDataSetChanged();
+                        break;
+                    case 2:
+                        filter_mode = "japanese";
+                        category_adapter = filtAdapter(adapter, filter_mode);
+
+                        lv_shops.setAdapter(category_adapter);
+                        adapter.notifyDataSetChanged();
+                        break;
+                    case 3:
+                        filter_mode = "usa";
+                        category_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(category_adapter);
+                        adapter.notifyDataSetChanged();
+                        break;
+                    case 4:
+                        filter_mode = "korean";
+                        category_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(category_adapter);
+                        adapter.notifyDataSetChanged();
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         sp_sort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String sort_mode = "default";
+                CustomerMainAdapter filted_adapter;
                 switch (i){
                     case 0:
                         break;
                     case 1:
                         break;
                     case 2:
-                        adapter.sort(new Comparator<CustomerRestaurantInfo>() {
-                            @Override
-                            public int compare(CustomerRestaurantInfo info1, CustomerRestaurantInfo info2) {
-                                Location l1 = new Location("");
-                                l1.setLatitude(info1.latLng.latitude);
-                                l1.setLongitude(info1.latLng.longitude);
-                                Location l2 = new Location("");
-                                l2.setLatitude(info2.latLng.latitude);
-                                l2.setLongitude(info2.latLng.longitude);
-                                if(my_location.distanceTo(l1)>my_location.distanceTo(l2)) {
-                                    return 1;
-                                }
-                                return -1;
-                            }
-                        });
+                        sort_mode = "distance";
+                        adapter = sortAdapter(adapter, sort_mode);
+                        filted_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(filted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
                     case 3:
+                        sort_mode = "rate";
                         break;
                     case 4:
+                        sort_mode = "discount";
+                        adapter = sortAdapter(adapter, sort_mode);
+                        filted_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(filted_adapter);
+                        adapter.notifyDataSetChanged();
                         break;
                 }
             }
@@ -232,6 +276,84 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+    }
+    private CustomerMainAdapter filtAdapter(CustomerMainAdapter filt_adapter, String mode){
+        List<CustomerRestaurantInfo> r_list = new ArrayList<CustomerRestaurantInfo>();
+        switch (mode) {
+            case "chinese":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("中式料理")) {
+                        r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "usa":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("美式料理")) {
+                        r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "japanese":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("日式料理")) {
+                        r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "korean":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("韓式料理")) {
+                        r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            default:
+                return filt_adapter;
+        }
+        return new CustomerMainAdapter(getActivity(), r_list, current_location);
+    }
+    private CustomerMainAdapter sortAdapter(CustomerMainAdapter sort_adapter, String mode){
+        switch (mode){
+            case "distance":
+                sort_adapter.sort( new Comparator<CustomerRestaurantInfo>() {
+                    @Override
+                    public int compare(CustomerRestaurantInfo info1, CustomerRestaurantInfo info2) {
+                        Location l1 = new Location("");
+                        l1.setLatitude(info1.latLng.latitude);
+                        l1.setLongitude(info1.latLng.longitude);
+                        Location l2 = new Location("");
+                        l2.setLatitude(info2.latLng.latitude);
+                        l2.setLongitude(info2.latLng.longitude);
+                        if (my_location.distanceTo(l1) > my_location.distanceTo(l2)) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    }
+                });
+                break;
+            case "discount":
+                sort_adapter.sort(new Comparator<CustomerRestaurantInfo>() {
+                    @Override
+                    public int compare(CustomerRestaurantInfo info1, CustomerRestaurantInfo info2) {
+                        if(info1.discount > info2.discount){
+                            return 1;
+                        }else if(info1.discount < info2.discount){
+                            return -1;
+                        }else {
+                            if(info2.offer.equals("暫無優惠")){
+                                return -1;
+                            }
+                            return 0;
+                        }
+                    }
+                });
+                break;
+
+
+        }
+        return sort_adapter;
     }
 
     public void getShopStatus(boolean active) {
@@ -260,8 +382,8 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         closeDB();
+        super.onDestroy();
     }
 
     private void showRestaurantDetail(final int position) {

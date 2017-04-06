@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -194,6 +195,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
             }
             initMarker();
             Location location = getLocation();
+            moveMap(new LatLng(location.getLatitude(), location.getLongitude()));
             updateWithNewLocation(location);
         }
 
@@ -276,22 +278,22 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                                     @Override
                                     public void onLocationChanged(Location location) {
                                         updateWithNewLocation(location);
-                                        Log.d("DEBUG", location.getLatitude()+","+location.getLongitude());
+                                        Log.d(TAG, location.getLatitude()+","+location.getLongitude());
                                     }
 
                                     @Override
                                     public void onStatusChanged(String s, int i, Bundle bundle) {
-                                        Log.d("DEBUG", "change");
+                                        Log.d(TAG, "change");
                                     }
 
                                     @Override
                                     public void onProviderEnabled(String s) {
-                                        Log.d("DEBUG", "enable");
+                                        Log.d(TAG, "enable");
                                     }
 
                                     @Override
                                     public void onProviderDisabled(String s) {
-                                        Log.d("DEBUG", "disable");
+                                        Log.d(TAG, "disable");
                                     }
                                 });
                         Log.d("Network", "Network Enabled");
@@ -314,22 +316,22 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                                         @Override
                                         public void onLocationChanged(Location location) {
                                             updateWithNewLocation(location);
-                                            Log.d("DEBUG", location.getLatitude()+","+location.getLongitude());
+                                            Log.d(TAG, location.getLatitude()+","+location.getLongitude());
                                         }
 
                                         @Override
                                         public void onStatusChanged(String s, int i, Bundle bundle) {
-                                            Log.d("DEBUG", "change");
+                                            Log.d(TAG, "change");
                                         }
 
                                         @Override
                                         public void onProviderEnabled(String s) {
-                                            Log.d("DEBUG", "enable");
+                                            Log.d(TAG, "enable");
                                         }
 
                                         @Override
                                         public void onProviderDisabled(String s) {
-                                            Log.d("DEBUG", "disable");
+                                            Log.d(TAG, "disable");
                                         }
                                     });
                             Log.d("GPS", "GPS Enabled");
@@ -363,9 +365,16 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
     private class ApiPromotion extends AsyncTask<Double, Void, String> {
         HttpClient httpClient = new DefaultHttpClient();
         CustomerGps gps;
-
+        private ProgressDialog progress_dialog = new ProgressDialog(view.getContext());
         public ApiPromotion(CustomerGps gps) {
             this.gps = gps;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progress_dialog.setMessage( "載入中..." );
+            progress_dialog.show();
+            super.onPreExecute();
         }
 
         @Override
@@ -390,9 +399,9 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
         protected void onPostExecute(String s) {
             for (int i = 0; i < restaurantInfoList.size(); i++) {
                 gps.setMarker(restaurantInfoList.get(i).latLng, i);
-                System.out.println(restaurantInfoList.get(i).latLng.longitude);
-                System.out.println(restaurantInfoList.get(i).latLng.latitude);
+                System.out.println(restaurantInfoList.get(i).latLng.longitude+","+restaurantInfoList.get(i).latLng.latitude);
             }
+            progress_dialog.dismiss();
             super.onPostExecute(s);
 
         }
