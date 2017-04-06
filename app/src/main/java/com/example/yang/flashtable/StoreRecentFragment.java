@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +28,7 @@ public class StoreRecentFragment extends Fragment {
     private int selected;
     private StoreRecentAdapter recentAdapter;
     private List<CustomerAppointInfo> waitingList = new ArrayList<>();
+    private List<Integer> deleteList = new ArrayList<>();
     private int size;
     private boolean active=true;
     public int test = 10;
@@ -40,7 +42,7 @@ public class StoreRecentFragment extends Fragment {
                 if (recentList.get(i).expireTime > 0)
                     recentList.get(i).expireTime--;
                 else {
-                    //new APIHandler().postRequestDeny(recentList.get(i).id);
+                    StoreMainActivity.apiHandler.postRequestDeny(recentList.get(i).id,recentList.get(i).name);
                     recentList.remove(i);
                     i--;
                 }

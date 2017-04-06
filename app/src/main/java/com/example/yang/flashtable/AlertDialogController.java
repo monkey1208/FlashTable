@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -62,6 +63,7 @@ public class AlertDialogController {
     public static int listPosition = -1;
     public static int opentime_choose_result;
     public static int result = 0;
+    private static boolean first = true;
     private static final String[] month_to_Chinese = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"};
 
 
@@ -96,6 +98,7 @@ public class AlertDialogController {
                 tv_gift.setText(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
                 //TODO: notify server dicount change
                 new APIpromotion_modify().execute(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
+                StoreMainActivity.fragmentController.storeAppointFragment.startUpdate();
                 StoreMainActivity.apiHandler.changePromotions();
                 bt_active.setVisibility(View.INVISIBLE);
                 tv_active.setVisibility(View.INVISIBLE);
@@ -103,6 +106,16 @@ public class AlertDialogController {
                 bt_active_gif.setVisibility(View.VISIBLE);
                 bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
                 StoreHomeFragment.tv_active_running.setText("開啟中");
+
+                bt_active.setEnabled(false);
+                if(first) {
+                    bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
+                    first = false;
+                }
+                bt_active_gif.setVisibility(View.VISIBLE);
+                bt_active_gif.setEnabled(true);
+                tv_active.setText("開啟中");
+
                 tv_active_remind.setText("按下後暫停");
                 alertDialog.dismiss();
             }
@@ -186,11 +199,13 @@ public class AlertDialogController {
         bt_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String tv_name = tv_discount_num.getText().toString();
                 String gift_content = et_gift.getText().toString();
-                //Add new discount of the store
+                new APIHandler.Post_promotion().execute(tv_name, gift_content, String.valueOf(1));
                 alertDialog.dismiss();
             }
         });
+
         ImageButton bt_cancel = (ImageButton)item.findViewById(R.id.store_add_discount_dialog_bt_cancel);
         bt_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,6 +243,7 @@ public class AlertDialogController {
         setDialogSize(context, 0.75, 0.3);
     }
 
+
     public static void listConfirmDialog(final Context context, String title, List<String> items, final int mode, final int position){
         StoreMainActivity.alertDialogController.result = 0;
         View view = LayoutInflater.from(context).inflate(R.layout.store_dialog_list, null);
@@ -257,8 +273,10 @@ public class AlertDialogController {
                 switch (mode){
                     case NOTICELIST_APPOINT:
                         //TODO: send FAIL msg
-                        fragmentController.storeAppointFragment.appointList.remove(position);
-                        fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
+                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id));
+                        StoreMainActivity.apiHandler.postSessionDeny( StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id);
+                        StoreMainActivity.fragmentController.storeAppointFragment.appointList.remove(position);
+                        StoreMainActivity.fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
                         break;
                 }
             }
@@ -300,13 +318,16 @@ public class AlertDialogController {
                         List<String> items = new ArrayList<String>();
                         items.add("未見該客戶");
                         items.add("店內已無空位");
+                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id));
                         StoreMainActivity.alertDialogController.listConfirmDialog(context,"取消原因",items,NOTICELIST_APPOINT, position);
                         break;
                     case NOTICELIST_APPOINT:
                         //TODO: send FAIL msg
-                        StoreMainActivity.apiHandler.postSessionDeny();
+                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id));
+                        StoreMainActivity.apiHandler.postSessionDeny( StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id);
                         StoreMainActivity.fragmentController.storeAppointFragment.appointList.remove(position);
                         StoreMainActivity.fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
+                        break;
                 }
             }
         });
@@ -465,6 +486,20 @@ public class AlertDialogController {
             alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.store_alert_dialog_bg);
         } catch(NullPointerException e) {
             Toast.makeText(context, "Set alert dialog error", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public static class Finish_session extends AsyncTask<String,Void,Void> {
+        int record_id;
+        @Override
+        protected Void doInBackground(String... params) {
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void _params){
         }
     }
 }

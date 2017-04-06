@@ -12,6 +12,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class StoreManageSuccessFragment extends Fragment {
+    public static TextView tv_rate;
+    public static TextView tv_total;
+    public static TextView tv_fail;
+    public static TextView tv_success;
     public StoreManageSuccessFragment() {
         // Required empty public constructor
     }
@@ -41,17 +45,19 @@ public class StoreManageSuccessFragment extends Fragment {
     }
 
     void setValues(View v){
-        TextView tv_rate = (TextView)v.findViewById(R.id.store_manage_success_tv_rate);
-        TextView tv_total = (TextView)v.findViewById(R.id.store_manage_success_tv_amount);
-        TextView tv_fail = (TextView)v.findViewById(R.id.store_manage_success_tv_fail);
-        TextView tv_success = (TextView)v.findViewById(R.id.store_manage_success_tv_success);
+        tv_rate = (TextView)v.findViewById(R.id.store_manage_success_tv_rate);
+        tv_total = (TextView)v.findViewById(R.id.store_manage_success_tv_amount);
+        tv_fail = (TextView)v.findViewById(R.id.store_manage_success_tv_fail);
+        tv_success = (TextView)v.findViewById(R.id.store_manage_success_tv_success);
         //Get values from server
-        StoreInfo storeInfo = StoreMainActivity.storeInfo;
+        new APIHandler.ReservationSuccessDetail().execute();
+
+       /* StoreInfo storeInfo = StoreMainActivity.storeInfo;
         double rate = ((double)storeInfo.successAppointment/(double)storeInfo.totalAppointment)*(double)100;
         tv_rate.setText(Double.toString(rate));
         tv_total.setText(Integer.toString(storeInfo.totalAppointment));
         tv_fail.setText(Integer.toString(storeInfo.totalAppointment-storeInfo.successAppointment));
-        tv_success.setText(Integer.toString(storeInfo.successAppointment));
+        tv_success.setText(Integer.toString(storeInfo.successAppointment));*/
     }
 
     public int getStatusBarHeight() {

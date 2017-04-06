@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,13 +27,6 @@ public class StoreManageFragment extends ListFragment {
         final View v = inflater.inflate(R.layout.store_manage_fragment, container, false);
         StoreManageAdapter adapter = new StoreManageAdapter(getActivity(), itemname, imgid);
         setListAdapter(adapter);
-        ListView lv =(ListView) v.findViewById(android.R.id.list);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                Toast.makeText(getContext(), "Jump to next page", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_tb_toolbar);
         bar.setPadding(0,getStatusBarHeight(),0,0);

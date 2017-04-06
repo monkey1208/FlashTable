@@ -6,6 +6,7 @@ import java.util.List;
 public class StoreInfo {
 
     public List<StoreDiscountInfo> discountList;
+    public static List<ReservationInfo> recordsList;
     public StoreInfo(String n,String a){
         name = n;
         address = a;
@@ -19,7 +20,6 @@ public class StoreInfo {
     public void addAppointment(CustomerAppointInfo info){
         //TODO: notify server new appointment
         StoreMainActivity.apiHandler.postSession(info);
-
         totalAppointment = totalAppointment +1;
         return;
     }

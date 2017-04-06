@@ -1,21 +1,55 @@
 package com.example.yang.flashtable;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class StoreAppointFragment extends ListFragment {
     public static List<ReservationInfo> appointList = new ArrayList<>();
     public static StoreAppointAdapter adapter;
+    private List<Integer> updateList = new ArrayList<>();
+    private List<Integer> deleteList = new ArrayList<>();
+    private Timer timer;
+
     public  StoreAppointFragment () {
         // Required empty public constructor
+    }
+    public void startUpdate(){
+        updateSession();
+    }
+    private void updateSession(){
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+               new APIgetSessions().execute("1");
+            }
+        },0,10000);
+    }
+    public void stopTimer(){
+        timer.cancel();
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,7 +60,7 @@ public class StoreAppointFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.store_appoint_fragment, container, false);
-        appointList = get_reservation_info();
+        //appointList = get_reservation_info();
         adapter = new StoreAppointAdapter(getContext(), appointList);
         setListAdapter(adapter);
         Toolbar bar = (Toolbar)v.findViewById(R.id.shop_toolbar);
@@ -61,5 +95,66 @@ public class StoreAppointFragment extends ListFragment {
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+    private class APIgetSessions extends AsyncTask<String,Void,Void>{
+        String result = "";
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                updateList.clear();
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_sessions?shop_id=" + params[0]);
+                JSONArray jArray = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(get)));
+                for(int i=1;i<jArray.length();i++){
+                    int id = jArray.getJSONObject(i).getInt("session_id");
+                    updateList.add(id);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        protected void onPostExecute(Void _params) {
+            deleteList.clear();
+            Collections.sort(updateList, new Comparator<Integer>() {
+                @Override
+                public int compare(Integer o1, Integer o2) {
+                    return o1-o2;
+                }
+            });
+            result +="Server: ";
+            for(int i=0;i<updateList.size();i++) {
+                result += Integer.toString(updateList.get(i))+" ";
+            }
+            result+="\nLocal: ";
+            for(int i=0;i<appointList.size();i++) {
+                result += Integer.toString(appointList.get(i).id)+" ";
+            }
+            /*for(int i=0;i<appointList.size();i++){
+                if(appointList.get(i).id!=-1) {
+                    boolean stat = true;
+                    for (int j = 0; j < updateList.size(); i++)
+                        if(appointList.get(i).id==updateList.get(j))
+                            stat = false;
+                    if(stat)
+                        deleteList.add(i);
+                }
+            }*/
+            Collections.sort(updateList, new Comparator<Integer>() {
+                @Override
+                public int compare(Integer o1, Integer o2) {
+                    return o2-o1;
+                }
+            });
+            result+= "\nDelete: ";
+            for(int i=0;i<deleteList.size();i++){
+                result+=deleteList.get(i);
+                appointList.remove(deleteList.get(i));
+            }
+            adapter.notifyDataSetChanged();
+            Log.d("Session",result);
+        }
     }
 }

@@ -1,28 +1,41 @@
 package com.example.yang.flashtable;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.google.zxing.Result;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import me.dm7.barcodescanner.core.DisplayUtils;
 import me.dm7.barcodescanner.core.IViewFinder;
@@ -63,7 +76,6 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Backkkkkk", Toast.LENGTH_SHORT).show() ;
                 finish();
             }
         });
@@ -82,42 +94,22 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         mScannerView.stopCamera();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.store_qrcode_scan_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_flash:
-                if (mScannerView != null) {
-                    boolean isFlashOn = mScannerView.getFlash();
-                    if (isFlashOn) {
-                        mScannerView.setFlash(false);
-                        item.setIcon(R.drawable.ic_flash_on_white_24dp);
-                    } else {
-                        mScannerView.setFlash(true);
-                        item.setIcon(R.drawable.ic_flash_off_white_24dp);
-                    }
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     public void handleResult(Result result) {
-        Log.v(LOG_TAG, result.getText() + ", " + result.getBarcodeFormat().toString());
+        String session = result.toString();
+        String session_id = session.substring(session.indexOf("=")+1);
 
-        Intent returnIntent = new Intent();
+        mScannerView.stopCamera();
+        //finish_session(session_id);
+        new Finish_session().execute(session_id);
+
+
+        /*Intent returnIntent = new Intent();
         returnIntent.putExtra(SCAN_RESULT, result.toString());
         returnIntent.putExtra(SCAN_FORMAT, result.getBarcodeFormat().toString());
         setResult(Activity.RESULT_OK, returnIntent);
-        finish();
+        finish();*/
     }
 
 
@@ -273,8 +265,6 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
 
 
     private void requestCameraPermission() {
-        Log.w("www", "Camera permission is not granted. Requesting permission");
-
         final String[] permissions = new String[]{Manifest.permission.CAMERA};
 
         if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -292,4 +282,84 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         }
         return result;
     }
+
+    public void finish_session(String session_id){
+        try {
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/finish_session");
+            List<NameValuePair> param = new ArrayList<>();
+            param.add(new BasicNameValuePair("session_id", session_id));
+            post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
+            HttpResponse response = httpClient.execute(post);
+            HttpEntity resEntity = response.getEntity();
+            if(resEntity != null) {
+                JSONObject jsonResponse = new JSONObject(resEntity.toString());
+                if(jsonResponse.getInt("status_code") == 0) {
+                    AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "恭喜掃描成功");
+                }else{
+                    AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "掃描失敗，請再試一次");
+                }
+            }
+        } catch (Exception e) {
+            AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "網路連線失敗，請檢查您的網路");
+            e.printStackTrace();
+        }
+    }
+
+    public class Finish_session extends AsyncTask<String,Void,Void> {
+        String status;
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/finish_session");
+                List<NameValuePair> param = new ArrayList<>();
+                param.add(new BasicNameValuePair("session_id", params[0]));
+                post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
+                HttpResponse response = httpClient.execute(post);
+                HttpEntity resEntity = response.getEntity();
+                if(resEntity != null) {
+                    String res_string = EntityUtils.toString(resEntity);
+                    JSONObject jsonResponse = new JSONObject(res_string);
+
+                    if(jsonResponse.getInt("status_code") == 0) {
+                        status = "success";
+                    }else{
+                        status = "fail";
+                    }
+                }
+            } catch (Exception e) {
+                status = "exception";
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void _params){
+            if(status.equals("success")){
+                AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "恭喜掃描成功");
+              //  Fragment userInfoFragment = new UserInfoFragment();
+               // getFragmentManager().beginTransaction().add(R.id.store_qrcode_frame, userInfoFragment, "HELLO").commit();
+                //TODO : jump to user page(fragment)
+            }else if(status.equals("fail")){
+                AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "掃描失敗，請再試一次");
+            }else if(status.equals("exception")){
+                AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "網路連線失敗，請檢查您的網路");
+            }
+            mScannerView.setResultHandler(QrcodeScannerActivity.this);
+            mScannerView.startCamera();
+        }
+    }
+
+
+
+    public static class UserInfoFragment extends Fragment{
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.store_home_confirm_fragment, container, false);
+            return view;
+        }
+    }
+
 }
