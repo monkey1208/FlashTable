@@ -124,33 +124,33 @@ public class StoreAppointFragment extends ListFragment {
                     return o1-o2;
                 }
             });
+            result +="Server: ";
             for(int i=0;i<updateList.size();i++) {
                 result += Integer.toString(updateList.get(i))+" ";
             }
-            result+="\n";
+            result+="\nLocal: ";
             for(int i=0;i<appointList.size();i++) {
                 result += Integer.toString(appointList.get(i).id)+" ";
             }
-            for(int i=0;i<appointList.size();i++){
+            /*for(int i=0;i<appointList.size();i++){
                 if(appointList.get(i).id!=-1) {
-                    for (int j = 0; j < updateList.size(); i++){
-                        if(appointList.get(i).id == j)
-                            break;
-                        else if(appointList.get(i).id>j) {
-                            deleteList.add(i);
-                            break;
-                        }
+                    boolean stat = true;
+                    for (int j = 0; j < updateList.size(); i++)
+                        if(appointList.get(i).id==updateList.get(j))
+                            stat = false;
+                    if(stat)
                         deleteList.add(i);
-                    }
                 }
-            }
+            }*/
             Collections.sort(updateList, new Comparator<Integer>() {
                 @Override
                 public int compare(Integer o1, Integer o2) {
                     return o2-o1;
                 }
             });
+            result+= "\nDelete: ";
             for(int i=0;i<deleteList.size();i++){
+                result+=deleteList.get(i);
                 appointList.remove(deleteList.get(i));
             }
             adapter.notifyDataSetChanged();
