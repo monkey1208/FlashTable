@@ -2,19 +2,14 @@ package com.example.yang.flashtable;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.location.Criteria;
-import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,9 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -140,7 +133,6 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
         public CustomerGps(Activity c, GoogleMap googleMap) {
             this.c = c;
             this.googleMap = googleMap;
-            init();
         }
 
         private void init() {
@@ -168,8 +160,31 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                         bottom_sheet.setVisibility(View.VISIBLE);
                         bottom_sheet_behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         TextView tv_name = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_name);
+                        TextView tv_discount = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_discount);
+                        TextView tv_offer = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_offer);
+                        TextView tv_dis = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_distance);
                         int index = Integer.valueOf(marker.getSnippet());
                         tv_name.setText(restaurantInfoList.get(index).name);
+                        tv_offer.setText(restaurantInfoList.get(index).offer);
+                        Location l = new Location("");
+                        l.setLongitude(restaurantInfoList.get(index).latLng.longitude);
+                        l.setLatitude(restaurantInfoList.get(index).latLng.latitude);
+                        Location m = new Location("");
+                        m.setLongitude(latLng.longitude);
+                        m.setLatitude(latLng.latitude);
+                        tv_dis.setText("<"+ (int)l.distanceTo(m) +"m");
+                        int discount = restaurantInfoList.get(index).discount;
+                        if( discount == 101 ||discount == 100) {
+                            tv_discount.setText("暫無折扣");
+                        }else{
+                            int dis = discount/10;
+                            int point = discount%10;
+                            if(point == 0){
+                                tv_discount.setText(dis+"折");
+                            }else{
+                                tv_discount.setText(discount+"折");
+                            }
+                        }
                     } else {
                         pre_marker = null;
                     }
@@ -197,6 +212,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
             Location location = getLocation();
             moveMap(new LatLng(location.getLatitude(), location.getLongitude()));
             updateWithNewLocation(location);
+            init();
         }
 
         private void initMarker() {
