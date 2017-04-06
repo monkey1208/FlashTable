@@ -68,6 +68,9 @@ public class DialogBuilder {
                 tv_persons.setText(Integer.toString(persons));
             }
         };
+        ib_add.setOnClickListener(persons_add);
+        ib_minus.setOnClickListener(persons_minus);
+
     }
 
     public void dialogEvent(String _content, String _mode, final DialogEventListener event_listener) {
@@ -79,42 +82,37 @@ public class DialogBuilder {
                 dialog.hide();
             }
         });
+        bt_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (event_listener != null)
+                    event_listener.clickEvent(false, 0);
+                dialog.hide();
+            }
+        });
+        tv_content.setText(_content);
 
         switch (_mode) {
             case "normal":
                 if (ll_persons.getParent() != null) ll_content.removeView(ll_persons);
                 if (bt_cancel.getParent() != null) ll_buttons.removeView(bt_cancel);
-                tv_content.setText(_content);
                 break;
             case "withCancel":
                 if (ll_persons.getParent() != null) ll_content.removeView(ll_persons);
                 if (bt_cancel.getParent() == null) ll_buttons.addView(bt_cancel);
-                bt_cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (event_listener != null)
-                            event_listener.clickEvent(false, 0);
-                        dialog.hide();
-                    }
-                });
-                tv_content.setText(_content);
                 break;
             case "personsPicker":
                 if (ll_persons.getParent() == null) ll_content.addView(ll_persons);
                 if (bt_cancel.getParent() == null) ll_buttons.addView(bt_cancel);
-                ib_add.setOnClickListener(persons_add);
-                ib_minus.setOnClickListener(persons_minus);
-                bt_cancel.setOnClickListener(new View.OnClickListener() {
+                bt_submit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (event_listener != null)
-                            event_listener.clickEvent(false, 0);
+                            event_listener.clickEvent(true, Integer.parseInt(tv_persons.getText().toString()));
                         dialog.hide();
                     }
                 });
-                tv_content.setText(_content);
                 break;
-
         }
         dialog.show();
     }
