@@ -172,7 +172,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                         Location m = new Location("");
                         m.setLongitude(latLng.longitude);
                         m.setLatitude(latLng.latitude);
-                        tv_dis.setText("<"+ (int)l.distanceTo(m) +"m");
+                        tv_dis.setText("< "+ (int)l.distanceTo(m) +" m");
                         int discount = restaurantInfoList.get(index).discount;
                         if( discount == 101 ||discount == 100) {
                             tv_discount.setText("暫無折扣");
