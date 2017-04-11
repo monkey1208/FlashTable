@@ -27,9 +27,10 @@
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/customer_map_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="210dp"
         android:visibility="invisible"
         android:clipToPadding="true"
+        style="@style/Dialog"
         android:background="@color/white"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
@@ -60,6 +61,12 @@
                 android:text="優惠"
                 android:padding="16dp"
                 android:textSize="16sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/customer_map_bottom_sheet_tv_distance"
+                android:padding="16dp"
+                android:textSize="13sp"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

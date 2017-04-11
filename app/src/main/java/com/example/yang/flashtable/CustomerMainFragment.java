@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -72,6 +73,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     String filter_mode = "all";
     ArrayAdapter<CharSequence> dis_adapter, food_adapter, sort_adapter;
     ListView lv_shops;
+    SwipeRefreshLayout swipe_refresh_layout;
     List<CustomerRestaurantInfo> restaurant_list;
     CustomerMainAdapter adapter;
     EditText et_search;
@@ -86,11 +88,12 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     // Textview in restaurant detail
     TextView tv_show_name, tv_show_consumption, tv_show_discount, tv_show_offer, tv_show_location, tv_show_category, tv_show_intro;
 
+    // Location
     final int FINE_LOCATION_CODE = 13;
     LatLng current_location;
     Location my_location;
 
-    ApiPromotion api_promotion;
+    private boolean first_loading = true;
 
     @Nullable
     @Override
@@ -101,6 +104,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         getShopStatus(false);
         initData();
         setSpinner();
+        setRefreshLayout();
         return view;
     }
 
@@ -111,6 +115,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         sp_sort = (Spinner) view.findViewById(R.id.customer_main_sp_sort);
         lv_shops = (ListView) view.findViewById(R.id.customer_main_lv);
         et_search = (EditText) view.findViewById(R.id.customer_main_et_search);
+        swipe_refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.customer_main_srl);
 
         // Views related to show
         sl_restaurant = (SliderLayout) view.findViewById(R.id.customer_main_sl_restaurant);
@@ -166,11 +171,17 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     }
 
     private void setListView(List<CustomerRestaurantInfo> res_list) {
+        if(restaurant_list != null)
+            restaurant_list.clear();
         restaurant_list = res_list;
         System.out.println("set list!");
+        if(adapter != null)
+            adapter.clear();
         adapter = new CustomerMainAdapter(view.getContext(), res_list, current_location);
+        adapter = sortAdapter(adapter, "default");
+        CustomerMainAdapter filted_adapter = filtAdapter(adapter, filter_mode);
         adapter.notifyDataSetChanged();
-        lv_shops.setAdapter(adapter);
+        lv_shops.setAdapter(filted_adapter);
         lv_shops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter_view, View view, int i, long l) {
@@ -178,6 +189,16 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             }
         });
     }
+
+    private void setRefreshLayout(){
+        swipe_refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                gpsPermission();
+            }
+        });
+    }
+
     private void setSpinner(){
         sp_dis.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -279,6 +300,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             }
         });
     }
+
     private CustomerMainAdapter filtAdapter(CustomerMainAdapter filt_adapter, String mode){
         List<CustomerRestaurantInfo> r_list = new ArrayList<CustomerRestaurantInfo>();
         switch (mode) {
@@ -315,6 +337,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         }
         return new CustomerMainAdapter(getActivity(), r_list, current_location);
     }
+
     private CustomerMainAdapter sortAdapter(CustomerMainAdapter sort_adapter, String mode){
         switch (mode){
             case "distance":
@@ -352,7 +375,8 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                     }
                 });
                 break;
-
+            case "default":
+                break;
 
         }
         return sort_adapter;
@@ -424,7 +448,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             int point = info.discount % 10;
             int discount = info.discount / 10;
             if (point != 0) {
-                tv_show_discount.setText(discount + point + "折");
+                tv_show_discount.setText(info.discount + "折");
             } else {
                 tv_show_discount.setText(discount + "折");
             }
@@ -580,12 +604,16 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     private class ApiPromotion extends AsyncTask<Double, Void, String> {
         HttpClient httpClient = new DefaultHttpClient();
         List<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
-        private ProgressDialog progress_dialog = new ProgressDialog(view.getContext());
+        private ProgressDialog progress_dialog;
         private String status = null;
+
         @Override
         protected void onPreExecute() {
-            progress_dialog.setMessage( "載入中..." );
-            progress_dialog.show();
+            if(first_loading) {
+                progress_dialog = new ProgressDialog(view.getContext());
+                progress_dialog.setMessage("載入中...");
+                progress_dialog.show();
+            }
         }
         @Override
         protected String doInBackground(Double... params) {
@@ -623,7 +651,12 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         @Override
         protected void onPostExecute(String s) {
             setListView(restaurantInfoList);
-            progress_dialog.dismiss();
+            if(first_loading) {
+                progress_dialog.dismiss();
+                first_loading = false;
+            }else{
+                swipe_refresh_layout.setRefreshing(false);
+            }
             super.onPostExecute(s);
 
         }
