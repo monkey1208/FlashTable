@@ -600,6 +600,20 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                 info.discount = list.get(i).discount;
                 info.offer = list.get(i).offer;
                 info.promotion_id = list.get(i).promotion_id;
+
+                String shop_rating;
+                try {
+                    HttpGet requestShopRating = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + list.get(i).shop_id);
+                    requestShopRating.addHeader("Content-Type", "application/json");
+                    JSONArray responseShopRating = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(requestShopRating)));
+                    status = responseShopRating.getJSONObject(0).getString("status_code");
+                    if (!status.equals("0")) break;
+                    shop_rating = responseShopRating.getJSONObject(0).getString("average_score");
+                } catch (Exception e) {
+                    shop_rating = "0";
+                }
+                info.rating = Float.parseFloat(shop_rating);
+
                 restaurantInfoList.add(info);
             }
 

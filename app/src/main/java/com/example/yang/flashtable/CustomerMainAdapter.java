@@ -26,6 +26,7 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
     private Context c;
     private LayoutInflater inflater;
 
+    List objects;
     DialogBuilder dialog_builder;
     ImageView iv_shop;
     TextView tv_shop, tv_price, tv_distance, tv_discount, tv_gift;
@@ -33,8 +34,9 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
     LinearLayout ll_reserve;
     Location current_location;
 
-    public CustomerMainAdapter(Context context, List objects, LatLng current_latlng) {
-        super(context, R.layout.customer_main_item, objects);
+    public CustomerMainAdapter(Context context, List _objects, LatLng current_latlng) {
+        super(context, R.layout.customer_main_item, _objects);
+        objects = _objects;
         c = context;
         inflater = LayoutInflater.from(context);
         this.current_location = new Location("");
@@ -56,6 +58,7 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
             tv_discount = (TextView) convertView.findViewById(R.id.customer_main_tv_discount);
             tv_gift = (TextView) convertView.findViewById(R.id.customer_main_tv_gift);
             rb_rating = (RatingBar) convertView.findViewById(R.id.customer_main_rb_rating);
+            rb_rating.setRating(info.rating);
             ll_reserve = (LinearLayout) convertView.findViewById(R.id.customer_main_ll_reserve);
             iv_shop.setImageBitmap(info.getImage());
             tv_shop.setText(info.name);
