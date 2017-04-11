@@ -1,24 +1,35 @@
 package com.example.yang.flashtable;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.zxing.Result;
 
@@ -27,7 +38,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
@@ -41,20 +54,21 @@ import me.dm7.barcodescanner.core.DisplayUtils;
 import me.dm7.barcodescanner.core.IViewFinder;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-import static com.example.yang.flashtable.R.layout.store_qrcode_scan;
-
 public class QrcodeScannerActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
-    private static final String LOG_TAG = QrcodeScannerActivity.class.getSimpleName();
-
     static final String SCAN_RESULT = "scan_result";
-    static final String SCAN_FORMAT = "scan_format";
-
-    private ZXingScannerView mScannerView;
+    private static ZXingScannerView mScannerView;
+    private static Fragment userInfoFragment;
+    private String status;
+    private static String record_id = "2";
+    private static FragmentManager fragmentManager;
+    private static String name, arrive_time, promotionName, promotionDes;
+    private static int num, point;
+    private static int status_bar_height;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(store_qrcode_scan);
+        setContentView(R.layout.store_qrcode_scan);
 
         requestCameraPermission();
 
@@ -72,13 +86,15 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         LinearLayout top_bar = (LinearLayout)findViewById(R.id.store_qrcode_scan_ll_top_bar);
         top_bar.setPadding(0, getStatusBarHeight(), 0, 0);
 
-        ImageView iv = (ImageView)findViewById(R.id.store_qrcode_scan_iv_back) ;
-        iv.setOnClickListener(new View.OnClickListener() {
+        ImageView iv_back= (ImageView)findViewById(R.id.store_qrcode_scan_iv_back) ;
+        iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+
+        fragmentManager= this.getSupportFragmentManager();
     }
 
     @Override
@@ -94,22 +110,13 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         mScannerView.stopCamera();
     }
 
-
     @Override
     public void handleResult(Result result) {
         String session = result.toString();
         String session_id = session.substring(session.indexOf("=")+1);
 
         mScannerView.stopCamera();
-        //finish_session(session_id);
-        new Finish_session().execute(session_id);
-
-
-        /*Intent returnIntent = new Intent();
-        returnIntent.putExtra(SCAN_RESULT, result.toString());
-        returnIntent.putExtra(SCAN_FORMAT, result.getBarcodeFormat().toString());
-        setResult(Activity.RESULT_OK, returnIntent);
-        finish();*/
+        new Finish_Session().execute(session_id);
     }
 
 
@@ -125,7 +132,7 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         private static final float LANDSCAPE_WIDTH_HEIGHT_RATIO = 1.4f;
         private static final int MIN_DIMENSION_DIFF = 50;
 
-        private static final float SQUARE_DIMENSION_RATIO = 6f/8;
+        private static final float SQUARE_DIMENSION_RATIO = 0.78f;
 
         private static final int[] SCANNER_ALPHA = {0, 64, 128, 192, 255, 192, 128, 64};
         private int scannerAlpha;
@@ -190,7 +197,6 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
 
             drawViewFinderMask(canvas);
             drawViewFinderBorder(canvas);
-            //drawLaser(canvas);
         }
 
         public void drawViewFinderMask(Canvas canvas) {
@@ -274,40 +280,17 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         }
     }
 
-    public int getStatusBarHeight() {
+    private int getStatusBarHeight() {
         int result = 0;
         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             result = getResources().getDimensionPixelSize(resourceId);
         }
+        status_bar_height = result;
         return result;
     }
 
-    public void finish_session(String session_id){
-        try {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/finish_session");
-            List<NameValuePair> param = new ArrayList<>();
-            param.add(new BasicNameValuePair("session_id", session_id));
-            post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
-            HttpResponse response = httpClient.execute(post);
-            HttpEntity resEntity = response.getEntity();
-            if(resEntity != null) {
-                JSONObject jsonResponse = new JSONObject(resEntity.toString());
-                if(jsonResponse.getInt("status_code") == 0) {
-                    AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "恭喜掃描成功");
-                }else{
-                    AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "掃描失敗，請再試一次");
-                }
-            }
-        } catch (Exception e) {
-            AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "網路連線失敗，請檢查您的網路");
-            e.printStackTrace();
-        }
-    }
-
-    public class Finish_session extends AsyncTask<String,Void,Void> {
-        String status;
+    private class Finish_Session extends AsyncTask<String,Void,Void> {
         @Override
         protected Void doInBackground(String... params) {
             try {
@@ -321,9 +304,9 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
                 if(resEntity != null) {
                     String res_string = EntityUtils.toString(resEntity);
                     JSONObject jsonResponse = new JSONObject(res_string);
-
                     if(jsonResponse.getInt("status_code") == 0) {
                         status = "success";
+                        record_id = jsonResponse.getString("record_id");
                     }else{
                         status = "fail";
                     }
@@ -338,28 +321,146 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         @Override
         protected void onPostExecute(Void _params){
             if(status.equals("success")){
-                AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "恭喜掃描成功");
-              //  Fragment userInfoFragment = new UserInfoFragment();
-               // getFragmentManager().beginTransaction().add(R.id.store_qrcode_frame, userInfoFragment, "HELLO").commit();
-                //TODO : jump to user page(fragment)
+                warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "恭喜掃描成功");
             }else if(status.equals("fail")){
-                AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "掃描失敗，請再試一次");
+                warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "掃描失敗，請再試一次");
             }else if(status.equals("exception")){
-                AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "網路連線失敗，請檢查您的網路");
+                warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "網路連線失敗，請檢查您的網路");
             }
-            mScannerView.setResultHandler(QrcodeScannerActivity.this);
-            mScannerView.startCamera();
         }
     }
 
+    private void warningConfirmDialog(final Context context, String title, String content){
+        View item = LayoutInflater.from(context).inflate(R.layout.store_warning_confirm_dialog, null);
+        TextView tv_title =  (TextView)item.findViewById(R.id.store_warning_confirm_tv_title);
+        tv_title.setText(title);
+        tv_title.setTextSize(18);
+
+        final Dialog alertDialog = new Dialog(context, R.style.StoreDialog);
+        alertDialog.setContentView(item);
+        alertDialog.setCanceledOnTouchOutside(false);
+
+        TextView tv_content = (TextView)item.findViewById(R.id.store_warning_confirm_tv_content);
+        tv_content.setText(content);
+        ImageButton bt_confirm = (ImageButton)item.findViewById(R.id.store_warning_confirm_bt_confirm);
+        bt_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(status.equals("success")) {
+                    new Get_Record_Info().execute(record_id);
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    alertDialog.dismiss();
+                    mScannerView.setResultHandler(QrcodeScannerActivity.this);
+                }else{
+                    alertDialog.dismiss();
+                    mScannerView.setResultHandler(QrcodeScannerActivity.this);
+                    mScannerView.startCamera();
+                }
+            }
+        });
+
+        alertDialog.show();
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        DisplayMetrics dm = new DisplayMetrics();
+        ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int displayWidth = dm.widthPixels;
+        int displayHeight = dm.heightPixels;
+        lp.width = (int) (displayWidth * 0.76);
+        lp.height = (int) (displayHeight * 0.3);
+        try {
+            alertDialog.getWindow().setLayout( (int) (displayWidth * 0.76), (int) (displayHeight * 0.3));
+        } catch(NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public static class UserInfoFragment extends Fragment{
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.store_home_confirm_fragment, container, false);
+            view.setPadding(0, status_bar_height, 0, 0);
+            TextView tv_name = (TextView) view.findViewById(R.id.tv_name);
+            TextView tv_point = (TextView) view.findViewById(R.id.tv_point);
+            TextView tv_number = (TextView) view.findViewById(R.id.tv_number);
+            TextView tv_arrive_time = (TextView) view.findViewById(R.id.store_home_confirm_fragment_tv_arrive_time);
+            TextView tv_sessiont_time = (TextView) view.findViewById(R.id.store_home_confirm_fragment_tv_appoint_time);
+            TextView tv_discount = (TextView) view.findViewById(R.id.store_home_confirm_fragment_tv_discount);
+            TextView tv_description = (TextView) view.findViewById(R.id.store_home_confirm_fragment_tv_gift);
+            tv_name.setText(name);
+            tv_point.setText(String.valueOf(point));
+            tv_number.setText(arrive_time);
+            tv_sessiont_time.setText(arrive_time);
+            tv_arrive_time.setText(arrive_time);
+            tv_discount.setText(promotionName);
+            tv_description.setText(promotionDes);
+            tv_number.setText(String.valueOf(num));
+
+            Log.e("qrcode", "recreate view");
+            ImageView iv_photo = (ImageView)view.findViewById(R.id.iv_photo);
+            Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.ic_temp_store);
+            iv_photo.setImageBitmap(icon);
+
+            ImageButton ib_comfirm = (ImageButton) view.findViewById(R.id.bt_click);
+            ib_comfirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fragmentManager.beginTransaction().remove(userInfoFragment).commit();
+                    mScannerView.startCamera();
+                }
+            });
             return view;
         }
     }
+
+    private class Get_Record_Info extends AsyncTask<String,Void,Void> {
+        @Override
+        protected Void doInBackground(String... params) {
+            HttpClient httpClient = new DefaultHttpClient();
+            try {
+                HttpGet getRecordInfo = new HttpGet("https://flash-table.herokuapp.com/api/record_info?record_id="+params[0]);
+                JSONObject recordInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordInfo)));
+                num = recordInfo.getInt("number");
+                int user = recordInfo.getInt("user_id");
+                int promotion = recordInfo.getInt("promotion_id");
+                arrive_time = recordInfo.getString("created_at");
+
+                HttpGet getUserInfo = new HttpGet("https://flash-table.herokuapp.com/api/user_info?user_id="+String.valueOf(user));
+                JSONObject userInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getUserInfo)));
+                name = userInfo.getString("account");
+                point = userInfo.getInt("point");
+
+                HttpGet getPromotionInfo = new HttpGet("https://flash-table.herokuapp.com/api/promotion_info?promotion_id="+String.valueOf(promotion));
+                JSONObject promotionInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getPromotionInfo)));
+                promotionName = promotionInfo.getString("name");
+                promotionDes = promotionInfo.getString("description");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void _params){
+            userInfoHandler.sendEmptyMessage(0);
+        }
+    }
+
+    private static Handler userInfoHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    userInfoFragment = new UserInfoFragment();
+                    fragmentManager.beginTransaction().add(R.id.store_qrcode_frame, userInfoFragment).addToBackStack(null).commit();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
 }
