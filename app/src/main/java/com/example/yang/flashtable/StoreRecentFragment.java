@@ -42,7 +42,7 @@ public class StoreRecentFragment extends Fragment {
                 if (list.get(i).expireTime > 0)
                     list.get(i).expireTime--;
                 else {
-                    StoreMainActivity.apiHandler.postRequestDeny(list.get(i).id,list.get(i).name);
+                    new APIHandler().postRequestDeny(list.get(i).id,list.get(i).name);
                     list.remove(i);
                     i--;
                 }

@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ public class StoreDialogAdapter extends BaseAdapter{
     public List<String> list = new ArrayList<>();
     public Context context;
     public LayoutInflater inflater;
-    private int listPosition;
+    public int listPosition;
 
     public StoreDialogAdapter(Context context, List<String> items){
         this.list = items;

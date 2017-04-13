@@ -38,7 +38,7 @@ import static com.example.yang.flashtable.StoreManageSuccessFragment.tv_total;
 
 public class APIHandler {
     private Handler handler = new Handler();
-    private Context context;
+    //private Context context;
 
     private List<String> requestCache = new ArrayList<>();
     private List<String> deleteList = new ArrayList<>();
@@ -50,9 +50,7 @@ public class APIHandler {
     private boolean stat = false;
     private int sum = 0;
 
-    public APIHandler(Context context){
-        this.context = context;
-    }
+    public APIHandler(){};
 
     public class APIRequestUpdate extends AsyncTask<String, Void, Void>{
         @Override
@@ -133,8 +131,8 @@ public class APIHandler {
                 }
             }
             if(stat){
-                for (int i = 0; i < StoreMainActivity.fragmentController.storeAppointFragment.appointList.size(); i++) {
-                    if (StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(i).name.equals(account)) {
+                for (int i = 0; i < StoreMainActivity.fragmentController.storeAppointFragment.getSize(); i++) {
+                    if (StoreMainActivity.fragmentController.storeAppointFragment.getItem(i).name.equals(account)) {
                         stat = false;
                         break;
                     }
@@ -146,7 +144,7 @@ public class APIHandler {
         }
         Log.d("Update","recent: "+Integer.toString(StoreMainActivity.fragmentController.storeRecentFragment.getListSize())
                 +" del: "+Integer.toString(deleteList.size())
-                +" session: "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.size()));
+                +" session: "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.getSize()));
         deleteList.clear();
         newInfoList = temp;
         return;
@@ -179,6 +177,7 @@ public class APIHandler {
                         checkListBeforeShow(newInfoList);
                         //handlerPost("get "+Integer.toString(newInfoList.size())+" new info del: "+Integer.toString(deleteList.size()));
                         //for(int i=0;i<deleteList.size();i++)
+
                         Log.d("Update","get "+Integer.toString(newInfoList.size())+" new info");
                         StoreMainActivity.fragmentController.storeRecentFragment.addRequest2List(newInfoList);
                     }
@@ -186,23 +185,11 @@ public class APIHandler {
             }
         },0,5000);
     }
-    public void killTimer(){
-        timer.cancel();
-    }
     public void postPromotionInactive(){
         new APIpromotion_inactive().execute(Integer.toString(StoreMainActivity.storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
         Log.d("Promotion","Inactivate "+Integer.toString(StoreMainActivity.storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
-        killTimer();
         isActive = false;
         return;
-    }
-    public void handlerPost(final String str){
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(context,str,Toast.LENGTH_SHORT).show();
-            }
-        });
     }
     public void changePromotions(){
         if(!isActive)
@@ -211,7 +198,6 @@ public class APIHandler {
         return;
     }
     public void postRequestDeny(int id,String name){
-        handlerPost(Integer.toString(id));
         new APIrequest_deny().execute(Integer.toString(id));
         deleteList.add(name);
         return;
@@ -219,15 +205,13 @@ public class APIHandler {
     public void postSession(CustomerAppointInfo cinfo){
         ReservationInfo info = new ReservationInfo(cinfo.name,cinfo.number,System.currentTimeMillis());
         new APIrequest_accept().execute(Integer.toString(cinfo.id));
-        StoreMainActivity.fragmentController.storeAppointFragment.appointList.add(info);
-        StoreMainActivity.fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
+        StoreMainActivity.fragmentController.storeAppointFragment.addItem(info);
     }
     public void postSessionDeny(int id){
         new APIsession_cancel().execute(Integer.toString(id));
         Log.d("Accept",Integer.toString(id));
     }
     private class APIrequest_deny extends AsyncTask<String,Void,Void> {
-        private String result = "-1";
         @Override
         protected Void doInBackground(String... params) {
             try {
@@ -238,8 +222,6 @@ public class APIHandler {
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
                 HttpResponse response = httpClient.execute(post);
                 HttpEntity resEntity = response.getEntity();
-                if(resEntity != null)
-                    result = resEntity.toString();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (ClientProtocolException e) {
@@ -251,7 +233,6 @@ public class APIHandler {
         }
     }
     private class APIrequest_accept extends AsyncTask<String,Void,Void> {
-        private String result = "-1";
         int id = -1;
         @Override
         protected Void doInBackground(String... params) {
@@ -263,10 +244,6 @@ public class APIHandler {
                 param.add(new BasicNameValuePair("request_id",params[0]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
                 JSONObject result =new JSONObject (new BasicResponseHandler().handleResponse(httpClient.execute(post)));
-                /*HttpEntity resEntity = response.getEntity();
-                if(resEntity != null)
-                    result = resEntity.toString();*/
-                //JSONObject object = new JSONObject(result);
                 id = result.getInt("session_id");
             } catch (UnsupportedEncodingException e) {
                 id = -2;
@@ -284,8 +261,8 @@ public class APIHandler {
             return null;
         }
         protected void onPostExecute(Void _params) {
-            StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(StoreMainActivity.fragmentController.storeAppointFragment.appointList.size()-1).id = id;
-            Log.d("Accept","Done getting "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(StoreMainActivity.fragmentController.storeAppointFragment.appointList.size()-1).id));
+            StoreMainActivity.fragmentController.storeAppointFragment.getItem(StoreMainActivity.fragmentController.storeAppointFragment.getSize()-1).id = id;
+            Log.d("Accept","Done getting "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.getItem(StoreMainActivity.fragmentController.storeAppointFragment.getSize()-1).id));
         }
     }
     private class APIsession_cancel extends AsyncTask<String,Void,Void> {
@@ -388,15 +365,12 @@ public class APIHandler {
         protected Void doInBackground(Object... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getReservationInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+StoreMainActivity.storeInfo.id);
+                HttpGet getReservationInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ StoreMainActivity.storeInfo.id+"&verbose=1");
                 JSONArray reservationInfo = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(getReservationInfo)));
                 total = reservationInfo.length();
                 for (int i = 1; i < reservationInfo.length(); i++) {
                     JSONObject jsonItem = reservationInfo.getJSONObject(i);
-                    int record_id = jsonItem.getInt("record_id");
-                    HttpGet getRecordInfo = new HttpGet("https://flash-table.herokuapp.com/api/record_info?record_id="+record_id);
-                    JSONObject recordInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordInfo)));
-                    String is_success = recordInfo.getString("is_succ");
+                    String is_success = jsonItem.getString("is_succ");
                     if(is_success.equals("true")){
                         sum += 1;
                     }
@@ -411,9 +385,9 @@ public class APIHandler {
         protected void onPostExecute(Void _params){
             DecimalFormat df2 = new DecimalFormat(".##");
             tv_rate.setText(df2.format((sum+0.0)/total*100));
-            tv_total.setText(Integer.toString(total));
-            tv_fail.setText(Integer.toString(total-sum));
-            tv_success.setText(Integer.toString(sum));
+            tv_total.setText(String.valueOf(total));
+            tv_fail.setText(String.valueOf(total-sum));
+            tv_success.setText(String.valueOf(sum));
         }
     }
 }
