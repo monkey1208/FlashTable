@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <com.daimajia.slider.library.SliderLayout
         android:id="@+id/customer_main_sl_restaurant"
         android:layout_width="match_parent"
-        android:layout_height="230dp" />
+        android:layout_height="200dp" />
 
     <ImageButton
         android:id="@+id/customer_main_ib_show_back"
@@ -139,10 +140,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/customer_main_info_content"
                 android:textSize="15sp"
+                android:textAlignment="center"
                 android:textColor="@color/textColorLighter"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="20dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -174,7 +176,7 @@
                 android:paddingEnd="20dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="20dp">
 
                 <ImageView
                     android:layout_width="20dp"
@@ -191,6 +193,55 @@
                     android:textColor="@color/textColorLight" />
 
             </LinearLayout>
+
+            <!-- SPACER VIEW -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/lightgray"/>
+
+            <!-- Treat this like a button -->
+            <LinearLayout
+                android:id="@+id/customer_main_ll_show_comments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/white"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_comments"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/customer_main_comments"/>
+
+                <!-- SPACER VIEW -->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:src="@drawable/ic_next"/>
+
+            </LinearLayout>
+
+            <!-- SPACER VIEW -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/lightgray"
+                android:layout_marginBottom="20dp"/>
 
         </LinearLayout>
 

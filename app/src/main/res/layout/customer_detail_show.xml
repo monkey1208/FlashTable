@@ -177,6 +177,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/customer_main_info_content"
                 android:textSize="15sp"
+                android:textAlignment="center"
                 android:textColor="@color/textColorLighter"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"

@@ -111,7 +111,7 @@ public class CustomerProfileFragment extends Fragment {
     private void getUserInfo() {
         user = this.getActivity().getSharedPreferences("USER", MODE_PRIVATE);
         userID = user.getString("userID", "");
-        username = user.getString("account", "");
+        username = user.getString("username", "");
     }
 
     class CustomerAPICredits extends AsyncTask<String, Void, String> {

@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,6 +85,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     ImageButton ib_show_back;
     SliderLayout sl_restaurant;
     Button bt_show_reserve;
+    RatingBar rb_show_rating;
 
     // Textview in restaurant detail
     TextView tv_show_name, tv_show_consumption, tv_show_discount, tv_show_offer, tv_show_location, tv_show_category, tv_show_intro;
@@ -121,6 +123,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         sl_restaurant = (SliderLayout) view.findViewById(R.id.customer_main_sl_restaurant);
         ib_show_back = (ImageButton) view.findViewById(R.id.customer_main_ib_show_back);
         bt_show_reserve = (Button) view.findViewById(R.id.customer_main_bt_show_reserve);
+        rb_show_rating = (RatingBar) view.findViewById(R.id.customer_main_rb_show_rating);
 
         tv_show_name = (TextView) view.findViewById(R.id.customer_main_tv_show_shop);
         tv_show_discount = (TextView) view.findViewById(R.id.customer_main_tv_show_discount);
@@ -457,6 +460,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         tv_show_location.setText(info.detailInfo.address);
         tv_show_category.setText(info.category);
         tv_show_intro.setText(info.detailInfo.intro);
+        rb_show_rating.setRating(info.rating);
         bt_show_reserve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -628,6 +632,20 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                 info.discount = list.get(i).discount;
                 info.offer = list.get(i).offer;
                 info.promotion_id = list.get(i).promotion_id;
+
+                String shop_rating;
+                try {
+                    HttpGet requestShopRating = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + list.get(i).shop_id);
+                    requestShopRating.addHeader("Content-Type", "application/json");
+                    JSONArray responseShopRating = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(requestShopRating)));
+                    status = responseShopRating.getJSONObject(0).getString("status_code");
+                    if (!status.equals("0")) break;
+                    shop_rating = responseShopRating.getJSONObject(0).getString("average_score");
+                } catch (Exception e) {
+                    shop_rating = "0";
+                }
+                info.rating = Float.parseFloat(shop_rating);
+
                 restaurantInfoList.add(info);
             }
 

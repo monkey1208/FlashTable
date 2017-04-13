@@ -54,7 +54,7 @@
             android:ems="15"
             android:maxLines="1"
             android:background="@drawable/round_rectangle_white"
-            android:inputType="textPersonName"
+            android:inputType="phone"
             android:textCursorDrawable="@null"
             android:textColor="@color/textColor"
             android:textSize="17sp"

@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 public class CustomerRestaurantInfo {
     int id;
     String name;
+    float rating;
     int discount;
     String offer;
     LatLng latLng;

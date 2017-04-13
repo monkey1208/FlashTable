@@ -199,6 +199,10 @@ public class CustomerReservationActivity extends AppCompatActivity {
         bt_arrive_cancel.setOnClickListener(cancel_arrive_listener);
     }
 
+    @Override
+    public void onBackPressed() {
+    }
+
     private void reservationAccepted(int sec) {
         vf_flipper.setDisplayedChild(1);
         if( discount == 101 ||discount == 100) {

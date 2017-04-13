@@ -108,7 +108,7 @@ public class CustomerRegisterActivity extends AppCompatActivity {
         });
         et_cellphone_2.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (et_cellphone_2.getText().toString().length() == 3)
+                if (et_cellphone_2.getText().toString().length() == 4)
                     et_cellphone_3.requestFocus();
             }
             @Override
@@ -200,7 +200,7 @@ public class CustomerRegisterActivity extends AppCompatActivity {
         String password = et_password.getText().toString();
         String password_again = et_password_again.getText().toString();
         String cellphone =
-                "+886-" + et_cellphone_2.getText().toString()
+                "+886-" + et_cellphone_2.getText().toString().substring(1)
                 + "-" + et_cellphone_3.getText().toString()
                 + "-" + et_cellphone_3.getText().toString();
 
@@ -235,7 +235,7 @@ public class CustomerRegisterActivity extends AppCompatActivity {
             et_cellphone_2.setText("");
             et_cellphone_3.setText("");
             et_cellphone_4.setText("");
-        } else new CustomerAPINewUser().execute(account, password, cellphone);
+        } else new CustomerAPINewUser().execute(cellphone, password, account);
 
     }
 
@@ -278,9 +278,9 @@ public class CustomerRegisterActivity extends AppCompatActivity {
             try {
                 HttpPost request = new HttpPost(
                         "https://"+getString(R.string.server_domain)+"/api/new_user");
-                StringEntity se = new StringEntity("{ \"account\":\"" + params[0] +
+                StringEntity se = new StringEntity("{ \"phone_number\":\"" + params[0] +
                         "\", \"password\":\"" + params[1] +
-                        "\", \"phone_number\":\"" + params[2]+ "\"}", HTTP.UTF_8);
+                        "\", \"account\":\"" + params[2]+ "\"}", HTTP.UTF_8);
                 request.addHeader("Content-Type", "application/json");
                 request.setEntity(se);
                 HttpResponse response = httpClient.execute(request);
