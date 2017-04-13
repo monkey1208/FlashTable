@@ -12,7 +12,7 @@
     <string name="back">返回</string>
     <string name="search">搜尋</string>
     <string name="discount">折</string>
-    
+
     <!-- Dialog Content strings -->
     <string name="dialog_cancel_success_reservation">商家正在為您安排桌位中\n確定要取消嗎？</string>
 
@@ -20,7 +20,8 @@
     <string name="login_as_customer">一般用戶登入</string>
     <string name="login_as_store">店家後台登入</string>
     <string name="login_store_title">店家專用管理後台</string>
-    <string name="login_account">手機號碼</string>
+    <string name="login_cellphone">手機號碼</string>
+    <string name="login_account">帳號</string>
     <string name="login_password">密碼</string>
     <string name="login_submit">登入</string>
     <string name="login_register">立即註冊</string>
@@ -67,6 +68,9 @@
     <string name="store_register_contact">聯絡人姓名</string>
     <string name="store_register_phone">聯絡電話</string>
     <string name="store_register_email">電子信箱</string>
+    <string name="store_register_error_contact">請輸入聯絡人名稱</string>
+    <string name="store_register_error_store">請輸入店家名稱</string>
+    <string name="store_register_error_address">請輸入店家地址</string>
     <string name="store_register_error_email">電子信箱格式錯誤</string>
     <string name="store_register_error_exists">此帳號已存在</string>
     <string name="store_register_success">申請成功，請耐心等待核准！</string>

@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="false"
@@ -24,10 +25,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD1qukcqJkUZtxiKApJlp6O8oiYP25fyrs" />
 
-        <activity android:name=".LoginActivity"
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,58 +38,49 @@
         </activity>
         <activity
             android:name=".StoreMainActivity"
+            android:hardwareAccelerated="true"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".StoreRegisterActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:hardwareAccelerated="true">
-        </activity>
-
-        <activity android:name=".StoreRegisterActivity"
+            android:windowSoftInputMode="adjustPan"></activity>
+        <activity
+            android:name=".CustomerRegisterActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
-
-        <activity android:name=".CustomerRegisterActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity android:name=".CustomerLoadingActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
-            </activity>
-
+            android:windowSoftInputMode="adjustPan"></activity>
+        <activity
+            android:name=".CustomerLoadingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".CustomerMainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
-        </activity>
-
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".CustomerReservationActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
-        </activity>
-
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".CustomerCommentActivity"
-            android:theme="@style/AppTheme.LightActionBar"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity android:name=".CustomerDetailActivity"
-            android:theme="@style/AppTheme.LightActionBar"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity android:name=".CustomerRatingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.LightActionBar"></activity>
+        <activity
+            android:name=".CustomerDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.LightActionBar"></activity>
+        <activity
+            android:name=".CustomerRatingActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.TransparentActionBar"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity android:name=".QrcodeScannerActivity"
-            android:theme="@style/AppFullScreenTheme"/>
+            android:windowSoftInputMode="adjustPan"></activity>
+        <activity
+            android:name=".QrcodeScannerActivity"
+            android:theme="@style/AppFullScreenTheme" />
+        <activity
+            android:name=".CustomerMainShopActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

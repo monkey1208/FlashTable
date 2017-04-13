@@ -16,8 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.data.BarData;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -31,19 +29,10 @@ import org.apache.http.protocol.HTTP;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import pl.droidsonroids.gif.GifImageView;
-
-import static com.example.yang.flashtable.StoreManageOpentimeFragment.tv_time_choose;
 
 public class AlertDialogController {
 
@@ -53,16 +42,10 @@ public class AlertDialogController {
     public static final int NOTICE2_APPOINT = 1;
     public static final int NOTICELIST_APPOINT = 2;
     public static final int UNFINISHED_CONTENT = 3;
-    public static final int OPENTIME_CHOOSE = 4;
-    public static final int OPENTIME_CHOOSE_DETAIL = 5;
-    public static final int OPENTIME_CHOOSE_DAY = 6;
-    public static final int OPENTIME_CHOOSE_WEEK = 7;
-    public static final int OPENTIME_CHOOSE_MONTH = 8;
     public int listPosition = -1;
-    public int opentime_choose_result;
     public int result = 0;
     private boolean first = true;
-    private final String[] month_to_Chinese = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"};
+
 
 
     public AlertDialog discountDialog(final Context context, final StoreInfo storeInfo, final TextView tv_discount, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind){
@@ -351,118 +334,6 @@ public class AlertDialogController {
         });
         alertDialog.show();
         setDialogSize(context, 0.72, 0.45);
-    }
-
-
-    public void chart_listConfirmDialog(final Context context, String title, List<String> items, final int mode, final int position){
-        result = 0;
-        View view = LayoutInflater.from(context).inflate(R.layout.store_dialog_list, null);
-        setTitle(context, title, 18);
-        alertDialog = new AlertDialog.Builder(context)
-                .setCustomTitle(titleBar)
-                .setView(view)
-                .create();
-        setBackground(context);
-        alertDialog.setCanceledOnTouchOutside(false);
-        final ListView lv_item = (ListView) view.findViewById(R.id.lv_item);
-        final StoreDialogAdapter adapter = new StoreDialogAdapter(context, items);
-        lv_item.setAdapter(adapter);
-        lv_item.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                adapter.setItemClick(position);
-                adapter.notifyDataSetChanged();
-                opentime_choose_result = position+OPENTIME_CHOOSE_DAY;
-                if(mode == OPENTIME_CHOOSE) StoreManageOpentimeFragment.current_state = position;
-            }
-        });
-
-        ImageButton bt_confirm = (ImageButton) view.findViewById(R.id.bt_confirm);
-        bt_confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-                List<String> items = new ArrayList<String>();
-                Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
-                int thisYear = calendar.get(Calendar.YEAR);
-                int thisMonth = calendar.get(Calendar.MONTH);
-                int thisDay = calendar.get(Calendar.DAY_OF_MONTH);
-                switch (mode){
-                    case OPENTIME_CHOOSE:
-                        switch (opentime_choose_result){
-                            case OPENTIME_CHOOSE_DAY:
-                                String date = String.format("%d/%02d/%02d", thisYear, thisMonth+1, thisDay);
-                                StoreManageOpentimeFragment.tv_period.setText(date);
-                                StoreManageOpentimeFragment.tv_info.setText(date+" 時段整理");
-                                StoreManageOpentimeFragment.chart_bar.clear();
-                                BarData barData = StoreManageOpentimeFragment.getBarData();
-                                StoreManageOpentimeFragment.chart_bar.setData(barData);
-                                tv_time_choose.setText(StoreManageOpentimeFragment.period_type[listPosition]);
-                                tv_time_choose.setBackgroundResource(R.color.colorHalfTransparent);
-                                break;
-                            case OPENTIME_CHOOSE_WEEK:
-                                calendar.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-                                DateFormat df = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
-                                int[] gap = {-14, 6, 1, 6, 1, 6};
-                                for(int i = 0; i < 6; i += 2){
-                                    calendar.add(Calendar.DATE, gap[i]);
-                                    String startDate = df.format(calendar.getTime());
-                                    calendar.add(Calendar.DATE, gap[i+1]);
-                                    String endDate = df.format(calendar.getTime());
-                                    items.add(startDate+" - "+endDate);
-                                }
-                                chart_listConfirmDialog(context,"圖表期間選擇",items, OPENTIME_CHOOSE_DETAIL, position);
-                                break;
-                            case OPENTIME_CHOOSE_MONTH:
-                                thisMonth -= 2;
-                                if(thisMonth < 0){
-                                    thisMonth += 12;
-                                    thisYear -= 1;
-                                }
-                                items.add(thisYear+" "+month_to_Chinese[thisMonth]+"月");
-                                items.add((thisMonth==11? thisYear+1: thisYear) +" "+month_to_Chinese[thisMonth==11? 0 : (thisMonth+1)]+"月");
-                                items.add((thisMonth==11? thisYear+1: thisYear) +" "+month_to_Chinese[thisMonth==11? 1 : (thisMonth+2)]+"月");
-                                chart_listConfirmDialog(context,"圖表期間選擇",items, OPENTIME_CHOOSE_DETAIL, position);
-                                break;
-                        }
-                        break;
-                    case OPENTIME_CHOOSE_DETAIL:
-                        String selected_period = (String)lv_item.getItemAtPosition(listPosition);
-                        if(StoreManageOpentimeFragment.current_state == StoreManageOpentimeFragment.WEEK){
-                            String[] dates = selected_period.split(" - ");
-                            DateFormat df = new SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN);
-                            try {
-                                Date date = df.parse(dates[0]);
-                                String start_date = String.format("%02d/%02d", date.getMonth()+1, date.getDate());
-                                date = df.parse(dates[1]);
-                                String end_date = String.format("%02d/%02d", date.getMonth()+1, date.getDate());
-                                StoreManageOpentimeFragment.tv_period.setText(start_date+" - "+end_date);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                        }else{
-                            StoreManageOpentimeFragment.tv_period.setText(selected_period);
-                        }
-                        tv_time_choose.setText(StoreManageOpentimeFragment.period_type[StoreManageOpentimeFragment.current_state]);
-                        tv_time_choose.setBackgroundResource(R.color.colorHalfTransparent);
-                        StoreManageOpentimeFragment.tv_info.setText(selected_period+" 時段整理");
-                        BarData barData = StoreManageOpentimeFragment.getBarData();
-                        StoreManageOpentimeFragment.chart_bar.clear();
-                        StoreManageOpentimeFragment.chart_bar.setData(barData);
-                        //TODO: set chart values......
-                        break;
-                }
-            }
-        });
-        ImageButton bt_cancel = (ImageButton) view.findViewById(R.id.bt_cancel);
-        bt_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
-        alertDialog.show();
-        setDialogSize(context, 0.75, 0.6);
     }
 
     //Change dialog size

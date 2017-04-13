@@ -364,15 +364,12 @@ public class APIHandler {
         protected Void doInBackground(Object... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getReservationInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+StoreMainActivity.storeInfo.id);
+                HttpGet getReservationInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ StoreMainActivity.storeInfo.id+"&verbose=1");
                 JSONArray reservationInfo = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(getReservationInfo)));
                 total = reservationInfo.length();
                 for (int i = 1; i < reservationInfo.length(); i++) {
                     JSONObject jsonItem = reservationInfo.getJSONObject(i);
-                    int record_id = jsonItem.getInt("record_id");
-                    HttpGet getRecordInfo = new HttpGet("https://flash-table.herokuapp.com/api/record_info?record_id="+record_id);
-                    JSONObject recordInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordInfo)));
-                    String is_success = recordInfo.getString("is_succ");
+                    String is_success = jsonItem.getString("is_succ");
                     if(is_success.equals("true")){
                         sum += 1;
                     }
@@ -387,9 +384,9 @@ public class APIHandler {
         protected void onPostExecute(Void _params){
             DecimalFormat df2 = new DecimalFormat(".##");
             tv_rate.setText(df2.format((sum+0.0)/total*100));
-            tv_total.setText(Integer.toString(total));
-            tv_fail.setText(Integer.toString(total-sum));
-            tv_success.setText(Integer.toString(sum));
+            tv_total.setText(String.valueOf(total));
+            tv_fail.setText(String.valueOf(total-sum));
+            tv_success.setText(String.valueOf(sum));
         }
     }
 }

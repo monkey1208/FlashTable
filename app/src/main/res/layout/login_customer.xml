@@ -58,7 +58,7 @@
             android:textCursorDrawable="@null"
             android:textColor="@color/textColor"
             android:textSize="17sp"
-            android:hint="@string/login_account"
+            android:hint="@string/login_cellphone"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:layout_marginBottom="10dp"/>
