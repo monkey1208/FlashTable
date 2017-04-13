@@ -1,9 +1,5 @@
 package com.example.yang.flashtable;
 
-/**
- * Created by 奕先 on 2017/3/23.
- */
-
 public class ReservationInfo {
     public int id;
     public String name;
