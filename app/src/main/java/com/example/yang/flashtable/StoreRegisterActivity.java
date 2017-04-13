@@ -155,7 +155,19 @@ public class StoreRegisterActivity extends AppCompatActivity {
         else if (!isEmailValid(email))
             fail = 5;
 
-        if (fail == 4) {
+        if (fail == 1) {
+            dialog_builder.dialogEvent(getResources().getString(R.string.store_register_error_store),
+                    "normal", null);
+            et_shop.setText("");
+        } else if (fail == 2) {
+            dialog_builder.dialogEvent(getResources().getString(R.string.store_register_error_address),
+                    "normal", null);
+            et_address.setText("");
+        } else if (fail == 3) {
+            dialog_builder.dialogEvent(getResources().getString(R.string.store_register_error_contact),
+                    "normal", null);
+            et_contact.setText("");
+        } else if (fail == 4) {
             dialog_builder.dialogEvent(getResources().getString(R.string.customer_register_error_cellphone),
                     "normal", null);
             et_cellphone_2.setText("");
@@ -164,7 +176,7 @@ public class StoreRegisterActivity extends AppCompatActivity {
         } else if (fail == 5) {
             dialog_builder.dialogEvent(getResources().getString(R.string.store_register_error_email),
                     "normal", null);
-        } else new StoreAPIApply().execute(contact, store_name, cellphone, email);
+        } else new StoreAPIApply().execute(contact, store_name, address, cellphone, email);
 
     }
 
@@ -187,9 +199,9 @@ public class StoreRegisterActivity extends AppCompatActivity {
             try {
                 HttpPost request = new HttpPost(
                         "https://"+ getString(R.string.server_domain) + "/api/new_shop");
-                StringEntity se = new StringEntity("{ \"account\":\"" + params[0] +
-                        "\", \"password\":\"" + params[1] +
-                        "\", \"name\":\"" + params[2] +
+                StringEntity se = new StringEntity("{ \"contact\":\"" + params[0] +
+                        "\", \"name\":\"" + params[1] +
+                        "\", \"address\":\"" + params[2] +
                         "\", \"phone_number\":\"" + params[3] +
                         "\", \"email\":\"" + params[4] +"\"}", HTTP.UTF_8);
                 request.addHeader("Content-Type", "application/json");
