@@ -20,7 +20,7 @@
     <string name="login_as_customer">一般用戶登入</string>
     <string name="login_as_store">店家後台登入</string>
     <string name="login_store_title">店家專用管理後台</string>
-    <string name="login_account">帳號</string>
+    <string name="login_account">手機號碼</string>
     <string name="login_password">密碼</string>
     <string name="login_submit">登入</string>
     <string name="login_register">立即註冊</string>
@@ -37,7 +37,7 @@
 
     <!-- Strings related to customer register -->
     <string name="customer_register_title">一般帳號資料填寫：</string>
-    <string name="customer_register_username">帳號名稱</string>
+    <string name="customer_register_username">暱稱</string>
     <string name="customer_register_password">密碼</string>
     <string name="customer_register_password_again">確認密碼</string>
     <string name="customer_register_cellphone">手機號碼</string>
@@ -59,7 +59,7 @@
 
     <!-- Strings related to store register -->
     <string name="store_register_title">商家申請資料填寫：</string>
-    <string name="store_register_username">帳號名稱</string>
+    <string name="store_register_username">暱稱</string>
     <string name="store_register_password">密碼</string>
     <string name="store_register_password_again">確認密碼</string>
     <string name="store_register_name">店家名稱</string>
@@ -81,6 +81,7 @@
     <string name="customer_main_type">下午茶</string>
     <string name="customer_main_info">店家說明</string>
     <string name="customer_main_info_content">詳細內容</string>
+    <string name="customer_main_comments">評價及評論</string>
     <string-array name="customer_sp_sort">
         <item>預設排序</item>
         <item>依最新</item>

@@ -50,7 +50,8 @@
                 android:maxLines="1"
                 android:maxEms="1"
                 android:background="@drawable/round_rectangle_transparent_white"
-                android:ems="1"/>
+                android:ems="1"
+                android:maxLength="1"/>
             <EditText
                 android:id="@+id/customer_register_et_verification_2"
                 android:layout_width="48sp"
@@ -63,7 +64,8 @@
                 android:maxLines="1"
                 android:maxEms="1"
                 android:background="@drawable/round_rectangle_transparent_white"
-                android:ems="1"/>
+                android:ems="1"
+                android:maxLength="1"/>
             <EditText
                 android:id="@+id/customer_register_et_verification_3"
                 android:layout_width="48sp"
@@ -76,7 +78,8 @@
                 android:maxLines="1"
                 android:maxEms="1"
                 android:background="@drawable/round_rectangle_transparent_white"
-                android:ems="1"/>
+                android:ems="1"
+                android:maxLength="1"/>
             <EditText
                 android:id="@+id/customer_register_et_verification_4"
                 android:layout_width="48sp"
@@ -89,7 +92,8 @@
                 android:maxLines="1"
                 android:maxEms="1"
                 android:background="@drawable/round_rectangle_transparent_white"
-                android:ems="1"/>
+                android:ems="1"
+                android:maxLength="1"/>
 
         </LinearLayout>
 

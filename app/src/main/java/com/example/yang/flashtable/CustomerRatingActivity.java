@@ -182,7 +182,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
                 progress_dialog.dismiss();
             }
 
-            if( status == null  || !status.equals("0") )
+            if( status == null )
                 dialog_builder.dialogEvent(
                         getResources().getString(R.string.login_error_connection), "normal", null);
             else {

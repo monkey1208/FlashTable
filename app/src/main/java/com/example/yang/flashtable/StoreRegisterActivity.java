@@ -37,8 +37,7 @@ public class StoreRegisterActivity extends AppCompatActivity {
     DialogBuilder dialog_builder;
 
     ImageButton ib_back;
-    EditText et_username, et_password, et_password_again,
-            et_shop, et_address, et_contact, et_email,
+    EditText et_shop, et_address, et_contact, et_email,
             et_cellphone_2, et_cellphone_3, et_cellphone_4;
     Button bt_submit;
 
@@ -60,9 +59,6 @@ public class StoreRegisterActivity extends AppCompatActivity {
         dialog_builder = new DialogBuilder(this);
 
         ib_back = (ImageButton) findViewById(R.id.store_register_ib_info_back);
-        et_username = (EditText) findViewById(R.id.store_register_et_username);
-        et_password = (EditText) findViewById(R.id.store_register_et_password);
-        et_password_again = (EditText) findViewById(R.id.store_register_et_password_again);
         et_shop = (EditText) findViewById(R.id.store_register_et_name);
         et_address = (EditText) findViewById(R.id.store_register_et_address);
         et_contact = (EditText) findViewById(R.id.store_register_et_contact);
@@ -137,9 +133,6 @@ public class StoreRegisterActivity extends AppCompatActivity {
     }
 
     private void storeRegister() {
-        String account = et_username.getText().toString();
-        String password = et_password.getText().toString();
-        String password_again = et_password_again.getText().toString();
         String store_name = et_shop.getText().toString();
         String address = et_address.getText().toString();
         String contact = et_contact.getText().toString();
@@ -151,32 +144,18 @@ public class StoreRegisterActivity extends AppCompatActivity {
 
         int fail = 0;
 
-        if (!isAccountValid(account))
+        if (store_name.equals(""))
             fail = 1;
-        else if (!isPasswordValid(password))
+        else if (address.equals(""))
             fail = 2;
-        else if (!password.equals(password_again))
+        else if (contact.equals(""))
             fail = 3;
         else if (!isCellphoneValid(cellphone))
             fail = 4;
         else if (!isEmailValid(email))
             fail = 5;
 
-        if (fail == 1) {
-            dialog_builder.dialogEvent(getResources().getString(R.string.customer_register_error_username),
-                    "normal", null);
-            et_username.setText("");
-        } else if (fail == 2) {
-            dialog_builder.dialogEvent(getResources().getString(R.string.customer_register_error_password),
-                    "normal", null);
-            et_password.setText("");
-            et_password_again.setText("");
-        } else if (fail == 3) {
-            dialog_builder.dialogEvent(getResources().getString(R.string.customer_register_error_password_again),
-                    "normal", null);
-            et_password.setText("");
-            et_password_again.setText("");
-        } else if (fail == 4) {
+        if (fail == 4) {
             dialog_builder.dialogEvent(getResources().getString(R.string.customer_register_error_cellphone),
                     "normal", null);
             et_cellphone_2.setText("");
@@ -185,7 +164,7 @@ public class StoreRegisterActivity extends AppCompatActivity {
         } else if (fail == 5) {
             dialog_builder.dialogEvent(getResources().getString(R.string.store_register_error_email),
                     "normal", null);
-        } else new StoreAPIApply().execute(account, password, store_name, cellphone, email);
+        } else new StoreAPIApply().execute(contact, store_name, cellphone, email);
 
     }
 

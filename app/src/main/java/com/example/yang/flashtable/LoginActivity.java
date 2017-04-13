@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private String preference_account, preference_password;
+    private String preference_account, preference_password, preference_username;
 
     ViewFlipper vf_flipper;
     DialogBuilder dialog_builder;
@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.login_activity);
         // If there is a preferred account (for customer), start main.
-
+/*
         String type = checkPreference();
         if(type != null) {
             if (type.equals("customer"))
@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
             else if (type.equals("store"))
                 startStore();
         }
-
+*/
         initView();
         initData();
     }
@@ -148,8 +148,19 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+
     private boolean isAccountValid(String account) {
         return !account.equals("");
+    }
+
+    private boolean isCustomerAccountValid(String cellphone) {
+        Pattern pattern = Pattern.compile("\\+(9[976]\\d|8[987530]\\d|6[987]\\d|5[90]\\d|42\\d|3[875]\\d|\n" +
+                "2[98654321]\\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|\n" +
+                "4[987654310]|3[9643210]|2[70]|7|1)\n" +
+                "\\W*\\d\\W*\\d\\W*\\d\\W*\\d\\W*\\d\\W*\\d\\W*\\d\\W*\\d\\W*(\\d{1,2})$");
+        Matcher matcher = pattern.matcher(cellphone);
+
+        return (!matcher.find() && !cellphone.equals(""));
     }
 
     private boolean isPasswordValid(String password) {
@@ -198,9 +209,13 @@ public class LoginActivity extends AppCompatActivity {
         String account = customer_et_account.getText().toString();
         String password = customer_et_password.getText().toString();
 
+        String cellphone = "%2B886-" + account.substring(1, 4)
+                + "-" + account.substring(4, 7)
+                + "-" + account.substring(7, 10);
+
         int fail = 0;
 
-        if (!isAccountValid(account)) {
+        if (!isCustomerAccountValid(account)) {
             fail = 1;
         } else if (!isPasswordValid(password)) {
             fail = 2;
@@ -209,9 +224,9 @@ public class LoginActivity extends AppCompatActivity {
         if (fail != 0) {
             dialog_builder.dialogEvent(getResources().getString(R.string.login_error_typo), "normal", null);
         } else {
-            preference_account = account;
+            preference_account = cellphone;
             preference_password = password;
-            new CustomerAPILogin().execute(account, password);
+            new CustomerAPILogin().execute(cellphone, password);
         }
     }
 
@@ -222,6 +237,7 @@ public class LoginActivity extends AppCompatActivity {
                 .putString("type", type)
                 .putString("account", preference_account)
                 .putString("password", preference_password)
+                .putString("username", preference_username)
                 .apply();
     }
 
@@ -252,7 +268,7 @@ public class LoginActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet request = new HttpGet(
-                        "https://flash-table.herokuapp.com/api/sign_in?account=" + params[0] + "&password=" + params[1]);
+                        "https://flash-table.herokuapp.com/api/sign_in?phone_number=" + params[0] + "&password=" + params[1]);
                 request.addHeader("Content-Type", "application/json");
                 HttpResponse response = httpClient.execute(request);
                 ResponseHandler<String> handler = new BasicResponseHandler();
@@ -261,6 +277,18 @@ public class LoginActivity extends AppCompatActivity {
                 status = responseJSON.getString("status_code");
                 if (status.equals("0"))
                     _userID = responseJSON.getString("user_id");
+
+                HttpGet infoRequest = new HttpGet(
+                        "https://flash-table.herokuapp.com/api/user_info?user_id=" + _userID);
+                infoRequest.addHeader("Content-Type", "application/json");
+                HttpResponse infoResponse = httpClient.execute(infoRequest);
+                ResponseHandler<String> infoHandler = new BasicResponseHandler();
+                String infoHttpResponse = infoHandler.handleResponse(infoResponse);
+                JSONObject infoResponseJSON = new JSONObject(infoHttpResponse);
+                status = infoResponseJSON.getString("status_code");
+                if (status.equals("0")) {
+                    preference_username = infoResponseJSON.getString("account");
+                }
 
             } catch (Exception e) {
                 Log.d("GetCode", "Request exception:" + e.getMessage());
@@ -281,7 +309,7 @@ public class LoginActivity extends AppCompatActivity {
                 dialog_builder.dialogEvent(getResources().getString(R.string.login_error_invalid), "normal", null);
             else {
                 Toast.makeText(LoginActivity.this,
-                        getResources().getString(R.string.login_success) + customer_et_account.getText().toString(),  Toast.LENGTH_LONG).show();
+                        getResources().getString(R.string.login_success) + preference_username,  Toast.LENGTH_LONG).show();
                 setLoginPreference(_userID, "customer");
 
                 startCustomer();

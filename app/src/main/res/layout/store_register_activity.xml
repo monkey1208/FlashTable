@@ -34,87 +34,6 @@
                 android:textSize="17sp"
                 android:layout_marginBottom="25dp" />
 
-            <!-- Username -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/store_register_username"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:layout_marginEnd="10dp"/>
-
-                <EditText
-                    android:id="@+id/store_register_et_username"
-                    android:layout_width="fill_parent"
-                    android:layout_height="30dp"
-                    android:background="@drawable/round_rectangle_transparent_white"
-                    android:inputType="textPersonName"
-                    android:textCursorDrawable="@null"
-                    android:maxLines="1"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"/>
-            </LinearLayout>
-
-            <!-- Password -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/store_register_password"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:layout_marginEnd="10dp"/>
-
-                <EditText
-                    android:id="@+id/store_register_et_password"
-                    android:layout_width="fill_parent"
-                    android:layout_height="30dp"
-                    android:background="@drawable/round_rectangle_transparent_white"
-                    android:inputType="textPassword"
-                    android:textCursorDrawable="@null"
-                    android:maxLines="1"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"/>
-            </LinearLayout>
-
-            <!-- Password again -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/store_register_password_again"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:layout_marginEnd="10dp"/>
-
-                <EditText
-                    android:id="@+id/store_register_et_password_again"
-                    android:layout_width="fill_parent"
-                    android:layout_height="30dp"
-                    android:background="@drawable/round_rectangle_transparent_white"
-                    android:inputType="textPassword"
-                    android:textCursorDrawable="@null"
-                    android:maxLines="1"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"/>
-            </LinearLayout>
-
             <!-- Store name -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -229,6 +148,7 @@
                     android:maxLines="1"
                     android:ems="3"
                     android:maxEms="3"
+                    android:maxLength="3"
                     android:layout_marginEnd="5dp"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -248,6 +168,7 @@
                     android:maxLines="1"
                     android:ems="3"
                     android:maxEms="3"
+                    android:maxLength="3"
                     android:layout_marginEnd="5dp"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -267,6 +188,7 @@
                     android:maxLines="1"
                     android:ems="3"
                     android:maxEms="3"
+                    android:maxLength="3"
                     android:layout_marginEnd="5dp"/>
             </LinearLayout>
 
