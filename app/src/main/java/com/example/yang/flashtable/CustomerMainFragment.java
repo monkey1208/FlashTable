@@ -13,11 +13,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -50,6 +52,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -62,11 +66,14 @@ import static android.content.Context.LOCATION_SERVICE;
 
 public class CustomerMainFragment extends Fragment implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
 
+    DialogBuilder dialog_builder;
     View view;
     ViewFlipper vf_flipper;
     Spinner sp_dis, sp_food, sp_sort;
+    String filter_mode = "all";
     ArrayAdapter<CharSequence> dis_adapter, food_adapter, sort_adapter;
     ListView lv_shops;
+    SwipeRefreshLayout swipe_refresh_layout;
     List<CustomerRestaurantInfo> restaurant_list;
     CustomerMainAdapter adapter;
     EditText et_search;
@@ -81,11 +88,12 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     // Textview in restaurant detail
     TextView tv_show_name, tv_show_consumption, tv_show_discount, tv_show_offer, tv_show_location, tv_show_category, tv_show_intro;
 
+    // Location
     final int FINE_LOCATION_CODE = 13;
     LatLng current_location;
     Location my_location;
 
-    ApiPromotion api_promotion;
+    private boolean first_loading = true;
 
     @Nullable
     @Override
@@ -96,6 +104,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         getShopStatus(false);
         initData();
         setSpinner();
+        setRefreshLayout();
         return view;
     }
 
@@ -106,6 +115,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         sp_sort = (Spinner) view.findViewById(R.id.customer_main_sp_sort);
         lv_shops = (ListView) view.findViewById(R.id.customer_main_lv);
         et_search = (EditText) view.findViewById(R.id.customer_main_et_search);
+        swipe_refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.customer_main_srl);
 
         // Views related to show
         sl_restaurant = (SliderLayout) view.findViewById(R.id.customer_main_sl_restaurant);
@@ -124,6 +134,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     private void initData() {
         //restaurant_list = getListFromDB();
         //setListView(restaurant_list);
+        dialog_builder = new DialogBuilder(getActivity());
         et_search.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View view, int key_code, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && key_code == KeyEvent.KEYCODE_ENTER) {
@@ -160,10 +171,17 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     }
 
     private void setListView(List<CustomerRestaurantInfo> res_list) {
+        if(restaurant_list != null)
+            restaurant_list.clear();
+        restaurant_list = res_list;
         System.out.println("set list!");
+        if(adapter != null)
+            adapter.clear();
         adapter = new CustomerMainAdapter(view.getContext(), res_list, current_location);
+        adapter = sortAdapter(adapter, "default");
+        CustomerMainAdapter filted_adapter = filtAdapter(adapter, filter_mode);
         adapter.notifyDataSetChanged();
-        lv_shops.setAdapter(adapter);
+        lv_shops.setAdapter(filted_adapter);
         lv_shops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter_view, View view, int i, long l) {
@@ -171,6 +189,16 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             }
         });
     }
+
+    private void setRefreshLayout(){
+        swipe_refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                gpsPermission();
+            }
+        });
+    }
+
     private void setSpinner(){
         sp_dis.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -193,37 +221,76 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             }
         });
 
-        //sp_food.setOnItemSelectedListener();
+        sp_food.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                CustomerMainAdapter category_adapter = null;
+                switch (i){
+                    case 0:
+                        filter_mode = "all";
+                        category_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(category_adapter);
+                        break;
+                    case 1:
+                        filter_mode = "chinese";
+                        category_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(category_adapter);
+                        adapter.notifyDataSetChanged();
+                        break;
+                    case 2:
+                        filter_mode = "japanese";
+                        category_adapter = filtAdapter(adapter, filter_mode);
+
+                        lv_shops.setAdapter(category_adapter);
+                        adapter.notifyDataSetChanged();
+                        break;
+                    case 3:
+                        filter_mode = "usa";
+                        category_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(category_adapter);
+                        adapter.notifyDataSetChanged();
+                        break;
+                    case 4:
+                        filter_mode = "korean";
+                        category_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(category_adapter);
+                        adapter.notifyDataSetChanged();
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         sp_sort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String sort_mode = "default";
+                CustomerMainAdapter filted_adapter;
                 switch (i){
                     case 0:
                         break;
                     case 1:
                         break;
                     case 2:
-                        adapter.sort(new Comparator<CustomerRestaurantInfo>() {
-                            @Override
-                            public int compare(CustomerRestaurantInfo info1, CustomerRestaurantInfo info2) {
-                                Location l1 = new Location("");
-                                l1.setLatitude(info1.latLng.latitude);
-                                l1.setLongitude(info1.latLng.longitude);
-                                Location l2 = new Location("");
-                                l2.setLatitude(info2.latLng.latitude);
-                                l2.setLongitude(info2.latLng.longitude);
-                                if(my_location.distanceTo(l1)>my_location.distanceTo(l2)) {
-                                    return 1;
-                                }
-                                return -1;
-                            }
-                        });
+                        sort_mode = "distance";
+                        adapter = sortAdapter(adapter, sort_mode);
+                        filted_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(filted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
                     case 3:
+                        sort_mode = "rate";
                         break;
                     case 4:
+                        sort_mode = "discount";
+                        adapter = sortAdapter(adapter, sort_mode);
+                        filted_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(filted_adapter);
+                        adapter.notifyDataSetChanged();
                         break;
                 }
             }
@@ -232,6 +299,87 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+    }
+
+    private CustomerMainAdapter filtAdapter(CustomerMainAdapter filt_adapter, String mode){
+        List<CustomerRestaurantInfo> r_list = new ArrayList<CustomerRestaurantInfo>();
+        switch (mode) {
+            case "chinese":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("中式料理")) {
+                        r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "usa":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("美式料理")) {
+                        r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "japanese":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("日式料理")) {
+                        r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "korean":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("韓式料理")) {
+                        r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            default:
+                return filt_adapter;
+        }
+        return new CustomerMainAdapter(getActivity(), r_list, current_location);
+    }
+
+    private CustomerMainAdapter sortAdapter(CustomerMainAdapter sort_adapter, String mode){
+        switch (mode){
+            case "distance":
+                sort_adapter.sort( new Comparator<CustomerRestaurantInfo>() {
+                    @Override
+                    public int compare(CustomerRestaurantInfo info1, CustomerRestaurantInfo info2) {
+                        Location l1 = new Location("");
+                        l1.setLatitude(info1.latLng.latitude);
+                        l1.setLongitude(info1.latLng.longitude);
+                        Location l2 = new Location("");
+                        l2.setLatitude(info2.latLng.latitude);
+                        l2.setLongitude(info2.latLng.longitude);
+                        if (my_location.distanceTo(l1) > my_location.distanceTo(l2)) {
+                            return 1;
+                        } else {
+                            return -1;
+                        }
+                    }
+                });
+                break;
+            case "discount":
+                sort_adapter.sort(new Comparator<CustomerRestaurantInfo>() {
+                    @Override
+                    public int compare(CustomerRestaurantInfo info1, CustomerRestaurantInfo info2) {
+                        if(info1.discount > info2.discount){
+                            return 1;
+                        }else if(info1.discount < info2.discount){
+                            return -1;
+                        }else {
+                            if(info2.offer.equals("暫無優惠")){
+                                return -1;
+                            }
+                            return 0;
+                        }
+                    }
+                });
+                break;
+            case "default":
+                break;
+
+        }
+        return sort_adapter;
     }
 
     public void getShopStatus(boolean active) {
@@ -260,8 +408,8 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         closeDB();
+        super.onDestroy();
     }
 
     private void showRestaurantDetail(final int position) {
@@ -300,7 +448,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             int point = info.discount % 10;
             int discount = info.discount / 10;
             if (point != 0) {
-                tv_show_discount.setText(discount + point + "折");
+                tv_show_discount.setText(info.discount + "折");
             } else {
                 tv_show_discount.setText(discount + "折");
             }
@@ -312,11 +460,20 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         bt_show_reserve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), CustomerReservationActivity.class);
-                intent.putExtra("promotion_id", info.promotion_id);
-                intent.putExtra("discount", info.discount);
-                intent.putExtra("offer", info.offer);
-                startActivity(intent);
+                dialog_builder.dialogEvent("請選擇人數", "personsPicker",
+                        new DialogEventListener() {
+                            @Override
+                            public void clickEvent(boolean ok, int status) {
+                                if (ok) {
+                                    Intent intent = new Intent(getActivity(), CustomerReservationActivity.class);
+                                    intent.putExtra("promotion_id", info.promotion_id);
+                                    intent.putExtra("discount", info.discount);
+                                    intent.putExtra("offer", info.offer);
+                                    intent.putExtra("persons", status);
+                                    startActivity(intent);
+                                }
+                            }
+                        });
             }
         });
     }
@@ -447,12 +604,16 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     private class ApiPromotion extends AsyncTask<Double, Void, String> {
         HttpClient httpClient = new DefaultHttpClient();
         List<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
-        private ProgressDialog progress_dialog = new ProgressDialog(view.getContext());
+        private ProgressDialog progress_dialog;
         private String status = null;
+
         @Override
         protected void onPreExecute() {
-            progress_dialog.setMessage( "載入中..." );
-            progress_dialog.show();
+            if(first_loading) {
+                progress_dialog = new ProgressDialog(view.getContext());
+                progress_dialog.setMessage("載入中...");
+                progress_dialog.show();
+            }
         }
         @Override
         protected String doInBackground(Double... params) {
@@ -476,7 +637,12 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         @Override
         protected void onPostExecute(String s) {
             setListView(restaurantInfoList);
-            progress_dialog.dismiss();
+            if(first_loading) {
+                progress_dialog.dismiss();
+                first_loading = false;
+            }else{
+                swipe_refresh_layout.setRefreshing(false);
+            }
             super.onPostExecute(s);
 
         }

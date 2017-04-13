@@ -25,6 +25,8 @@ import java.util.List;
 public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
     private Context c;
     private LayoutInflater inflater;
+
+    DialogBuilder dialog_builder;
     ImageView iv_shop;
     TextView tv_shop, tv_price, tv_distance, tv_discount, tv_gift;
     RatingBar rb_rating;
@@ -46,6 +48,7 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
         if(convertView == null) {
             CustomerRestaurantInfo info = getItem(position);
             convertView = inflater.inflate(R.layout.customer_main_item, parent, false);
+            dialog_builder = new DialogBuilder(getContext());
             iv_shop = (ImageView) convertView.findViewById(R.id.customer_main_iv_shop);
             tv_shop = (TextView) convertView.findViewById(R.id.customer_main_tv_name);
             tv_price = (TextView) convertView.findViewById(R.id.customer_main_tv_price);
@@ -91,11 +94,20 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
         ll_reserve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(c, CustomerReservationActivity.class);
-                intent.putExtra("promotion_id", getItem(position).promotion_id);
-                intent.putExtra("discount", getItem(position).discount);
-                intent.putExtra("offer", getItem(position).offer);
-                c.startActivity(intent);
+                dialog_builder.dialogEvent("請選擇人數", "personsPicker",
+                        new DialogEventListener() {
+                            @Override
+                            public void clickEvent(boolean ok, int status) {
+                                if (ok) {
+                                    Intent intent = new Intent(c, CustomerReservationActivity.class);
+                                    intent.putExtra("promotion_id", getItem(position).promotion_id);
+                                    intent.putExtra("discount", getItem(position).discount);
+                                    intent.putExtra("offer", getItem(position).offer);
+                                    intent.putExtra("persons", status);
+                                    c.startActivity(intent);
+                                }
+                            }
+                        });
             }
         });
     }

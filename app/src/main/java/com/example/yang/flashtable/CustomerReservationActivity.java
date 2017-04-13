@@ -72,7 +72,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
     View.OnClickListener cancel_listener, cancel_arrive_listener;
     ImageView iv_qr_code;
 
-
+    int persons;
     int discount;
     String offer;
     String promotion_id;
@@ -99,6 +99,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
             promotion_id = getIntent().getStringExtra("promotion_id");
             discount = getIntent().getIntExtra("discount", 101);
             offer = getIntent().getStringExtra("offer");
+            persons = getIntent().getIntExtra("persons", 1);
             new ApiRequest().execute();
         }else{
             session_id = GetBlockInfo.getSession(this);
@@ -179,10 +180,19 @@ public class CustomerReservationActivity extends AppCompatActivity {
         cancel_arrive_listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                timer.cancel();
-                clearBlockPreference();
-                new ApiCancel("session").execute(session_id);
-                finish();
+
+                new DialogBuilder(CustomerReservationActivity.this).dialogEvent(getString(R.string.dialog_cancel_success_reservation), "withCancel", new DialogEventListener() {
+                    @Override
+                    public void clickEvent(boolean ok, int status) {
+                        if(ok) {
+                            timer.cancel();
+                            clearBlockPreference();
+                            new ApiCancel("session").execute(session_id);
+                            finish();
+                        }
+                    }
+                });
+
             }
         };
         bt_cancel.setOnClickListener(cancel_listener);
@@ -333,7 +343,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
             List<NameValuePair> params = new ArrayList<>();
             System.out.println("userid="+getUserId()+"  promotion_id="+promotion_id);
             params.add(new BasicNameValuePair("user_id", getUserId()));
-            params.add(new BasicNameValuePair("number", "1"));
+            params.add(new BasicNameValuePair("number", Integer.toString(persons)));
             params.add(new BasicNameValuePair("promotion_id", promotion_id));
             String r_id = null;
             try {
