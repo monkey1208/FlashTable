@@ -81,10 +81,8 @@ public class StoreRecentAdapter extends BaseAdapter{
         holder.bt_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StoreMainActivity.apiHandler.postRequestDeny(list.get(position).id,list.get(position).name);
+                new APIHandler().postRequestDeny(list.get(position).id,list.get(position).name);
                 StoreMainActivity.fragmentController.storeRecentFragment.removeItem(position);
-                //TODO: send cancel message
-                //new APIHandler().postRequestDeny(list.get(position).id);
             }
         });
         holder.bt_confirm.setTag(this);

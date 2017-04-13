@@ -38,7 +38,7 @@ import static com.example.yang.flashtable.StoreManageSuccessFragment.tv_total;
 
 public class APIHandler {
     private Handler handler = new Handler();
-    private Context context;
+    //private Context context;
 
     private List<String> requestCache = new ArrayList<>();
     private List<String> deleteList = new ArrayList<>();
@@ -50,9 +50,7 @@ public class APIHandler {
     private boolean stat = false;
     private int sum = 0;
 
-    public APIHandler(Context context){
-        this.context = context;
-    }
+    public APIHandler(){};
 
     public class APIRequestUpdate extends AsyncTask<String, Void, Void>{
         @Override
@@ -186,23 +184,11 @@ public class APIHandler {
             }
         },0,5000);
     }
-    public void killTimer(){
-        timer.cancel();
-    }
     public void postPromotionInactive(){
         new APIpromotion_inactive().execute(Integer.toString(StoreMainActivity.storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
         Log.d("Promotion","Inactivate "+Integer.toString(StoreMainActivity.storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
-        killTimer();
         isActive = false;
         return;
-    }
-    public void handlerPost(final String str){
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(context,str,Toast.LENGTH_SHORT).show();
-            }
-        });
     }
     public void changePromotions(){
         if(!isActive)
@@ -211,7 +197,6 @@ public class APIHandler {
         return;
     }
     public void postRequestDeny(int id,String name){
-        handlerPost(Integer.toString(id));
         new APIrequest_deny().execute(Integer.toString(id));
         deleteList.add(name);
         return;
@@ -226,7 +211,6 @@ public class APIHandler {
         Log.d("Accept",Integer.toString(id));
     }
     private class APIrequest_deny extends AsyncTask<String,Void,Void> {
-        private String result = "-1";
         @Override
         protected Void doInBackground(String... params) {
             try {
@@ -237,8 +221,6 @@ public class APIHandler {
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
                 HttpResponse response = httpClient.execute(post);
                 HttpEntity resEntity = response.getEntity();
-                if(resEntity != null)
-                    result = resEntity.toString();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (ClientProtocolException e) {
@@ -250,7 +232,6 @@ public class APIHandler {
         }
     }
     private class APIrequest_accept extends AsyncTask<String,Void,Void> {
-        private String result = "-1";
         int id = -1;
         @Override
         protected Void doInBackground(String... params) {
@@ -262,10 +243,6 @@ public class APIHandler {
                 param.add(new BasicNameValuePair("request_id",params[0]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
                 JSONObject result =new JSONObject (new BasicResponseHandler().handleResponse(httpClient.execute(post)));
-                /*HttpEntity resEntity = response.getEntity();
-                if(resEntity != null)
-                    result = resEntity.toString();*/
-                //JSONObject object = new JSONObject(result);
                 id = result.getInt("session_id");
             } catch (UnsupportedEncodingException e) {
                 id = -2;

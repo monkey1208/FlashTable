@@ -99,7 +99,7 @@ public class AlertDialogController {
                 Log.d("ChangePromotion",Integer.toString(StoreMainActivity.storeInfo.discountCurrent));
                 Log.d("ChangePromotion",Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
                 StoreMainActivity.fragmentController.storeAppointFragment.startUpdate();
-                StoreMainActivity.apiHandler.changePromotions();
+                new APIHandler().changePromotions();
                 bt_active.setVisibility(View.INVISIBLE);
                 tv_active.setVisibility(View.INVISIBLE);
 
@@ -275,7 +275,7 @@ public class AlertDialogController {
                     case NOTICELIST_APPOINT:
                         //TODO: send FAIL msg
                         Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id));
-                        StoreMainActivity.apiHandler.postSessionDeny(StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id);
+                        new APIHandler().postSessionDeny(StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id);
                         List<Integer> deleteList = new ArrayList<Integer>();
                         deleteList.add(position);
                         Log.e("Appoint Delete",Integer.toString(deleteList.get(0)));
@@ -327,7 +327,7 @@ public class AlertDialogController {
                     case NOTICELIST_APPOINT:
                         //TODO: send FAIL msg
                         Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id));
-                        StoreMainActivity.apiHandler.postSessionDeny( StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id);
+                        new APIHandler().postSessionDeny( StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id);
                         List<Integer> deleteList = new ArrayList<Integer>();
                         deleteList.add(position);
                         Log.e("Appoint Delete",Integer.toString(deleteList.get(0)));
