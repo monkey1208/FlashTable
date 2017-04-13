@@ -12,7 +12,7 @@
     <string name="back">返回</string>
     <string name="search">搜尋</string>
     <string name="discount">折</string>
-    
+
     <!-- Dialog Content strings -->
     <string name="dialog_cancel_success_reservation">商家正在為您安排桌位中\n確定要取消嗎？</string>
 

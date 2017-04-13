@@ -5,7 +5,6 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,23 +18,13 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.RatingBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
-import com.daimajia.slider.library.SliderLayout;
-import com.daimajia.slider.library.SliderTypes.BaseSliderView;
-import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
-import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.http.HttpResponse;
@@ -52,11 +41,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -65,11 +50,10 @@ import static android.content.Context.LOCATION_SERVICE;
  * Created by Yang on 2017/3/23.
  */
 
-public class CustomerMainFragment extends Fragment implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
+public class CustomerMainFragment extends Fragment {
 
     DialogBuilder dialog_builder;
     View view;
-    ViewFlipper vf_flipper;
     Spinner sp_dis, sp_food, sp_sort;
     String filter_mode = "all";
     ArrayAdapter<CharSequence> dis_adapter, food_adapter, sort_adapter;
@@ -77,18 +61,13 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     SwipeRefreshLayout swipe_refresh_layout;
     List<CustomerRestaurantInfo> restaurant_list;
     CustomerMainAdapter adapter;
+    CustomerMainAdapter adjusted_adapter;
     EditText et_search;
     SqlHandler sqlHandler = null;
     LocationManager locationManager;
 
-    // Views for show
-    ImageButton ib_show_back;
-    SliderLayout sl_restaurant;
-    Button bt_show_reserve;
-    RatingBar rb_show_rating;
 
     // Textview in restaurant detail
-    TextView tv_show_name, tv_show_consumption, tv_show_discount, tv_show_offer, tv_show_location, tv_show_category, tv_show_intro;
 
     // Location
     final int FINE_LOCATION_CODE = 13;
@@ -111,7 +90,6 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
     }
 
     private void initView() {
-        vf_flipper = (ViewFlipper) view.findViewById(R.id.customer_main_vf_flipper);
         sp_dis = (Spinner) view.findViewById(R.id.customer_main_sp_distance);
         sp_food = (Spinner) view.findViewById(R.id.customer_main_sp_food);
         sp_sort = (Spinner) view.findViewById(R.id.customer_main_sp_sort);
@@ -119,19 +97,7 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         et_search = (EditText) view.findViewById(R.id.customer_main_et_search);
         swipe_refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.customer_main_srl);
 
-        // Views related to show
-        sl_restaurant = (SliderLayout) view.findViewById(R.id.customer_main_sl_restaurant);
-        ib_show_back = (ImageButton) view.findViewById(R.id.customer_main_ib_show_back);
-        bt_show_reserve = (Button) view.findViewById(R.id.customer_main_bt_show_reserve);
-        rb_show_rating = (RatingBar) view.findViewById(R.id.customer_main_rb_show_rating);
 
-        tv_show_name = (TextView) view.findViewById(R.id.customer_main_tv_show_shop);
-        tv_show_discount = (TextView) view.findViewById(R.id.customer_main_tv_show_discount);
-        tv_show_offer = (TextView) view.findViewById(R.id.customer_main_tv_show_gift);
-        tv_show_consumption = (TextView) view.findViewById(R.id.customer_main_tv_show_price);
-        tv_show_location = (TextView) view.findViewById(R.id.customer_main_tv_show_location);
-        tv_show_category = (TextView) view.findViewById(R.id.customer_main_tv_show_category);
-        tv_show_intro = (TextView) view.findViewById(R.id.customer_main_tv_show_description);
     }
 
     private void initData() {
@@ -163,13 +129,6 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
 
         // TODO: Override back button so that it will return to main if at show
 
-        // Data in show view
-        ib_show_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeRestaurantDetail();
-            }
-        });
 
     }
 
@@ -180,11 +139,13 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         System.out.println("set list!");
         if(adapter != null)
             adapter.clear();
+        if(adjusted_adapter != null)
+            adjusted_adapter.clear();
         adapter = new CustomerMainAdapter(view.getContext(), res_list, current_location);
         adapter = sortAdapter(adapter, "default");
-        CustomerMainAdapter filted_adapter = filtAdapter(adapter, filter_mode);
+        adjusted_adapter = filtAdapter(adapter, filter_mode);
         adapter.notifyDataSetChanged();
-        lv_shops.setAdapter(filted_adapter);
+        lv_shops.setAdapter(adjusted_adapter);
         lv_shops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter_view, View view, int i, long l) {
@@ -227,36 +188,36 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
         sp_food.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                CustomerMainAdapter category_adapter = null;
+                adjusted_adapter = null;
                 switch (i){
                     case 0:
                         filter_mode = "all";
-                        category_adapter = filtAdapter(adapter, filter_mode);
-                        lv_shops.setAdapter(category_adapter);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(adjusted_adapter);
                         break;
                     case 1:
                         filter_mode = "chinese";
-                        category_adapter = filtAdapter(adapter, filter_mode);
-                        lv_shops.setAdapter(category_adapter);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(adjusted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
                     case 2:
                         filter_mode = "japanese";
-                        category_adapter = filtAdapter(adapter, filter_mode);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode);
 
-                        lv_shops.setAdapter(category_adapter);
+                        lv_shops.setAdapter(adjusted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
                     case 3:
                         filter_mode = "usa";
-                        category_adapter = filtAdapter(adapter, filter_mode);
-                        lv_shops.setAdapter(category_adapter);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(adjusted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
                     case 4:
                         filter_mode = "korean";
-                        category_adapter = filtAdapter(adapter, filter_mode);
-                        lv_shops.setAdapter(category_adapter);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(adjusted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
                 }
@@ -272,7 +233,6 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String sort_mode = "default";
-                CustomerMainAdapter filted_adapter;
                 switch (i){
                     case 0:
                         break;
@@ -281,8 +241,8 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                     case 2:
                         sort_mode = "distance";
                         adapter = sortAdapter(adapter, sort_mode);
-                        filted_adapter = filtAdapter(adapter, filter_mode);
-                        lv_shops.setAdapter(filted_adapter);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(adjusted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
                     case 3:
@@ -291,8 +251,8 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
                     case 4:
                         sort_mode = "discount";
                         adapter = sortAdapter(adapter, sort_mode);
-                        filted_adapter = filtAdapter(adapter, filter_mode);
-                        lv_shops.setAdapter(filted_adapter);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(adjusted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
                 }
@@ -417,98 +377,24 @@ public class CustomerMainFragment extends Fragment implements BaseSliderView.OnS
 
     private void showRestaurantDetail(final int position) {
         // TODO: Fix issues - sometimes selected ListView flickers on setDisplayedChild()
-        sl_restaurant.removeAllSliders();
 
-        final CustomerRestaurantInfo info = adapter.getItem(position);
-        vf_flipper.setDisplayedChild(1);
-
-        HashMap<String, Integer> image_map = new HashMap<>();
-        image_map.put("1", R.drawable.slide_1);
-        image_map.put("2", R.drawable.slide_2);
-        image_map.put("3", R.drawable.slide_3);
-
-        for (String name : image_map.keySet()) {
-            // Change DefaultSliderView to TextSliderView if you want text below it
-            DefaultSliderView slider_view = new DefaultSliderView(getActivity().getBaseContext());
-            slider_view
-                    .description(name)
-                    .image(image_map.get(name))
-                    .setScaleType(BaseSliderView.ScaleType.CenterCrop)
-                    .setOnSliderClickListener(this);
-            sl_restaurant.addSlider(slider_view);
-        }
-        sl_restaurant.setPresetTransformer(SliderLayout.Transformer.DepthPage);
-        sl_restaurant.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
-        sl_restaurant.setDuration(4000);
-        sl_restaurant.addOnPageChangeListener(this);
-        sl_restaurant.startAutoCycle();
-
-        tv_show_name.setText(info.name);
-        tv_show_consumption.setText("均消$" + info.consumption);
-        if (info.discount == 101 || info.discount == 100) {
-            tv_show_discount.setText("暫無折扣");
-        } else {
-            int point = info.discount % 10;
-            int discount = info.discount / 10;
-            if (point != 0) {
-                tv_show_discount.setText(info.discount + "折");
-            } else {
-                tv_show_discount.setText(discount + "折");
-            }
-        }
-        tv_show_offer.setText(info.offer);
-        tv_show_location.setText(info.detailInfo.address);
-        tv_show_category.setText(info.category);
-        tv_show_intro.setText(info.detailInfo.intro);
-        rb_show_rating.setRating(info.rating);
-        bt_show_reserve.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog_builder.dialogEvent("請選擇人數", "personsPicker",
-                        new DialogEventListener() {
-                            @Override
-                            public void clickEvent(boolean ok, int status) {
-                                if (ok) {
-                                    Intent intent = new Intent(getActivity(), CustomerReservationActivity.class);
-                                    intent.putExtra("promotion_id", info.promotion_id);
-                                    intent.putExtra("discount", info.discount);
-                                    intent.putExtra("offer", info.offer);
-                                    intent.putExtra("persons", status);
-                                    startActivity(intent);
-                                }
-                            }
-                        });
-            }
-        });
+        final CustomerRestaurantInfo info = adjusted_adapter.getItem(position);
+        CustomerMainShopActivity.ShowInfo showInfo = new CustomerMainShopActivity.ShowInfo(
+                info.name,
+                info.consumption,
+                info.discount,
+                info.offer,
+                info.detailInfo.address,
+                info.category,
+                info.detailInfo.intro,
+                info.rating,
+                info.promotion_id);
+        Intent intent = new Intent(getActivity(), CustomerMainShopActivity.class);
+        intent.putExtra("info", showInfo);
+        startActivity(intent);
     }
 
-    private void closeRestaurantDetail() {
-        vf_flipper.setDisplayedChild(0);
-        sl_restaurant.stopAutoCycle();
-    }
 
-    @Override
-    public void onStop() {
-        sl_restaurant.stopAutoCycle();
-        super.onStop();
-    }
-
-    @Override
-    public void onSliderClick(BaseSliderView slider) {
-        sl_restaurant.moveNextPosition();
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-    }
 
     private void gpsPermission() {
         if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
