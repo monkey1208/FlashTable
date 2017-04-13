@@ -27,15 +27,24 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import me.dm7.barcodescanner.core.DisplayUtils;
 import me.dm7.barcodescanner.core.IViewFinder;
@@ -295,19 +304,21 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
             if(resEntity != null) {
                 JSONObject jsonResponse = new JSONObject(resEntity.toString());
                 if(jsonResponse.getInt("status_code") == 0) {
-                    AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "恭喜掃描成功");
+                    new AlertDialogController().warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "恭喜掃描成功");
                 }else{
-                    AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "掃描失敗，請再試一次");
+                    new AlertDialogController().warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "掃描失敗，請再試一次");
                 }
             }
         } catch (Exception e) {
-            AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "網路連線失敗，請檢查您的網路");
+            new AlertDialogController().warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "網路連線失敗，請檢查您的網路");
             e.printStackTrace();
         }
     }
 
     public class Finish_session extends AsyncTask<String,Void,Void> {
         String status;
+        String record_id;
+        boolean stat = false;
         @Override
         protected Void doInBackground(String... params) {
             try {
@@ -321,9 +332,11 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
                 if(resEntity != null) {
                     String res_string = EntityUtils.toString(resEntity);
                     JSONObject jsonResponse = new JSONObject(res_string);
-
+                    record_id = jsonResponse.getString("record_id");
                     if(jsonResponse.getInt("status_code") == 0) {
                         status = "success";
+                        //TODO:
+                        stat = true;
                     }else{
                         status = "fail";
                     }
@@ -337,21 +350,59 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
 
         @Override
         protected void onPostExecute(Void _params){
+            if(stat)
+                new APIGetRecord().execute(record_id);
             if(status.equals("success")){
-                AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "恭喜掃描成功");
+                new AlertDialogController().warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "恭喜掃描成功");
               //  Fragment userInfoFragment = new UserInfoFragment();
                // getFragmentManager().beginTransaction().add(R.id.store_qrcode_frame, userInfoFragment, "HELLO").commit();
                 //TODO : jump to user page(fragment)
             }else if(status.equals("fail")){
-                AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "掃描失敗，請再試一次");
+                new AlertDialogController().warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "掃描失敗，請再試一次");
             }else if(status.equals("exception")){
-                AlertDialogController.warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "網路連線失敗，請檢查您的網路");
+                new AlertDialogController().warningConfirmDialog(QrcodeScannerActivity.this, "提醒", "網路連線失敗，請檢查您的網路");
             }
             mScannerView.setResultHandler(QrcodeScannerActivity.this);
             mScannerView.startCamera();
         }
     }
+    private class APIGetRecord extends AsyncTask<String,Void,Void>{
+        HttpClient httpClient = new DefaultHttpClient();
+        ReservationInfo info;
+        @Override
+        protected Void doInBackground(String... params) {
+            HttpGet getRecordInfo = new HttpGet("https://flash-table.herokuapp.com/api/record_info?record_id=" + params[0]);
+            JSONObject recordInfo = null;
+            try {
+                recordInfo = new JSONObject(new BasicResponseHandler().handleResponse(httpClient.execute(getRecordInfo)));
+                int num = recordInfo.getInt("number");
+                String is_success = recordInfo.getString("is_succ");
 
+                String time = recordInfo.getString("created_at");
+                DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
+                Date date = df.parse(time);
+                df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.getDefault());
+                time = df.format(date);
+                int user_id = recordInfo.getInt("user_id");
+                HttpGet getUserInfo = new HttpGet("https://flash-table.herokuapp.com/api/user_info?user_id=" + user_id);
+                JSONObject userInfo = new JSONObject(new BasicResponseHandler().handleResponse(httpClient.execute(getUserInfo)));
+                String account = userInfo.getString("account");
+                int point = userInfo.getInt("point");
+                info = new ReservationInfo(account, num, point, time, is_success);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        protected void onPostExecute(Void _params) {
+            StoreManageRecordFragment.list.add(info);
+            StoreManageRecordFragment.adapter.notifyDataSetChanged();
+        }
+    }
 
 
     public static class UserInfoFragment extends Fragment{

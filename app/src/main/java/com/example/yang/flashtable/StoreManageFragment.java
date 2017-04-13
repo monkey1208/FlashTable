@@ -35,7 +35,7 @@ public class StoreManageFragment extends ListFragment {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 //Logout
-                AlertDialogController.warningConfirmDialog(getContext(), "提醒", "資料載入失敗，請重試");
+                new AlertDialogController().warningConfirmDialog(getContext(), "提醒", "資料載入失敗，請重試");
                 Toast.makeText(v.getContext(),"Logout", Toast.LENGTH_SHORT).show();
                 return true;
             }

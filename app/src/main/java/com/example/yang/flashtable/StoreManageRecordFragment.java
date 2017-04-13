@@ -1,5 +1,6 @@
 package com.example.yang.flashtable;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -29,7 +30,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class StoreManageRecordFragment extends ListFragment {
+    SharedPreferences store;
+    String shop_id;
     public static StoreManageRecordAdapter adapter;
     public static List<ReservationInfo> list =  new ArrayList<>();
 
@@ -47,6 +52,7 @@ public class StoreManageRecordFragment extends ListFragment {
         // Inflate the layout for this fragment
         final View v = inflater.inflate(R.layout.store_manage_record_fragment, container, false);
 
+        getStoreInfo();
         new APIRecordDetail().execute();
         adapter = new StoreManageRecordAdapter(getActivity(), list);
         setListAdapter(adapter);
@@ -70,6 +76,7 @@ public class StoreManageRecordFragment extends ListFragment {
                 StoreMainActivity.fragmentController.act(FragmentController.MANAGE);
             }
         });
+
 
 
         return v;
@@ -97,13 +104,17 @@ public class StoreManageRecordFragment extends ListFragment {
         return result;
     }
 
-    public class APIRecordDetail extends AsyncTask<Object, Void, Void> {
-        //List<ReservationInfo> list = new ArrayList<>();
+    private void getStoreInfo() {
+        store = getActivity().getSharedPreferences("USER", MODE_PRIVATE);
+        shop_id = store.getString("userID", "");
+    }
+
+    public class APIRecordDetail extends AsyncTask<String, Void, Void> {
         @Override
-        protected Void doInBackground(Object... params) {
+        protected Void doInBackground(String...params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getRecordsInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ String.valueOf(1));
+                HttpGet getRecordsInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ shop_id);
                 JSONArray recordsInfo = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordsInfo)));
                 for (int i = 1; i < recordsInfo.length(); i++) {
                     JSONObject jsonItem = recordsInfo.getJSONObject(i);
@@ -130,10 +141,10 @@ public class StoreManageRecordFragment extends ListFragment {
                     getActivity().runOnUiThread(new Runnable() {
                         public void run() {
                             StoreManageRecordFragment.list.add(info);
-                            StoreManageRecordFragment.adapter.notifyDataSetChanged();
-                        }
+                    StoreManageRecordFragment.adapter.notifyDataSetChanged();
+                }
 
-                    });
+            });
 
                 }
             } catch (Exception e) {

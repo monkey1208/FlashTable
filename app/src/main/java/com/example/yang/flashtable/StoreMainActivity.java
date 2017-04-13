@@ -1,5 +1,6 @@
 package com.example.yang.flashtable;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +20,7 @@ public class StoreMainActivity extends AppCompatActivity{
     private static final int MANAGE = 3;
 
     public static FragmentController fragmentController;
-    public static AlertDialogController alertDialogController = new AlertDialogController();
+    //public static AlertDialogController alertDialogController = new AlertDialogController();
     public static APIHandler apiHandler;
     private FragmentManager fragmentManager;
 
@@ -41,6 +42,13 @@ public class StoreMainActivity extends AppCompatActivity{
         fragmentController.act(APPOINT);
         fragmentController.act(current_stat);
         init_bt_button();
+        getStoreInfo();
+    }
+
+    private void getStoreInfo() {
+        SharedPreferences store = this.getSharedPreferences("USER", MODE_PRIVATE);
+        String shop_id = store.getString("userID", "");
+        storeInfo.id = shop_id;
     }
 
     private void init_bt_button(){

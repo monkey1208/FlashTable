@@ -118,8 +118,8 @@ public class APIHandler {
         boolean stat = true;
         for(int j=0;j<list.size();j++) {
             String account = list.get(j).name;
-            for (int i = 0; i < StoreMainActivity.fragmentController.storeRecentFragment.recentList.size(); i++) {
-                if (StoreMainActivity.fragmentController.storeRecentFragment.recentList.get(i).name.equals(account)) {
+            for (int i = 0; i < StoreMainActivity.fragmentController.storeRecentFragment.getListSize(); i++) {
+                if (StoreMainActivity.fragmentController.storeRecentFragment.getItem(i).name.equals(account)) {
                     stat = false;
                     break;
                 }
@@ -144,7 +144,7 @@ public class APIHandler {
             if (stat)
                 temp.add(newInfoList.get(j));
         }
-        Log.d("Update","recent: "+Integer.toString(StoreMainActivity.fragmentController.storeRecentFragment.recentList.size())
+        Log.d("Update","recent: "+Integer.toString(StoreMainActivity.fragmentController.storeRecentFragment.getListSize())
                 +" del: "+Integer.toString(deleteList.size())
                 +" session: "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.size()));
         deleteList.clear();
@@ -160,7 +160,7 @@ public class APIHandler {
                 request_id.clear();
                 sum = 0;
                 stat = false;
-                new APIRequestUpdate().execute("1");
+                new APIRequestUpdate().execute(StoreMainActivity.storeInfo.id);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -193,6 +193,7 @@ public class APIHandler {
         new APIpromotion_inactive().execute(Integer.toString(StoreMainActivity.storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
         Log.d("Promotion","Inactivate "+Integer.toString(StoreMainActivity.storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
         killTimer();
+        isActive = false;
         return;
     }
     public void handlerPost(final String str){
@@ -354,15 +355,20 @@ public class APIHandler {
                 param.add(new BasicNameValuePair("description",params[1]));
                 param.add(new BasicNameValuePair("shop_id",params[2]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
-                HttpResponse response = httpClient.execute(post);
-                HttpEntity resEntity = response.getEntity();
+                //HttpResponse response = httpClient.execute(post);
+                JSONObject recordInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(post)));
+                /*HttpEntity resEntity = response.getEntity();
                 if(resEntity != null) {
-                    JSONObject jsonResponse = new JSONObject(resEntity.toString());
-                    if(jsonResponse.getInt("status_code") == 0) {
-                        new_promotion_id = jsonResponse.getInt("promotion_id");
-                    }
-                }
+                    if(recordInfo.getInt("status_code") == 0) {*/
+                new_promotion_id = recordInfo.getInt("promotion_id");
+                Log.d("ChangePromotion",Integer.toString(new_promotion_id));
+                //}
+                } catch (IOException e1) {
+                e1.printStackTrace();
+            } catch (JSONException e1) {
+                e1.printStackTrace();
             } catch (Exception e) {
+                Log.d("ChangePromotion","Exception");
                 e.printStackTrace();
             }
             return null;
@@ -382,7 +388,7 @@ public class APIHandler {
         protected Void doInBackground(Object... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getReservationInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ String.valueOf(1));
+                HttpGet getReservationInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+StoreMainActivity.storeInfo.id);
                 JSONArray reservationInfo = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(getReservationInfo)));
                 total = reservationInfo.length();
                 for (int i = 1; i < reservationInfo.length(); i++) {

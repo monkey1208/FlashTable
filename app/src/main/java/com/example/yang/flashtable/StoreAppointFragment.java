@@ -44,7 +44,7 @@ public class StoreAppointFragment extends ListFragment {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-               new APIgetSessions().execute("1");
+               new APIgetSessions().execute(StoreMainActivity.storeInfo.id);
             }
         },0,10000);
     }

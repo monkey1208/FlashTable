@@ -129,7 +129,7 @@ public class StoreRecentAdapter_v2 extends ArrayAdapter<CustomerAppointInfo> {
                     im_confirmed.setAnimation(animation);
                     animation.setDuration(1000);
                     animation.startNow();*/
-                    FragmentController.storeRecentFragment.removeItem(position);
+                    StoreMainActivity.fragmentController.storeRecentFragment.removeItem(position);
                     synchronized (lstholder){
                         lstholder.remove(this.position);
                         for(int i=this.position;i<lstholder.size();i++)
@@ -158,7 +158,7 @@ public class StoreRecentAdapter_v2 extends ArrayAdapter<CustomerAppointInfo> {
             Animation animation = AnimationUtils.loadAnimation(context,R.anim.store_slide_left2right);
             holder.im_confirmed.setAnimation(animation);*/
             StoreMainActivity.storeInfo.addAppointment(info);
-            FragmentController.storeRecentFragment.removeItem(holder.position);
+            StoreMainActivity.fragmentController.storeRecentFragment.removeItem(holder.position);
             synchronized (lstholder){
                 lstholder.remove(holder.position);
                 for(int i=holder.position;i<lstholder.size();i++)
@@ -180,7 +180,7 @@ public class StoreRecentAdapter_v2 extends ArrayAdapter<CustomerAppointInfo> {
             holder.im_confirmed.setAnimation(animation);
             animation.setDuration(1000);
             animation.startNow();*/
-            FragmentController.storeRecentFragment.removeItem(holder.position);
+            StoreMainActivity.fragmentController.storeRecentFragment.removeItem(holder.position);
             synchronized (lstholder){
                 lstholder.remove(holder.position);
                 for(int i=holder.position;i<lstholder.size();i++)

@@ -64,7 +64,7 @@ public class StoreRecentAdapter extends BaseAdapter{
         final CustomerAppointInfo info = list.get(position);
         Bitmap icon = BitmapFactory.decodeResource(context.getResources(),info.im_id);
         holder.im_photo.setImageBitmap(icon);
-        holder.tv_name.setText(info.name+"("+ Integer.toString(info.honor) +")");
+        holder.tv_name.setText(info.name+"(信譽"+ Integer.toString(info.honor) +")");
         holder.tv_number.setText("正向您即將預約("+info.number+"人)");
         holder.tv_countdown.setTextColor(context.getResources().getColor(R.color.colorPrimary));
         holder.tv_countdown.setText(Integer.toString(info.expireTime));
@@ -75,14 +75,14 @@ public class StoreRecentAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 StoreMainActivity.storeInfo.addAppointment(info);
-                FragmentController.storeRecentFragment.removeItem(position);
+                StoreMainActivity.fragmentController.storeRecentFragment.removeItem(position);
             }
         });
         holder.bt_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 StoreMainActivity.apiHandler.postRequestDeny(list.get(position).id,list.get(position).name);
-                FragmentController.storeRecentFragment.removeItem(position);
+                StoreMainActivity.fragmentController.storeRecentFragment.removeItem(position);
                 //TODO: send cancel message
                 //new APIHandler().postRequestDeny(list.get(position).id);
             }
