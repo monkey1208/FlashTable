@@ -43,7 +43,6 @@ import java.util.TimeZone;
 
 import pl.droidsonroids.gif.GifImageView;
 
-import static com.example.yang.flashtable.StoreMainActivity.fragmentController;
 import static com.example.yang.flashtable.StoreManageOpentimeFragment.tv_time_choose;
 
 public class AlertDialogController {
@@ -88,7 +87,7 @@ public class AlertDialogController {
                 .setView(item)
                 .create();
         setBackground(context);
-
+        alertDialog.setCanceledOnTouchOutside(false);
         ImageButton bt_confirm = (ImageButton)item.findViewById(R.id.bt_confirm);
         bt_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,7 +166,7 @@ public class AlertDialogController {
                 .setView(item)
                 .create();
         setBackground(context);
-
+        alertDialog.setCanceledOnTouchOutside(false);
         final TextView tv_no_discount = (TextView)item.findViewById(R.id.store_add_discount_dialog_tv_no_discount);
         tv_no_discount.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -222,14 +221,14 @@ public class AlertDialogController {
 
     public void warningConfirmDialog(final Context context, String title, String content){
         View item = LayoutInflater.from(context).inflate(R.layout.store_warning_confirm_dialog, null);
-        setTitle(context, title, 18);
+        TextView tv_title = (TextView)item.findViewById(R.id.store_warning_confirm_tv_title);
+        tv_title.setText(title);
 
         alertDialog = new AlertDialog.Builder(context)
-                .setCustomTitle(titleBar)
                 .setView(item)
                 .create();
         setBackground(context);
-
+        alertDialog.setCanceledOnTouchOutside(false);
         TextView tv_content = (TextView)item.findViewById(R.id.store_warning_confirm_tv_content);
         tv_content.setText(content);
         ImageButton bt_confirm = (ImageButton)item.findViewById(R.id.store_warning_confirm_bt_confirm);
@@ -254,6 +253,7 @@ public class AlertDialogController {
                 .setView(view)
                 .create();
         setBackground(context);
+        alertDialog.setCanceledOnTouchOutside(false);
         ListView lv_item = (ListView) view.findViewById(R.id.lv_item);
         final StoreDialogAdapter adapter = new StoreDialogAdapter(context, items);
         lv_item.setAdapter(adapter);
@@ -303,7 +303,7 @@ public class AlertDialogController {
                 .setView(item)
                 .create();
         setBackground(context);
-
+        alertDialog.setCanceledOnTouchOutside(false);
         final TextView tv_content = (TextView)item.findViewById(R.id.store_confirm_cancel_tv_content);
         tv_content.setText(content);
         ImageButton bt_confirm = (ImageButton)item.findViewById(R.id.store_confirm_cancel_bt_confirm);
@@ -359,6 +359,7 @@ public class AlertDialogController {
                 .setView(view)
                 .create();
         setBackground(context);
+        alertDialog.setCanceledOnTouchOutside(false);
         final ListView lv_item = (ListView) view.findViewById(R.id.lv_item);
         final StoreDialogAdapter adapter = new StoreDialogAdapter(context, items);
         lv_item.setAdapter(adapter);
@@ -489,8 +490,6 @@ public class AlertDialogController {
             Toast.makeText(context, "Set alert dialog error", Toast.LENGTH_SHORT).show();
         }
     }
-
-
     /*public static class Finish_session extends AsyncTask<String,Void,Void> {
         int record_id;
         @Override

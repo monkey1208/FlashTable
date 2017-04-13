@@ -31,23 +31,32 @@
 
             <com.example.yang.flashtable.RoundedImageView
                 android:id="@+id/iv_photo"
-                android:layout_width="0dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
                 android:gravity="center_vertical" />
 
             <TextView
                 android:id="@+id/tv_name"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="15dp"
-                android:layout_weight="5"
                 android:gravity="center_vertical"
                 android:text="張庭維"
                 android:textColor="@color/textColor"
                 android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:text=" ( 信譽90 )"
+                android:textColor="@color/textColor"
+                android:textSize="20sp"/>
+
         </LinearLayout>
 
         <LinearLayout
