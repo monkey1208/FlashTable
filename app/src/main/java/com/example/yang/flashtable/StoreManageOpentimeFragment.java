@@ -90,7 +90,7 @@ public class StoreManageOpentimeFragment extends Fragment {
             public void onClick(View v) {
                 tv_time_choose.setBackgroundResource(R.color.btListviewPressColor);
                 List<String> items = Arrays.asList(period_type);
-                StoreMainActivity.alertDialogController.chart_listConfirmDialog(getContext(),"圖表期間選擇", items, AlertDialogController.OPENTIME_CHOOSE, -1);
+                new AlertDialogController().chart_listConfirmDialog(getContext(),"圖表期間選擇", items, AlertDialogController.OPENTIME_CHOOSE, -1);
             }
         });
         context = getContext();

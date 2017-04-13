@@ -109,7 +109,7 @@ public class StoreAppointAdapter extends BaseAdapter{
                     @Override
                     public void onClick(View v) {
                         Log.d("PressButton","Pressed"+Integer.toString(position));
-                        AlertDialogController.confirmCancelDialog(context,"提醒","選擇未見該客戶\n將扣除客戶的信譽分數喔",AlertDialogController.NOTICE1_APPOINT,position);
+                        new AlertDialogController().confirmCancelDialog(context,"提醒","選擇未見該客戶\n將扣除客戶的信譽分數喔",AlertDialogController.NOTICE1_APPOINT,position);
                     }
                 });
             }

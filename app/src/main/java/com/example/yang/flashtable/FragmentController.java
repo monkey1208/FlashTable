@@ -17,10 +17,10 @@ public class FragmentController extends StoreMainActivity{
     public static final int MANAGE_STATISTIC = 8;
     public static final int MANAGE_RECORD = 9;
     public static final int CONFIRM = 10;
-    public static StoreRecentFragment storeRecentFragment;
-    public static StoreHomeFragment storeHomeFragment;
-    public static StoreAppointFragment storeAppointFragment;
-    public static StoreManageFragment storeManageFragment;
+    public StoreRecentFragment storeRecentFragment;
+    public StoreHomeFragment storeHomeFragment;
+    public StoreAppointFragment storeAppointFragment;
+    public StoreManageFragment storeManageFragment;
 
     public Fragment[] fragment;
 
@@ -141,6 +141,5 @@ public class FragmentController extends StoreMainActivity{
                 fragment[select] = new StoreHomeConfirmFragment();
                 break;
         }
-
     }
 }

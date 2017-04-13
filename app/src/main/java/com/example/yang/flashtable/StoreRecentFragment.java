@@ -22,7 +22,7 @@ import java.util.TimerTask;
 public class StoreRecentFragment extends Fragment {
 
     private View v;
-    public static List<CustomerAppointInfo> recentList;
+    private List<CustomerAppointInfo> list;
     private ListView lv_recent;
     private View item_view;
     private int selected;
@@ -38,17 +38,17 @@ public class StoreRecentFragment extends Fragment {
         @Override
         public void run() {
 
-            for(int i=0;i<recentList.size();i++) {
-                if (recentList.get(i).expireTime > 0)
-                    recentList.get(i).expireTime--;
+            for(int i=0;i<list.size();i++) {
+                if (list.get(i).expireTime > 0)
+                    list.get(i).expireTime--;
                 else {
-                    StoreMainActivity.apiHandler.postRequestDeny(recentList.get(i).id,recentList.get(i).name);
-                    recentList.remove(i);
+                    StoreMainActivity.apiHandler.postRequestDeny(list.get(i).id,list.get(i).name);
+                    list.remove(i);
                     i--;
                 }
             }
             for(int i=0;i<waitingList.size();i++)
-                recentList.add(waitingList.get(i));
+                list.add(waitingList.get(i));
             waitingList.clear();
 
             recentAdapter.notifyDataSetChanged();
@@ -79,7 +79,7 @@ public class StoreRecentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //test-------------
-        recentList = new ArrayList<>();
+        list = new ArrayList<>();
         //func_test();
         //init-------------
         v =  inflater.inflate(R.layout.store_recent_fregment, container, false);
@@ -89,7 +89,7 @@ public class StoreRecentFragment extends Fragment {
         waitingList = new ArrayList<>();
         //listview---------
         lv_recent = (ListView) v.findViewById(R.id.lv_recent);
-        recentAdapter = new StoreRecentAdapter(getActivity(),recentList);
+        recentAdapter = new StoreRecentAdapter(getActivity(),list);
         lv_recent.setAdapter(recentAdapter);
         countDown();
         //------------------
@@ -97,7 +97,7 @@ public class StoreRecentFragment extends Fragment {
     }
 
     public CustomerAppointInfo getSelected(){
-        return recentList.get(selected);
+        return list.get(selected);
     }
 
     private void func_test(){
@@ -107,13 +107,13 @@ public class StoreRecentFragment extends Fragment {
         test3.expireTime = test3.expireTime-6;
         test2.expireTime = test2.expireTime-2;
         test1.expireTime = test1.expireTime-6;
-        recentList.add(test1);
-        recentList.add(test2);
-        recentList.add(test3);
+        list.add(test1);
+        list.add(test2);
+        list.add(test3);
     }
     public void removeItem(int position){
         selected = position;
-        recentList.remove(position);
+        list.remove(position);
         recentAdapter.notifyDataSetChanged();
     }
 
@@ -124,5 +124,18 @@ public class StoreRecentFragment extends Fragment {
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+    public void addItem2List(CustomerAppointInfo info){
+        list.add(info);
+        return;
+    }
+    public CustomerAppointInfo getItem(int position){
+        if(list.size()>position)
+            return list.get(position);
+        else
+            return null;
+    }
+    public int getListSize(){
+        return list.size();
     }
 }

@@ -48,9 +48,8 @@ import static com.example.yang.flashtable.StoreManageOpentimeFragment.tv_time_ch
 
 public class AlertDialogController {
 
-    private static AlertDialog alertDialog;
-    public static StoreHomeDiscountDialogAdapter adapter;
-    private static View titleBar;
+    private AlertDialog alertDialog;
+    private View titleBar;
     public static final int NOTICE1_APPOINT = 0;
     public static final int NOTICE2_APPOINT = 1;
     public static final int NOTICELIST_APPOINT = 2;
@@ -60,19 +59,19 @@ public class AlertDialogController {
     public static final int OPENTIME_CHOOSE_DAY = 6;
     public static final int OPENTIME_CHOOSE_WEEK = 7;
     public static final int OPENTIME_CHOOSE_MONTH = 8;
-    public static int listPosition = -1;
-    public static int opentime_choose_result;
-    public static int result = 0;
-    private static boolean first = true;
-    private static final String[] month_to_Chinese = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"};
+    public int listPosition = -1;
+    public int opentime_choose_result;
+    public int result = 0;
+    private boolean first = true;
+    private final String[] month_to_Chinese = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"};
 
 
-    public static void discountDialog(final Context context, final StoreInfo storeInfo, final TextView tv_discount, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind){
+    public AlertDialog discountDialog(final Context context, final StoreInfo storeInfo, final TextView tv_discount, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind){
         //init view---------
         View item = LayoutInflater.from(context).inflate(R.layout.store_discount_list, null);
         //listview adapt----
         ListView lv_discount = (ListView)item.findViewById(R.id.lv_discount);
-        adapter = new StoreHomeDiscountDialogAdapter(context,storeInfo.discountList);
+        final StoreHomeDiscountDialogAdapter adapter = new StoreHomeDiscountDialogAdapter(context,storeInfo.discountList);
         lv_discount.setAdapter(adapter);
         lv_discount.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -98,6 +97,8 @@ public class AlertDialogController {
                 tv_gift.setText(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
                 //TODO: notify server dicount change
                 new APIpromotion_modify().execute(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
+                Log.d("ChangePromotion",Integer.toString(StoreMainActivity.storeInfo.discountCurrent));
+                Log.d("ChangePromotion",Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
                 StoreMainActivity.fragmentController.storeAppointFragment.startUpdate();
                 StoreMainActivity.apiHandler.changePromotions();
                 bt_active.setVisibility(View.INVISIBLE);
@@ -105,7 +106,7 @@ public class AlertDialogController {
 
                 bt_active_gif.setVisibility(View.VISIBLE);
                 bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
-                StoreHomeFragment.tv_active_running.setText("開啟中");
+                StoreMainActivity.fragmentController.storeHomeFragment.setActive();
 
                 bt_active.setEnabled(false);
                 if(first) {
@@ -127,11 +128,11 @@ public class AlertDialogController {
                 alertDialog.dismiss();
             }
         });
-        alertDialog.show();
 
         setDialogSize(context, 0.8, 0.8);
+        return alertDialog;
     }
-    public static class APIpromotion_modify extends AsyncTask<String,Void,Void> {
+    public class APIpromotion_modify extends AsyncTask<String,Void,Void> {
         private String result = "-1";
         @Override
         protected Void doInBackground(String... params) {
@@ -156,7 +157,7 @@ public class AlertDialogController {
         }
     }
 
-    public static void addDiscountDialog(final Context context){
+    public void addDiscountDialog(final Context context){
         //init view---------
         View item = LayoutInflater.from(context).inflate(R.layout.store_add_discount_dialog, null);
         setTitle(context, "折扣優惠", 18);
@@ -201,7 +202,7 @@ public class AlertDialogController {
             public void onClick(View v) {
                 String tv_name = tv_discount_num.getText().toString();
                 String gift_content = et_gift.getText().toString();
-                new APIHandler.Post_promotion().execute(tv_name, gift_content, String.valueOf(1));
+                new APIHandler.Post_promotion().execute(tv_name, gift_content, StoreMainActivity.storeInfo.id);
                 alertDialog.dismiss();
             }
         });
@@ -219,7 +220,7 @@ public class AlertDialogController {
         setDialogSize(context, 0.8, 0.75);
     }
 
-    public static void warningConfirmDialog(final Context context, String title, String content){
+    public void warningConfirmDialog(final Context context, String title, String content){
         View item = LayoutInflater.from(context).inflate(R.layout.store_warning_confirm_dialog, null);
         setTitle(context, title, 18);
 
@@ -244,8 +245,8 @@ public class AlertDialogController {
     }
 
 
-    public static void listConfirmDialog(final Context context, String title, List<String> items, final int mode, final int position){
-        StoreMainActivity.alertDialogController.result = 0;
+    public void listConfirmDialog(final Context context, String title, List<String> items, final int mode, final int position){
+        result = 0;
         View view = LayoutInflater.from(context).inflate(R.layout.store_dialog_list, null);
         setTitle(context, title, 18);
         alertDialog = new AlertDialog.Builder(context)
@@ -259,7 +260,7 @@ public class AlertDialogController {
         lv_item.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                listPosition = position;
+                adapter.setItemClick(position);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -293,7 +294,7 @@ public class AlertDialogController {
     }
 
 
-    public static void confirmCancelDialog(final Context context, String title, String content, final int mode, final int position){
+    public void confirmCancelDialog(final Context context, String title, String content, final int mode, final int position){
         View item = LayoutInflater.from(context).inflate(R.layout.store_confirm_cancel_dialog, null);
         setTitle(context, title, 18);
 
@@ -312,14 +313,14 @@ public class AlertDialogController {
                 alertDialog.dismiss();
                 switch (mode){
                     case NOTICE1_APPOINT:
-                        StoreMainActivity.alertDialogController.confirmCancelDialog(context,"提醒", "選擇店內已無空位\n會影響您的訂位成功率喔",NOTICE2_APPOINT, position);
+                        confirmCancelDialog(context,"提醒", "選擇店內已無空位\n會影響您的訂位成功率喔",NOTICE2_APPOINT, position);
                         break;
                     case NOTICE2_APPOINT:
                         List<String> items = new ArrayList<String>();
                         items.add("未見該客戶");
                         items.add("店內已無空位");
                         Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id));
-                        StoreMainActivity.alertDialogController.listConfirmDialog(context,"取消原因",items,NOTICELIST_APPOINT, position);
+                        listConfirmDialog(context,"取消原因",items,NOTICELIST_APPOINT, position);
                         break;
                     case NOTICELIST_APPOINT:
                         //TODO: send FAIL msg
@@ -349,8 +350,8 @@ public class AlertDialogController {
     }
 
 
-    public static void chart_listConfirmDialog(final Context context, String title, List<String> items, final int mode, final int position){
-        StoreMainActivity.alertDialogController.result = 0;
+    public void chart_listConfirmDialog(final Context context, String title, List<String> items, final int mode, final int position){
+        result = 0;
         View view = LayoutInflater.from(context).inflate(R.layout.store_dialog_list, null);
         setTitle(context, title, 18);
         alertDialog = new AlertDialog.Builder(context)
@@ -364,8 +365,8 @@ public class AlertDialogController {
         lv_item.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                adapter.setItemClick(position);
                 adapter.notifyDataSetChanged();
-                listPosition = position;
                 opentime_choose_result = position+OPENTIME_CHOOSE_DAY;
                 if(mode == OPENTIME_CHOOSE) StoreManageOpentimeFragment.current_state = position;
             }
@@ -405,7 +406,7 @@ public class AlertDialogController {
                                     String endDate = df.format(calendar.getTime());
                                     items.add(startDate+" - "+endDate);
                                 }
-                                StoreMainActivity.alertDialogController.chart_listConfirmDialog(context,"圖表期間選擇",items, OPENTIME_CHOOSE_DETAIL, position);
+                                chart_listConfirmDialog(context,"圖表期間選擇",items, OPENTIME_CHOOSE_DETAIL, position);
                                 break;
                             case OPENTIME_CHOOSE_MONTH:
                                 thisMonth -= 2;
@@ -416,7 +417,7 @@ public class AlertDialogController {
                                 items.add(thisYear+" "+month_to_Chinese[thisMonth]+"月");
                                 items.add((thisMonth==11? thisYear+1: thisYear) +" "+month_to_Chinese[thisMonth==11? 0 : (thisMonth+1)]+"月");
                                 items.add((thisMonth==11? thisYear+1: thisYear) +" "+month_to_Chinese[thisMonth==11? 1 : (thisMonth+2)]+"月");
-                                StoreMainActivity.alertDialogController.chart_listConfirmDialog(context,"圖表期間選擇",items, OPENTIME_CHOOSE_DETAIL, position);
+                                chart_listConfirmDialog(context,"圖表期間選擇",items, OPENTIME_CHOOSE_DETAIL, position);
                                 break;
                         }
                         break;
@@ -462,7 +463,7 @@ public class AlertDialogController {
     //Change dialog size
     //Must be called after alertdialog.show()
     //relativeWidth(Height) is the rate relative to width/height of device screen
-    private static void setDialogSize(Context context, double relativeWidth, double relativeHeight){
+    private void setDialogSize(Context context, double relativeWidth, double relativeHeight){
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -473,7 +474,7 @@ public class AlertDialogController {
         alertDialog.getWindow().setAttributes(lp);
     }
 
-    private static void setTitle(Context context, String title, int fontSize){
+    private void setTitle(Context context, String title, int fontSize){
         titleBar = LayoutInflater.from(context).inflate(R.layout.store_title_bar, null);
         TextView tv_title = (TextView)titleBar.findViewById(R.id.title);
         tv_title.setText(title);
@@ -481,7 +482,7 @@ public class AlertDialogController {
     }
 
     //Should be called after alert dialog created
-    private static void setBackground(Context context){
+    private void setBackground(Context context){
         try {
             alertDialog.getWindow().setBackgroundDrawableResource(R.drawable.store_alert_dialog_bg);
         } catch(NullPointerException e) {
@@ -490,7 +491,7 @@ public class AlertDialogController {
     }
 
 
-    public static class Finish_session extends AsyncTask<String,Void,Void> {
+    /*public static class Finish_session extends AsyncTask<String,Void,Void> {
         int record_id;
         @Override
         protected Void doInBackground(String... params) {
@@ -501,5 +502,5 @@ public class AlertDialogController {
         @Override
         protected void onPostExecute(Void _params){
         }
-    }
+    }*/
 }

@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +40,7 @@ import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
 
 public class StoreHomeFragment extends Fragment {
 
-    private static Context context;
+    private Context context;
     private ImageView im_photo;
     private ImageButton bt_QRcode;
     private TextView tv_storename;
@@ -49,10 +50,11 @@ public class StoreHomeFragment extends Fragment {
     private ImageButton bt_active;
     private GifImageView bt_active_gif;
     private TextView tv_active;
-    public static TextView tv_active_running;
+    private TextView tv_active_running;
     private TextView tv_active_remind;
     private View v;
     private StoreInfo storeInfo;
+    private AlertDialog alertDialog;
 
 
     private static final int SCAN_REQUEST_ZXING_SCANNER = 1;
@@ -79,34 +81,35 @@ public class StoreHomeFragment extends Fragment {
         //TODO: get promotion from server
         //Start Here---------------------
         v = inflater.inflate(R.layout.store_home_fragment, container, false);
-        v.setPadding(0,getStatusBarHeight(),0,0);
+        v.setPadding(0, getStatusBarHeight(), 0, 0);
         //Image---------
-        im_photo = (ImageView)v.findViewById(R.id.im_photo);
-        Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.ic_temp_store);
+        im_photo = (ImageView) v.findViewById(R.id.im_photo);
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_temp_store);
         im_photo.setImageBitmap(icon);
         //--------------
         //TextView init-
-        tv_storename = (TextView)v.findViewById(R.id.tv_storename);
+        tv_storename = (TextView) v.findViewById(R.id.tv_storename);
         tv_storename.setText(storeInfo.name);
-        tv_address = (TextView)v.findViewById(R.id.tv_address);
+        tv_address = (TextView) v.findViewById(R.id.tv_address);
         tv_address.setText(storeInfo.address);
-        tv_discount = (TextView)v.findViewById(R.id.tv_discount);
-        tv_discount.setText(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountDefault).discount)+"折");
-        tv_gift = (TextView)v.findViewById(R.id.tv_gift);
+        tv_discount = (TextView) v.findViewById(R.id.tv_discount);
+        tv_discount.setText(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountDefault).discount) + "折");
+        tv_gift = (TextView) v.findViewById(R.id.tv_gift);
         tv_gift.setText(storeInfo.discountList.get(0).description);
         //--------------
         //立即尋客button
-        bt_active_gif = (GifImageView)v.findViewById(R.id.bt_active_gif);
+        bt_active_gif = (GifImageView) v.findViewById(R.id.bt_active_gif);
         bt_active_gif.setVisibility(View.INVISIBLE);
-        tv_active = (TextView)v.findViewById(R.id.tv_active);
-        tv_active_remind = (TextView)v.findViewById(R.id.tv_active_remind);
-        tv_active_running = (TextView)v.findViewById(R.id.tv_active_running);
-        bt_active = (ImageButton)v.findViewById(R.id.bt_active);
+        tv_active = (TextView) v.findViewById(R.id.tv_active);
+        tv_active_remind = (TextView) v.findViewById(R.id.tv_active_remind);
+        tv_active_running = (TextView) v.findViewById(R.id.tv_active_running);
+        bt_active = (ImageButton) v.findViewById(R.id.bt_active);
         bt_active.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertdialog_active = true;
-                AlertDialogController.discountDialog(getActivity(),storeInfo,tv_discount,tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+                alertDialog = new AlertDialogController().discountDialog(getActivity(), storeInfo, tv_discount, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+                alertDialog.show();
             }
         });
 
@@ -125,7 +128,7 @@ public class StoreHomeFragment extends Fragment {
         });
         //--------------
         //QRcode button-
-        bt_QRcode = (ImageButton)v.findViewById(R.id.bt_QRcode);
+        bt_QRcode = (ImageButton) v.findViewById(R.id.bt_QRcode);
         bt_QRcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,33 +138,26 @@ public class StoreHomeFragment extends Fragment {
                 //StoreMainActivity.fragmentController.act(FragmentController.CONFIRM);
             }
         });
-        new APIpromotion().execute("1");
+        Log.d("NO~~~", StoreMainActivity.storeInfo.id);
+        new APIpromotion().execute(StoreMainActivity.storeInfo.id);
         //--------------
         return v;
-    }
-    public void func_Test(List<StoreDiscountInfo> list){
-        StoreDiscountInfo temp1 = new StoreDiscountInfo(95,"蛋餅");
-        StoreDiscountInfo temp2 = new StoreDiscountInfo(85,"可愛臭臭人",10,false);
-        StoreDiscountInfo temp3 = new StoreDiscountInfo(75,"肥宅臭臭人");
-        list.add(temp1);
-        list.add(temp2);
-        list.add(temp3);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.v(LOG_TAG, "onActivityResult(): requestCode = " + requestCode);
         if (requestCode == SCAN_REQUEST_ZXING_SCANNER) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 String mResult = data.getStringExtra(QrcodeScannerActivity.SCAN_RESULT);
-                Toast.makeText(getContext(),mResult, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), mResult, Toast.LENGTH_SHORT).show();
             }
         } else {
             IntentResult result = IntentIntegrator.parseActivityResult(
                     requestCode, resultCode, data);
-            if(result != null && result.getContents() != null) {
-             //   mResult = result.getContents();
-             //   mTxtResult.setText(mResult);
+            if (result != null && result.getContents() != null) {
+                //   mResult = result.getContents();
+                //   mTxtResult.setText(mResult);
             }
         }
     }
@@ -174,13 +170,15 @@ public class StoreHomeFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), permissions, 2);
         }
     }
-    public class APIpromotion extends AsyncTask<String,Void,Void> {
+
+    public class APIpromotion extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_promotions?shop_id=" + params[0]);
                 JSONArray responsePromotion = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(get)));
+                Log.d("NO~~~", Integer.toString(responsePromotion.length()));
                 for (int i = 1; i < responsePromotion.length(); i++) {
                     int id = responsePromotion.getJSONObject(i).getInt("promotion_id");
                     HttpGet getPromotion = new HttpGet("https://flash-table.herokuapp.com/api/promotion_info?promotion_id=" + Integer.toString(id));
@@ -191,8 +189,10 @@ public class StoreHomeFragment extends Fragment {
                     StoreMainActivity.storeInfo.discountList.add(info);
                 }
             } catch (JSONException e) {
+                Log.d("NO~~~", "JSON");
                 e.printStackTrace();
             } catch (IOException e) {
+                Log.d("NO~~~", "IO");
                 e.printStackTrace();
             } finally {
                 httpClient.getConnectionManager().shutdown();
@@ -202,8 +202,11 @@ public class StoreHomeFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void _params) {
-            if (alertdialog_active)
-                StoreMainActivity.alertDialogController.adapter.notifyDataSetChanged();
+            if (alertdialog_active) {
+                alertDialog.dismiss();
+                alertDialog = new AlertDialogController().discountDialog(getActivity(), storeInfo, tv_discount, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+                alertDialog.show();
+            }
         }
     }
     public int getStatusBarHeight() {
@@ -213,6 +216,11 @@ public class StoreHomeFragment extends Fragment {
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public void setActive() {
+        tv_active_running.setText("開啟中");
+        return;
     }
 
 }

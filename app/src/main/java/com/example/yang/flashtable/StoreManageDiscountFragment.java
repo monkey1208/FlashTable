@@ -70,7 +70,7 @@ public class StoreManageDiscountFragment extends ListFragment {
         LinearLayout add = (LinearLayout)v.findViewById(R.id.store_manage_discount_ll_add);
         add.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                AlertDialogController.addDiscountDialog(getContext());
+                new AlertDialogController().addDiscountDialog(getContext());
             }
         });
         return v;

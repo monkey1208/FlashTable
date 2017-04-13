@@ -8,10 +8,6 @@
     android:clipToPadding="true"
     android:background="@color/textColor">
 
-<FrameLayout
-    android:id="@+id/store_qrcode_frame"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
     <LinearLayout
         android:id="@+id/scanner_fragment"
         android:orientation="vertical"
@@ -56,6 +52,5 @@
         android:textSize="18sp"
         android:textColor="#ffffff" />
 
-</FrameLayout>
 
 </RelativeLayout>

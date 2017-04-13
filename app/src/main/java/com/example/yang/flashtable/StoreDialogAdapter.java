@@ -16,6 +16,7 @@ public class StoreDialogAdapter extends BaseAdapter{
     public List<String> list = new ArrayList<>();
     public Context context;
     public LayoutInflater inflater;
+    private int listPosition;
 
     public StoreDialogAdapter(Context context, List<String> items){
         this.list = items;
@@ -42,8 +43,12 @@ public class StoreDialogAdapter extends BaseAdapter{
         convertView = inflater.inflate(R.layout.store_dialog_item,null);
         TextView tv_item = (TextView) convertView.findViewById(R.id.tv_content);
         tv_item.setText(list.get(position));
-        if(position == StoreMainActivity.alertDialogController.listPosition)
+        if(position == listPosition)
             tv_item.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
         return convertView;
+    }
+    public void setItemClick(int position){
+        listPosition = position;
+        return;
     }
 }
