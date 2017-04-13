@@ -177,6 +177,7 @@ public class APIHandler {
                         checkListBeforeShow(newInfoList);
                         //handlerPost("get "+Integer.toString(newInfoList.size())+" new info del: "+Integer.toString(deleteList.size()));
                         //for(int i=0;i<deleteList.size();i++)
+
                         Log.d("Update","get "+Integer.toString(newInfoList.size())+" new info");
                         StoreMainActivity.fragmentController.storeRecentFragment.addRequest2List(newInfoList);
                     }
