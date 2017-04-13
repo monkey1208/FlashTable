@@ -274,10 +274,12 @@ public class AlertDialogController {
                 switch (mode){
                     case NOTICELIST_APPOINT:
                         //TODO: send FAIL msg
-                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id));
-                        StoreMainActivity.apiHandler.postSessionDeny( StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id);
-                        StoreMainActivity.fragmentController.storeAppointFragment.appointList.remove(position);
-                        StoreMainActivity.fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
+                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id));
+                        StoreMainActivity.apiHandler.postSessionDeny(StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id);
+                        List<Integer> deleteList = new ArrayList<Integer>();
+                        deleteList.add(position);
+                        Log.e("Appoint Delete",Integer.toString(deleteList.get(0)));
+                        StoreMainActivity.fragmentController.storeAppointFragment.removeItem(deleteList);
                         break;
                 }
             }
@@ -319,15 +321,17 @@ public class AlertDialogController {
                         List<String> items = new ArrayList<String>();
                         items.add("未見該客戶");
                         items.add("店內已無空位");
-                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id));
+                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id));
                         listConfirmDialog(context,"取消原因",items,NOTICELIST_APPOINT, position);
                         break;
                     case NOTICELIST_APPOINT:
                         //TODO: send FAIL msg
-                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id));
-                        StoreMainActivity.apiHandler.postSessionDeny( StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(position).id);
-                        StoreMainActivity.fragmentController.storeAppointFragment.appointList.remove(position);
-                        StoreMainActivity.fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
+                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id));
+                        StoreMainActivity.apiHandler.postSessionDeny( StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id);
+                        List<Integer> deleteList = new ArrayList<Integer>();
+                        deleteList.add(position);
+                        Log.e("Appoint Delete",Integer.toString(deleteList.get(0)));
+                        StoreMainActivity.fragmentController.storeAppointFragment.removeItem(deleteList);
                         break;
                 }
             }

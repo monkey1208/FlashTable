@@ -133,8 +133,8 @@ public class APIHandler {
                 }
             }
             if(stat){
-                for (int i = 0; i < StoreMainActivity.fragmentController.storeAppointFragment.appointList.size(); i++) {
-                    if (StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(i).name.equals(account)) {
+                for (int i = 0; i < StoreMainActivity.fragmentController.storeAppointFragment.getSize(); i++) {
+                    if (StoreMainActivity.fragmentController.storeAppointFragment.getItem(i).name.equals(account)) {
                         stat = false;
                         break;
                     }
@@ -146,7 +146,7 @@ public class APIHandler {
         }
         Log.d("Update","recent: "+Integer.toString(StoreMainActivity.fragmentController.storeRecentFragment.getListSize())
                 +" del: "+Integer.toString(deleteList.size())
-                +" session: "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.size()));
+                +" session: "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.getSize()));
         deleteList.clear();
         newInfoList = temp;
         return;
@@ -219,8 +219,7 @@ public class APIHandler {
     public void postSession(CustomerAppointInfo cinfo){
         ReservationInfo info = new ReservationInfo(cinfo.name,cinfo.number,System.currentTimeMillis());
         new APIrequest_accept().execute(Integer.toString(cinfo.id));
-        StoreMainActivity.fragmentController.storeAppointFragment.appointList.add(info);
-        StoreMainActivity.fragmentController.storeAppointFragment.adapter.notifyDataSetChanged();
+        StoreMainActivity.fragmentController.storeAppointFragment.addItem(info);
     }
     public void postSessionDeny(int id){
         new APIsession_cancel().execute(Integer.toString(id));
@@ -284,8 +283,8 @@ public class APIHandler {
             return null;
         }
         protected void onPostExecute(Void _params) {
-            StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(StoreMainActivity.fragmentController.storeAppointFragment.appointList.size()-1).id = id;
-            Log.d("Accept","Done getting "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.appointList.get(StoreMainActivity.fragmentController.storeAppointFragment.appointList.size()-1).id));
+            StoreMainActivity.fragmentController.storeAppointFragment.getItem(StoreMainActivity.fragmentController.storeAppointFragment.getSize()-1).id = id;
+            Log.d("Accept","Done getting "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.getItem(StoreMainActivity.fragmentController.storeAppointFragment.getSize()-1).id));
         }
     }
     private class APIsession_cancel extends AsyncTask<String,Void,Void> {

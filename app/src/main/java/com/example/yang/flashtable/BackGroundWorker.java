@@ -76,7 +76,7 @@ public class BackGroundWorker {
             int honor = userInfo.getInt("point");
             String account = userInfo.getString("account");
             CustomerAppointInfo newInfo = new CustomerAppointInfo(id,account,honor,number);
-           // newInfoList.add(newInfo);
+           //newInfoList.add(newInfo);
 
         } catch (JSONException e) {
             e.printStackTrace();

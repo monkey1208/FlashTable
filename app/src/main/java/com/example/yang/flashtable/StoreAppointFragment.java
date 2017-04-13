@@ -27,8 +27,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class StoreAppointFragment extends ListFragment {
-    public static List<ReservationInfo> appointList = new ArrayList<>();
-    public static StoreAppointAdapter adapter;
+    private List<ReservationInfo> list = new ArrayList<>();
+    private StoreAppointAdapter adapter;
     private List<Integer> updateList = new ArrayList<>();
     private List<Integer> deleteList = new ArrayList<>();
     private Timer timer;
@@ -61,7 +61,7 @@ public class StoreAppointFragment extends ListFragment {
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.store_appoint_fragment, container, false);
         //appointList = get_reservation_info();
-        adapter = new StoreAppointAdapter(getContext(), appointList);
+        adapter = new StoreAppointAdapter(getContext(), list);
         setListAdapter(adapter);
         Toolbar bar = (Toolbar)v.findViewById(R.id.shop_toolbar);
         bar.setPadding(0,getStatusBarHeight(), 0,0);
@@ -129,8 +129,8 @@ public class StoreAppointFragment extends ListFragment {
                 result += Integer.toString(updateList.get(i))+" ";
             }
             result+="\nLocal: ";
-            for(int i=0;i<appointList.size();i++) {
-                result += Integer.toString(appointList.get(i).id)+" ";
+            for(int i=0;i<list.size();i++) {
+                result += Integer.toString(list.get(i).id)+" ";
             }
             /*for(int i=0;i<appointList.size();i++){
                 if(appointList.get(i).id!=-1) {
@@ -151,10 +151,32 @@ public class StoreAppointFragment extends ListFragment {
             result+= "\nDelete: ";
             for(int i=0;i<deleteList.size();i++){
                 result+=deleteList.get(i);
-                appointList.remove(deleteList.get(i));
+                list.remove(deleteList.get(i));
             }
             adapter.notifyDataSetChanged();
             Log.d("Session",result);
         }
+    }
+    public ReservationInfo getItem(int position){
+        if(list.size()>position)
+            return list.get(position);
+        else
+            return null;
+    }
+    public int addItem(ReservationInfo info){
+        list.add(info);
+        adapter.notifyDataSetChanged();
+        return 0;
+    }
+    public int removeItem(List<Integer> delete){
+        Collections.reverse(delete);
+        for(int i=0;i<delete.size();i++)
+            list.remove(delete.get(i).intValue());
+
+        adapter.notifyDataSetChanged();
+        return 0;
+    }
+    public int getSize(){
+        return list.size();
     }
 }
