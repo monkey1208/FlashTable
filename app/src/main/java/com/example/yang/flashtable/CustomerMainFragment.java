@@ -127,9 +127,6 @@ public class CustomerMainFragment extends Fragment {
         sort_adapter.setDropDownViewResource(R.layout.customer_main_spinner_dropdown_item);
         sp_sort.setAdapter(sort_adapter);
 
-        // TODO: Override back button so that it will return to main if at show
-
-
     }
 
     private void setListView(List<CustomerRestaurantInfo> res_list) {
@@ -376,7 +373,6 @@ public class CustomerMainFragment extends Fragment {
     }
 
     private void showRestaurantDetail(final int position) {
-        // TODO: Fix issues - sometimes selected ListView flickers on setDisplayedChild()
 
         final CustomerRestaurantInfo info = adjusted_adapter.getItem(position);
         CustomerMainShopActivity.ShowInfo showInfo = new CustomerMainShopActivity.ShowInfo(
@@ -391,6 +387,7 @@ public class CustomerMainFragment extends Fragment {
                 info.promotion_id);
         Intent intent = new Intent(getActivity(), CustomerMainShopActivity.class);
         intent.putExtra("info", showInfo);
+        intent.putExtra("shop_id", Integer.toString(info.id));
         startActivity(intent);
     }
 
@@ -515,6 +512,7 @@ public class CustomerMainFragment extends Fragment {
             List<Description> list = getPromotionId(latlng);
             for(int i = 0; i < list.size(); i++) {
                 CustomerRestaurantInfo info = sqlHandler.getDetail(list.get(i).shop_id);
+                info.id = list.get(i).shop_id;
                 info.discount = list.get(i).discount;
                 info.offer = list.get(i).offer;
                 info.promotion_id = list.get(i).promotion_id;
