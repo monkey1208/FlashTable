@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,21 +97,19 @@ public class StoreManageRecordFragment extends ListFragment {
     }
 
     public class APIRecordDetail extends AsyncTask<Object, Void, Void> {
-        //List<ReservationInfo> list = new ArrayList<>();
+        List<ReservationInfo> list = new ArrayList<>();
         @Override
         protected Void doInBackground(Object... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getRecordsInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ String.valueOf(1));
+                HttpGet getRecordsInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ String.valueOf(1)+"&verbose=1");
                 JSONArray recordsInfo = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordsInfo)));
                 for (int i = 1; i < recordsInfo.length(); i++) {
-                    JSONObject jsonItem = recordsInfo.getJSONObject(i);
-                    int record_id = jsonItem.getInt("record_id");
-                    Log.e("QQ", String.valueOf(record_id));
-                    HttpGet getRecordInfo = new HttpGet("https://flash-table.herokuapp.com/api/record_info?record_id="+record_id);
-                    JSONObject recordInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordInfo)));
+                    JSONObject recordInfo = recordsInfo.getJSONObject(i);
                     int num = recordInfo.getInt("number");
                     String is_success = recordInfo.getString("is_succ");
+                    String account = recordInfo.getString("user_account");
+                    int point = recordInfo.getInt("user_point");
 
                     String time = recordInfo.getString("created_at");
                     DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
@@ -120,29 +117,26 @@ public class StoreManageRecordFragment extends ListFragment {
                     df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.getDefault());
                     time = df.format(date);
 
-                    int user_id = recordInfo.getInt("user_id");
-                    HttpGet getUserInfo = new HttpGet("https://flash-table.herokuapp.com/api/user_info?user_id="+user_id);
-                    JSONObject userInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getUserInfo)));
-                    String account = userInfo.getString("account");
-                    int point = userInfo.getInt("point");
                     final ReservationInfo info = new ReservationInfo(account, num, point, time, is_success);
+                    StoreManageRecordFragment.list.add(info);
                    // list.add(info);
-                    getActivity().runOnUiThread(new Runnable() {
+                 /*   getActivity().runOnUiThread(new Runnable() {
                         public void run() {
                             StoreManageRecordFragment.list.add(info);
                             StoreManageRecordFragment.adapter.notifyDataSetChanged();
                         }
-
-                    });
+                    });*/
 
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+
             }
             return null;
         }
         @Override
         protected void onPostExecute(Void _params){
+            StoreManageRecordFragment.adapter.notifyDataSetChanged();
         }
     }
 }
