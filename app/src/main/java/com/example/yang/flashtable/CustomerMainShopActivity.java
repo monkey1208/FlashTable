@@ -50,8 +50,6 @@ public class CustomerMainShopActivity extends AppCompatActivity implements BaseS
 
     private void getInfo(){
         info = (ShowInfo) getIntent().getSerializableExtra("info");
-        shop_id = getIntent().getStringExtra("shop_id");
-        Toast.makeText(getBaseContext(), shop_id, Toast.LENGTH_LONG).show();
     }
 
     private void initView() {
@@ -83,6 +81,8 @@ public class CustomerMainShopActivity extends AppCompatActivity implements BaseS
                 finish();
             }
         });
+
+        shop_id = getIntent().getStringExtra("shop_id");
 
         ll_comments.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +136,7 @@ public class CustomerMainShopActivity extends AppCompatActivity implements BaseS
         tv_show_category.setText(info.category);
         tv_show_intro.setText(info.intro);
         rb_show_rating.setRating(info.rating);
+        rb_show_rating.setIsIndicator(true);
         bt_show_reserve.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,6 +150,10 @@ public class CustomerMainShopActivity extends AppCompatActivity implements BaseS
                                     intent.putExtra("discount", info.discount);
                                     intent.putExtra("offer", info.offer);
                                     intent.putExtra("persons", status);
+                                    intent.putExtra("shop_name", info.name);
+                                    intent.putExtra("rating", Float.toString(info.rating));
+                                    intent.putExtra("shop_location", info.address);
+                                    intent.putExtra("shop_id", shop_id);
                                     startActivity(intent);
                                 }
                             }

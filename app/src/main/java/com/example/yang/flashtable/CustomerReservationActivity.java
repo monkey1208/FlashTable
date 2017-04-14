@@ -79,6 +79,9 @@ public class CustomerReservationActivity extends AppCompatActivity {
     String request_id;
     String session_id = null;
 
+    String shop_name, shop_location, shop_id;
+    float rating;
+
     CountDownTimer timer;
 
     boolean request_flag = true;//true means no request
@@ -95,23 +98,6 @@ public class CustomerReservationActivity extends AppCompatActivity {
         setContentView(R.layout.customer_reservation_activity);
         initView();
         initData();
-        if(!GetBlockInfo.getBlockStatus(this)) {
-            promotion_id = getIntent().getStringExtra("promotion_id");
-            discount = getIntent().getIntExtra("discount", 101);
-            offer = getIntent().getStringExtra("offer");
-            persons = getIntent().getIntExtra("persons", 1);
-            new ApiRequest().execute();
-        }else{
-            session_id = GetBlockInfo.getSession(this);
-            discount = GetBlockInfo.getDiscount(this);
-            offer = GetBlockInfo.getOffer(this);
-            long time = GetBlockInfo.getTime(this);
-            long remain_time = 15*60000+time-Calendar.getInstance().getTimeInMillis();
-            if(remain_time<0){
-                remain_time = 0;
-            }
-            reservationAccepted((int)remain_time);
-        }
 
     }
     public static class GetBlockInfo{
@@ -204,6 +190,33 @@ public class CustomerReservationActivity extends AppCompatActivity {
         };
         bt_cancel.setOnClickListener(cancel_listener);
         bt_arrive_cancel.setOnClickListener(cancel_arrive_listener);
+
+        shop_name = getIntent().getStringExtra("shop_name");
+        rating = Float.parseFloat(getIntent().getStringExtra("rating"));
+        tv_shop.setText(shop_name);
+        rb_shop.setRating(rating);
+        rb_shop.setIsIndicator(true);
+
+        if(!GetBlockInfo.getBlockStatus(this)) {
+            promotion_id = getIntent().getStringExtra("promotion_id");
+            discount = getIntent().getIntExtra("discount", 101);
+            offer = getIntent().getStringExtra("offer");
+            persons = getIntent().getIntExtra("persons", 1);
+            new ApiRequest().execute();
+        } else {
+            session_id = GetBlockInfo.getSession(this);
+            discount = GetBlockInfo.getDiscount(this);
+            offer = GetBlockInfo.getOffer(this);
+            long time = GetBlockInfo.getTime(this);
+            long remain_time = 15*60000+time-Calendar.getInstance().getTimeInMillis();
+            if(remain_time<0){
+                remain_time = 0;
+            }
+            reservationAccepted((int)remain_time);
+        }
+
+        shop_location = getIntent().getStringExtra("shop_location");
+        shop_id = getIntent().getStringExtra("shop_id");
     }
 
     @Override
@@ -252,6 +265,9 @@ public class CustomerReservationActivity extends AppCompatActivity {
         clearBlockPreference();
         timer.cancel();
         Intent intent = new Intent(CustomerReservationActivity.this, CustomerRatingActivity.class);
+        intent.putExtra("shop", shop_name);
+        intent.putExtra("shop_location", "");
+        intent.putExtra("shop_id", 0);
         startActivity(intent);
         CustomerReservationActivity.this.finish();
     }

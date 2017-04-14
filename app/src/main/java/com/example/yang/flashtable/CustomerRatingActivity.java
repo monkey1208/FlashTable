@@ -90,10 +90,13 @@ public class CustomerRatingActivity extends AppCompatActivity {
             dialog_builder.dialogEvent(getResources().getString(R.string.customer_comments_error_no_rating),
                     "normal", null);
         }
-        else
-            new CustomerAPINewComment().execute(et_content.getText().toString(),
-                Integer.toString((int) (rb_rating.getRating() * 2)),
-                user_id, shop_id);
+        else {
+            String content = et_content.getText().toString();
+            content = content.replace("\n", "%0D%0A");
+            new CustomerAPINewComment().execute(content,
+                    Integer.toString((int) (rb_rating.getRating() * 2)),
+                    user_id, shop_id);
+        }
     }
 
     private void getUserInfo() {

@@ -81,10 +81,7 @@ public class CustomerCommentActivity extends AppCompatActivity {
         comment_adapter = new CustomerCommentAdapter(CustomerCommentActivity.this, comments);
         lv_comments.setAdapter(comment_adapter);
         if (mode.equals("user")) new APIUserComments().execute(userID);
-        else if (mode.equals("shop")) {
-            new APIShopComments().execute(shopID);
-            Toast.makeText(getBaseContext(), shopID, Toast.LENGTH_LONG).show();
-        }
+        else if (mode.equals("shop")) new APIShopComments().execute(shopID);
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
