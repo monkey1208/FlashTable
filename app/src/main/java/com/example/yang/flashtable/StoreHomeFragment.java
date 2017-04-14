@@ -11,10 +11,12 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +34,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -55,6 +56,7 @@ public class StoreHomeFragment extends Fragment {
     private View v;
     private StoreInfo storeInfo;
     private AlertDialog alertDialog;
+    private BackGroundWorker worker = new BackGroundWorker(getContext());
 
 
     private static final int SCAN_REQUEST_ZXING_SCANNER = 1;
@@ -108,8 +110,9 @@ public class StoreHomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 alertdialog_active = true;
-                alertDialog = new AlertDialogController().discountDialog(getActivity(), storeInfo, tv_discount, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+                alertDialog = new AlertDialogController().discountDialog(getContext(), storeInfo, tv_discount, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
                 alertDialog.show();
+                setDialogSize();
             }
         });
 
@@ -122,11 +125,8 @@ public class StoreHomeFragment extends Fragment {
                 bt_active.setEnabled(true);
                 bt_active_gif.setVisibility(View.INVISIBLE);
                 bt_active_gif.setEnabled(false);
-                Log.e("GIF","Before post to server");
                 new APIHandler().postPromotionInactive();
-                Log.e("GIF","After post to server");
-                StoreMainActivity.fragmentController.storeAppointFragment.stopTimer();
-                Log.e("GIF","Stop timer");
+                stopUpdate();
             }
         });
         //--------------
@@ -141,7 +141,6 @@ public class StoreHomeFragment extends Fragment {
                 //StoreMainActivity.fragmentController.act(FragmentController.CONFIRM);
             }
         });
-        Log.d("NO~~~", StoreMainActivity.storeInfo.id);
         new APIpromotion().execute(StoreMainActivity.storeInfo.id);
         //--------------
         return v;
@@ -188,14 +187,13 @@ public class StoreHomeFragment extends Fragment {
                     JSONObject promotion = new JSONObject(new BasicResponseHandler().handleResponse(httpClient.execute(getPromotion)));
                     int discount = promotion.getInt("name");
                     String description = promotion.getString("description");
-                    StoreDiscountInfo info = new StoreDiscountInfo(id, discount, description);
+                    int count = promotion.getInt("n_succ");
+                    StoreDiscountInfo info = new StoreDiscountInfo(id, discount, description, count);
                     StoreMainActivity.storeInfo.discountList.add(info);
                 }
             } catch (JSONException e) {
-                Log.d("NO~~~", "JSON");
                 e.printStackTrace();
             } catch (IOException e) {
-                Log.d("NO~~~", "IO");
                 e.printStackTrace();
             } finally {
                 httpClient.getConnectionManager().shutdown();
@@ -207,8 +205,9 @@ public class StoreHomeFragment extends Fragment {
         protected void onPostExecute(Void _params) {
             if (alertdialog_active) {
                 alertDialog.dismiss();
-                alertDialog = new AlertDialogController().discountDialog(getActivity(), storeInfo, tv_discount, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+                alertDialog = new AlertDialogController().discountDialog(getContext(), storeInfo, tv_discount, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
                 alertDialog.show();
+                setDialogSize();
             }
         }
     }
@@ -224,6 +223,33 @@ public class StoreHomeFragment extends Fragment {
     public void setActive() {
         tv_active_running.setText("開啟中");
         return;
+    }
+    public void startUpdate(){
+        worker.updateRequestList();
+        return;
+    }
+    public void stopUpdate(){
+        worker.killTimer();
+        return;
+    }
+    public void stopGIF(){
+        bt_active_gif.setImageResource(0);
+        return;
+    }
+    public void startGIF(){
+        bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
+        return;
+    }
+
+    private void setDialogSize(){
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int displayWidth = dm.widthPixels;
+        int displayHeight = dm.heightPixels;
+        lp.width = (int) (displayWidth * 0.8);
+        lp.height = (int) (displayHeight * 0.8);
+        alertDialog.getWindow().setAttributes(lp);
     }
 
 }

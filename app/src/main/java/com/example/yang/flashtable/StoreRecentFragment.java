@@ -23,53 +23,51 @@ public class StoreRecentFragment extends Fragment {
 
     private View v;
     private List<CustomerAppointInfo> list;
+    private int requestIDupper = -1;
+
     private ListView lv_recent;
     private View item_view;
     private int selected;
-    private StoreRecentAdapter recentAdapter;
+    private StoreRecentAdapter adapter;
     private List<CustomerAppointInfo> waitingList = new ArrayList<>();
-    private List<Integer> deleteList = new ArrayList<>();
-    private int size;
-    private boolean active=true;
     public int test = 10;
     private Timer timer = new Timer();
     private Handler handler = new Handler();
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-
-            for(int i=0;i<list.size();i++) {
-                if (list.get(i).expireTime > 0)
-                    list.get(i).expireTime--;
-                else {
-                    new APIHandler().postRequestDeny(list.get(i).id,list.get(i).name);
-                    list.remove(i);
-                    i--;
-                }
-            }
-            for(int i=0;i<waitingList.size();i++)
-                list.add(waitingList.get(i));
-            waitingList.clear();
-
-            recentAdapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
         }
     };
     private void countDown(){
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                handler.post(runnable);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (list) {
+                            for (int i = 0; i < list.size(); i++) {
+                                if (list.get(i).expireTime > 0)
+                                    list.get(i).expireTime--;
+                                else {
+                                    new APIHandler().postRequestDeny(list.get(i).id, list.get(i).name);
+                                    list.remove(i);
+                                    i--;
+                                }
+                            }
+                            for (int i = 0; i < waitingList.size(); i++)
+                                list.add(waitingList.get(i));
+                            waitingList.clear();
+                        }
+                        handler.post(runnable);
+                    }
+                }).start();
             }
         },0,1000);
     }
     public StoreRecentFragment() {}
 
-    public void addRequest2List(final List<CustomerAppointInfo> list){
-        waitingList.clear();
-        for(int i=0;i<list.size();i++)
-            waitingList.add(list.get(i));
-        return;
-    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,8 +87,8 @@ public class StoreRecentFragment extends Fragment {
         waitingList = new ArrayList<>();
         //listview---------
         lv_recent = (ListView) v.findViewById(R.id.lv_recent);
-        recentAdapter = new StoreRecentAdapter(getActivity(),list);
-        lv_recent.setAdapter(recentAdapter);
+        adapter = new StoreRecentAdapter(getActivity(),list);
+        lv_recent.setAdapter(adapter);
         countDown();
         //------------------
         return v;
@@ -101,20 +99,30 @@ public class StoreRecentFragment extends Fragment {
     }
 
     private void func_test(){
-        CustomerAppointInfo test1 = new CustomerAppointInfo("張庭維",100,10,R.drawable.ic_temp_user1);
-        CustomerAppointInfo test2 = new CustomerAppointInfo("李承軒",0,1,R.drawable.ic_temp_user2);
-        CustomerAppointInfo test3 = new CustomerAppointInfo("陳奕先",10,90,R.drawable.ic_temp_user1);
-        test3.expireTime = test3.expireTime-6;
-        test2.expireTime = test2.expireTime-2;
-        test1.expireTime = test1.expireTime-6;
+        CustomerAppointInfo test1 = new CustomerAppointInfo(1,"張庭維",10,R.drawable.ic_temp_user1);
+        CustomerAppointInfo test2 = new CustomerAppointInfo(2,"李承軒",1,R.drawable.ic_temp_user2);
+        CustomerAppointInfo test3 = new CustomerAppointInfo(3,"陳奕先",90,R.drawable.ic_temp_user1);
+        CustomerAppointInfo test4 = new CustomerAppointInfo(1,"張庭維",10,R.drawable.ic_temp_user1);
+        CustomerAppointInfo test5 = new CustomerAppointInfo(2,"李承軒",1,R.drawable.ic_temp_user2);
+        CustomerAppointInfo test6 = new CustomerAppointInfo(3,"陳奕先",90,R.drawable.ic_temp_user1);
+        CustomerAppointInfo test7 = new CustomerAppointInfo(1,"張庭維",10,R.drawable.ic_temp_user1);
+        CustomerAppointInfo test8 = new CustomerAppointInfo(2,"李承軒",1,R.drawable.ic_temp_user2);
+        CustomerAppointInfo test9 = new CustomerAppointInfo(3,"陳奕先",90,R.drawable.ic_temp_user1);
+
         list.add(test1);
         list.add(test2);
         list.add(test3);
+        list.add(test4);
+        list.add(test5);
+        list.add(test6);
+        list.add(test7);
+        list.add(test8);
+        list.add(test9);
     }
-    public void removeItem(int position){
+    public synchronized void removeItem(int position){
         selected = position;
         list.remove(position);
-        recentAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     public int getStatusBarHeight() {
@@ -125,8 +133,10 @@ public class StoreRecentFragment extends Fragment {
         }
         return result;
     }
-    public void addItem2List(CustomerAppointInfo info){
-        list.add(info);
+    public synchronized void addItem(List<CustomerAppointInfo> infoList){
+        waitingList.clear();
+        for(int i=0;i<infoList.size();i++)
+            waitingList.add(infoList.get(i));
         return;
     }
     public CustomerAppointInfo getItem(int position){
@@ -135,7 +145,14 @@ public class StoreRecentFragment extends Fragment {
         else
             return null;
     }
-    public int getListSize(){
+    public int getSize(){
         return list.size();
+    }
+    public int getRequestIDupper(){
+        return requestIDupper;
+    }
+    public void setRequestIDupper(int upper){
+        requestIDupper = upper;
+        return;
     }
 }

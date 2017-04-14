@@ -62,8 +62,6 @@ public class LoginActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.login_activity);
 
-        // If there is a preferred account, start main.
-
         String type = checkPreference();
         if(type != null) {
             if (type.equals("customer"))

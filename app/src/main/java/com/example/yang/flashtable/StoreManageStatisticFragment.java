@@ -3,6 +3,7 @@ package com.example.yang.flashtable;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.widget.Toolbar;
@@ -10,7 +11,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 public class StoreManageStatisticFragment extends ListFragment {
+    private List<StoreDiscountInfo> promotion_succ_num;
 
     public StoreManageStatisticFragment() {
         // Required empty public constructor
@@ -28,7 +41,13 @@ public class StoreManageStatisticFragment extends ListFragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.store_manage_statistic_fragment, container, false);
 
-        StoreManageStatisticAdapter adapter = new StoreManageStatisticAdapter(getActivity(), StoreMainActivity.storeInfo.discountList);
+        promotion_succ_num = new ArrayList<>(StoreMainActivity.storeInfo.discountList);
+        Collections.sort(promotion_succ_num, new Comparator<StoreDiscountInfo>(){
+            public int compare(StoreDiscountInfo item1, StoreDiscountInfo item2) {
+                return item1.getCount()<item2.getCount()? 1:-1;
+            }
+        });
+        StoreManageStatisticAdapter adapter = new StoreManageStatisticAdapter(getActivity(), promotion_succ_num);
         setListAdapter(adapter);
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_statistic_tb_toolbar);
@@ -52,5 +71,27 @@ public class StoreManageStatisticFragment extends ListFragment {
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    private class Promotion_Succ_Detail extends AsyncTask<Object, Void, Void> {
+        @Override
+        protected Void doInBackground(Object... params) {
+            HttpClient httpClient = new DefaultHttpClient();
+            try {
+                List<StoreDiscountInfo> list = new ArrayList<>(StoreMainActivity.storeInfo.discountList);
+                for(int i = 0; i < list.size(); i++) {
+                    HttpGet getPromotionInfo = new HttpGet("https://flash-table.herokuapp.com/api/promotion_info?promotion_id="+String.valueOf(list.get(i).id));
+                    JSONObject info = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getPromotionInfo)));
+                    int num = info.getInt("n_succ");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void _params){
+        }
     }
 }
