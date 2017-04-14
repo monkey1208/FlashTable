@@ -112,7 +112,6 @@ public class AlertDialogController {
             }
         });
 
-        setDialogSize(context, 0.8, 0.8);
         return alertDialog;
     }
     public class APIpromotion_modify extends AsyncTask<String,Void,Void> {

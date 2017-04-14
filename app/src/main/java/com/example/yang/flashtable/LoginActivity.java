@@ -61,7 +61,6 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.login_activity);
-        // If there is a preferred account (for customer), start main.
 
         String type = checkPreference();
         if(type != null) {

@@ -10,10 +10,11 @@ public class StoreDiscountInfo {
     String description;
     int count;
     boolean isDefault;
-    public StoreDiscountInfo(int id,int discount, String description){
+    public StoreDiscountInfo(int id,int discount, String description, int count){
         this.id = id;
         this.discount = discount;
         this.description = description;
+        this.count = count;
         this.isDefault = false;
     }
     public StoreDiscountInfo(int discount, String description, int count, boolean isDefault){
@@ -22,10 +23,8 @@ public class StoreDiscountInfo {
         this.count = count;
         this.isDefault = isDefault;
     }
-    public StoreDiscountInfo(int discount,String description){
-        this.discount = discount;
-        this.description = description;
-        this.count = 0;
-        this.isDefault = false;
+
+    public int getCount(){
+        return count;
     }
 }

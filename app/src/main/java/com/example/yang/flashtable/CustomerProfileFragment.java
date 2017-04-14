@@ -93,6 +93,7 @@ public class CustomerProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), CustomerCommentActivity.class);
+                intent.putExtra("type", "user");
                 startActivity(intent);
             }
         });
