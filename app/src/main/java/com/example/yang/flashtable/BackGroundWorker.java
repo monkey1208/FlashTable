@@ -1,7 +1,9 @@
 package com.example.yang.flashtable;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.BaseAdapter;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -16,9 +18,30 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BackGroundWorker {
 
+    private List<CustomerAppointInfo> newInfoList = new ArrayList<>();
+    private Timer timer;
+    private Context context;
+
+    public BackGroundWorker(Context context){
+        this.context = context;
+    }
+    public void updateRequestList(){
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                new APIRequestUpdate().execute(StoreMainActivity.storeInfo.id);
+            }
+        },0,5000);
+    }
+    public void killTimer(){
+        timer.cancel();
+    }
     public class APIRequestUpdate extends AsyncTask<String, Void, Void> {
         private List<Integer> request_id = new ArrayList<>();
         private List<Thread_request_detail> threadList = new ArrayList<>();
@@ -30,6 +53,7 @@ public class BackGroundWorker {
                 final JSONArray responseRequest = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(get)));
                 for(int i=1;i<responseRequest.length();i++)
                     request_id.add(responseRequest.getJSONObject(i).getInt("request_id"));
+                Log.e("Update","Get "+Integer.toString(request_id.size())+" new info");
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -39,18 +63,22 @@ public class BackGroundWorker {
         }
         @Override
         protected void onPostExecute(Void _params) {
-
-            for(int i=1;i<request_id.size();i++)
+            for(int i=0;i<request_id.size();i++)
                 threadList.add(new Thread_request_detail(request_id.get(i)));
             for(int i=0;i<threadList.size();i++)
                 threadList.get(i).start();
-            for(int i=0;i<threadList.size();i++)
+            Log.e("Update",Integer.toString(threadList.size())+" threads running");
+            for(int i=0;i<threadList.size();i++) {
                 try {
                     threadList.get(i).join();
                 } catch (InterruptedException e) {
-                    Log.e("Recent Update Thread",Integer.toString(threadList.get(i).request_id));
+                    Log.e("Recent Update Thread", Integer.toString(threadList.get(i).request_id));
                     e.printStackTrace();
                 }
+            }
+            Log.e("Update","Got "+Integer.toString(newInfoList.size())+" new info");
+            StoreMainActivity.fragmentController.storeRecentFragment.addItem(newInfoList);
+            newInfoList.clear();
         }
     }
     private class Thread_request_detail extends Thread{
@@ -61,7 +89,9 @@ public class BackGroundWorker {
         @Override
         public void run() {
             super.run();
+            Log.e("Update","Before getting Detail");
             getRequestDetail(request_id);
+            Log.e("Update","After getting Detail");
         }
     }
     public void getRequestDetail(int id){
@@ -76,8 +106,13 @@ public class BackGroundWorker {
             int honor = userInfo.getInt("point");
             String account = userInfo.getString("account");
             CustomerAppointInfo newInfo = new CustomerAppointInfo(id,account,honor,number);
-            //newInfoList.add(newInfo);
-
+            if(newInfo.id > StoreMainActivity.fragmentController.storeRecentFragment.getRequestIDupper()) {
+                synchronized (newInfoList) {
+                    newInfoList.add(newInfo);
+                }
+                StoreMainActivity.fragmentController.storeRecentFragment.setRequestIDupper(newInfo.id);
+            }
+            Log.e("Update","No Exception Getting Detail");
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (HttpResponseException e) {

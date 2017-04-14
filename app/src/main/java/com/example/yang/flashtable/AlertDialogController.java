@@ -98,8 +98,9 @@ public class AlertDialogController {
                 new APIpromotion_modify().execute(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
                 Log.d("ChangePromotion",Integer.toString(StoreMainActivity.storeInfo.discountCurrent));
                 Log.d("ChangePromotion",Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
-                StoreMainActivity.fragmentController.storeAppointFragment.startUpdate();
-                new APIHandler().changePromotions();
+                //StoreMainActivity.fragmentController.storeAppointFragment.startUpdate();
+                //new APIHandler().changePromotions();
+                StoreMainActivity.fragmentController.storeHomeFragment.startUpdate();
                 bt_active.setVisibility(View.INVISIBLE);
                 tv_active.setVisibility(View.INVISIBLE);
 

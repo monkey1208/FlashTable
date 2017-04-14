@@ -52,7 +52,7 @@ public class APIHandler {
 
     public APIHandler(){};
 
-    public class APIRequestUpdate extends AsyncTask<String, Void, Void>{
+    /*public class APIRequestUpdate extends AsyncTask<String, Void, Void>{
         @Override
         protected Void doInBackground(String... params) {
             final HttpClient httpClient = new DefaultHttpClient();
@@ -183,19 +183,19 @@ public class APIHandler {
                 }).start();
             }
         },0,5000);
-    }
+    }*/
     public void postPromotionInactive(){
         new APIpromotion_inactive().execute(Integer.toString(StoreMainActivity.storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
         Log.d("Promotion","Inactivate "+Integer.toString(StoreMainActivity.storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
         isActive = false;
         return;
     }
-    public void changePromotions(){
+    /*public void changePromotions(){
         if(!isActive)
             updateCache();
         isActive = true;
         return;
-    }
+    }*/
     public void postRequestDeny(int id,String name){
         new APIrequest_deny().execute(Integer.toString(id));
         deleteList.add(name);

@@ -23,14 +23,13 @@ public class StoreRecentFragment extends Fragment {
 
     private View v;
     private List<CustomerAppointInfo> list;
+    private int requestIDupper = -1;
+
     private ListView lv_recent;
     private View item_view;
     private int selected;
-    private StoreRecentAdapter recentAdapter;
+    private StoreRecentAdapter adapter;
     private List<CustomerAppointInfo> waitingList = new ArrayList<>();
-    private List<Integer> deleteList = new ArrayList<>();
-    private int size;
-    private boolean active=true;
     public int test = 10;
     private Timer timer = new Timer();
     private Handler handler = new Handler();
@@ -43,15 +42,19 @@ public class StoreRecentFragment extends Fragment {
                     list.get(i).expireTime--;
                 else {
                     new APIHandler().postRequestDeny(list.get(i).id,list.get(i).name);
-                    list.remove(i);
+                    synchronized (list) {
+                        list.remove(i);
+                    }
                     i--;
                 }
             }
             for(int i=0;i<waitingList.size();i++)
-                list.add(waitingList.get(i));
+                synchronized (list) {
+                    list.add(waitingList.get(i));
+                }
             waitingList.clear();
 
-            recentAdapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
         }
     };
     private void countDown(){
@@ -89,8 +92,8 @@ public class StoreRecentFragment extends Fragment {
         waitingList = new ArrayList<>();
         //listview---------
         lv_recent = (ListView) v.findViewById(R.id.lv_recent);
-        recentAdapter = new StoreRecentAdapter(getActivity(),list);
-        lv_recent.setAdapter(recentAdapter);
+        adapter = new StoreRecentAdapter(getActivity(),list);
+        lv_recent.setAdapter(adapter);
         countDown();
         //------------------
         return v;
@@ -113,8 +116,10 @@ public class StoreRecentFragment extends Fragment {
     }
     public void removeItem(int position){
         selected = position;
-        list.remove(position);
-        recentAdapter.notifyDataSetChanged();
+        synchronized (list) {
+            list.remove(position);
+        }
+        adapter.notifyDataSetChanged();
     }
 
     public int getStatusBarHeight() {
@@ -125,8 +130,9 @@ public class StoreRecentFragment extends Fragment {
         }
         return result;
     }
-    public void addItem2List(CustomerAppointInfo info){
-        list.add(info);
+    public void addItem(List<CustomerAppointInfo> infoList){
+        for(int i=0;i<infoList.size();i++)
+            waitingList.add(infoList.get(i));
         return;
     }
     public CustomerAppointInfo getItem(int position){
@@ -135,7 +141,14 @@ public class StoreRecentFragment extends Fragment {
         else
             return null;
     }
-    public int getListSize(){
+    public int getSize(){
         return list.size();
+    }
+    public int getRequestIDupper(){
+        return requestIDupper;
+    }
+    public void setRequestIDupper(int upper){
+        requestIDupper = upper;
+        return;
     }
 }
