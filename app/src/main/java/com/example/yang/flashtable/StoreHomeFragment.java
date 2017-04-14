@@ -124,8 +124,11 @@ public class StoreHomeFragment extends Fragment {
                 bt_active.setEnabled(true);
                 bt_active_gif.setVisibility(View.INVISIBLE);
                 bt_active_gif.setEnabled(false);
-                StoreMainActivity.apiHandler.postPromotionInactive();
+                Log.e("GIF","Before post to server");
+                new APIHandler().postPromotionInactive();
+                Log.e("GIF","After post to server");
                 StoreMainActivity.fragmentController.storeAppointFragment.stopTimer();
+                Log.e("GIF","Stop timer");
             }
         });
         //--------------

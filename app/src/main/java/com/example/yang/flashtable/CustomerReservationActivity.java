@@ -172,9 +172,16 @@ public class CustomerReservationActivity extends AppCompatActivity {
         cancel_listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                timer.cancel();
-                new ApiCancel("request").execute(request_id);
-                finish();
+                new DialogBuilder(CustomerReservationActivity.this).dialogEvent(getString(R.string.customer_reservation_cancel_confirm), "withCancel", new DialogEventListener() {
+                    @Override
+                    public void clickEvent(boolean ok, int status) {
+                        if(ok) {
+                            timer.cancel();
+                            new ApiCancel("request").execute(request_id);
+                            finish();
+                        }
+                    }
+                });
             }
         };
         cancel_arrive_listener = new View.OnClickListener() {
