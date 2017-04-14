@@ -1,12 +1,22 @@
 package com.example.yang.flashtable;
 
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class StoreMainActivity extends AppCompatActivity{
 
@@ -28,10 +38,12 @@ public class StoreMainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
         //TODO: Get Store Info
         //TODO: start a thread getting updating request
         //arguments init temp
-        storeInfo = new StoreInfo("西堤牛排 南港店","台北市南港區忠孝東路七段369號C1棟(CITYLINK南港店)");
+        storeInfo = new StoreInfo(bundle.getString("name"),bundle.getString("address"));
+        getStoreInfo();
         button = new ImageButton[PRIM_FRAG];
         setContentView(R.layout.store_main_activity);
         fragmentManager = getSupportFragmentManager();
@@ -40,12 +52,13 @@ public class StoreMainActivity extends AppCompatActivity{
         fragmentController.act(APPOINT);
         fragmentController.act(current_stat);
         init_bt_button();
-        getStoreInfo();
     }
 
     private void getStoreInfo() {
         SharedPreferences store = this.getSharedPreferences("USER", MODE_PRIVATE);
         String shop_id = store.getString("userID", "");
+        storeInfo.name = store.getString("name", "");
+        storeInfo.address = store.getString("address", "");
         storeInfo.id = shop_id;
     }
 

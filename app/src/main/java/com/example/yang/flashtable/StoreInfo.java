@@ -6,6 +6,7 @@ import java.util.List;
 public class StoreInfo {
 
     public List<StoreDiscountInfo> discountList;
+    public StoreInfo(){};
     public StoreInfo(String n,String a){
         name = n;
         address = a;
@@ -13,8 +14,6 @@ public class StoreInfo {
         discountList.add(new StoreDiscountInfo(100,"暫無優惠",0,true));
         discountDefault = 0;
         discountCurrent = discountDefault;
-        totalAppointment = 200;
-        successAppointment = 99;
     }
     public void addAppointment(CustomerAppointInfo info){
         //TODO: notify server new appointment
