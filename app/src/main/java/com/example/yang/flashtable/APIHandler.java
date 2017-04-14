@@ -338,7 +338,6 @@ public class APIHandler {
     }
 
 
-
     public static class Post_promotion extends AsyncTask<String,Void,Void> {
         int new_promotion_id;
         String name;
@@ -376,7 +375,7 @@ public class APIHandler {
 
         @Override
         protected void onPostExecute(Void _params){
-            StoreDiscountInfo info = new StoreDiscountInfo(new_promotion_id, Integer.valueOf(name), description);
+            StoreDiscountInfo info = new StoreDiscountInfo(new_promotion_id, Integer.valueOf(name), description, 0);
             StoreMainActivity.storeInfo.discountList.add(info);
             StoreManageDiscountFragment.adapter.notifyDataSetChanged();
         }
