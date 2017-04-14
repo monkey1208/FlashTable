@@ -70,6 +70,7 @@ public class CustomerCommentAdapter extends BaseAdapter {
         if (comment.content.equals("")) {
             ((ViewGroup) tv_content.getParent()).removeView(tv_content);
         } else {
+            comment.content = comment.content.replace("%0D%0A", "\n");
             tv_content.setText(comment.content);
         }
     }

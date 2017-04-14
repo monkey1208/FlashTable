@@ -528,7 +528,7 @@ public class CustomerMainFragment extends Fragment {
                 } catch (Exception e) {
                     shop_rating = "0";
                 }
-                info.rating = Float.parseFloat(shop_rating);
+                info.rating = Float.parseFloat(shop_rating) / 2;
 
                 restaurantInfoList.add(info);
             }

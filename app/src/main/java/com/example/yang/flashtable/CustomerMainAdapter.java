@@ -59,6 +59,7 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
             tv_gift = (TextView) convertView.findViewById(R.id.customer_main_tv_gift);
             rb_rating = (RatingBar) convertView.findViewById(R.id.customer_main_rb_rating);
             rb_rating.setRating(info.rating);
+            rb_rating.setIsIndicator(true);
             ll_reserve = (LinearLayout) convertView.findViewById(R.id.customer_main_ll_reserve);
             iv_shop.setImageBitmap(info.getImage());
             tv_shop.setText(info.name);
@@ -107,6 +108,10 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
                                     intent.putExtra("discount", getItem(position).discount);
                                     intent.putExtra("offer", getItem(position).offer);
                                     intent.putExtra("persons", status);
+                                    intent.putExtra("shop_name", getItem(position).name);
+                                    intent.putExtra("rating", Float.toString(getItem(position).rating));
+                                    intent.putExtra("shop_location", getItem(position).detailInfo.address);
+                                    intent.putExtra("shop_id", Integer.toString(getItem(position).id));
                                     c.startActivity(intent);
                                 }
                             }
