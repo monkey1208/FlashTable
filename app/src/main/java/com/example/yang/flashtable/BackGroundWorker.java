@@ -17,9 +17,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class BackGroundWorker {
 
@@ -63,6 +68,20 @@ public class BackGroundWorker {
         }
         @Override
         protected void onPostExecute(Void _params) {
+            ThreadManager manager = new ThreadManager(request_id);
+            manager.start();
+        }
+    }
+    private class ThreadManager extends Thread{
+        private List<Integer> request_id = new ArrayList<>();
+        private List<Thread_request_detail> threadList = new ArrayList<>();
+        public ThreadManager(List<Integer> request_id){
+            this.request_id = request_id;
+        }
+        @Override
+        public void run() {
+            super.run();
+            Collections.sort(request_id);
             for(int i=0;i<request_id.size();i++)
                 threadList.add(new Thread_request_detail(request_id.get(i)));
             for(int i=0;i<threadList.size();i++)
@@ -77,6 +96,8 @@ public class BackGroundWorker {
                 }
             }
             Log.e("Update","Got "+Integer.toString(newInfoList.size())+" new info");
+            if(request_id.size()>0)
+                StoreMainActivity.fragmentController.storeRecentFragment.setRequestIDupper(request_id.get(request_id.size()-1));
             StoreMainActivity.fragmentController.storeRecentFragment.addItem(newInfoList);
             newInfoList.clear();
         }
@@ -110,7 +131,6 @@ public class BackGroundWorker {
                 synchronized (newInfoList) {
                     newInfoList.add(newInfo);
                 }
-                StoreMainActivity.fragmentController.storeRecentFragment.setRequestIDupper(newInfo.id);
             }
             Log.e("Update","No Exception Getting Detail");
         } catch (JSONException e) {
