@@ -36,7 +36,7 @@ public class StoreAppointFragment extends ListFragment {
     public  StoreAppointFragment () {
         // Required empty public constructor
     }
-    public void startUpdate(){
+    /*public void startUpdate(){
         updateSession();
     }
     private void updateSession(){
@@ -47,7 +47,7 @@ public class StoreAppointFragment extends ListFragment {
                new APIgetSessions().execute(StoreMainActivity.storeInfo.id);
             }
         },0,10000);
-    }
+    }*/
     public void stopTimer(){
         timer.cancel();
     }
@@ -96,7 +96,7 @@ public class StoreAppointFragment extends ListFragment {
         }
         return result;
     }
-    private class APIgetSessions extends AsyncTask<String,Void,Void>{
+    /*private class APIgetSessions extends AsyncTask<String,Void,Void>{
         String result = "";
         @Override
         protected Void doInBackground(String... params) {
@@ -141,7 +141,7 @@ public class StoreAppointFragment extends ListFragment {
                     if(stat)
                         deleteList.add(i);
                 }
-            }*/
+            }
             Collections.sort(updateList, new Comparator<Integer>() {
                 @Override
                 public int compare(Integer o1, Integer o2) {
@@ -156,7 +156,7 @@ public class StoreAppointFragment extends ListFragment {
             adapter.notifyDataSetChanged();
             Log.d("Session",result);
         }
-    }
+    }*/
     public ReservationInfo getItem(int position){
         if(list.size()>position)
             return list.get(position);

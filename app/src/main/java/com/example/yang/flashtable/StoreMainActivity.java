@@ -96,5 +96,4 @@ public class StoreMainActivity extends AppCompatActivity{
             button[i].setBackgroundColor(getResources().getColor(R.color.btBottomColor));
         button[current_stat].setBackgroundColor(getResources().getColor(R.color.btBottomPressColor));
     }
-
 }

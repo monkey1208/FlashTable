@@ -55,6 +55,7 @@ public class StoreHomeFragment extends Fragment {
     private View v;
     private StoreInfo storeInfo;
     private AlertDialog alertDialog;
+    private BackGroundWorker worker = new BackGroundWorker(getContext());
 
 
     private static final int SCAN_REQUEST_ZXING_SCANNER = 1;
@@ -122,11 +123,8 @@ public class StoreHomeFragment extends Fragment {
                 bt_active.setEnabled(true);
                 bt_active_gif.setVisibility(View.INVISIBLE);
                 bt_active_gif.setEnabled(false);
-                Log.e("GIF","Before post to server");
                 new APIHandler().postPromotionInactive();
-                Log.e("GIF","After post to server");
-                StoreMainActivity.fragmentController.storeAppointFragment.stopTimer();
-                Log.e("GIF","Stop timer");
+                worker.killTimer();
             }
         });
         //--------------
@@ -141,7 +139,6 @@ public class StoreHomeFragment extends Fragment {
                 //StoreMainActivity.fragmentController.act(FragmentController.CONFIRM);
             }
         });
-        Log.d("NO~~~", StoreMainActivity.storeInfo.id);
         new APIpromotion().execute(StoreMainActivity.storeInfo.id);
         //--------------
         return v;
@@ -192,10 +189,8 @@ public class StoreHomeFragment extends Fragment {
                     StoreMainActivity.storeInfo.discountList.add(info);
                 }
             } catch (JSONException e) {
-                Log.d("NO~~~", "JSON");
                 e.printStackTrace();
             } catch (IOException e) {
-                Log.d("NO~~~", "IO");
                 e.printStackTrace();
             } finally {
                 httpClient.getConnectionManager().shutdown();
@@ -225,5 +220,20 @@ public class StoreHomeFragment extends Fragment {
         tv_active_running.setText("開啟中");
         return;
     }
-
+    public void startUpdate(){
+        worker.updateRequestList();
+        return;
+    }
+    public void stopUpdate(){
+        worker.killTimer();
+        return;
+    }
+    public void stopGIF(){
+        bt_active_gif.setImageResource(0);
+        return;
+    }
+    public void startGIF(){
+        bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
+        return;
+    }
 }

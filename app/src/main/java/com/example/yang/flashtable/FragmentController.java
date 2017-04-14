@@ -3,6 +3,7 @@ package com.example.yang.flashtable;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
 public class FragmentController extends StoreMainActivity{
     public static final int FRAG_COUNT = 11;
@@ -51,14 +52,23 @@ public class FragmentController extends StoreMainActivity{
         for(int i=0;i<FRAG_COUNT;i++){
             if(i!=mode && frag_stat[i]==SHOW){
                 fragmentManager.beginTransaction().hide(fragment[i]).commit();
+                if(i == HOME) {
+                    storeHomeFragment.stopGIF();
+                    Log.e("GIF","stop");
+                }
                 frag_stat[i]=ALIVE;
             }
         }
         if(frag_stat[mode]==DEAD) {
             fragmentManager.beginTransaction().add(viewContainer[mode], fragment[mode]).commit();
         }
-        else if(frag_stat[mode]==ALIVE)
+        else if(frag_stat[mode]==ALIVE) {
             fragmentManager.beginTransaction().show(fragment[mode]).commit();
+            if(mode == HOME) {
+                storeHomeFragment.startGIF();
+                Log.e("GIF","start");
+            }
+        }
         frag_stat[mode] = SHOW;
     }
     public void act(int select){
