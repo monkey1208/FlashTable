@@ -34,13 +34,12 @@ public class CustomerMainShopActivity extends AppCompatActivity implements BaseS
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.customer_main_show);
 
         // Set to fullscreen.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.login_activity);
+        setContentView(R.layout.customer_main_show);
 
         getInfo();
         initView();
