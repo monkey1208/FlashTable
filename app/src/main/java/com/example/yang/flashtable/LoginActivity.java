@@ -38,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
     ViewFlipper vf_flipper;
     DialogBuilder dialog_builder;
+    private StoreInfo storeInfo = new StoreInfo();
 
     // Main
     Button bt_as_customer, bt_as_store;
@@ -172,7 +173,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void startStore() {
+        Bundle bundle = new Bundle();
+        bundle.putString("name",storeInfo.name);
+        bundle.putString("address",storeInfo.address);
         Intent intent = new Intent(LoginActivity.this, StoreMainActivity.class);
+        intent.putExtras(bundle);
         LoginActivity.this.startActivity(intent);
         LoginActivity.this.finish();
     }
@@ -237,6 +242,19 @@ public class LoginActivity extends AppCompatActivity {
                 .putString("account", preference_account)
                 .putString("password", preference_password)
                 .putString("username", preference_username)
+                .apply();
+    }
+
+    private void setStoreLoginPreference(String userID, String type){
+        //Set SharedPreference with userId, account, password
+        SharedPreferences preferences = this.getSharedPreferences("USER", MODE_PRIVATE);
+        preferences.edit().putString("userID", userID)
+                .putString("type", type)
+                .putString("account", preference_account)
+                .putString("password", preference_password)
+                .putString("username", preference_username)
+                .putString("name",storeInfo.name)
+                .putString("address",storeInfo.address)
                 .apply();
     }
 
@@ -319,7 +337,8 @@ public class LoginActivity extends AppCompatActivity {
     class StoreAPILogin extends AsyncTask<String, Void, String> {
         private ProgressDialog progress_dialog = new ProgressDialog(LoginActivity.this);
         private String status = null;
-
+        private String name;
+        private String address;
         @Override
         protected void onPreExecute() {
             // TODO: Style this.
@@ -342,8 +361,15 @@ public class LoginActivity extends AppCompatActivity {
                 String httpResponse = handler.handleResponse(response);
                 JSONObject responseJSON = new JSONObject(httpResponse);
                 status = responseJSON.getString("status_code");
-                if (status.equals("0"))
+                if (status.equals("0")) {
                     _userID = responseJSON.getString("shop_id");
+                    HttpGet getRequestInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_info?shop_id="+_userID);
+                    JSONObject shopInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getRequestInfo)));
+                    name = shopInfo.getString("name");
+                    address = shopInfo.getString("address");
+                    storeInfo = new StoreInfo(name,address);
+                    storeInfo.id = _userID;
+                }
 
             } catch (Exception e) {
                 Log.d("GetCode", "Request exception:" + e.getMessage());
@@ -364,11 +390,13 @@ public class LoginActivity extends AppCompatActivity {
                 dialog_builder.dialogEvent(getResources().getString(R.string.login_error_invalid), "normal", null);
             else {
                 Toast.makeText(LoginActivity.this,
-                        getResources().getString(R.string.login_success) + store_et_account.getText().toString(),  Toast.LENGTH_LONG).show();
-                setLoginPreference(_userID, "store");
-
+                        getResources().getString(R.string.login_success) + storeInfo.name,  Toast.LENGTH_LONG).show();
+                setStoreLoginPreference(_userID, "store");
                 startStore();
             }
         }
+    }
+    public StoreInfo getStoreInfo(){
+        return storeInfo;
     }
 }

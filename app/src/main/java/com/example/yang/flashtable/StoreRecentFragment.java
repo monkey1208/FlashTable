@@ -36,6 +36,20 @@ public class StoreRecentFragment extends Fragment {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
+            synchronized (list) {
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).expireTime > 0)
+                        list.get(i).expireTime--;
+                    else {
+                        new APIHandler().postRequestDeny(list.get(i).id, list.get(i).name);
+                        list.remove(i);
+                        i--;
+                    }
+                }
+                for (int i = 0; i < waitingList.size(); i++)
+                    list.add(waitingList.get(i));
+                waitingList.clear();
+            }
             adapter.notifyDataSetChanged();
         }
     };
@@ -43,26 +57,7 @@ public class StoreRecentFragment extends Fragment {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        synchronized (list) {
-                            for (int i = 0; i < list.size(); i++) {
-                                if (list.get(i).expireTime > 0)
-                                    list.get(i).expireTime--;
-                                else {
-                                    new APIHandler().postRequestDeny(list.get(i).id, list.get(i).name);
-                                    list.remove(i);
-                                    i--;
-                                }
-                            }
-                            for (int i = 0; i < waitingList.size(); i++)
-                                list.add(waitingList.get(i));
-                            waitingList.clear();
-                        }
-                        handler.post(runnable);
-                    }
-                }).start();
+                handler.post(runnable);
             }
         },0,1000);
     }
@@ -94,31 +89,6 @@ public class StoreRecentFragment extends Fragment {
         return v;
     }
 
-    public CustomerAppointInfo getSelected(){
-        return list.get(selected);
-    }
-
-    private void func_test(){
-        CustomerAppointInfo test1 = new CustomerAppointInfo(1,"張庭維",10,R.drawable.ic_temp_user1);
-        CustomerAppointInfo test2 = new CustomerAppointInfo(2,"李承軒",1,R.drawable.ic_temp_user2);
-        CustomerAppointInfo test3 = new CustomerAppointInfo(3,"陳奕先",90,R.drawable.ic_temp_user1);
-        CustomerAppointInfo test4 = new CustomerAppointInfo(1,"張庭維",10,R.drawable.ic_temp_user1);
-        CustomerAppointInfo test5 = new CustomerAppointInfo(2,"李承軒",1,R.drawable.ic_temp_user2);
-        CustomerAppointInfo test6 = new CustomerAppointInfo(3,"陳奕先",90,R.drawable.ic_temp_user1);
-        CustomerAppointInfo test7 = new CustomerAppointInfo(1,"張庭維",10,R.drawable.ic_temp_user1);
-        CustomerAppointInfo test8 = new CustomerAppointInfo(2,"李承軒",1,R.drawable.ic_temp_user2);
-        CustomerAppointInfo test9 = new CustomerAppointInfo(3,"陳奕先",90,R.drawable.ic_temp_user1);
-
-        list.add(test1);
-        list.add(test2);
-        list.add(test3);
-        list.add(test4);
-        list.add(test5);
-        list.add(test6);
-        list.add(test7);
-        list.add(test8);
-        list.add(test9);
-    }
     public synchronized void removeItem(int position){
         selected = position;
         list.remove(position);
@@ -154,5 +124,26 @@ public class StoreRecentFragment extends Fragment {
     public void setRequestIDupper(int upper){
         requestIDupper = upper;
         return;
+    }
+    private void func_test(){
+        CustomerAppointInfo test1 = new CustomerAppointInfo(1,"張庭維",10,R.drawable.ic_temp_user1);
+        CustomerAppointInfo test2 = new CustomerAppointInfo(2,"李承軒",1,R.drawable.ic_temp_user2);
+        CustomerAppointInfo test3 = new CustomerAppointInfo(3,"陳奕先",90,R.drawable.ic_temp_user1);
+        CustomerAppointInfo test4 = new CustomerAppointInfo(1,"張庭維",10,R.drawable.ic_temp_user1);
+        CustomerAppointInfo test5 = new CustomerAppointInfo(2,"李承軒",1,R.drawable.ic_temp_user2);
+        CustomerAppointInfo test6 = new CustomerAppointInfo(3,"陳奕先",90,R.drawable.ic_temp_user1);
+        CustomerAppointInfo test7 = new CustomerAppointInfo(1,"張庭維",10,R.drawable.ic_temp_user1);
+        CustomerAppointInfo test8 = new CustomerAppointInfo(2,"李承軒",1,R.drawable.ic_temp_user2);
+        CustomerAppointInfo test9 = new CustomerAppointInfo(3,"陳奕先",90,R.drawable.ic_temp_user1);
+
+        list.add(test1);
+        list.add(test2);
+        list.add(test3);
+        list.add(test4);
+        list.add(test5);
+        list.add(test6);
+        list.add(test7);
+        list.add(test8);
+        list.add(test9);
     }
 }

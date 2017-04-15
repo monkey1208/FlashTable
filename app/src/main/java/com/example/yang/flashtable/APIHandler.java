@@ -38,7 +38,7 @@ import static com.example.yang.flashtable.StoreManageSuccessFragment.tv_total;
 
 public class APIHandler {
     private Handler handler = new Handler();
-    //private Context context;
+    private Context context;
 
     private List<String> requestCache = new ArrayList<>();
     private List<String> deleteList = new ArrayList<>();
@@ -65,9 +65,8 @@ public class APIHandler {
         return;
     }
     public void postSession(CustomerAppointInfo cinfo){
-        ReservationInfo info = new ReservationInfo(cinfo.name,cinfo.number,System.currentTimeMillis());
-        new APIrequest_accept().execute(Integer.toString(cinfo.id));
-        StoreMainActivity.fragmentController.storeAppointFragment.addItem(info);
+        new APIrequest_accept().execute(Integer.toString(cinfo.id),cinfo.name,Integer.toString(cinfo.number));
+
     }
     public void postSessionDeny(int id){
         new APIsession_cancel().execute(Integer.toString(id));
@@ -96,9 +95,13 @@ public class APIHandler {
     }
     private class APIrequest_accept extends AsyncTask<String,Void,Void> {
         int id = -1;
+        String name;
+        String number;
+        int res = -1;
         @Override
         protected Void doInBackground(String... params) {
-
+            name = params[1];
+            number = params[2];
             try {
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/accept_request");
@@ -107,6 +110,7 @@ public class APIHandler {
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
                 JSONObject result =new JSONObject (new BasicResponseHandler().handleResponse(httpClient.execute(post)));
                 id = result.getInt("session_id");
+                res = result.getInt("status_code");
             } catch (UnsupportedEncodingException e) {
                 id = -2;
                 e.printStackTrace();
@@ -123,8 +127,14 @@ public class APIHandler {
             return null;
         }
         protected void onPostExecute(Void _params) {
-            StoreMainActivity.fragmentController.storeAppointFragment.getItem(StoreMainActivity.fragmentController.storeAppointFragment.getSize()-1).id = id;
-            Log.d("Accept","Done getting "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.getItem(StoreMainActivity.fragmentController.storeAppointFragment.getSize()-1).id));
+            ReservationInfo info = new ReservationInfo(name,Integer.valueOf(number),System.currentTimeMillis());
+            info.id = id;
+            if(res == 0) {
+                StoreMainActivity.fragmentController.storeAppointFragment.addItem(info);
+                Log.e("Accept","Success");
+            }
+            else
+                Log.e("Accept","Fail");
         }
     }
     private class APIsession_cancel extends AsyncTask<String,Void,Void> {
