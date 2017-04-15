@@ -272,7 +272,14 @@ public class CustomerReservationActivity extends AppCompatActivity {
         CustomerReservationActivity.this.finish();
     }
     private void requestNoResponse(){
-        new DialogBuilder(this).dialogEvent(getString(R.string.dialog_restaurant_no_response), "normal", finish_listener);
+        new DialogBuilder(CustomerReservationActivity.this).dialogEvent(getString(R.string.customer_reservation_canceled), "normal", new DialogEventListener() {
+            @Override
+            public void clickEvent(boolean ok, int status) {
+                if(ok) {
+                    finish();
+                }
+            }
+        });
     }
     DialogEventListener finish_listener = new DialogEventListener() {
         @Override

@@ -8,5 +8,5 @@
     android:textColor="@color/white"
     android:textSize="13sp"
     android:textAlignment="center"
-    android:background="@color/colorPrimaryLight"/>
+    android:background="@color/textColorOrange"/>
     <!-- TODO: Background should be @drawable/customer_main_spinner_selector -->
