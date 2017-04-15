@@ -254,12 +254,12 @@ public class CustomerReservationActivity extends AppCompatActivity {
     }
     private void requestRejected(){
         timer.cancel();
-        new DialogBuilder(this).dialogEvent("餐廳已拒絕你的訂位", "normal", finish_listener);
+        new DialogBuilder(this).dialogEvent(getString(R.string.dialog_restaurant_refuse_reservation), "normal", finish_listener);
     }
     private void qrRejected(){
         timer.cancel();
         clearBlockPreference();
-        new DialogBuilder(this).dialogEvent("餐廳已取消你的訂位", "normal", finish_listener);
+        new DialogBuilder(this).dialogEvent(getString(R.string.dialog_restaurant_cancel_reservation), "normal", finish_listener);
     }
     private void qrSuccess(){
         clearBlockPreference();
@@ -270,6 +270,9 @@ public class CustomerReservationActivity extends AppCompatActivity {
         intent.putExtra("shop_id", 0);
         startActivity(intent);
         CustomerReservationActivity.this.finish();
+    }
+    private void requestNoResponse(){
+        new DialogBuilder(this).dialogEvent(getString(R.string.dialog_restaurant_no_response), "normal", finish_listener);
     }
     DialogEventListener finish_listener = new DialogEventListener() {
         @Override
@@ -311,6 +314,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     tv_time.setText(time_left);
                     tv_status.setText(no_response);
                     new ApiCancel("request").execute(request_id);
+                    requestNoResponse();
                 }
             }.start();
         } else if (state.equals("success")) {

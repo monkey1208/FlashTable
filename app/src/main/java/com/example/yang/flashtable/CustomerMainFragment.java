@@ -244,6 +244,9 @@ public class CustomerMainFragment extends Fragment {
                         break;
                     case 3:
                         sort_mode = "rate";
+                        adapter = sortAdapter(adapter, sort_mode);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        lv_shops.setAdapter(adjusted_adapter);
                         break;
                     case 4:
                         sort_mode = "discount";
@@ -331,6 +334,18 @@ public class CustomerMainFragment extends Fragment {
                                 return -1;
                             }
                             return 0;
+                        }
+                    }
+                });
+                break;
+            case "rate":
+                sort_adapter.sort(new Comparator<CustomerRestaurantInfo>() {
+                    @Override
+                    public int compare(CustomerRestaurantInfo info1, CustomerRestaurantInfo info2) {
+                        if(info1.rating > info2.rating) {
+                            return -1;
+                        }else{
+                            return 1;
                         }
                     }
                 });
