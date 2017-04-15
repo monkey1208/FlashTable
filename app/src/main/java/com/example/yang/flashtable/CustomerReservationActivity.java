@@ -311,6 +311,14 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     tv_time.setText(time_left);
                     tv_status.setText(no_response);
                     new ApiCancel("request").execute(request_id);
+                    new DialogBuilder(CustomerReservationActivity.this).dialogEvent(getString(R.string.customer_reservation_canceled), "normal", new DialogEventListener() {
+                        @Override
+                        public void clickEvent(boolean ok, int status) {
+                            if(ok) {
+                                finish();
+                            }
+                        }
+                    });
                 }
             }.start();
         } else if (state.equals("success")) {

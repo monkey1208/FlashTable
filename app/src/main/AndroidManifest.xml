@@ -79,7 +79,7 @@
             android:name=".QrcodeScannerActivity"
             android:theme="@style/AppFullScreenTheme" />
         <activity
-            android:name=".CustomerMainShopActivity"
+            android:name=".CustomerShopActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

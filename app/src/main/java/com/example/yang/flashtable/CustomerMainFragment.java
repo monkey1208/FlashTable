@@ -62,12 +62,8 @@ public class CustomerMainFragment extends Fragment {
     List<CustomerRestaurantInfo> restaurant_list;
     CustomerMainAdapter adapter;
     CustomerMainAdapter adjusted_adapter;
-    EditText et_search;
     SqlHandler sqlHandler = null;
     LocationManager locationManager;
-
-
-    // Textview in restaurant detail
 
     // Location
     final int FINE_LOCATION_CODE = 13;
@@ -81,11 +77,8 @@ public class CustomerMainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.customer_main_fragment, container, false);
         initView();
-        gpsPermission();
-        getShopStatus(false);
         initData();
-        setSpinner();
-        setRefreshLayout();
+
         return view;
     }
 
@@ -94,25 +87,18 @@ public class CustomerMainFragment extends Fragment {
         sp_food = (Spinner) view.findViewById(R.id.customer_main_sp_food);
         sp_sort = (Spinner) view.findViewById(R.id.customer_main_sp_sort);
         lv_shops = (ListView) view.findViewById(R.id.customer_main_lv);
-        et_search = (EditText) view.findViewById(R.id.customer_main_et_search);
         swipe_refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.customer_main_srl);
 
 
     }
 
     private void initData() {
+        gpsPermission();
+        getShopStatus(false);
+
         //restaurant_list = getListFromDB();
         //setListView(restaurant_list);
         dialog_builder = new DialogBuilder(getActivity());
-        et_search.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View view, int key_code, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && key_code == KeyEvent.KEYCODE_ENTER) {
-                    Toast.makeText(getActivity(), "Search " + et_search.getText(), Toast.LENGTH_SHORT).show();
-                    et_search.setText("");
-                }
-                return true;
-            }
-        });
 
         dis_adapter = ArrayAdapter.createFromResource(getActivity().getBaseContext(),
                 R.array.customer_sp_distance, R.layout.customer_main_spinner_item);
@@ -127,6 +113,8 @@ public class CustomerMainFragment extends Fragment {
         sort_adapter.setDropDownViewResource(R.layout.customer_main_spinner_dropdown_item);
         sp_sort.setAdapter(sort_adapter);
 
+        setSpinner();
+        setRefreshLayout();
     }
 
     private void setListView(List<CustomerRestaurantInfo> res_list) {
@@ -375,7 +363,7 @@ public class CustomerMainFragment extends Fragment {
     private void showRestaurantDetail(final int position) {
 
         final CustomerRestaurantInfo info = adjusted_adapter.getItem(position);
-        CustomerMainShopActivity.ShowInfo showInfo = new CustomerMainShopActivity.ShowInfo(
+        CustomerShopActivity.ShowInfo showInfo = new CustomerShopActivity.ShowInfo(
                 info.name,
                 info.consumption,
                 info.discount,
@@ -385,7 +373,7 @@ public class CustomerMainFragment extends Fragment {
                 info.detailInfo.intro,
                 info.rating,
                 info.promotion_id);
-        Intent intent = new Intent(getActivity(), CustomerMainShopActivity.class);
+        Intent intent = new Intent(getActivity(), CustomerShopActivity.class);
         intent.putExtra("info", showInfo);
         intent.putExtra("shop_id", Integer.toString(info.id));
         startActivity(intent);
