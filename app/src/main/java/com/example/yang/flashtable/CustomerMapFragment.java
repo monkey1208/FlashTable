@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -117,7 +118,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
         }
     }
 
-    public class CustomerGps {
+    public class CustomerGps implements GoogleApiClient.ConnectionCallbacks {
         private static final String TAG = "GPSService";
         private LocationManager locationManager;
         private String provider;
@@ -376,6 +377,15 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
             return Bitmap.createScaledBitmap(b, width, height, false);
         }
 
+        @Override
+        public void onConnected(Bundle bundle) {
+            
+        }
+
+        @Override
+        public void onConnectionSuspended(int i) {
+
+        }
     }
 
     private class ApiPromotion extends AsyncTask<Double, Void, String> {

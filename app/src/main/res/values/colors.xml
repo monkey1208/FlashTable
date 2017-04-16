@@ -19,8 +19,8 @@
 
     <color name="colorOrangeLighter">#60EA5703</color>
 
-    <color name="btBottomColor">#7DEA5703</color>
-    <color name="btBottomPressColor">#B2EA5703</color>
+    <color name="btBottomPressColor">#D0E68C29</color>
+    <color name="btBottomColor">#B2EA5703</color>
     <color name="btListviewPressColor">#1AEA5703</color>
 
 

@@ -262,7 +262,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
 
                         reservations.add(new CustomerDetailInfo(shop_name, shop_address, Float.parseFloat(shop_rating) / 2,
                                 created_at, Integer.parseInt(promotion_discount), promotion_gift, is_succ.equals("true"), Integer.parseInt(persons)
-                                , shop_intro, shop_category, Integer.parseInt(shop_id)));
+                                , shop_intro, shop_category, Integer.parseInt(shop_id), info.getImage()));
                     }
                 }
             } catch (Exception e) {

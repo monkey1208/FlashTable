@@ -2,6 +2,7 @@ package com.example.yang.flashtable;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -21,7 +22,6 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -44,12 +44,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.yang.flashtable.AlertDialogController.LOGOUT;
 
 
 public class StoreManageOpentimeFragment extends Fragment {
@@ -72,6 +73,7 @@ public class StoreManageOpentimeFragment extends Fragment {
     private static int opentime_choose_result;
     private static final String[] month_to_Chinese = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"};
     private static final String[] period_type = {"當日時段整理", "一週時段整理", "每月時段整理"};
+    private String shop_id;
 
     public StoreManageOpentimeFragment() {
         // Required empty public constructor
@@ -85,6 +87,7 @@ public class StoreManageOpentimeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getStoreInfo();
         new APITimeDetail().execute();
 
         v = inflater.inflate(R.layout.store_manage_opentime_fragment, container, false);
@@ -94,7 +97,7 @@ public class StoreManageOpentimeFragment extends Fragment {
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                Toast.makeText(v.getContext(),"Logout", Toast.LENGTH_SHORT).show();
+                new AlertDialogController().confirmCancelDialog(getContext(), "提醒", "確定要登出嗎？", LOGOUT, -1);
                 return true;
             }
         };
@@ -128,6 +131,7 @@ public class StoreManageOpentimeFragment extends Fragment {
         setBarChart(value, 0);
         return v;
     }
+
     private void setValues(){
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
         int thisYear = calendar.get(Calendar.YEAR);
@@ -137,6 +141,12 @@ public class StoreManageOpentimeFragment extends Fragment {
         tv_period.setText(date);
         tv_info.setText(date+" "+"時段整理");
     }
+
+    private void getStoreInfo() {
+        SharedPreferences store = getActivity().getSharedPreferences("USER", MODE_PRIVATE);
+        shop_id = store.getString("userID", "");
+    }
+
 
     private void setBarChart(int[] value, int max_value){
         chart_bar = (BarChart)v.findViewById(R.id.chart_bar);
@@ -158,9 +168,9 @@ public class StoreManageOpentimeFragment extends Fragment {
         }));
 
         YAxis yAxis = chart_bar.getAxisLeft();
-        yAxis.setAxisMaxValue(max_value+1);
+        yAxis.setAxisMaxValue(Math.max(6, max_value));
         yAxis.setAxisMinValue(0);
-        yAxis.setLabelCount(Math.min(max_value+1, 9));
+        yAxis.setLabelCount(6);
         chart_bar.setData(barData);
     }
 
@@ -182,7 +192,6 @@ public class StoreManageOpentimeFragment extends Fragment {
         return chartData;
     }
 
-
     private List<String> getLabels(){
         List<String> chartLabels = new ArrayList<>();
         for(int i=0; i < DATA_COUNT[current_state]; i++){
@@ -192,7 +201,20 @@ public class StoreManageOpentimeFragment extends Fragment {
                     break;
                 case WEEK:
                     //TODO: Get date
-                    chartLabels.add(String.format("%s\n" , month_to_Chinese[i]));
+                    try {
+                        /*String date_interval = tv_info.getText().toString().split(" ")[0];
+                        String start_date = date_interval.split("-")[0];
+                        DateFormat df = new SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN); //String to date
+                        Calendar cal_date = Calendar.getInstance();
+                        cal_date.setTime(df.parse(start_date));
+                        cal_date.add(Calendar.DATE, i);
+                        df = new SimpleDateFormat("MM/dd", Locale.TAIWAN);
+                        chartLabels.add(String.format("%s\n%s", month_to_Chinese[i], df.format(cal_date.getTime())));*/
+                        chartLabels.add( String.format("%s\n", (i<6? month_to_Chinese[i]:"日")) );
+
+                    }catch (Exception e){
+                        Log.e("opentime_setLabel", e.toString());
+                    }
                     break;
                 case MONTH:
                     chartLabels.add(String.format("%s月\n" , month_to_Chinese[i]));
@@ -211,24 +233,36 @@ public class StoreManageOpentimeFragment extends Fragment {
         return result;
     }
 
-    private class APITimeDetail extends AsyncTask<Object, Void, Void> {
+    private class APITimeDetail extends AsyncTask<String, Void, Void> {
+        boolean new_record_flag = true;
+        List<ReservationInfo> list;
         @Override
-        protected Void doInBackground(Object... params) {
+        protected Void doInBackground(String...params) {
+            list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
             dateList = new ArrayList<>();
+            int origin_size = list.size();
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getRecordsInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ String.valueOf(1)+"&verbose=1");
+                HttpGet getRecordsInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ shop_id+"&verbose=1");
                 JSONArray recordsInfo = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordsInfo)));
-                for (int i = 1; i < recordsInfo.length(); i++) {
+                int new_size = recordsInfo.getJSONObject(0).getInt("size");
+                if(new_size <= origin_size){
+                    new_record_flag = false;
+                }
+                for (int i = origin_size+1; i <= new_size; i++) {
                     JSONObject recordInfo = recordsInfo.getJSONObject(i);
+                    int num = recordInfo.getInt("number");
                     String is_success = recordInfo.getString("is_succ");
+                    String account = recordInfo.getString("user_account");
+                    int point = recordInfo.getInt("user_point");
 
-                    if(is_success.equals("true")){
-                        String time = recordInfo.getString("created_at");
-                        DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
-                        Date date =  df.parse(time);
-                        dateList.add(date);
-                    }
+                    String time = recordInfo.getString("created_at");
+                    DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
+                    Date date =  df.parse(time);
+                    df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.getDefault());
+                    time = df.format(date);
+                    ReservationInfo info = new ReservationInfo(account, num, point, time, is_success);
+                    list.add(info);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -237,16 +271,31 @@ public class StoreManageOpentimeFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(Void _params){
-            Collections.sort(dateList, new Comparator<Date>() {
-                @Override
-                public int compare(Date d1, Date d2) {
-                    return d2.compareTo(d1);
+            if(new_record_flag) {
+                StoreMainActivity.storeInfo.setRecordList(list);
+            }
+            try {
+                int sum = 0;
+                for (int i = 0; i < list.size(); i++) {
+                    String is_success = list.get(i).is_succ;
+                    if (is_success.equals("true")) {
+                        sum += 1;
+                        String time = list.get(i).record_time;
+                        DateFormat df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.getDefault());
+                        Date date = df.parse(time);
+                        dateList.add(date);
+                    }
                 }
-            });
-            Log.e("opentime", "finish list");
+                StoreMainActivity.storeInfo.setSuccess_record_num(sum);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            for(int i = 0; i < dateList.size(); i++){
+                Log.e("opentime_datelist", dateList.get(i).toString());
+            }
+
         }
     }
-
 
     public void chart_listConfirmDialog(final Context context, String title, List<String> items, final int mode){
         View view = LayoutInflater.from(context).inflate(R.layout.store_dialog_list, null);
@@ -288,26 +337,26 @@ public class StoreManageOpentimeFragment extends Fragment {
                 alertDialog.dismiss();
                 List<String> items = new ArrayList<String>();
                 Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+                calendar.setFirstDayOfWeek(Calendar.MONDAY);
                 int thisYear = calendar.get(Calendar.YEAR);
                 int thisMonth = calendar.get(Calendar.MONTH);
                 int thisDay = calendar.get(Calendar.DAY_OF_MONTH);
-                Calendar cal = Calendar.getInstance();
+                Calendar tmp_calender = Calendar.getInstance();
+
                 int value[] = new int[DATA_COUNT[current_state]];
                 switch (mode){
                     case OPENTIME_CHOOSE:
                         switch (opentime_choose_result){
                             case OPENTIME_CHOOSE_DAY:
-                                String date = String.format("%d/%02d/%02d", thisYear, thisMonth+1, thisDay);
+                                String date = String.format(Locale.getDefault(),"%d/%02d/%02d", thisYear, thisMonth+1, thisDay);
                                 tv_period.setText(date);
-                                tv_info.setText(date+" 時段整理");
+                                tv_info.setText((date+" 時段整理"));
                                 tv_time_choose.setText(StoreManageOpentimeFragment.period_type[adapter.listPosition]);
                                 tv_time_choose.setBackgroundResource(R.color.colorHalfTransparent);
                                 for(int i = 0; i < dateList.size(); i+=1){
-                                    cal.setTime(dateList.get(i));
-                                    if(cal.get(Calendar.DAY_OF_MONTH) == thisDay){
-                                        value[cal.get(Calendar.HOUR_OF_DAY)] += 1;
-                                    }else{
-                                        break;
+                                    tmp_calender.setTime(dateList.get(i));
+                                    if(tmp_calender.get(Calendar.DAY_OF_MONTH) == thisDay){
+                                        value[tmp_calender.get(Calendar.HOUR_OF_DAY)] += 1;
                                     }
                                 }
                                 chart_bar.clear();
@@ -318,7 +367,7 @@ public class StoreManageOpentimeFragment extends Fragment {
                                 setBarChart(value, max_value);
                                 break;
                             case OPENTIME_CHOOSE_WEEK:
-                                calendar.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+                                calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
                                 DateFormat df = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
                                 int[] gap = {-14, 6, 1, 6, 1, 6};
                                 for(int i = 0; i < 6; i += 2){
@@ -347,18 +396,26 @@ public class StoreManageOpentimeFragment extends Fragment {
                         String selected_period = (String)lv_item.getItemAtPosition(adapter.listPosition);
                         if(current_state == WEEK){
                             String[] dates = selected_period.split(" - ");
-                            DateFormat df = new SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN);
+                            DateFormat df = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
                             try {
                                 Date s_date = df.parse(dates[0]);
                                 String start_date = String.format("%02d/%02d", s_date.getMonth()+1, s_date.getDate());
                                 Date e_date = df.parse(dates[1]);
                                 String end_date = String.format("%02d/%02d", e_date.getMonth()+1, e_date.getDate());
+                                tmp_calender.setTime(e_date);
+                                tmp_calender.add(Calendar.DATE, 1);
+                                e_date = tmp_calender.getTime();
+
                                 tv_period.setText(start_date+" - "+end_date);
                                 long diff = e_date.getTime() - s_date.getTime();
                                 for(int i = 0; i < dateList.size(); i+=1){
-                                    cal.setTime(dateList.get(i));
+                                    tmp_calender.setTime(dateList.get(i));
                                     if(dateList.get(i).getTime()-s_date.getTime() <= diff){
-                                        value[cal.get(Calendar.DAY_OF_WEEK)-2] += 1;
+                                        if((tmp_calender.get(Calendar.DAY_OF_WEEK)) == 1) { //SUNDAY
+                                            value[6] += 1;
+                                        }else {
+                                            value[tmp_calender.get(Calendar.DAY_OF_WEEK) - 2] += 1;
+                                        }
                                     }
                                 }
                             } catch (ParseException e) {
@@ -366,17 +423,10 @@ public class StoreManageOpentimeFragment extends Fragment {
                             }
                         }else if(current_state == MONTH){
                             tv_period.setText(selected_period);
-                            String month = selected_period.split(" ")[1];
-                            int month_num = 0;
-                            for(; month_num < 12; month_num++){
-                                if(month.equals(month_to_Chinese[month_num]+"月")){
-                                    break;
-                                }
-                            }
                             for(int i = 0; i < dateList.size(); i+=1){
-                                cal.setTime(dateList.get(i));
-                                if((cal.get(Calendar.MONTH)) == month_num){
-                                    value[month_num] += 1;
+                                tmp_calender.setTime(dateList.get(i));
+                                if(tmp_calender.get(Calendar.YEAR) == thisYear){
+                                    value[tmp_calender.get(Calendar.MONTH)] += 1;
                                 }
                             }
                         }
@@ -390,6 +440,7 @@ public class StoreManageOpentimeFragment extends Fragment {
                         }
                         chart_bar.clear();
                         setBarChart(value, max_value);
+                        tv_time_choose.setBackgroundResource(R.color.colorHalfTransparent);
                         break;
                 }
 
@@ -400,6 +451,7 @@ public class StoreManageOpentimeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+                tv_time_choose.setBackgroundResource(R.color.colorHalfTransparent);
             }
         });
         alertDialog.show();

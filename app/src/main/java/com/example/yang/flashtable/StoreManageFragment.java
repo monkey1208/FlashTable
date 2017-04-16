@@ -1,5 +1,6 @@
 package com.example.yang.flashtable;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.widget.Toolbar;
@@ -8,7 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import static com.example.yang.flashtable.AlertDialogController.LOGOUT;
 
 
 public class StoreManageFragment extends ListFragment {
@@ -31,13 +33,11 @@ public class StoreManageFragment extends ListFragment {
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_tb_toolbar);
         bar.setPadding(0,getStatusBarHeight(),0,0);
         bar.inflateMenu(R.menu.store_manage_menu);
+        final Context context = getContext();
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                //Logout
-                new AlertDialogController().warningConfirmDialog(getContext(), "提醒", "資料載入失敗，請重試");
-                Toast.makeText(v.getContext(),"Logout", Toast.LENGTH_SHORT).show();
-
+                new AlertDialogController().confirmCancelDialog(getContext(), "提醒", "確定要登出嗎？", LOGOUT, -1);
                 return true;
             }
         };
@@ -50,6 +50,7 @@ public class StoreManageFragment extends ListFragment {
     }
 
     String[] itemname ={
+
             "預約成功率",
             "開啟時段整理",
             "應付帳款明細",

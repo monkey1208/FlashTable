@@ -15,6 +15,10 @@
 
     <!-- Dialog Content strings -->
     <string name="dialog_cancel_success_reservation">商家正在為您安排桌位中\n確定要取消嗎？</string>
+    <string name="dialog_restaurant_refuse_reservation">餐廳已拒絕你的訂位</string>
+    <string name="dialog_restaurant_cancel_reservation">餐廳已取消你的訂位</string>
+    <string name="dialog_restaurant_no_response">店家無回應</string>
+
 
     <!-- Strings related to login -->
     <string name="login_as_customer">一般用戶登入</string>

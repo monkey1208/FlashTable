@@ -4,37 +4,26 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
-
-import static com.example.yang.flashtable.StoreManageSuccessFragment.tv_fail;
-import static com.example.yang.flashtable.StoreManageSuccessFragment.tv_rate;
-import static com.example.yang.flashtable.StoreManageSuccessFragment.tv_success;
-import static com.example.yang.flashtable.StoreManageSuccessFragment.tv_total;
 
 public class APIHandler {
     private Handler handler = new Handler();
@@ -230,36 +219,6 @@ public class APIHandler {
         }
     }
 
-    public static class ReservationSuccessDetail extends AsyncTask<Object, Void, Void> {
-        int sum = 0, total;
-        @Override
-        protected Void doInBackground(Object... params) {
-            HttpClient httpClient = new DefaultHttpClient();
-            try {
-                HttpGet getReservationInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ StoreMainActivity.storeInfo.id+"&verbose=1");
-                JSONArray reservationInfo = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(getReservationInfo)));
-                total = reservationInfo.length();
-                for (int i = 1; i < reservationInfo.length(); i++) {
-                    JSONObject jsonItem = reservationInfo.getJSONObject(i);
-                    String is_success = jsonItem.getString("is_succ");
-                    if(is_success.equals("true")){
-                        sum += 1;
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
 
-        @Override
-        protected void onPostExecute(Void _params){
-            DecimalFormat df2 = new DecimalFormat(".##");
-            tv_rate.setText(df2.format((sum+0.0)/total*100));
-            tv_total.setText(String.valueOf(total));
-            tv_fail.setText(String.valueOf(total-sum));
-            tv_success.setText(String.valueOf(sum));
-        }
-    }
 }
 
