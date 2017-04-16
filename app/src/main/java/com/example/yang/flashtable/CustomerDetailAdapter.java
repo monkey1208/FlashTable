@@ -63,7 +63,7 @@ public class CustomerDetailAdapter extends BaseAdapter {
         tv_shop.setText(reservations.get(position).shop);
         tv_location.setText(reservations.get(position).location);
         tv_time.setText(reservations.get(position).time);
-
+        iv_shop.setImageBitmap(reservations.get(position).image);
         boolean success = reservations.get(position).success;
         if (success) {
             iv_credit.setImageResource(R.drawable.customer_detail_credit_plus);

@@ -1,6 +1,7 @@
 package com.example.yang.flashtable;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import java.util.List;
 
@@ -22,9 +23,10 @@ public class CustomerDetailInfo {
     String shop_info;
     String category;
     int shop_id;
+    Bitmap image = null;
 
     public CustomerDetailInfo(String _shop, String _location, float _rating, String _time, int _discount,
-                              String _gift, boolean _success, int _persons, String _shop_info, String _category, int _shop_id) {
+                              String _gift, boolean _success, int _persons, String _shop_info, String _category, int _shop_id, Bitmap _image) {
         shop = _shop;
         location = _location;
         rating = _rating;
@@ -36,6 +38,7 @@ public class CustomerDetailInfo {
         shop_info = _shop_info;
         category = _category;
         shop_id = _shop_id;
+        image = _image;
     }
 
 
