@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -60,6 +61,7 @@ public class CustomerMainFragment extends Fragment {
     ListView lv_shops;
     SwipeRefreshLayout swipe_refresh_layout;
     List<CustomerRestaurantInfo> restaurant_list;
+    ImageButton ib_search;
     CustomerMainAdapter adapter;
     CustomerMainAdapter adjusted_adapter;
     SqlHandler sqlHandler = null;
@@ -89,7 +91,7 @@ public class CustomerMainFragment extends Fragment {
         lv_shops = (ListView) view.findViewById(R.id.customer_main_lv);
         swipe_refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.customer_main_srl);
 
-
+        ib_search = (ImageButton) view.findViewById(R.id.customer_main_ib_search);
     }
 
     private void initData() {
@@ -112,6 +114,14 @@ public class CustomerMainFragment extends Fragment {
                 R.array.customer_sp_sort, R.layout.customer_main_spinner_item);
         sort_adapter.setDropDownViewResource(R.layout.customer_main_spinner_dropdown_item);
         sp_sort.setAdapter(sort_adapter);
+
+        ib_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CustomerSearchActivity.class);
+                startActivity(intent);
+            }
+        });
 
         setSpinner();
         setRefreshLayout();
