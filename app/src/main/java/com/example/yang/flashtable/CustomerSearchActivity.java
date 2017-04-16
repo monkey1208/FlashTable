@@ -15,7 +15,6 @@ public class CustomerSearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.customer_search_activity);
-        getActionBar().setCustomView(R.layout.customer_search_bar);
         setupActionBar();
     }
 
@@ -23,6 +22,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
     private void setupActionBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             // Show the Up button in the action bar.
+            getSupportActionBar().setCustomView(R.layout.customer_search_bar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
