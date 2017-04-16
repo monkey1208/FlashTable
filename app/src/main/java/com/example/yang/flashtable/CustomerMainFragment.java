@@ -10,20 +10,18 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -56,18 +54,15 @@ public class CustomerMainFragment extends Fragment {
     View view;
     Spinner sp_dis, sp_food, sp_sort;
     String filter_mode = "all";
+    int filter_distance = 500;
     ArrayAdapter<CharSequence> dis_adapter, food_adapter, sort_adapter;
     ListView lv_shops;
     SwipeRefreshLayout swipe_refresh_layout;
     List<CustomerRestaurantInfo> restaurant_list;
     CustomerMainAdapter adapter;
     CustomerMainAdapter adjusted_adapter;
-    EditText et_search;
     SqlHandler sqlHandler = null;
     LocationManager locationManager;
-
-
-    // Textview in restaurant detail
 
     // Location
     final int FINE_LOCATION_CODE = 13;
@@ -81,11 +76,8 @@ public class CustomerMainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.customer_main_fragment, container, false);
         initView();
-        gpsPermission();
-        getShopStatus(false);
         initData();
-        setSpinner();
-        setRefreshLayout();
+
         return view;
     }
 
@@ -94,25 +86,18 @@ public class CustomerMainFragment extends Fragment {
         sp_food = (Spinner) view.findViewById(R.id.customer_main_sp_food);
         sp_sort = (Spinner) view.findViewById(R.id.customer_main_sp_sort);
         lv_shops = (ListView) view.findViewById(R.id.customer_main_lv);
-        et_search = (EditText) view.findViewById(R.id.customer_main_et_search);
         swipe_refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.customer_main_srl);
 
 
     }
 
     private void initData() {
+        gpsPermission();
+        getShopStatus(false);
+
         //restaurant_list = getListFromDB();
         //setListView(restaurant_list);
         dialog_builder = new DialogBuilder(getActivity());
-        et_search.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View view, int key_code, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && key_code == KeyEvent.KEYCODE_ENTER) {
-                    Toast.makeText(getActivity(), "Search " + et_search.getText(), Toast.LENGTH_SHORT).show();
-                    et_search.setText("");
-                }
-                return true;
-            }
-        });
 
         dis_adapter = ArrayAdapter.createFromResource(getActivity().getBaseContext(),
                 R.array.customer_sp_distance, R.layout.customer_main_spinner_item);
@@ -127,6 +112,8 @@ public class CustomerMainFragment extends Fragment {
         sort_adapter.setDropDownViewResource(R.layout.customer_main_spinner_dropdown_item);
         sp_sort.setAdapter(sort_adapter);
 
+        setSpinner();
+        setRefreshLayout();
     }
 
     private void setListView(List<CustomerRestaurantInfo> res_list) {
@@ -140,7 +127,7 @@ public class CustomerMainFragment extends Fragment {
             adjusted_adapter.clear();
         adapter = new CustomerMainAdapter(view.getContext(), res_list, current_location);
         adapter = sortAdapter(adapter, "default");
-        adjusted_adapter = filtAdapter(adapter, filter_mode);
+        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
         adapter.notifyDataSetChanged();
         lv_shops.setAdapter(adjusted_adapter);
         lv_shops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -166,19 +153,30 @@ public class CustomerMainFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i){
                     case 0://0.5km
+                        filter_distance = 500;
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
+                        lv_shops.setAdapter(adjusted_adapter);
                         break;
                     case 1:
+                        filter_distance = 1000;
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
+                        lv_shops.setAdapter(adjusted_adapter);
                         break;
                     case 2:
+                        filter_distance = 1500;
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
+                        lv_shops.setAdapter(adjusted_adapter);
                         break;
                     case 3:
+                        filter_distance = 2000;
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
+                        lv_shops.setAdapter(adjusted_adapter);
                         break;
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                System.out.println("NOONONO");
             }
         });
 
@@ -189,31 +187,31 @@ public class CustomerMainFragment extends Fragment {
                 switch (i){
                     case 0:
                         filter_mode = "all";
-                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
                         lv_shops.setAdapter(adjusted_adapter);
                         break;
                     case 1:
                         filter_mode = "chinese";
-                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
                         lv_shops.setAdapter(adjusted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
                     case 2:
                         filter_mode = "japanese";
-                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
 
                         lv_shops.setAdapter(adjusted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
                     case 3:
                         filter_mode = "usa";
-                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
                         lv_shops.setAdapter(adjusted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
                     case 4:
                         filter_mode = "korean";
-                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
                         lv_shops.setAdapter(adjusted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
@@ -232,23 +230,28 @@ public class CustomerMainFragment extends Fragment {
                 String sort_mode = "default";
                 switch (i){
                     case 0:
+                        sort_mode = "default";
                         break;
                     case 1:
+                        sort_mode = "time";
                         break;
                     case 2:
                         sort_mode = "distance";
                         adapter = sortAdapter(adapter, sort_mode);
-                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
                         lv_shops.setAdapter(adjusted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
                     case 3:
                         sort_mode = "rate";
+                        adapter = sortAdapter(adapter, sort_mode);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
+                        lv_shops.setAdapter(adjusted_adapter);
                         break;
                     case 4:
                         sort_mode = "discount";
                         adapter = sortAdapter(adapter, sort_mode);
-                        adjusted_adapter = filtAdapter(adapter, filter_mode);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
                         lv_shops.setAdapter(adjusted_adapter);
                         adapter.notifyDataSetChanged();
                         break;
@@ -261,39 +264,66 @@ public class CustomerMainFragment extends Fragment {
         });
     }
 
-    private CustomerMainAdapter filtAdapter(CustomerMainAdapter filt_adapter, String mode){
+    private CustomerMainAdapter filtAdapter(CustomerMainAdapter filt_adapter, String mode, int distance){
         List<CustomerRestaurantInfo> r_list = new ArrayList<CustomerRestaurantInfo>();
         switch (mode) {
             case "chinese":
                 for (int j = 0; j < filt_adapter.getCount(); j++) {
                     if (filt_adapter.getItem(j).category.equals("中式料理")) {
-                        r_list.add(filt_adapter.getItem(j));
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+
+                        if((int)my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
                     }
                 }
                 break;
             case "usa":
                 for (int j = 0; j < filt_adapter.getCount(); j++) {
                     if (filt_adapter.getItem(j).category.equals("美式料理")) {
-                        r_list.add(filt_adapter.getItem(j));
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if((int)my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
                     }
                 }
                 break;
             case "japanese":
                 for (int j = 0; j < filt_adapter.getCount(); j++) {
                     if (filt_adapter.getItem(j).category.equals("日式料理")) {
-                        r_list.add(filt_adapter.getItem(j));
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if((int)my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
                     }
                 }
                 break;
             case "korean":
                 for (int j = 0; j < filt_adapter.getCount(); j++) {
                     if (filt_adapter.getItem(j).category.equals("韓式料理")) {
-                        r_list.add(filt_adapter.getItem(j));
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if((int)my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
                     }
                 }
                 break;
             default:
-                return filt_adapter;
+                if(filt_adapter != null) {
+                    for (int j = 0; j < filt_adapter.getCount(); j++) {
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if ((int) my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
+                    }
+                }else{
+                    return filt_adapter;
+                }
         }
         return new CustomerMainAdapter(getActivity(), r_list, current_location);
     }
@@ -335,6 +365,18 @@ public class CustomerMainFragment extends Fragment {
                     }
                 });
                 break;
+            case "rate":
+                sort_adapter.sort(new Comparator<CustomerRestaurantInfo>() {
+                    @Override
+                    public int compare(CustomerRestaurantInfo info1, CustomerRestaurantInfo info2) {
+                        if(info1.rating > info2.rating) {
+                            return -1;
+                        }else{
+                            return 1;
+                        }
+                    }
+                });
+                break;
             case "default":
                 break;
 
@@ -351,7 +393,6 @@ public class CustomerMainFragment extends Fragment {
             //api_promotion = new ApiPromotion();
             //api_promotion.execute(24.05, 121.545);
         //}
-
     }
     // DB related functions
     private void openDB() {
@@ -375,7 +416,7 @@ public class CustomerMainFragment extends Fragment {
     private void showRestaurantDetail(final int position) {
 
         final CustomerRestaurantInfo info = adjusted_adapter.getItem(position);
-        CustomerMainShopActivity.ShowInfo showInfo = new CustomerMainShopActivity.ShowInfo(
+        CustomerShopActivity.ShowInfo showInfo = new CustomerShopActivity.ShowInfo(
                 info.name,
                 info.consumption,
                 info.discount,
@@ -385,7 +426,7 @@ public class CustomerMainFragment extends Fragment {
                 info.detailInfo.intro,
                 info.rating,
                 info.promotion_id);
-        Intent intent = new Intent(getActivity(), CustomerMainShopActivity.class);
+        Intent intent = new Intent(getActivity(), CustomerShopActivity.class);
         intent.putExtra("info", showInfo);
         intent.putExtra("shop_id", Integer.toString(info.id));
         startActivity(intent);
@@ -429,6 +470,8 @@ public class CustomerMainFragment extends Fragment {
 
                 if (!isGPSEnabled && !isNetworkEnabled) {
                     // no network provider is enabled
+                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    return null;
                 } else {
                     if (isNetworkEnabled) {
                         locationManager.requestLocationUpdates(

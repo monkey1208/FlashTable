@@ -11,7 +11,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
@@ -21,7 +20,7 @@ import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class CustomerMainShopActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
+public class CustomerShopActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
     private ShowInfo info;
     private String shop_id;
     TextView tv_show_name, tv_show_consumption, tv_show_discount, tv_show_offer, tv_show_location, tv_show_category, tv_show_intro;
@@ -39,7 +38,7 @@ public class CustomerMainShopActivity extends AppCompatActivity implements BaseS
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.customer_main_show);
+        setContentView(R.layout.customer_shop_activity);
 
         getInfo();
         initView();
@@ -87,7 +86,7 @@ public class CustomerMainShopActivity extends AppCompatActivity implements BaseS
         ll_comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CustomerMainShopActivity.this, CustomerCommentActivity.class);
+                Intent intent = new Intent(CustomerShopActivity.this, CustomerCommentActivity.class);
                 intent.putExtra("type", "shop");
                 intent.putExtra("shop_id", shop_id);
                 startActivity(intent);
@@ -145,7 +144,7 @@ public class CustomerMainShopActivity extends AppCompatActivity implements BaseS
                             @Override
                             public void clickEvent(boolean ok, int status) {
                                 if (ok) {
-                                    Intent intent = new Intent(CustomerMainShopActivity.this, CustomerReservationActivity.class);
+                                    Intent intent = new Intent(CustomerShopActivity.this, CustomerReservationActivity.class);
                                     intent.putExtra("promotion_id", info.promotion_id);
                                     intent.putExtra("discount", info.discount);
                                     intent.putExtra("offer", info.offer);

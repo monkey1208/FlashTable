@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -163,9 +164,10 @@ public class CustomerMainActivity extends AppCompatActivity
             navigate("main");
         } else if (id == R.id.customer_drawer_detail) {
             navigate("detail");
-
         } else if (id == R.id.customer_drawer_profile) {
             navigate("profile");
+        } else if (id == R.id.customer_drawer_logout) {
+            logout();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -198,4 +200,11 @@ public class CustomerMainActivity extends AppCompatActivity
         }
     }
 
+    private void logout() {
+        SharedPreferences preferences = this.getSharedPreferences("USER", MODE_PRIVATE);
+        preferences.edit().clear().apply();
+        Intent intent = new Intent(CustomerMainActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }
