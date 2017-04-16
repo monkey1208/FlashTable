@@ -1,20 +1,15 @@
 package com.example.yang.flashtable;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -76,8 +71,9 @@ public class StoreRecentFragment extends Fragment {
         //func_test();
         //init-------------
         v =  inflater.inflate(R.layout.store_recent_fregment, container, false);
-        TextView title = (TextView)v.findViewById(R.id.title);
-        title.setPadding(0, getStatusBarHeight(), 0, 0);
+        Toolbar bar = (Toolbar)v.findViewById(R.id.title);
+        bar.setPadding(0,getStatusBarHeight(), 0,0);
+        bar.inflateMenu(R.menu.store_recent_menu);
         handler = new Handler();
         waitingList = new ArrayList<>();
         //listview---------

@@ -14,6 +14,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import static com.example.yang.flashtable.AlertDialogController.LOGOUT;
+
 public class StoreManageBillFragment extends Fragment {
     public StoreManageBillFragment() {
         // Required empty public constructor
@@ -34,8 +37,7 @@ public class StoreManageBillFragment extends Fragment {
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                //Logout
-                Toast.makeText(v.getContext(),"Logout", Toast.LENGTH_SHORT).show();
+                new AlertDialogController().confirmCancelDialog(getContext(), "提醒", "確定要登出嗎？", LOGOUT, -1);
                 return true;
             }
         };

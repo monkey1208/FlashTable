@@ -86,9 +86,13 @@ public class FragmentController extends StoreMainActivity{
                 setActive(MANAGE);
                 break;
             case MANAGE_SUCCESS:
+                if(frag_stat[MANAGE_SUCCESS]!=DEAD)
+                    kill(MANAGE_SUCCESS);
                 setActive(MANAGE_SUCCESS);
                 break;
             case MANAGE_OPENTIME:
+                if(frag_stat[MANAGE_OPENTIME]!=DEAD)
+                    kill(MANAGE_OPENTIME);
                 setActive(MANAGE_OPENTIME);
                 break;
             case MANAGE_BILL:
@@ -98,6 +102,8 @@ public class FragmentController extends StoreMainActivity{
                 setActive(MANAGE_STATISTIC);
                 break;
             case MANAGE_RECORD:
+                if(frag_stat[MANAGE_RECORD]!=DEAD)
+                    kill(MANAGE_RECORD);
                 setActive(MANAGE_RECORD);
                 break;
             case MANAGE_DISCOUNT:
