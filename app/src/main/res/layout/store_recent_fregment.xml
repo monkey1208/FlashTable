@@ -3,16 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.yang.flashtable.StoreRecentFragment">
-    <TextView
+
+
+    <android.support.v7.widget.Toolbar
         android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="#80FF6600"
-        android:text="即時動態"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:gravity="center"
-        android:layout_alignParentTop="true"/>
+        android:layout_height="wrap_content"
+        android:background="@color/btBottomColor"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:text="即時動態"
+            android:textSize="22sp"
+            android:layout_gravity="center" />
+    </android.support.v7.widget.Toolbar>
+
     <ListView
         android:id="@+id/lv_recent"
         android:layout_width="match_parent"

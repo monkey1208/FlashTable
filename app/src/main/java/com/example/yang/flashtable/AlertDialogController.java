@@ -2,6 +2,8 @@ package com.example.yang.flashtable;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
@@ -12,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +37,8 @@ import java.util.List;
 
 import pl.droidsonroids.gif.GifImageView;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class AlertDialogController {
 
     private AlertDialog alertDialog;
@@ -42,10 +47,12 @@ public class AlertDialogController {
     public static final int NOTICE2_APPOINT = 1;
     public static final int NOTICELIST_APPOINT = 2;
     public static final int UNFINISHED_CONTENT = 3;
+    public static final int LOGOUT = 4;
     public int listPosition = -1;
     public int result = 0;
     private boolean first = true;
-
+    private String discountName, discountDes;
+    private int discountNameChoose = -1; //-1=no choose, 0=no discount, 1=have discount
 
 
     public AlertDialog discountDialog(final Context context, final StoreInfo storeInfo, final TextView tv_discount, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind){
@@ -139,9 +146,8 @@ public class AlertDialogController {
         }
     }
 
-    public void addDiscountDialog(final Context context){
-        //init view---------
-        View item = LayoutInflater.from(context).inflate(R.layout.store_add_discount_dialog, null);
+    public void addDiscountDialog(final Context context, boolean resumeStatus){
+        final View item = LayoutInflater.from(context).inflate(R.layout.store_add_discount_dialog, null);
         setTitle(context, "折扣優惠", 18);
 
         alertDialog = new AlertDialog.Builder(context)
@@ -150,21 +156,39 @@ public class AlertDialogController {
                 .create();
         setBackground(context);
         alertDialog.setCanceledOnTouchOutside(false);
+
+        final boolean[] no_discount = {true}; // ture= 暫無優惠, false= add a promotion with name/description
         final TextView tv_no_discount = (TextView)item.findViewById(R.id.store_add_discount_dialog_tv_no_discount);
+        final LinearLayout select_discount_name = (LinearLayout)item.findViewById(R.id.store_add_discount_ll_name);
+
         tv_no_discount.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 tv_no_discount.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
-                //discount = 100/101?;
+                select_discount_name.setBackgroundColor(context.getResources().getColor(R.color.colorHalfTransparent));
+                no_discount[0] = true;
+                discountNameChoose = 0;
+
             }
         });
+
         final TextView tv_discount_num = (TextView)item.findViewById(R.id.store_add_discount_dialog_tv_discount_num);
+        select_discount_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                select_discount_name.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
+                tv_no_discount.setBackgroundColor(context.getResources().getColor(R.color.white));
+                no_discount[0] = false;
+                discountNameChoose = 1;
+            }
+        });
         ImageButton ib_minus = (ImageButton)item.findViewById(R.id.store_add_discount_dialog_ib_minus);
         ib_minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int value = Integer.valueOf(tv_discount_num.getText().toString());
-                tv_discount_num.setText(String.valueOf(value-1));
+                if(value > 10)
+                    tv_discount_num.setText(String.valueOf(value-1));
             }
         });
         ImageButton ib_plus = (ImageButton)item.findViewById(R.id.store_add_discount_dialog_ib_plus);
@@ -172,11 +196,21 @@ public class AlertDialogController {
             @Override
             public void onClick(View v) {
                 int value = Integer.valueOf(tv_discount_num.getText().toString());
-                tv_discount_num.setText(String.valueOf(value+1));
+                if(value < 100)
+                    tv_discount_num.setText(String.valueOf(value+1));
             }
         });
 
         final EditText et_gift = (EditText) item.findViewById(R.id.store_add_discount_dialog_et_gift);
+        if(resumeStatus){
+            tv_discount_num.setText(discountName);
+            et_gift.setText(discountDes);
+            if(discountNameChoose == 0) {
+                tv_no_discount.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
+            }else if(discountNameChoose == 1){
+                select_discount_name.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
+            }
+        }
 
         ImageButton bt_confirm = (ImageButton)item.findViewById(R.id.store_add_discount_dialog_bt_confirm);
         bt_confirm.setOnClickListener(new View.OnClickListener() {
@@ -184,7 +218,11 @@ public class AlertDialogController {
             public void onClick(View v) {
                 String tv_name = tv_discount_num.getText().toString();
                 String gift_content = et_gift.getText().toString();
-                new APIHandler.Post_promotion().execute(tv_name, gift_content, StoreMainActivity.storeInfo.id);
+                if(no_discount[0]){ //暫無優惠
+                    new APIHandler.Post_promotion().execute("101", gift_content, StoreMainActivity.storeInfo.id);
+                }else{
+                    new APIHandler.Post_promotion().execute(tv_name, gift_content, StoreMainActivity.storeInfo.id);
+                }
                 alertDialog.dismiss();
             }
         });
@@ -194,12 +232,14 @@ public class AlertDialogController {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
+                discountName = tv_discount_num.getText().toString();
+                discountDes = et_gift.getText().toString();
                 confirmCancelDialog(context, "提醒", "填寫的內容尚未送出\n確定回到上一頁嗎？",UNFINISHED_CONTENT, -1);
             }
         });
 
         alertDialog.show();
-        setDialogSize(context, 0.8, 0.75);
+        setDialogSize(context, 0.78, 0.75);
     }
 
     public void warningConfirmDialog(final Context context, String title, String content){
@@ -304,18 +344,25 @@ public class AlertDialogController {
                         List<String> items = new ArrayList<String>();
                         items.add("未見該客戶");
                         items.add("店內已無空位");
-                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id));
                         listConfirmDialog(context,"取消原因",items,NOTICELIST_APPOINT, position);
                         break;
                     case NOTICELIST_APPOINT:
                         //TODO: send FAIL msg
-                        Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id));
                         new APIHandler().postSessionDeny( StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id);
                         List<Integer> deleteList = new ArrayList<Integer>();
                         deleteList.add(position);
-                        Log.e("Appoint Delete",Integer.toString(deleteList.get(0)));
                         StoreMainActivity.fragmentController.storeAppointFragment.removeItem(deleteList);
                         break;
+                    case  LOGOUT:
+                        SharedPreferences store_login_info = context.getSharedPreferences("USER", MODE_PRIVATE);
+                        store_login_info.edit().clear().apply();
+                        ((Activity)context).finish();
+                        Intent intent = new Intent(context, LoginActivity.class);
+                        context.startActivity(intent);
+                        break;
+                    case UNFINISHED_CONTENT:
+                        discountNameChoose = -1;
+
                 }
             }
         });
@@ -326,8 +373,7 @@ public class AlertDialogController {
                 alertDialog.dismiss();
                 switch (mode){
                     case UNFINISHED_CONTENT:
-                        //Resume the filled content
-                        addDiscountDialog(context);
+                        addDiscountDialog(context, true);
                         break;
                 }
             }
@@ -365,16 +411,6 @@ public class AlertDialogController {
             Toast.makeText(context, "Set alert dialog error", Toast.LENGTH_SHORT).show();
         }
     }
-    /*public static class Finish_session extends AsyncTask<String,Void,Void> {
-        int record_id;
-        @Override
-        protected Void doInBackground(String... params) {
 
-            return null;
-        }
 
-        @Override
-        protected void onPostExecute(Void _params){
-        }
-    }*/
 }

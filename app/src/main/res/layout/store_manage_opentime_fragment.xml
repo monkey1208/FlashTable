@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="#80FF6600"
+        android:background="@color/btBottomColor"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme">
 
