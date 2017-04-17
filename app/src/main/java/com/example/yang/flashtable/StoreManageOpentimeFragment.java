@@ -410,7 +410,8 @@ public class StoreManageOpentimeFragment extends Fragment {
                                 long diff = e_date.getTime() - s_date.getTime();
                                 for(int i = 0; i < dateList.size(); i+=1){
                                     tmp_calender.setTime(dateList.get(i));
-                                    if(dateList.get(i).getTime()-s_date.getTime() <= diff){
+                                    long time_diff = dateList.get(i).getTime()-s_date.getTime();
+                                    if(time_diff <= diff && time_diff >= 0 ){
                                         if((tmp_calender.get(Calendar.DAY_OF_WEEK)) == 1) { //SUNDAY
                                             value[6] += 1;
                                         }else {

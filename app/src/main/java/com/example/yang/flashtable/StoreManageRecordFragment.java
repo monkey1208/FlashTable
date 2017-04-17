@@ -148,6 +148,7 @@ public class StoreManageRecordFragment extends ListFragment {
                 StoreMainActivity.storeInfo.setSuccess_record_num(sum);
             }else{
                 Log.e("record", "remain");
+                adapter.notifyDataSetChanged();
             }
         }
     }
