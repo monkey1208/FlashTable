@@ -148,11 +148,14 @@ public class StoreHomeFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.v(LOG_TAG, "onActivityResult(): requestCode = " + requestCode);
+        Log.d("Session", "onActivityResult(): requestCode = " + requestCode);
+        Log.d("Session","GetBundle");
         if (requestCode == SCAN_REQUEST_ZXING_SCANNER) {
             if (resultCode == Activity.RESULT_OK) {
+                Log.d("Session","GetBundle");
                 String mResult = data.getStringExtra(QrcodeScannerActivity.SCAN_RESULT);
-                Toast.makeText(getContext(), mResult, Toast.LENGTH_SHORT).show();
+                String session_id =  data.getExtras().getString("session_id");
+                StoreMainActivity.fragmentController.storeAppointFragment.deleteSession(session_id);
             }
         } else {
             IntentResult result = IntentIntegrator.parseActivityResult(
