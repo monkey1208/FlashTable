@@ -31,7 +31,6 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
     ImageView iv_shop;
     TextView tv_shop, tv_price, tv_distance, tv_discount, tv_gift;
     RatingBar rb_rating;
-    LinearLayout ll_reserve;
     Location current_location;
 
     public CustomerMainAdapter(Context context, List _objects, LatLng current_latlng) {
@@ -60,10 +59,9 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
             rb_rating = (RatingBar) convertView.findViewById(R.id.customer_main_rb_rating);
             rb_rating.setRating(info.rating);
             rb_rating.setIsIndicator(true);
-            ll_reserve = (LinearLayout) convertView.findViewById(R.id.customer_main_ll_reserve);
             iv_shop.setImageBitmap(info.getImage());
             tv_shop.setText(info.name);
-            tv_price.setText("均消$"+Integer.toString(info.consumption));
+            tv_price.setText("均消"+Integer.toString(info.consumption)+"元");
             int discount = info.discount;
             if( discount == 101 ||discount == 100) {
                 tv_discount.setText("暫無折扣");
@@ -95,28 +93,6 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
 
     private void setView(final int position) {
         rb_rating.setIsIndicator(true);
-        ll_reserve.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog_builder.dialogEvent("請選擇人數", "personsPicker",
-                        new DialogEventListener() {
-                            @Override
-                            public void clickEvent(boolean ok, int status) {
-                                if (ok) {
-                                    Intent intent = new Intent(c, CustomerReservationActivity.class);
-                                    intent.putExtra("promotion_id", getItem(position).promotion_id);
-                                    intent.putExtra("discount", getItem(position).discount);
-                                    intent.putExtra("offer", getItem(position).offer);
-                                    intent.putExtra("persons", status);
-                                    intent.putExtra("shop_name", getItem(position).name);
-                                    intent.putExtra("rating", Float.toString(getItem(position).rating));
-                                    intent.putExtra("shop_location", getItem(position).detailInfo.address);
-                                    intent.putExtra("shop_id", Integer.toString(getItem(position).id));
-                                    c.startActivity(intent);
-                                }
-                            }
-                        });
-            }
-        });
+
     }
 }

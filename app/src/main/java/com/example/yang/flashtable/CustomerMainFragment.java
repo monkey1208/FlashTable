@@ -127,6 +127,8 @@ public class CustomerMainFragment extends Fragment {
 
         setSpinner();
         setRefreshLayout();
+
+        sp_dis.setSelection(3);
     }
 
     private void setListView(List<CustomerRestaurantInfo> res_list) {
