@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -59,6 +60,7 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
     private static ZXingScannerView mScannerView;
     private static Fragment userInfoFragment;
     private String status;
+    private static String session_id;
     private static String record_id = "2";
     private static FragmentManager fragmentManager;
     private static String name, arrive_time, promotionName, promotionDes;
@@ -113,7 +115,7 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
     @Override
     public void handleResult(Result result) {
         String session = result.toString();
-        String session_id = session.substring(session.indexOf("=")+1);
+        session_id = session.substring(session.indexOf("=")+1);
 
         mScannerView.stopCamera();
         new Finish_Session().execute(session_id);
@@ -409,8 +411,13 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
             ib_comfirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Intent intent = getActivity().getIntent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("session_id",session_id);
+                    intent.putExtras(bundle);
+                    getActivity().setResult(RESULT_OK,intent);
                     fragmentManager.beginTransaction().remove(userInfoFragment).commit();
-                    mScannerView.startCamera();
+                    getActivity().finish();
                 }
             });
             return view;

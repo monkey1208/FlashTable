@@ -179,4 +179,15 @@ public class StoreAppointFragment extends ListFragment {
     public int getSize(){
         return list.size();
     }
+    public void deleteSession(String session_id){
+        for(int i=0;i<list.size();i++){
+            if(Integer.toString(list.get(i).id).equals(session_id)) {
+                Log.d("Session",session_id);
+                list.remove(i);
+                adapter.notifyDataSetChanged();
+                break;
+            }
+        }
+        return;
+    }
 }
