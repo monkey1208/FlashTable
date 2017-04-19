@@ -1,25 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:paddingStart="20dp"
-    android:paddingEnd="20dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+    android:background="@color/white"
+    android:elevation="5dp">
 
-    <ImageView
-        android:id="@+id/customer_main_iv_shop"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/ic_launcher"
-        android:layout_marginEnd="15dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="130dp">
+        <ImageView
+            android:id="@+id/customer_main_iv_shop"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher"/>
+
+        <RatingBar
+            android:id="@+id/customer_main_rb_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            style="@style/RatingBarSmall"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="2dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"/>
+
+        <TextView
+            android:id="@+id/customer_main_tv_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@color/moreTransparentBlack"
+            android:text="@string/customer_main_price"
+            android:textSize="12sp"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -42,45 +73,17 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:textSize="15sp"
+                android:textColor="@color/textColorLighter"
                 android:text="@string/customer_main_distance"/>
 
-            <ImageView
-                android:layout_toStartOf="@id/customer_main_tv_distance"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:src="@drawable/ic_location_red"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="5dp"/>
-
         </RelativeLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="5dp">
-            <RatingBar
-                android:id="@+id/customer_main_rb_rating"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                style="@style/RatingBarSmall"
-                android:layout_marginEnd="5dp"/>
-
-            <TextView
-                android:id="@+id/customer_main_tv_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/customer_main_price"
-                android:textSize="12sp"
-                android:textColor="@color/textColorLighter"/>
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="5dp">
+            android:layout_marginBottom="2dp">
 
             <ImageView
                 android:layout_width="15dp"
@@ -94,7 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:textColor="@color/textColorOrange"/>
+                android:textColor="@color/textColorLight"/>
             
         </LinearLayout>
 
@@ -117,34 +120,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:textColor="@color/textColorOrange"/>
+                android:textColor="@color/textColorLight"/>
             
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/customer_main_ll_reserve"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/customer_button_orange"
-            android:padding="5dp"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="17dp"
-                android:src="@drawable/ic_customer_drawer_reservation"
-                android:tint="@color/white"
-                android:layout_marginEnd="5dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/customer_main_reserve"
-                android:textColor="@color/white"
-                android:textSize="14sp"/>
-
         </LinearLayout>
         
     </LinearLayout>
+
 </LinearLayout>

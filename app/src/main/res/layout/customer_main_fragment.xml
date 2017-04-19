@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/lightgray"
     tools:context="com.example.yang.flashtable.CustomerMainActivity">
 
     <!-- Header -->
@@ -88,11 +89,17 @@
             android:id="@+id/customer_main_lv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
-            android:dividerHeight="2dp"
-            android:divider="@color/lightgray"/>
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:clipToPadding="false"
+            android:background="@color/lightgray"
+            android:dividerHeight="10dp"
+            android:divider="@color/lightgray" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </LinearLayout>
+
 

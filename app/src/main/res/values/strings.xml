@@ -90,6 +90,16 @@
     <string name="customer_main_info">店家說明</string>
     <string name="customer_main_info_content">詳細內容</string>
     <string name="customer_main_comments">評價及評論</string>
+    <string name="customer_main_acknowledge">預約服務須知</string>
+    <string name="customer_main_acknowledge_content">* 本預約需在規定時間15分鐘（依照該店家規定）以內到達該店家領位。\n
+        * 與預約者共同前往消費者，須支付店內最低消費金額，每名：200元（依照該店家規定）。\n
+        * 為保障您的權益，請於到達現場時，立即要求領位，出示行動裝置之預約認證頁面，並在店員面前完成QR-code掃描。\n
+        * 預約客人需全數到齊，若未在規定時間內到齊，該店家有權取消此預約。\n
+        * 本預約僅限內用使用，不提供餐點外帶。\n
+        * 所有折扣優惠依照店家設定的為主，如有任何問題應與店家進行協調。與平台無關。\n
+        * 因交通狀況較難隨時掌握，若您擔心無法在規定時間內趕到，建議您先以電話告知店家以保留以預約之桌位。\n
+        * 餐點菜色依店家實際提供為主，平台照片僅供參考。\n
+        * 若有其他疑問，請聯繫客服。</string>
     <string-array name="customer_sp_sort">
         <item>預設排序</item>
         <item>依最新</item>
@@ -169,6 +179,10 @@
     <!-- Strings related to customer rating -->
     <string name="customer_rating_title">評價及評論</string>
     <string name="customer_rating_hint">留下好評吧&#8230;</string>
+
+    <!-- Strings related to customer search -->
+    <string name="customer_search_title">搜尋餐廳</string>
+    <string name="customer_search_hint">請輸入搜尋餐廳</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
