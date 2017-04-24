@@ -49,15 +49,26 @@ public class BackGroundWorker {
     }
     public class APIRequestUpdate extends AsyncTask<String, Void, Void> {
         private List<Integer> request_id = new ArrayList<>();
-        private List<Thread_request_detail> threadList = new ArrayList<>();
         @Override
         protected Void doInBackground(String... params) {
             final HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_requests?shop_id="+params[0]);
+                HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_requests?shop_id="+params[0]+"&verbose=1");
                 final JSONArray responseRequest = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(get)));
-                for(int i=1;i<responseRequest.length();i++)
-                    request_id.add(responseRequest.getJSONObject(i).getInt("request_id"));
+                for(int i=1;i<responseRequest.length();i++) {
+                    JSONObject object = responseRequest.getJSONObject(i);
+                    int id  = object.getInt("request_id");
+                    int promotion_id = object.getInt("promotion_id");
+                    int user_id = object.getInt("user_id");
+                    String user_account = object.getString("user_account");
+                    int number = object.getInt("number");
+                    int point = object.getInt("user_point");
+                    CustomerAppointInfo newInfo = new CustomerAppointInfo(id,user_account,point,number);
+                    if(id>StoreMainActivity.fragmentController.storeRecentFragment.getRequestIDupper()) {
+                        request_id.add(id);
+                        newInfoList.add(newInfo);
+                    }
+                }
                 Log.e("Update","Get "+Integer.toString(request_id.size())+" new info");
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -68,81 +79,13 @@ public class BackGroundWorker {
         }
         @Override
         protected void onPostExecute(Void _params) {
-            ThreadManager manager = new ThreadManager(request_id);
-            manager.start();
-        }
-    }
-    private class ThreadManager extends Thread{
-        private List<Integer> request_id = new ArrayList<>();
-        private List<Thread_request_detail> threadList = new ArrayList<>();
-        public ThreadManager(List<Integer> request_id){
-            this.request_id = request_id;
-        }
-        @Override
-        public void run() {
-            super.run();
             Collections.sort(request_id);
-            for(int i=0;i<request_id.size();i++)
-                threadList.add(new Thread_request_detail(request_id.get(i)));
-            for(int i=0;i<threadList.size();i++)
-                threadList.get(i).start();
-            Log.e("Update",Integer.toString(threadList.size())+" threads running");
-            for(int i=0;i<threadList.size();i++) {
-                try {
-                    threadList.get(i).join();
-                } catch (InterruptedException e) {
-                    Log.e("Recent Update Thread", Integer.toString(threadList.get(i).request_id));
-                    e.printStackTrace();
-                }
-            }
-            Log.e("Update","Got "+Integer.toString(newInfoList.size())+" new info");
             if(request_id.size()>0)
                 StoreMainActivity.fragmentController.storeRecentFragment.setRequestIDupper(request_id.get(request_id.size()-1));
             StoreMainActivity.fragmentController.storeRecentFragment.addItem(newInfoList);
             newInfoList.clear();
+            request_id.clear();
         }
     }
-    private class Thread_request_detail extends Thread{
-        private int request_id;
-        public Thread_request_detail(int id){
-            this.request_id = id;
-        }
-        @Override
-        public void run() {
-            super.run();
-            Log.e("Update","Before getting Detail");
-            getRequestDetail(request_id);
-            Log.e("Update","After getting Detail");
-        }
-    }
-    public void getRequestDetail(int id){
-        HttpClient httpClient = new DefaultHttpClient();
-        try {
-            HttpGet getRequestInfo = new HttpGet("https://flash-table.herokuapp.com/api/request_info?request_id="+Integer.toString(id));
-            JSONObject requestInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getRequestInfo)));
-            int number = requestInfo.getInt("number");
-            String userId = requestInfo.getString("user_id");
-            HttpGet getUserInfo = new HttpGet("https://flash-table.herokuapp.com/api/user_info?user_id="+userId);
-            JSONObject userInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getUserInfo)));
-            int honor = userInfo.getInt("point");
-            String account = userInfo.getString("account");
-            CustomerAppointInfo newInfo = new CustomerAppointInfo(id,account,honor,number);
-            if(newInfo.id > StoreMainActivity.fragmentController.storeRecentFragment.getRequestIDupper()) {
-                synchronized (newInfoList) {
-                    newInfoList.add(newInfo);
-                }
-            }
-            Log.e("Update","No Exception Getting Detail");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (HttpResponseException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            return;
-        }
-    }
+
 }

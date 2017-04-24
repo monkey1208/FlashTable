@@ -181,13 +181,12 @@ public class StoreHomeFragment extends Fragment {
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_promotions?shop_id=" + params[0]);
+                HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_promotions?shop_id=" + params[0]+"&verbose=1");
                 JSONArray responsePromotion = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(get)));
                 Log.d("NO~~~", Integer.toString(responsePromotion.length()));
                 for (int i = 1; i < responsePromotion.length(); i++) {
-                    int id = responsePromotion.getJSONObject(i).getInt("promotion_id");
-                    HttpGet getPromotion = new HttpGet("https://flash-table.herokuapp.com/api/promotion_info?promotion_id=" + Integer.toString(id));
-                    JSONObject promotion = new JSONObject(new BasicResponseHandler().handleResponse(httpClient.execute(getPromotion)));
+                    JSONObject promotion = responsePromotion.getJSONObject(i);
+                    int id = promotion.getInt("promotion_id");
                     int discount = promotion.getInt("name");
                     String description = promotion.getString("description");
                     int count = promotion.getInt("n_succ");
