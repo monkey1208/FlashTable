@@ -1,16 +1,8 @@
 package com.example.yang.flashtable;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.view.ContextThemeWrapper;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -34,13 +26,12 @@ public class DialogBuilder {
 
     public DialogBuilder(Context _context) {
         context = _context;
-        init();
     }
 
-    private void init() {
+    private void initNormal() {
 
         dialog = new Dialog(context, R.style.Dialog);
-        dialog.setContentView(R.layout.alert_dialog);
+        dialog.setContentView(R.layout.customer_alert_dialog);
 
         tv_content = (TextView) dialog.findViewById(R.id.alert_tv_content);
         ll_content = (LinearLayout) dialog.findViewById(R.id.alert_ll_content);
@@ -74,45 +65,50 @@ public class DialogBuilder {
     }
 
     public void dialogEvent(String _content, String _mode, final DialogEventListener event_listener) {
-        bt_submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (event_listener != null)
-                    event_listener.clickEvent(true, 0);
-                dialog.hide();
-            }
-        });
-        bt_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (event_listener != null)
-                    event_listener.clickEvent(false, 0);
-                dialog.hide();
-            }
-        });
-        tv_content.setText(_content);
+        if (_mode.equals("chooseImage")) {
 
-        switch (_mode) {
-            case "normal":
-                if (ll_persons.getParent() != null) ll_content.removeView(ll_persons);
-                if (bt_cancel.getParent() != null) ll_buttons.removeView(bt_cancel);
-                break;
-            case "withCancel":
-                if (ll_persons.getParent() != null) ll_content.removeView(ll_persons);
-                if (bt_cancel.getParent() == null) ll_buttons.addView(bt_cancel);
-                break;
-            case "personsPicker":
-                if (ll_persons.getParent() == null) ll_content.addView(ll_persons);
-                if (bt_cancel.getParent() == null) ll_buttons.addView(bt_cancel);
-                bt_submit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (event_listener != null)
-                            event_listener.clickEvent(true, Integer.parseInt(tv_persons.getText().toString()));
-                        dialog.hide();
-                    }
-                });
-                break;
+        } else {
+            initNormal();
+            bt_submit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (event_listener != null)
+                        event_listener.clickEvent(true, 0);
+                    dialog.hide();
+                }
+            });
+            bt_cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (event_listener != null)
+                        event_listener.clickEvent(false, 0);
+                    dialog.hide();
+                }
+            });
+            tv_content.setText(_content);
+
+            switch (_mode) {
+                case "normal":
+                    if (ll_persons.getParent() != null) ll_content.removeView(ll_persons);
+                    if (bt_cancel.getParent() != null) ll_buttons.removeView(bt_cancel);
+                    break;
+                case "withCancel":
+                    if (ll_persons.getParent() != null) ll_content.removeView(ll_persons);
+                    if (bt_cancel.getParent() == null) ll_buttons.addView(bt_cancel);
+                    break;
+                case "personsPicker":
+                    if (ll_persons.getParent() == null) ll_content.addView(ll_persons);
+                    if (bt_cancel.getParent() == null) ll_buttons.addView(bt_cancel);
+                    bt_submit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (event_listener != null)
+                                event_listener.clickEvent(true, Integer.parseInt(tv_persons.getText().toString()));
+                            dialog.hide();
+                        }
+                    });
+                    break;
+            }
         }
         dialog.show();
     }

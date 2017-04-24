@@ -23,6 +23,8 @@ android {
 repositories {
     maven { url "https://jitpack.io" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+
+    jcenter()
 }
 
 dependencies {
@@ -54,4 +56,5 @@ dependencies {
     compile files('libs/httpclient-4.2.3.jar')
     compile files('libs/httpcore-4.2.3.jar')
 
+    compile 'com.isseiaoki:simplecropview:1.1.4'
 }

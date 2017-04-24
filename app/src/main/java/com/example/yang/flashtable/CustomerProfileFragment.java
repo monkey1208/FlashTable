@@ -1,14 +1,25 @@
 package com.example.yang.flashtable;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.SyncStateContract;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +39,9 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
+import java.io.File;
+import java.io.FilterInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import static android.app.Activity.RESULT_OK;
@@ -36,6 +49,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by CS on 2017/3/23.
+ * This class uses the library in repository SimpleCropView
  */
 
 public class CustomerProfileFragment extends Fragment {
@@ -51,6 +65,8 @@ public class CustomerProfileFragment extends Fragment {
     Button bt_edit, bt_about_credits;
 
     private String credits;
+
+    private int GET_IMAGE_GALLERY = 0, GET_IMAGE_CAMERA = 1, CROP_IMAGE = 2;
 
     @Nullable
     @Override
@@ -100,8 +116,13 @@ public class CustomerProfileFragment extends Fragment {
         iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, GET_IMAGE_GALLERY);
             }
         });
+        iv_avatar.setImageBitmap(getRoundedShape(((BitmapDrawable) iv_avatar.getDrawable()).getBitmap()));
         bt_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,12 +130,105 @@ public class CustomerProfileFragment extends Fragment {
         });
     }
 
+    // Functions related to getting image
+
+    // Receive results from other activities
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == GET_IMAGE_GALLERY
+                && resultCode == Activity.RESULT_OK) {
+            // Get image from gallery
+            String path = getPathFromCameraData(data, this.getActivity());
+            if (path != null) {
+                // Start cropping intent
+                Intent intent = new Intent(getActivity(), CustomerCropProfileActivity.class);
+                intent.putExtra("avatar", path);
+                startActivityForResult(intent, CROP_IMAGE);
+            }
+        }
+        else if (requestCode == CROP_IMAGE
+                && resultCode == Activity.RESULT_OK) {
+            // Get image from crop; finish profile pic change
+            String path = data.getStringExtra("path");
+
+            Bitmap avatar = readImage(path);
+            if (avatar == null) {
+                Toast.makeText(getActivity(), "Error", Toast.LENGTH_LONG).show();
+                Log.i("CroppedImagePath", path);
+            }
+            else iv_avatar.setImageBitmap(getRoundedShape(avatar));
+        }
+    }
+
+    // Read bitmap from file
+    private Bitmap readImage(String path) {
+        BitmapFactory.Options options;
+        try {
+            Bitmap bitmap = BitmapFactory.decodeFile(path);
+            return bitmap;
+        } catch (OutOfMemoryError e) {
+            try {
+                options = new BitmapFactory.Options();
+                options.inSampleSize = 2;
+                Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+                return bitmap;
+            } catch(Exception i) {
+                Log.i("ImageDecodeException", i.toString());
+            }
+        }
+        return null;
+
+    }
+
+    // Trim rounded shape from image
+    public Bitmap getRoundedShape(Bitmap scaleBitmapImage) {
+
+        int targetWidth = 200;
+        int targetHeight = 200;
+        Bitmap targetBitmap = Bitmap.createBitmap(targetWidth,
+                targetHeight,Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(targetBitmap);
+        Path path = new Path();
+        path.addCircle(((float) targetWidth - 1) / 2,
+                ((float) targetHeight - 1) / 2,
+                (Math.min(((float) targetWidth),
+                        ((float) targetHeight)) / 2),
+                Path.Direction.CCW);
+
+        canvas.clipPath(path);
+        Bitmap sourceBitmap = scaleBitmapImage;
+        canvas.drawBitmap(sourceBitmap,
+                new Rect(0, 0, sourceBitmap.getWidth(),
+                        sourceBitmap.getHeight()),
+                new Rect(0, 0, targetWidth,
+                        targetHeight), null);
+        return targetBitmap;
+    }
+
+    // Get image path
+    public static String getPathFromCameraData(Intent data, Context context) {
+        Uri selectedImage = data.getData();
+        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+        Cursor cursor = context.getContentResolver().query(selectedImage,
+                filePathColumn, null, null, null);
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        cursor.close();
+        return picturePath;
+    }
+
+    // Get user info
+
     private void getUserInfo() {
         user = this.getActivity().getSharedPreferences("USER", MODE_PRIVATE);
         userID = user.getString("userID", "");
         username = user.getString("username", "");
     }
 
+    // APIs
+
+    // API for getting credits
     class CustomerAPICredits extends AsyncTask<String, Void, String> {
         private String status = null;
 

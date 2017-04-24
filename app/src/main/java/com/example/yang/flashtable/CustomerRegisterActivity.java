@@ -195,16 +195,22 @@ public class CustomerRegisterActivity extends AppCompatActivity {
         return (!matcher.find() && !cellphone.equals(""));
     }
 
+    // Check for errors, then execute register
     private void customerRegister() {
+        int fail = 0;
+
         String account = et_username.getText().toString();
         String password = et_password.getText().toString();
         String password_again = et_password_again.getText().toString();
+        if (et_cellphone_2.getText().toString().equals("")) {
+            dialog_builder.dialogEvent(getResources().getString(R.string.customer_register_error_cellphone),
+                    "normal", null);
+            return;
+        }
         String cellphone =
                 "+886-" + et_cellphone_2.getText().toString().substring(1)
                 + "-" + et_cellphone_3.getText().toString()
                 + "-" + et_cellphone_3.getText().toString();
-
-        int fail = 0;
 
         if (!isAccountValid(account))
             fail = 1;

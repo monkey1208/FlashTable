@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black">
+
+    <com.isseiaoki.simplecropview.CropImageView
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/customer_profile_cv_avatar"
+        android:layout_weight="1"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        custom:scv_crop_mode="square"
+        custom:scv_background_color="@color/black"
+        custom:scv_handle_color="@color/textColorOrange"
+        custom:scv_guide_color="@color/textColorOrange"
+        custom:scv_overlay_color="@color/transparentWhite"
+        custom:scv_frame_color="@color/textColorOrange"
+        custom:scv_handle_size="14dp"
+        custom:scv_touch_padding="8dp"
+        custom:scv_handle_show_mode="show_always"
+        custom:scv_guide_show_mode="show_always"
+        custom:scv_min_frame_size="50dp"
+        custom:scv_frame_stroke_weight="1dp"
+        custom:scv_guide_stroke_weight="1dp"/>
+
+    <Button
+        android:id="@+id/customer_profile_bt_avatar_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/CustomerOrangeButton"
+        android:layout_alignParentBottom="true"
+        android:text="@string/submit"/>
+
+</RelativeLayout>
