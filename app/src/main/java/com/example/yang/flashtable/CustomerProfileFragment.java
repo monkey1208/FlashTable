@@ -39,10 +39,13 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
@@ -67,6 +70,7 @@ public class CustomerProfileFragment extends Fragment {
     private String credits;
 
     private int GET_IMAGE_GALLERY = 0, GET_IMAGE_CAMERA = 1, CROP_IMAGE = 2;
+    private String picture_path;
 
     @Nullable
     @Override
@@ -116,10 +120,32 @@ public class CustomerProfileFragment extends Fragment {
         iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, GET_IMAGE_GALLERY);
+                dialog_builder.dialogEvent("", "imagePicker",
+                        new DialogEventListener() {
+                            @Override
+                            public void clickEvent(boolean ok, int status) {
+                                if (ok) {
+                                    if (status == 1) {
+                                        Intent intent = new Intent(
+                                                Intent.ACTION_PICK,
+                                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                        startActivityForResult(intent, GET_IMAGE_GALLERY);
+                                    } else {
+                                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                                        String imageFileName = timeStamp + ".jpg";
+                                        File storageDir = Environment.getExternalStoragePublicDirectory(
+                                                Environment.DIRECTORY_PICTURES);
+                                        picture_path = storageDir.getAbsolutePath() + "/" + imageFileName;
+                                        File file = new File(picture_path);
+                                        Uri outputFileUri = Uri.fromFile(file);
+                                        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                                        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+                                        startActivityForResult(intent, GET_IMAGE_CAMERA);
+                                    }
+                                }
+                            }
+                        });
+
             }
         });
         iv_avatar.setImageBitmap(getRoundedShape(((BitmapDrawable) iv_avatar.getDrawable()).getBitmap()));
@@ -138,13 +164,25 @@ public class CustomerProfileFragment extends Fragment {
         if (requestCode == GET_IMAGE_GALLERY
                 && resultCode == Activity.RESULT_OK) {
             // Get image from gallery
-            String path = getPathFromCameraData(data, this.getActivity());
+            String path = getPathFromGalleryData(data, this.getActivity());
             if (path != null) {
                 // Start cropping intent
                 Intent intent = new Intent(getActivity(), CustomerCropProfileActivity.class);
                 intent.putExtra("avatar", path);
                 startActivityForResult(intent, CROP_IMAGE);
             }
+        }
+        else if (requestCode == GET_IMAGE_CAMERA
+                && resultCode == Activity.RESULT_OK) {
+            // Get image from camera
+            File imgFile = new  File(picture_path);
+            if(imgFile.exists()) {
+                String path = imgFile.getAbsolutePath();
+                Intent intent = new Intent(getActivity(), CustomerCropProfileActivity.class);
+                intent.putExtra("avatar", path);
+                startActivityForResult(intent, CROP_IMAGE);
+            }
+
         }
         else if (requestCode == CROP_IMAGE
                 && resultCode == Activity.RESULT_OK) {
@@ -205,8 +243,8 @@ public class CustomerProfileFragment extends Fragment {
         return targetBitmap;
     }
 
-    // Get image path
-    public static String getPathFromCameraData(Intent data, Context context) {
+    // Get image path from gallery
+    private static String getPathFromGalleryData(Intent data, Context context) {
         Uri selectedImage = data.getData();
         String[] filePathColumn = { MediaStore.Images.Media.DATA };
         Cursor cursor = context.getContentResolver().query(selectedImage,

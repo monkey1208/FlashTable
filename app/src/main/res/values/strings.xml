@@ -137,6 +137,9 @@
     <string name="customer_profile_comments">我的評論</string>
     <string name="customer_profile_edit">編輯</string>
     <string name="customer_profile_about_credit">了解信譽分數</string>
+    <string name="customer_profile_pick_image">頭像選擇</string>
+    <string name="customer_profile_camera">相機</string>
+    <string name="customer_profile_gallery">相簿</string>
 
     <!-- Strings related to customer detail -->
     <string name="customer_detail_title">預約明細</string>

@@ -23,7 +23,7 @@
         <item
             android:id="@+id/customer_drawer_logout"
             android:title="@string/drawer_logout"
-            android:icon="@drawable/ic_comments"/>
+            android:icon="@drawable/ic_logout"/>
 
         <item
             android:id="@+id/customer_drawer_none"

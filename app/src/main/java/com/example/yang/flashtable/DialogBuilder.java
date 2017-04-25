@@ -15,14 +15,19 @@ import android.widget.TextView;
 public class DialogBuilder {
 
     private Context context;
-
     private Dialog dialog;
+    private DialogEventListener event_listener;
+
+    // Views in normal mode
     private TextView tv_content, tv_persons;
     private Button bt_submit, bt_cancel;
     private LinearLayout ll_content, ll_buttons, ll_persons;
     private ImageButton ib_add, ib_minus;
-    private DialogEventListener event_listener;
     private View.OnClickListener persons_add, persons_minus;
+
+    // Views in image picker mode
+    private LinearLayout image_ll_camera, image_ll_gallery;
+    private Button image_bt_cancel;
 
     public DialogBuilder(Context _context) {
         context = _context;
@@ -62,29 +67,65 @@ public class DialogBuilder {
         ib_add.setOnClickListener(persons_add);
         ib_minus.setOnClickListener(persons_minus);
 
+        bt_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (event_listener != null)
+                    event_listener.clickEvent(true, 0);
+                dialog.hide();
+            }
+        });
+        bt_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (event_listener != null)
+                    event_listener.clickEvent(false, 0);
+                dialog.hide();
+            }
+        });
     }
 
-    public void dialogEvent(String _content, String _mode, final DialogEventListener event_listener) {
-        if (_mode.equals("chooseImage")) {
+    private void initImagePicker() {
+        dialog = new Dialog(context, R.style.Dialog);
+        dialog.setContentView(R.layout.customer_choose_image_dialog);
 
+        image_ll_camera = (LinearLayout) dialog.findViewById(R.id.alert_image_ll_camera);
+        image_ll_gallery = (LinearLayout) dialog.findViewById(R.id.alert_image_ll_gallery);
+        image_bt_cancel = (Button) dialog.findViewById(R.id.alert_image_bt_cancel);
+
+        image_bt_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+            }
+        });
+    }
+
+    public void dialogEvent(String _content, String _mode, DialogEventListener _event_listener) {
+        event_listener = _event_listener;
+        if (_mode.equals("imagePicker")) {
+            initImagePicker();
+
+            // Image options
+            image_ll_camera.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (event_listener != null)
+                        event_listener.clickEvent(true, 0); // Camera code: 0
+                    dialog.hide();
+                }
+            });
+
+            image_ll_gallery.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (event_listener != null)
+                        event_listener.clickEvent(true, 1); // Gallery code: 1
+                    dialog.hide();
+                }
+            });
         } else {
             initNormal();
-            bt_submit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (event_listener != null)
-                        event_listener.clickEvent(true, 0);
-                    dialog.hide();
-                }
-            });
-            bt_cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (event_listener != null)
-                        event_listener.clickEvent(false, 0);
-                    dialog.hide();
-                }
-            });
             tv_content.setText(_content);
 
             switch (_mode) {
