@@ -44,6 +44,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static android.content.Context.SYSTEM_HEALTH_SERVICE;
 
 /**
  * Created by Yang on 2017/3/23.
@@ -94,12 +95,12 @@ public class CustomerMainFragment extends Fragment {
     }
 
     private void initData() {
-        gpsPermission();
-        getShopStatus(false);
 
         my_location = new Location("");
         my_location.setLatitude(25.018);
         my_location.setLongitude(121.54);
+        gpsPermission();
+        getShopStatus(false);
 
         //restaurant_list = getListFromDB();
         //setListView(restaurant_list);
@@ -133,13 +134,13 @@ public class CustomerMainFragment extends Fragment {
     }
 
     private void setListView(List<CustomerRestaurantInfo> res_list) {
-        if(restaurant_list != null)
+        if (restaurant_list != null)
             restaurant_list.clear();
         restaurant_list = res_list;
         System.out.println("set list!");
-        if(adapter != null)
+        if (adapter != null)
             adapter.clear();
-        if(adjusted_adapter != null)
+        if (adjusted_adapter != null)
             adjusted_adapter.clear();
         adapter = new CustomerMainAdapter(view.getContext(), res_list, current_location);
         adapter = sortAdapter(adapter, "default");
@@ -154,7 +155,7 @@ public class CustomerMainFragment extends Fragment {
         });
     }
 
-    private void setRefreshLayout(){
+    private void setRefreshLayout() {
         swipe_refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -163,11 +164,11 @@ public class CustomerMainFragment extends Fragment {
         });
     }
 
-    private void setSpinner(){
+    private void setSpinner() {
         sp_dis.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i){
+                switch (i) {
                     case 0://0.5km
                         filter_distance = 500;
                         adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
@@ -200,7 +201,7 @@ public class CustomerMainFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 adjusted_adapter = null;
-                switch (i){
+                switch (i) {
                     case 0:
                         filter_mode = "all";
                         adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
@@ -244,7 +245,7 @@ public class CustomerMainFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String sort_mode = "default";
-                switch (i){
+                switch (i) {
                     case 0:
                         sort_mode = "default";
                         break;
@@ -280,7 +281,7 @@ public class CustomerMainFragment extends Fragment {
         });
     }
 
-    private CustomerMainAdapter filtAdapter(CustomerMainAdapter filt_adapter, String mode, int distance){
+    private CustomerMainAdapter filtAdapter(CustomerMainAdapter filt_adapter, String mode, int distance) {
         List<CustomerRestaurantInfo> r_list = new ArrayList<CustomerRestaurantInfo>();
         switch (mode) {
             case "chinese":
@@ -290,7 +291,7 @@ public class CustomerMainFragment extends Fragment {
                         l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
                         l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
 
-                        if((int)my_location.distanceTo(l) <= distance)
+                        if ((int) my_location.distanceTo(l) <= distance)
                             r_list.add(filt_adapter.getItem(j));
                     }
                 }
@@ -301,7 +302,7 @@ public class CustomerMainFragment extends Fragment {
                         Location l = new Location("");
                         l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
                         l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
-                        if((int)my_location.distanceTo(l) <= distance)
+                        if ((int) my_location.distanceTo(l) <= distance)
                             r_list.add(filt_adapter.getItem(j));
                     }
                 }
@@ -312,7 +313,7 @@ public class CustomerMainFragment extends Fragment {
                         Location l = new Location("");
                         l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
                         l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
-                        if((int)my_location.distanceTo(l) <= distance)
+                        if ((int) my_location.distanceTo(l) <= distance)
                             r_list.add(filt_adapter.getItem(j));
                     }
                 }
@@ -323,13 +324,13 @@ public class CustomerMainFragment extends Fragment {
                         Location l = new Location("");
                         l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
                         l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
-                        if((int)my_location.distanceTo(l) <= distance)
+                        if ((int) my_location.distanceTo(l) <= distance)
                             r_list.add(filt_adapter.getItem(j));
                     }
                 }
                 break;
             default:
-                if(filt_adapter != null) {
+                if (filt_adapter != null) {
                     for (int j = 0; j < filt_adapter.getCount(); j++) {
                         Location l = new Location("");
                         l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
@@ -337,17 +338,17 @@ public class CustomerMainFragment extends Fragment {
                         if ((int) my_location.distanceTo(l) <= distance)
                             r_list.add(filt_adapter.getItem(j));
                     }
-                }else{
+                } else {
                     return filt_adapter;
                 }
         }
         return new CustomerMainAdapter(getActivity(), r_list, current_location);
     }
 
-    private CustomerMainAdapter sortAdapter(CustomerMainAdapter sort_adapter, String mode){
-        switch (mode){
+    private CustomerMainAdapter sortAdapter(CustomerMainAdapter sort_adapter, String mode) {
+        switch (mode) {
             case "distance":
-                sort_adapter.sort( new Comparator<CustomerRestaurantInfo>() {
+                sort_adapter.sort(new Comparator<CustomerRestaurantInfo>() {
                     @Override
                     public int compare(CustomerRestaurantInfo info1, CustomerRestaurantInfo info2) {
                         Location l1 = new Location("");
@@ -368,12 +369,12 @@ public class CustomerMainFragment extends Fragment {
                 sort_adapter.sort(new Comparator<CustomerRestaurantInfo>() {
                     @Override
                     public int compare(CustomerRestaurantInfo info1, CustomerRestaurantInfo info2) {
-                        if(info1.discount > info2.discount){
+                        if (info1.discount > info2.discount) {
                             return 1;
-                        }else if(info1.discount < info2.discount){
+                        } else if (info1.discount < info2.discount) {
                             return -1;
-                        }else {
-                            if(info2.offer.equals("暫無優惠")){
+                        } else {
+                            if (info2.offer.equals("暫無優惠")) {
                                 return -1;
                             }
                             return 0;
@@ -385,9 +386,9 @@ public class CustomerMainFragment extends Fragment {
                 sort_adapter.sort(new Comparator<CustomerRestaurantInfo>() {
                     @Override
                     public int compare(CustomerRestaurantInfo info1, CustomerRestaurantInfo info2) {
-                        if(info1.rating > info2.rating) {
+                        if (info1.rating > info2.rating) {
                             return -1;
-                        }else{
+                        } else {
                             return 1;
                         }
                     }
@@ -406,10 +407,11 @@ public class CustomerMainFragment extends Fragment {
         if (active == true) {
             new CurrentLocation().execute();
         } //else {
-            //api_promotion = new ApiPromotion();
-            //api_promotion.execute(24.05, 121.545);
+        //api_promotion = new ApiPromotion();
+        //api_promotion.execute(24.05, 121.545);
         //}
     }
+
     // DB related functions
     private void openDB() {
         sqlHandler = new SqlHandler(view.getContext());
@@ -449,7 +451,6 @@ public class CustomerMainFragment extends Fragment {
     }
 
 
-
     private void gpsPermission() {
         if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -461,16 +462,33 @@ public class CustomerMainFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CustomerMainActivity.LOCATION_SETTING_CODE) {
+            System.out.println("RESULTCODE=" + resultCode);
+            gpsPermission();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void locationPermission() {
+        startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), CustomerMainActivity.LOCATION_SETTING_CODE);
+    }
+
     private class CurrentLocation {
+        boolean flag = true;
         public void execute() {
             Location location = getLocation();
-            my_location = location;
             if (location != null) {
+                my_location = location;
                 new ApiPromotion().execute(location.getLatitude(), location.getLongitude());
             } else {
-                new ApiPromotion().execute(24.0, 121.0);
+                if(flag) {
+                    new ApiPromotion().execute(my_location.getLatitude(), my_location.getLongitude());
+                }
             }
         }
+
         public Location getLocation() {
             Location location = null;
             try {
@@ -486,7 +504,8 @@ public class CustomerMainFragment extends Fragment {
 
                 if (!isGPSEnabled && !isNetworkEnabled) {
                     // no network provider is enabled
-                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    flag = false;
+                    locationPermission();
                     return null;
                 } else {
                     if (isNetworkEnabled) {
@@ -510,7 +529,7 @@ public class CustomerMainFragment extends Fragment {
                             locationManager.requestLocationUpdates(
                                     LocationManager.GPS_PROVIDER,
                                     0,
-                                    0,  listener);
+                                    0, listener);
                             Log.d("GPS", "GPS Enabled");
                             if (locationManager != null) {
                                 location = locationManager
@@ -527,10 +546,13 @@ public class CustomerMainFragment extends Fragment {
             }
             return location;
         }
+
         LocationListener listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Log.d("CurrentLocation", location.getLatitude()+","+location.getLongitude());
+                Log.d("CurrentLocationUpdate", location.getLatitude() + "," + location.getLongitude());
+
+                //locationManager.removeUpdates(this);
             }
 
             @Override
