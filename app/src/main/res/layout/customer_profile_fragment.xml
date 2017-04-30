@@ -5,158 +5,318 @@
     android:background="@drawable/customer_bg_profile"
     android:orientation="vertical">
 
-    <!-- Header -->
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="155dp">
+        android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="horizontal">
+            android:orientation="vertical">
+            <!-- Header -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="180dp">
 
-            <ImageView
-                android:id="@+id/customer_profile_iv_avatar"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:src="@drawable/default_avatar"
-                android:layout_marginEnd="15dp"
-                android:layout_gravity="center_vertical"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="vertical"
+                    android:gravity="center">
 
+                    <ImageView
+                        android:id="@+id/customer_profile_iv_avatar"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:src="@drawable/default_avatar"
+                        android:layout_marginTop="50dp"
+                        android:layout_marginBottom="5dp"/>
+
+                    <TextView
+                        android:id="@+id/customer_profile_tv_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/customer_profile_name"
+                        android:textSize="18sp"
+                        android:textColor="@color/textColor"
+                        android:layout_marginBottom="5dp"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/customer_profile_bt_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="20dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:paddingStart="7dp"
+                    android:paddingEnd="7dp"
+                    android:text="@string/customer_profile_edit"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:background="@drawable/round_rectangle_transparent_black"/>
+
+                <LinearLayout
+                    android:id="@+id/customer_profile_ll_credit"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/customer_bg_credits"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/customer_profile_bt_edit"
+                    android:layout_marginTop="40dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/customer_profile_tv_credit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/customer_profile_credit"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="0dp"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"/>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/customer_profile_bt_about_credit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/customer_profile_ll_credit"
+                    android:background="@android:color/transparent"
+                    android:text="@string/customer_profile_about_credit"
+                    android:textSize="13sp"
+                    android:textColor="@color/textColorOrange"
+                    android:layout_marginEnd="10dp"/>
+
+            </RelativeLayout>
+
+            <!-- Content below header -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_gravity="center_vertical">
+                android:gravity="center_horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/ic_points"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1800"
+                        android:textColor="@color/textColorOrange"
+                        android:textSize="42sp"/>
+
+                </LinearLayout>
+                
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="5dp"
+                    android:src="@drawable/ic_exchange_gifts"/>
 
                 <TextView
-                    android:id="@+id/customer_profile_tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/customer_profile_name"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/customer_profile_exchange_gifts"
                     android:textSize="20sp"
-                    style="@style/ShadowedText"
-                    android:layout_marginBottom="5dp"/>
+                    android:textColor="@color/textColorOrange"/>
 
-                <TextView
-                    android:id="@+id/customer_profile_tv_credit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/customer_profile_credit"
-                    style="@style/ShadowedText"
-                    android:textSize="15sp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="175dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:background="@drawable/customer_bg_exchange_info"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="10dp"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp">
+
+                    <TextView
+                        android:id="@+id/customer_profile_tv_exchange_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:lineSpacingExtra="3dp"
+                        android:text="@string/customer_profile_exchange_gifts_content"
+                        android:textSize="14sp"
+                        android:textAlignment="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/round_rectangle_white_more_rounded"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:text="@string/customer_profile_exchange_gifts_now"
+                        android:textColor="@color/textColorOrange"
+                        android:textSize="15sp"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
+            <!-- Buttons below -->
+
+            <!-- Treat this like a button -->
+            <LinearLayout
+                android:id="@+id/customer_profile_ll_reservations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/white"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/ic_reservations"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/customer_profile_reservations"/>
+
+            </LinearLayout>
+
+            <!-- SPACER VIEW -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightgray"/>
+
+            <!-- Treat this like a button -->
+            <LinearLayout
+                android:id="@+id/customer_profile_ll_comments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/white"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/ic_comments"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/customer_profile_comments"/>
+
+            </LinearLayout>
+
+            <!-- SPACER VIEW -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightgray"/>
+
+            <!-- Treat this like a button -->
+            <LinearLayout
+                android:id="@+id/customer_profile_ll_points_record"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/white"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/ic_flash_points"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/customer_profile_points_record"/>
+
+            </LinearLayout>
+
+            <!-- SPACER VIEW -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightgray"/>
+
+            <!-- Treat this like a button -->
+            <LinearLayout
+                android:id="@+id/customer_profile_ll_contact_us"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/white"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/ic_contact_us"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/customer_profile_contact_us"/>
+
+            </LinearLayout>
+
+            <!-- SPACER VIEW -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightgray"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="20dp"
+                android:src="@drawable/logo_white"
+                android:tint="@color/gray"/>
+
         </LinearLayout>
 
-        <Button
-            android:id="@+id/customer_profile_bt_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TransparentButton"
-            android:text="@string/customer_profile_edit"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:textSize="13sp"/>
-
-        <Button
-            android:id="@+id/customer_profile_bt_about_credit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TransparentButton"
-            android:text="@string/customer_profile_about_credit"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:textSize="13sp"
-            android:layout_marginEnd="10dp"/>
-
-    </RelativeLayout>
-
-    <!-- Treat this like a button -->
-    <LinearLayout
-        android:id="@+id/customer_profile_ll_reservations"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/white"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_reservations"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/customer_profile_reservations"/>
-
-        <!-- SPACER VIEW -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:src="@drawable/ic_next"/>
-
-    </LinearLayout>
-
-    <!-- SPACER VIEW -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/lightgray"/>
-
-    <!-- Treat this like a button -->
-    <LinearLayout
-        android:id="@+id/customer_profile_ll_comments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/white"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_comments"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/customer_profile_comments"/>
-
-        <!-- SPACER VIEW -->
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:src="@drawable/ic_next"/>
-
-    </LinearLayout>
-
-    <!-- SPACER VIEW -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/lightgray"/>
+    </ScrollView>
 
 </LinearLayout>

@@ -132,14 +132,25 @@
 
     <!-- Strings related to customer profile -->
     <string name="customer_profile_name">使用者名稱</string>
-    <string name="customer_profile_credit">信譽分數：</string>
+    <string name="customer_profile_credit">信譽分數 </string>
     <string name="customer_profile_reservations">預約紀錄</string>
     <string name="customer_profile_comments">我的評論</string>
+    <string name="customer_profile_points_record">FLASH Points紀錄</string>
+    <string name="customer_profile_contact_us">聯絡我們</string>
     <string name="customer_profile_edit">編輯</string>
     <string name="customer_profile_about_credit">了解信譽分數</string>
     <string name="customer_profile_pick_image">頭像選擇</string>
     <string name="customer_profile_camera">相機</string>
     <string name="customer_profile_gallery">相簿</string>
+    <string name="customer_profile_exchange_gifts">FLASH Points好禮兌換</string>
+    <string name="customer_profile_exchange_gifts_content"><font color="#fff">每次預約用餐每人可得</font> <font color="#660000">5</font>
+        <font color="#fff">FLASH Points\n現在開始累積你的FLASH Points\n各種專屬回饋好禮在兌換區等你喔！</font></string>
+    <string name="customer_profile_exchange_gifts_now">立即前往兌換</string>
+    <string name="customer_profile_change_name">編輯我的暱稱</string>
+    <string name="customer_profile_name_hint">請輸入新的暱稱</string>
+    <string name="customer_profile_name_used">此暱稱已被使用</string>
+    <string name="customer_profile_name_success">暱稱更改成功</string>
+    <string name="customer_profile_name_empty">請輸入新的暱稱</string>
 
     <!-- Strings related to customer detail -->
     <string name="customer_detail_title">預約明細</string>

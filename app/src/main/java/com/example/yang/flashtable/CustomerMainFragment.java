@@ -69,7 +69,7 @@ public class CustomerMainFragment extends Fragment {
     // Location
     final int FINE_LOCATION_CODE = 13;
     LatLng current_location;
-    Location my_location = new Location("");
+    Location my_location;
 
     private boolean first_loading = true;
 
@@ -97,6 +97,7 @@ public class CustomerMainFragment extends Fragment {
         gpsPermission();
         getShopStatus(false);
 
+        my_location = new Location("");
         my_location.setLatitude(25.018);
         my_location.setLongitude(121.54);
 

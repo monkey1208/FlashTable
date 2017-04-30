@@ -21,6 +21,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.SyncStateContract;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,10 +63,10 @@ public class CustomerProfileFragment extends Fragment {
     DialogBuilder dialog_builder;
 
     private View view;
-    TextView tv_username, tv_credit;
+    TextView tv_username, tv_credit, tv_edit, tv_exchange_gifts_content;
     LinearLayout ll_comments, ll_reservations;
     ImageView iv_avatar;
-    Button bt_edit, bt_about_credits;
+    Button bt_about_credits;
 
     private String credits;
 
@@ -89,10 +90,12 @@ public class CustomerProfileFragment extends Fragment {
         ll_reservations = (LinearLayout) view.findViewById(R.id.customer_profile_ll_reservations);
         ll_comments = (LinearLayout)  view.findViewById(R.id.customer_profile_ll_comments);
         iv_avatar = (ImageView) view.findViewById(R.id.customer_profile_iv_avatar);
-        bt_edit = (Button) view.findViewById(R.id.customer_profile_bt_edit);
+        tv_edit = (TextView) view.findViewById(R.id.customer_profile_bt_edit);
         bt_about_credits = (Button) view.findViewById(R.id.customer_profile_bt_about_credit);
 
         credits = getResources().getString(R.string.customer_profile_credit);
+
+        tv_exchange_gifts_content = (TextView) view.findViewById(R.id.customer_profile_tv_exchange_info);
     }
 
     private void initData() {
@@ -149,11 +152,17 @@ public class CustomerProfileFragment extends Fragment {
             }
         });
         iv_avatar.setImageBitmap(getRoundedShape(((BitmapDrawable) iv_avatar.getDrawable()).getBitmap()));
-        bt_edit.setOnClickListener(new View.OnClickListener() {
+        tv_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(getActivity().getBaseContext(), CustomerNameActivity.class);
+                startActivity(intent);
             }
         });
+
+        tv_exchange_gifts_content.setText(Html.fromHtml("<font color=\"#FFFFFF\">每次預約用餐每人可得</font> " +
+                "<font color=\"#FFD800\"><big><big><big>5</big></big></big></font> " +
+                "<font color=\"#FFFFFF\">FLASH Points<br>現在開始累積你的FLASH Points<br>各種專屬回饋好禮在兌換區等你喔！</font>"));
     }
 
     // Functions related to getting image

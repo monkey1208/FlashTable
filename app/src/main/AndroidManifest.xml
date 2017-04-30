@@ -95,6 +95,11 @@
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
+            android:name=".CustomerNameActivity"
+            android:theme="@style/AppTheme.LightActionBar"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity
             android:name=".QrcodeScannerActivity"
             android:theme="@style/AppFullScreenTheme" />
         <activity
