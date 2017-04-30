@@ -35,6 +35,7 @@ public class CustomerMainActivity extends AppCompatActivity
     public final int COARSE_PERMISSION_CODE = 11;
     public final int FINE_LOCATION_MAP_CODE = 12;
     public final int FINE_LOCATION_MAIN_CODE = 13;
+    public final static int LOCATION_SETTING_CODE = 14;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,6 +205,8 @@ public class CustomerMainActivity extends AppCompatActivity
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
+
 
     private void logout() {
         SharedPreferences preferences = this.getSharedPreferences("USER", MODE_PRIVATE);
