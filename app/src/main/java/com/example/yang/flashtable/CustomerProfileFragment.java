@@ -159,6 +159,13 @@ public class CustomerProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        bt_about_credits.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity().getBaseContext(), CustomerCreditsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         tv_exchange_gifts_content.setText(Html.fromHtml("<font color=\"#FFFFFF\">每次預約用餐每人可得</font> " +
                 "<font color=\"#FFD800\"><big><big><big>5</big></big></big></font> " +

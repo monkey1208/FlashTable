@@ -99,6 +99,8 @@
             android:theme="@style/AppTheme.LightActionBar"
             android:windowSoftInputMode="adjustPan">
         </activity>
+        <activity android:name=".CustomerCreditsActivity"
+            android:theme="@style/AppTheme.OrangeActionBar"/>
         <activity
             android:name=".QrcodeScannerActivity"
             android:theme="@style/AppFullScreenTheme" />
