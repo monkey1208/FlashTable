@@ -102,7 +102,8 @@ public class StoreAppointAdapter extends BaseAdapter{
             tv_name.setText(info.name);
             tv_date.setText("2017/07/21");
             tv_state.setText("已成功向您預約("+Integer.toString(info.number)+")人桌位");
-            tv_countdown.setText(Integer.toString((int)((info.due_time - System.currentTimeMillis())/1000)));
+            int remain_time = (int)(info.due_time - System.currentTimeMillis())/1000;
+            tv_countdown.setText(Integer.toString(remain_time/60)+":"+Integer.toString(remain_time%60));
             if(info.isActive) {
                 buttonControl(this, WAITING);
                 bt_cancel.setOnClickListener(new View.OnClickListener() {

@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -16,40 +18,32 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class StoreAppointFragment extends ListFragment {
     private List<ReservationInfo> list = new ArrayList<>();
     private StoreAppointAdapter adapter;
+    private String DateFormat = "EEE MMM dd HH:mm:ss yyyy";
     private List<Integer> updateList = new ArrayList<>();
     private List<Integer> deleteList = new ArrayList<>();
     private Timer timer;
 
     public  StoreAppointFragment () {
         // Required empty public constructor
-    }
-    /*public void startUpdate(){
-        updateSession();
-    }
-    private void updateSession(){
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-               new APIgetSessions().execute(StoreMainActivity.storeInfo.id);
-            }
-        },0,10000);
-    }*/
-    public void stopTimer(){
-        timer.cancel();
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +54,6 @@ public class StoreAppointFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.store_appoint_fragment, container, false);
-        //appointList = get_reservation_info();
         adapter = new StoreAppointAdapter(getContext(), list);
         setListAdapter(adapter);
         Toolbar bar = (Toolbar)v.findViewById(R.id.shop_toolbar);
@@ -74,18 +67,14 @@ public class StoreAppointFragment extends ListFragment {
             }
         };
         bar.setOnMenuItemClickListener(onMenuItemClick);
+        refresh();
         return v;
     }
 
-    private  List<ReservationInfo> get_reservation_info(){
-        List<ReservationInfo> list = new ArrayList<>();
-        ReservationInfo tmp = new ReservationInfo("Chen",10,System.currentTimeMillis()-1000);
-        list.add(tmp);
-        tmp = new ReservationInfo("Yi",100,System.currentTimeMillis()-2000);
-        list.add(tmp);
-        tmp = new ReservationInfo("Shan",1,System.currentTimeMillis()-3000);
-        list.add(tmp);
-        return list;
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        Toast.makeText(getContext(),Integer.toString(position),Toast.LENGTH_LONG).show();
     }
 
     public int getStatusBarHeight() {
@@ -96,67 +85,6 @@ public class StoreAppointFragment extends ListFragment {
         }
         return result;
     }
-    /*private class APIgetSessions extends AsyncTask<String,Void,Void>{
-        String result = "";
-        @Override
-        protected Void doInBackground(String... params) {
-            try {
-                updateList.clear();
-                HttpClient httpClient = new DefaultHttpClient();
-                HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_sessions?shop_id=" + params[0]);
-                JSONArray jArray = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(get)));
-                for(int i=1;i<jArray.length();i++){
-                    int id = jArray.getJSONObject(i).getInt("session_id");
-                    updateList.add(id);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        protected void onPostExecute(Void _params) {
-            deleteList.clear();
-            Collections.sort(updateList, new Comparator<Integer>() {
-                @Override
-                public int compare(Integer o1, Integer o2) {
-                    return o1-o2;
-                }
-            });
-            result +="Server: ";
-            for(int i=0;i<updateList.size();i++) {
-                result += Integer.toString(updateList.get(i))+" ";
-            }
-            result+="\nLocal: ";
-            for(int i=0;i<list.size();i++) {
-                result += Integer.toString(list.get(i).id)+" ";
-            }
-            /*for(int i=0;i<appointList.size();i++){
-                if(appointList.get(i).id!=-1) {
-                    boolean stat = true;
-                    for (int j = 0; j < updateList.size(); i++)
-                        if(appointList.get(i).id==updateList.get(j))
-                            stat = false;
-                    if(stat)
-                        deleteList.add(i);
-                }
-            }
-            Collections.sort(updateList, new Comparator<Integer>() {
-                @Override
-                public int compare(Integer o1, Integer o2) {
-                    return o2-o1;
-                }
-            });
-            result+= "\nDelete: ";
-            for(int i=0;i<deleteList.size();i++){
-                result+=deleteList.get(i);
-                list.remove(deleteList.get(i));
-            }
-            adapter.notifyDataSetChanged();
-            Log.d("Session",result);
-        }
-    }*/
     public ReservationInfo getItem(int position){
         if(list.size()>position)
             return list.get(position);
@@ -189,5 +117,60 @@ public class StoreAppointFragment extends ListFragment {
             }
         }
         return;
+    }
+    public void refresh(){
+        new API_Refresh().execute(StoreMainActivity.storeInfo.id);
+        return;
+    }
+    public class API_Refresh extends AsyncTask<String,Void,Void>{
+        List<ReservationInfo> infos = new ArrayList<>();
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_sessions?shop_id="+params[0]+"&verbose=1");
+                JSONArray sessions = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(get)));
+                for(int i=1;i<sessions.length();i++){
+                    JSONObject session = sessions.getJSONObject(i);
+                    int id = session.getInt("session_id");
+                    String name = session.getString("user_account");
+                    int number = session.getInt("number");
+                    Date due_time = stringToDate(session.getString("due_time"),DateFormat);
+                    if(due_time != null)
+                        Log.d("Session",Long.toString(due_time.getTime()));
+                    ReservationInfo info = new ReservationInfo(id,name,number,due_time.getTime());
+                    infos.add(info);
+                }
+                Log.d("Session","Refresh "+Integer.toString(sessions.length()));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            list.clear();
+            for(int i=0;i<infos.size();i++)
+                list.add(infos.get(i));
+            Log.d("Session","Refresh "+Integer.toString(list.size()));
+            adapter.notifyDataSetChanged();
+        }
+    }
+    private Date stringToDate(String aDate, String aFormat) {
+        if(aDate==null) return null;
+        Log.d("Session",aDate);
+        SimpleDateFormat simpledateformat = new SimpleDateFormat(aFormat, Locale.ENGLISH);
+        Date stringDate = null;
+        try {
+            stringDate = simpledateformat.parse(aDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.d("Session","ParseError");
+        }
+        return stringDate;
     }
 }

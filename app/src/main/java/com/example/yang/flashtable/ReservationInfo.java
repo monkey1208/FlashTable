@@ -1,5 +1,7 @@
 package com.example.yang.flashtable;
 
+import java.util.Date;
+
 public class ReservationInfo {
     public int id;
     public String name;
@@ -10,11 +12,11 @@ public class ReservationInfo {
     public String is_succ;
     public int point;
 
-    public ReservationInfo(String name,int number,long current){
-        this.id = -1;
+    public ReservationInfo(int id, String name,int number,long due_time){
+        this.id = id;
         this.name = name;
         this.number = number;
-        this.due_time = current + 12*1000;
+        this.due_time = due_time;
         this.isActive = true;
     }
 

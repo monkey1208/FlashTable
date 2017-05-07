@@ -11,6 +11,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -116,14 +117,15 @@ public class APIHandler {
             return null;
         }
         protected void onPostExecute(Void _params) {
-            ReservationInfo info = new ReservationInfo(name,Integer.valueOf(number),System.currentTimeMillis());
+            /*ReservationInfo info = new ReservationInfo(name,Integer.valueOf(number),System.currentTimeMillis());
             info.id = id;
             if(res == 0) {
                 StoreMainActivity.fragmentController.storeAppointFragment.addItem(info);
                 Log.e("Accept","Success");
             }
             else
-                Log.e("Accept","Fail");
+                Log.e("Accept","Fail");*/
+            StoreMainActivity.fragmentController.storeAppointFragment.refresh();
         }
     }
     private class APIsession_cancel extends AsyncTask<String,Void,Void> {
@@ -218,7 +220,6 @@ public class APIHandler {
             StoreManageDiscountFragment.adapter.notifyDataSetChanged();
         }
     }
-
 
 }
 

@@ -21,7 +21,7 @@ import static android.R.id.list;
 
 public class StoreManageDiscountFragment extends ListFragment {
 
-    public static List<StoreDiscountInfo> discountList = StoreMainActivity.storeInfo.discountList;
+    private List<StoreDiscountInfo> discountList = StoreMainActivity.storeInfo.discountList;
     public static StoreManageDiscountAdapter adapter;
 
     public StoreManageDiscountFragment() {
