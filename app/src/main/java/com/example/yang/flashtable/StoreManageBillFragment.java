@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,9 +54,9 @@ public class StoreManageBillFragment extends Fragment {
             }
         });
 
-        /* Check if the bill was paid,  set visibility.
+        /* Check if the bill was paid,  set visibility.*/
         RelativeLayout rl = (RelativeLayout)v.findViewById(R.id.store_manage_bill_rl);
-        rl.setVisibility(RelativeLayout.GONE);*/
+        rl.setVisibility(RelativeLayout.GONE);
 
         LinearLayout prev_bt = (LinearLayout)v.findViewById(R.id.store_manage_bill_ll_prev);
         prev_bt.setOnClickListener(new View.OnClickListener(){

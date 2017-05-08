@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:paddingStart="30dp"
+    android:paddingEnd="0dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:elevation="12dp"
+            app:cardCornerRadius="20dp"
+            android:innerRadius="0dp"
+            android:shape="ring"
+            android:layout_gravity="center"
+            android:id="@+id/sotre_manage_comment_cv_avatar"
+            android:thicknessRatio="1.9">
+            <ImageView
+                android:id="@+id/store_manage_comment_iv_avatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                android:src="@drawable/default_avatar" />
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/store_manage_comment_tv_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/loading_text"
+            android:textSize="18sp"
+            android:textColor="@color/textColor"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/sotre_manage_comment_cv_avatar"
+            android:layout_marginStart="17dp" />
+
+        <RelativeLayout
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="20dp">
+            <RatingBar
+                android:id="@+id/store_manage_comment_rb_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                style="@style/RatingBarSmall"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/rating_bar_bg"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/store_manage_comment_tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="30dp"
+        android:textColor="@color/textColorLighter"
+        android:textSize="16sp"/>
+
+</LinearLayout>

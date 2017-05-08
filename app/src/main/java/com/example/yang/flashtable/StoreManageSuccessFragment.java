@@ -81,11 +81,12 @@ public class StoreManageSuccessFragment extends Fragment {
         tv_fail = (TextView)v.findViewById(R.id.store_manage_success_tv_fail);
         tv_success = (TextView)v.findViewById(R.id.store_manage_success_tv_success);
 
-        DecimalFormat df2 = new DecimalFormat(".##");
+        //DecimalFormat df2 = new DecimalFormat(".##");
         int total =  StoreMainActivity.storeInfo.getRecordList().size();
         int success_num = StoreMainActivity.storeInfo.getSuccess_record_num();
 
-        tv_rate.setText(total==0? "0" : df2.format((success_num+0.0)/total * 100));
+        //tv_rate.setText(total==0? "0" : df2.format((success_num+0.0)/total * 100));
+        tv_rate.setText(total==0? "0" : String.valueOf((int)((success_num+0.0)/total * 100)));
         tv_total.setText(String.valueOf(total));
         tv_fail.setText(String.valueOf(total - success_num));
         tv_success.setText(String.valueOf(success_num));

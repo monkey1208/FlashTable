@@ -14,9 +14,6 @@ import android.widget.Toast;
 
 import java.util.List;
 
-/**
- * Created by 奕先 on 2017/3/25.
- */
 
 public class StoreManageDiscountAdapter extends BaseAdapter {
     private LayoutInflater inflater;

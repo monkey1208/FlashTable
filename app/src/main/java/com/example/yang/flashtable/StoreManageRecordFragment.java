@@ -102,7 +102,8 @@ public class StoreManageRecordFragment extends ListFragment {
         boolean new_record_flag = true;
         @Override
         protected Void doInBackground(String...params) {
-            list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
+            list.clear();
+            list.addAll(StoreMainActivity.storeInfo.getRecordList());
             int origin_size = list.size();
             HttpClient httpClient = new DefaultHttpClient();
             try {
@@ -147,8 +148,8 @@ public class StoreManageRecordFragment extends ListFragment {
                 }
                 StoreMainActivity.storeInfo.setSuccess_record_num(sum);
             }else{
-                Log.e("record", "remain");
                 adapter.notifyDataSetChanged();
+                Log.e("record", "remain");
             }
         }
     }

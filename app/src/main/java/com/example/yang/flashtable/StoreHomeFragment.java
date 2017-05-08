@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -20,7 +21,6 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -34,10 +34,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import pl.droidsonroids.gif.GifImageView;
-
-import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
 
 public class StoreHomeFragment extends Fragment {
 
@@ -53,10 +53,14 @@ public class StoreHomeFragment extends Fragment {
     private TextView tv_active;
     private TextView tv_active_running;
     private TextView tv_active_remind;
+    private TextView tv_active_time;
     private View v;
     private StoreInfo storeInfo;
     private AlertDialog alertDialog;
+    private Timer timer = new Timer();
+    private Handler handler = new Handler();
     private BackGroundWorker worker = new BackGroundWorker(getContext());
+    private long promotion_start_time;
 
 
     private static final int SCAN_REQUEST_ZXING_SCANNER = 1;
@@ -95,9 +99,10 @@ public class StoreHomeFragment extends Fragment {
         tv_address = (TextView) v.findViewById(R.id.tv_address);
         tv_address.setText(storeInfo.address);
         tv_discount = (TextView) v.findViewById(R.id.tv_discount);
-        tv_discount.setText(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountDefault).discount) + "折");
+        tv_discount.setText("暫無優惠");
         tv_gift = (TextView) v.findViewById(R.id.tv_gift);
-        tv_gift.setText(storeInfo.discountList.get(0).description);
+        tv_gift.setText("");
+        tv_active_time = (TextView) v.findViewById(R.id.tv_active_time);
         //--------------
         //立即尋客button
         bt_active_gif = (GifImageView) v.findViewById(R.id.bt_active_gif);
@@ -120,6 +125,7 @@ public class StoreHomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 tv_active.setText("立即尋客");
+                tv_active.setVisibility(View.VISIBLE);
                 tv_active_remind.setText("");
                 bt_active.setVisibility(View.VISIBLE);
                 bt_active.setEnabled(true);
@@ -183,7 +189,6 @@ public class StoreHomeFragment extends Fragment {
             try {
                 HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_promotions?shop_id=" + params[0]+"&verbose=1");
                 JSONArray responsePromotion = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(get)));
-                Log.d("NO~~~", Integer.toString(responsePromotion.length()));
                 for (int i = 1; i < responsePromotion.length(); i++) {
                     JSONObject promotion = responsePromotion.getJSONObject(i);
                     int id = promotion.getInt("promotion_id");
@@ -195,7 +200,7 @@ public class StoreHomeFragment extends Fragment {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
+            } catch ( IOException e){
                 e.printStackTrace();
             } finally {
                 httpClient.getConnectionManager().shutdown();
@@ -224,6 +229,8 @@ public class StoreHomeFragment extends Fragment {
 
     public void setActive() {
         tv_active_running.setText("開啟中");
+        promotion_start_time = System.currentTimeMillis();
+        counting();
         return;
     }
     public void startUpdate(){
@@ -232,6 +239,10 @@ public class StoreHomeFragment extends Fragment {
     }
     public void stopUpdate(){
         worker.killTimer();
+        timer.cancel();
+        timer = new Timer();
+        tv_active_time.setText("");
+        tv_active_running.setText("");
         return;
     }
     public void stopGIF(){
@@ -253,5 +264,22 @@ public class StoreHomeFragment extends Fragment {
         lp.height = (int) (displayHeight * 0.8);
         alertDialog.getWindow().setAttributes(lp);
     }
-
+    private void counting(){
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        long time = System.currentTimeMillis() - promotion_start_time;
+                        int sec = (int)time/1000;
+                        int min = sec/60;sec = sec%60;
+                        int hr = min/60;min = min%60;
+                        String str_time = String.format("%02d:%02d:%02d",hr,min,sec);
+                        tv_active_time.setText(str_time);
+                    }
+                });
+            }
+        },0,1000);
+    }
 }
