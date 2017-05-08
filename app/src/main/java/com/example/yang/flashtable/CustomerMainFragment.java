@@ -41,7 +41,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.SYSTEM_HEALTH_SERVICE;
@@ -56,11 +55,11 @@ public class CustomerMainFragment extends Fragment {
     View view;
     Spinner sp_dis, sp_food, sp_sort;
     String filter_mode = "all";
-    int filter_distance = 500;
+    int filter_distance = -1;
     ArrayAdapter<CharSequence> dis_adapter, food_adapter, sort_adapter;
     ListView lv_shops;
     SwipeRefreshLayout swipe_refresh_layout;
-    List<CustomerRestaurantInfo> restaurant_list;
+    ArrayList<CustomerRestaurantInfo> restaurant_list;
     ImageButton ib_search;
     CustomerMainAdapter adapter;
     CustomerMainAdapter adjusted_adapter;
@@ -123,6 +122,16 @@ public class CustomerMainFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CustomerSearchActivity.class);
+                Bundle bundle = new Bundle();
+                ArrayList<CustomerSearchActivity.DetailInfo> detail_list = new ArrayList<>();
+                for (CustomerRestaurantInfo item:restaurant_list) {
+                    CustomerSearchActivity.DetailInfo tmp = new CustomerSearchActivity.DetailInfo(item.id, item.discount, item.offer, item.promotion_id, item.rating);
+                    detail_list.add(tmp);
+                }
+                bundle.putParcelableArrayList("list", detail_list);
+                bundle.putDouble("longitude", my_location.getLongitude());
+                bundle.putDouble("latitude", my_location.getLatitude());
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -133,7 +142,7 @@ public class CustomerMainFragment extends Fragment {
         sp_dis.setSelection(3);
     }
 
-    private void setListView(List<CustomerRestaurantInfo> res_list) {
+    private void setListView(ArrayList<CustomerRestaurantInfo> res_list) {
         if (restaurant_list != null)
             restaurant_list.clear();
         restaurant_list = res_list;
@@ -169,22 +178,27 @@ public class CustomerMainFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i) {
-                    case 0://0.5km
+                    case 0:
+                        filter_distance = -1;
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
+                        lv_shops.setAdapter(adjusted_adapter);
+                        break;
+                    case 1://0.5km
                         filter_distance = 500;
                         adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
                         lv_shops.setAdapter(adjusted_adapter);
                         break;
-                    case 1:
+                    case 2:
                         filter_distance = 1000;
                         adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
                         lv_shops.setAdapter(adjusted_adapter);
                         break;
-                    case 2:
+                    case 3:
                         filter_distance = 1500;
                         adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
                         lv_shops.setAdapter(adjusted_adapter);
                         break;
-                    case 3:
+                    case 4:
                         filter_distance = 2000;
                         adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
                         lv_shops.setAdapter(adjusted_adapter);
@@ -282,7 +296,7 @@ public class CustomerMainFragment extends Fragment {
     }
 
     private CustomerMainAdapter filtAdapter(CustomerMainAdapter filt_adapter, String mode, int distance) {
-        List<CustomerRestaurantInfo> r_list = new ArrayList<CustomerRestaurantInfo>();
+        ArrayList<CustomerRestaurantInfo> r_list = new ArrayList<CustomerRestaurantInfo>();
         switch (mode) {
             case "chinese":
                 for (int j = 0; j < filt_adapter.getCount(); j++) {
@@ -290,8 +304,9 @@ public class CustomerMainFragment extends Fragment {
                         Location l = new Location("");
                         l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
                         l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
-
-                        if ((int) my_location.distanceTo(l) <= distance)
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
                             r_list.add(filt_adapter.getItem(j));
                     }
                 }
@@ -302,7 +317,9 @@ public class CustomerMainFragment extends Fragment {
                         Location l = new Location("");
                         l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
                         l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
-                        if ((int) my_location.distanceTo(l) <= distance)
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
                             r_list.add(filt_adapter.getItem(j));
                     }
                 }
@@ -313,7 +330,9 @@ public class CustomerMainFragment extends Fragment {
                         Location l = new Location("");
                         l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
                         l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
-                        if ((int) my_location.distanceTo(l) <= distance)
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
                             r_list.add(filt_adapter.getItem(j));
                     }
                 }
@@ -324,7 +343,9 @@ public class CustomerMainFragment extends Fragment {
                         Location l = new Location("");
                         l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
                         l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
-                        if ((int) my_location.distanceTo(l) <= distance)
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
                             r_list.add(filt_adapter.getItem(j));
                     }
                 }
@@ -335,7 +356,9 @@ public class CustomerMainFragment extends Fragment {
                         Location l = new Location("");
                         l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
                         l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
-                        if ((int) my_location.distanceTo(l) <= distance)
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
                             r_list.add(filt_adapter.getItem(j));
                     }
                 } else {
@@ -402,7 +425,7 @@ public class CustomerMainFragment extends Fragment {
     }
 
     public void getShopStatus(boolean active) {
-        openDB();
+
 
         if (active == true) {
             new CurrentLocation().execute();
@@ -417,17 +440,12 @@ public class CustomerMainFragment extends Fragment {
         sqlHandler = new SqlHandler(view.getContext());
     }
 
-    private List<CustomerRestaurantInfo> getListFromDB() {
-        return sqlHandler.getList();
-    }
-
     private void closeDB() {
         sqlHandler.close();
     }
 
     @Override
     public void onDestroy() {
-        closeDB();
         super.onDestroy();
     }
 
@@ -439,9 +457,9 @@ public class CustomerMainFragment extends Fragment {
                 info.consumption,
                 info.discount,
                 info.offer,
-                info.detailInfo.address,
+                info.address,
                 info.category,
-                info.detailInfo.intro,
+                info.intro,
                 info.rating,
                 info.promotion_id);
         Intent intent = new Intent(getActivity(), CustomerShopActivity.class);
@@ -571,12 +589,13 @@ public class CustomerMainFragment extends Fragment {
 
     private class ApiPromotion extends AsyncTask<Double, Void, String> {
         HttpClient httpClient = new DefaultHttpClient();
-        List<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
+        ArrayList<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
         private ProgressDialog progress_dialog;
         private String status = null;
 
         @Override
         protected void onPreExecute() {
+            openDB();
             if(first_loading) {
                 progress_dialog = new ProgressDialog(view.getContext());
                 progress_dialog.setMessage("載入中...");
@@ -590,7 +609,7 @@ public class CustomerMainFragment extends Fragment {
             String lng = String.valueOf(params[1]);
             String latlng = lat + "," + lng;//need current location
             Log.d("APIPromotion", "latlng = "+latlng);
-            List<Description> list = getPromotionId(latlng);
+            ArrayList<Description> list = getPromotionId(latlng);
             for(int i = 0; i < list.size(); i++) {
                 CustomerRestaurantInfo info = sqlHandler.getDetail(list.get(i).shop_id);
                 info.id = list.get(i).shop_id;
@@ -619,6 +638,7 @@ public class CustomerMainFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String s) {
+            closeDB();
             setListView(restaurantInfoList);
             if(first_loading) {
                 progress_dialog.dismiss();
@@ -630,8 +650,8 @@ public class CustomerMainFragment extends Fragment {
 
         }
 
-        private List<Description> getPromotionId(String latlng){
-            List<Description> list = new ArrayList<>();
+        private ArrayList<Description> getPromotionId(String latlng){
+            ArrayList<Description> list = new ArrayList<>();
             NameValuePair nameValuePair = new BasicNameValuePair("location", latlng);
             String s = nameValuePair.toString();
             HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/surrounding_promotions"+"?"+s);

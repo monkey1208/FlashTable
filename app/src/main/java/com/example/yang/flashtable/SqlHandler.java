@@ -103,7 +103,7 @@ public class SqlHandler extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(SqlHandler.CATEGORY_COLUMN)),
                     new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)), cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN)))
             );
-            info.detailInfo.setInfo(
+            info.setInfo(
                     cursor.getString(cursor.getColumnIndex(SqlHandler.ADDRESS_COLUMN)),
                     cursor.getString(cursor.getColumnIndex(SqlHandler.INTRO_COLUMN))
             );
@@ -123,7 +123,7 @@ public class SqlHandler extends SQLiteOpenHelper {
                 cursor.getString(cursor.getColumnIndex(SqlHandler.CATEGORY_COLUMN)),
                 new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)), cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN)))
         );
-        info.detailInfo.setInfo(
+        info.setInfo(
                     cursor.getString(cursor.getColumnIndex(SqlHandler.ADDRESS_COLUMN)),
                     cursor.getString(cursor.getColumnIndex(SqlHandler.INTRO_COLUMN))
             );
@@ -145,8 +145,8 @@ public class SqlHandler extends SQLiteOpenHelper {
         cv.put(LONGITUDE_COLUMN, info.latLng.longitude);
         cv.put(CONSUMPTION_COLUMN, info.consumption);
         cv.put(CATEGORY_COLUMN, info.category);
-        cv.put(ADDRESS_COLUMN, info.detailInfo.address);
-        cv.put(INTRO_COLUMN, info.detailInfo.intro);
+        cv.put(ADDRESS_COLUMN, info.address);
+        cv.put(INTRO_COLUMN, info.intro);
         cv.put(IMG_COLUMN, info.image);
         long id = db.insert(DATABASE_TABLE, null, cv);
         cv = null;

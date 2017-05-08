@@ -135,7 +135,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                         String lng = tmp[1];
                         LatLng latlng = new LatLng(Float.parseFloat(lat), Float.parseFloat(lng));
                         info = new CustomerRestaurantInfo(name, Integer.valueOf(id), consumption, tag, latlng);
-                        info.detailInfo.setInfo(address, intro);
+                        info.setInfo(address, intro);
                         info.turnBitmap2ByteArray(image);
                         sql_handler.insert(info);
 

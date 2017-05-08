@@ -249,8 +249,8 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         */
                         CustomerRestaurantInfo info = sqlHandler.getDetail(Integer.valueOf(shop_id));
                         String shop_name = info.name;
-                        String shop_address = info.detailInfo.address;
-                        String shop_intro = info.detailInfo.intro;
+                        String shop_address = info.address;
+                        String shop_intro = info.intro;
                         String shop_category = info.category;
 
                         HttpGet requestShopRating = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + shop_id);
