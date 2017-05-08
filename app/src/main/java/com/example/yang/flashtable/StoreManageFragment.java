@@ -115,6 +115,7 @@ public class StoreManageFragment extends ListFragment {
             super.onPreExecute();
             pd = new ProgressDialog(getActivity());
             pd.setMessage("請稍後");
+            pd.setCanceledOnTouchOutside(false);
             pd.show();
         }
         @Override

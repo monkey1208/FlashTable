@@ -88,6 +88,7 @@ public class StoreManageCommentFragment extends ListFragment {
         private String status = null;
         @Override
         protected void onPreExecute() {
+            progress_dialog.setCanceledOnTouchOutside(false);
             progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
             progress_dialog.show();
         }
