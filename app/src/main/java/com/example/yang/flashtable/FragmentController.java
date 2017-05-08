@@ -1,6 +1,7 @@
 package com.example.yang.flashtable;
 
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -156,6 +157,17 @@ public class FragmentController extends StoreMainActivity{
             case CONFIRM:
                 fragment[select] = new StoreHomeConfirmFragment();
                 break;
+        }
+    }
+    public void sendBundle(Bundle bundle,int mode){
+        switch (mode){
+            case CONFIRM:
+                if(frag_stat[CONFIRM]!=DEAD)
+                    kill(CONFIRM);
+                fragment[CONFIRM].setArguments(bundle);
+                setActive(CONFIRM);
+                break;
+
         }
     }
 }
