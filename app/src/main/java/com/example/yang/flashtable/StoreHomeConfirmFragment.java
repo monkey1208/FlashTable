@@ -12,6 +12,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class StoreHomeConfirmFragment extends Fragment {
 
     private TextView tv_name;
@@ -34,6 +37,12 @@ public class StoreHomeConfirmFragment extends Fragment {
         String name = getArguments().getString("name");
         String number = getArguments().getString("number");
         int promtion_id = getArguments().getInt("promotion_id");
+        Long due_time = getArguments().getLong("due_time");
+        Date due_time_date = new Date(due_time);
+        Date create_time_date = new Date(due_time-900*1000);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+        String create_time_str = sdf.format(create_time_date);
+        String due_time_str = sdf.format(due_time_date);
         Log.d("Session",id);
         View v = inflater.inflate(R.layout.store_home_confirm_fragment, container, false);
         tv_name = (TextView)v.findViewById(R.id.tv_name);
@@ -43,8 +52,14 @@ public class StoreHomeConfirmFragment extends Fragment {
             if(StoreMainActivity.storeInfo.discountList.get(i).id==promtion_id) {
                 TextView tv_discount = (TextView)v.findViewById(R.id.store_home_confirm_fragment_tv_discount);
                 TextView tv_gift = (TextView)v.findViewById(R.id.store_home_confirm_fragment_tv_gift);
+                TextView tv_create_time = (TextView)v.findViewById(R.id.store_home_confirm_fragment_tv_appoint_time);
+                TextView tv_due_time = (TextView)v.findViewById(R.id.store_home_confirm_fragment_tv_arrive_time) ;
+                TextView tv_not_arrive = (TextView)v.findViewById(R.id.store_home_comfirm_fragment_tv_info_last);
                 tv_discount.setText(Integer.toString(StoreMainActivity.storeInfo.discountList.get(i).discount));
                 tv_gift.setText(StoreMainActivity.storeInfo.discountList.get(i).description);
+                tv_create_time.setText(create_time_str);
+                tv_due_time.setText(due_time_str);
+                tv_not_arrive.setText("人未到達");
             }
         }
         tv_number.setText(number);
