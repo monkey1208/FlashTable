@@ -14,11 +14,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -30,17 +27,13 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class StoreAppointFragment extends ListFragment {
     private List<ReservationInfo> list = new ArrayList<>();
@@ -85,14 +78,13 @@ public class StoreAppointFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-
         Bundle bundle = new Bundle();
         bundle.putString("session_id",Integer.toString(list.get(position).id));
         bundle.putString("name",list.get(position).name);
         bundle.putString("number",Integer.toString(list.get(position).number));
         bundle.putInt("promotion_id",list.get(position).promotion_id);
         bundle.putLong("due_time",list.get(position).due_time);
-        StoreMainActivity.fragmentController.sendBundle(bundle,10);
+        StoreMainActivity.fragmentController.sendBundle(bundle,FragmentController.CONFIRM);
         //Toast.makeText(getContext(),Integer.toString(position),Toast.LENGTH_LONG).show();
     }
 

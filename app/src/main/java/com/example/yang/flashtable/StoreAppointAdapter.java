@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +78,13 @@ public class StoreAppointAdapter extends BaseAdapter{
             holder = (ViewHolder) convertView.getTag();
         holder.setData(list.get(position));
 
+        /*convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO:  Go to comfirm fragment
+                //Toast.makeText(context,Integer.toString(position),Toast.LENGTH_LONG).show();
+            }
+        });*/
         return  convertView;
     }
     private class ViewHolder{

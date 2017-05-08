@@ -44,6 +44,8 @@
         <activity
             android:name=".StoreMainActivity"
             android:hardwareAccelerated="true"
+            android:configChanges="screenSize|orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity

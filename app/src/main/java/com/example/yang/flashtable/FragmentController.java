@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 public class FragmentController extends StoreMainActivity{
-    public static final int FRAG_COUNT = 11;
+    public static final int FRAG_COUNT = 12;
     public static final int HOME = 0;
     public static final int RECENT = 1;
     public static final int APPOINT = 2;
@@ -18,7 +18,8 @@ public class FragmentController extends StoreMainActivity{
     public static final int MANAGE_DISCOUNT = 7;
     public static final int MANAGE_STATISTIC = 8;
     public static final int MANAGE_RECORD = 9;
-    public static final int CONFIRM = 10;
+    public static final int MANAGE_COMMENT = 10;
+    public static final int CONFIRM = 11;
     public StoreRecentFragment storeRecentFragment;
     public StoreHomeFragment storeHomeFragment;
     public StoreAppointFragment storeAppointFragment;
@@ -40,6 +41,7 @@ public class FragmentController extends StoreMainActivity{
         viewContainer = new int[FRAG_COUNT];
         for(int i=0;i<FRAG_COUNT;i++) viewContainer[i]= R.id.fragment_space;
         viewContainer[CONFIRM] = R.id.fragment_full;
+        viewContainer[MANAGE_COMMENT] = R.id.fragment_full;
         for(int i=0;i<FRAG_COUNT;i++) frag_stat[i]=DEAD;
         fragmentManager  = fm;
         storeRecentFragment = new StoreRecentFragment();
@@ -110,6 +112,9 @@ public class FragmentController extends StoreMainActivity{
             case MANAGE_DISCOUNT:
                 setActive(MANAGE_DISCOUNT);
                 break;
+            case MANAGE_COMMENT:
+                setActive(MANAGE_COMMENT);
+                break;
             case CONFIRM:
                 if(frag_stat[CONFIRM]!=DEAD)
                     kill(CONFIRM);
@@ -153,6 +158,9 @@ public class FragmentController extends StoreMainActivity{
                 break;
             case MANAGE_DISCOUNT:
                 fragment[select] = new StoreManageDiscountFragment();
+                break;
+            case MANAGE_COMMENT:
+                fragment[select] = new StoreManageCommentFragment();
                 break;
             case CONFIRM:
                 fragment[select] = new StoreHomeConfirmFragment();
