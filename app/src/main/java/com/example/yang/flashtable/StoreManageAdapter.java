@@ -14,12 +14,14 @@ class StoreManageAdapter extends ArrayAdapter {
     private final Activity context;
     private final String[] itemname;
     private final Integer[] imgid;
+    private final Integer[] value;
 
-    public StoreManageAdapter(Activity context, String[] itemname, Integer[] imgid) {
+    public StoreManageAdapter(Activity context, String[] itemname, Integer[] imgid, Integer[] value) {
         super(context, R.layout.store_manage_row, itemname);
         this.context=context;
         this.itemname=itemname;
         this.imgid=imgid;
+        this.value=value;
     }
 
     @NonNull
@@ -27,11 +29,18 @@ class StoreManageAdapter extends ArrayAdapter {
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.store_manage_row, null,true);
 
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.store_manage_tv_title);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.store_manage_iv_icon);
+        TextView tvTitle = (TextView) rowView.findViewById(R.id.store_manage_tv_title);
+        ImageView ivIcon = (ImageView) rowView.findViewById(R.id.store_manage_iv_icon);
+        TextView tvValue = (TextView) rowView.findViewById(R.id.store_manage_tv_value);
 
-        txtTitle.setText(itemname[position]);
-        imageView.setImageResource(imgid[position]);
+        tvTitle.setText(itemname[position]);
+        ivIcon.setImageResource(imgid[position]);
+        if(itemname[position].equals("預約成功率")){
+            tvValue.setText((value[position]+" %"));
+        }
+        if(itemname[position].equals("應付帳款明細")){
+            tvValue.setText(("NT$ "+value[position]));
+        }
         return rowView;
 
     };

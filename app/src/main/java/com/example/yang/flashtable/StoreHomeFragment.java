@@ -21,7 +21,6 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -39,8 +38,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import pl.droidsonroids.gif.GifImageView;
-
-import static com.github.mikephil.charting.charts.Chart.LOG_TAG;
 
 public class StoreHomeFragment extends Fragment {
 
@@ -128,6 +125,7 @@ public class StoreHomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 tv_active.setText("立即尋客");
+                tv_active.setVisibility(View.VISIBLE);
                 tv_active_remind.setText("");
                 bt_active.setVisibility(View.VISIBLE);
                 bt_active.setEnabled(true);
@@ -191,7 +189,6 @@ public class StoreHomeFragment extends Fragment {
             try {
                 HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_promotions?shop_id=" + params[0]+"&verbose=1");
                 JSONArray responsePromotion = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(get)));
-                Log.d("NO~~~", Integer.toString(responsePromotion.length()));
                 for (int i = 1; i < responsePromotion.length(); i++) {
                     JSONObject promotion = responsePromotion.getJSONObject(i);
                     int id = promotion.getInt("promotion_id");
@@ -203,7 +200,7 @@ public class StoreHomeFragment extends Fragment {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
+            } catch ( IOException e){
                 e.printStackTrace();
             } finally {
                 httpClient.getConnectionManager().shutdown();
@@ -245,6 +242,7 @@ public class StoreHomeFragment extends Fragment {
         timer.cancel();
         timer = new Timer();
         tv_active_time.setText("");
+        tv_active_running.setText("");
         return;
     }
     public void stopGIF(){

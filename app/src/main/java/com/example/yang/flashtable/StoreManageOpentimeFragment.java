@@ -290,9 +290,6 @@ public class StoreManageOpentimeFragment extends Fragment {
             }catch (Exception e){
                 e.printStackTrace();
             }
-            for(int i = 0; i < dateList.size(); i++){
-                Log.e("opentime_datelist", dateList.get(i).toString());
-            }
 
         }
     }
@@ -368,7 +365,7 @@ public class StoreManageOpentimeFragment extends Fragment {
                                 break;
                             case OPENTIME_CHOOSE_WEEK:
                                 calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                                DateFormat df = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+                                DateFormat df = new SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN);
                                 int[] gap = {-14, 6, 1, 6, 1, 6};
                                 for(int i = 0; i < 6; i += 2){
                                     calendar.add(Calendar.DATE, gap[i]);

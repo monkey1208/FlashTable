@@ -1,13 +1,11 @@
 package com.example.yang.flashtable;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +32,7 @@ import static com.example.yang.flashtable.AlertDialogController.LOGOUT;
 
 public class StoreManageFragment extends ListFragment {
     private String shop_id;
+    private StoreManageAdapter adapter;
 
     public  StoreManageFragment () {
         // Required empty public constructor
@@ -48,7 +47,7 @@ public class StoreManageFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.store_manage_fragment, container, false);
-        StoreManageAdapter adapter = new StoreManageAdapter(getActivity(), itemname, imgid);
+        adapter = new StoreManageAdapter(getActivity(), itemname, imgid, value);
         setListAdapter(adapter);
 
         getStoreInfo();
@@ -57,7 +56,6 @@ public class StoreManageFragment extends ListFragment {
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_tb_toolbar);
         bar.setPadding(0,getStatusBarHeight(),0,0);
         bar.inflateMenu(R.menu.store_manage_menu);
-        final Context context = getContext();
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -74,13 +72,13 @@ public class StoreManageFragment extends ListFragment {
     }
 
     String[] itemname ={
-
             "預約成功率",
             "開啟時段整理",
             "應付帳款明細",
             "折扣優惠",
             "優惠統計詳情",
             "預約紀錄",
+            "顧客評價及評論"
     };
 
     Integer[] imgid={
@@ -90,7 +88,10 @@ public class StoreManageFragment extends ListFragment {
             R.drawable.ic_store_manage_discount,
             R.drawable.ic_store_manage_statistic,
             R.drawable.ic_store_manage_record,
+            R.drawable.ic_store_manage_comment
     };
+
+    Integer[] value={0, 0, 0, 0, 0, 0, 0};
 
     public int getStatusBarHeight() {
         int result = 0;
@@ -113,18 +114,16 @@ public class StoreManageFragment extends ListFragment {
         protected void onPreExecute() {
             super.onPreExecute();
             pd = new ProgressDialog(getActivity());
-            pd.setMessage("loading...");
+            pd.setMessage("請稍後");
             pd.show();
         }
         @Override
         protected Void doInBackground(String...params) {
             list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
-            int origin_size = list.size();
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet getRecordsInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ shop_id+"&verbose=1");
                 JSONArray recordsInfo = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordsInfo)));
-                int new_size = recordsInfo.getJSONObject(0).getInt("size");
                 for (int i = 1; i < recordsInfo.length(); i++) {
                     JSONObject recordInfo = recordsInfo.getJSONObject(i);
                     int num = recordInfo.getInt("number");
@@ -159,7 +158,8 @@ public class StoreManageFragment extends ListFragment {
                 }
             }
             StoreMainActivity.storeInfo.setSuccess_record_num(sum);
-            Log.e("record", "update");
+            value[0]= (int)((sum+0.0)/list.size()*100);
+            adapter.notifyDataSetChanged();
 
         }
     }
