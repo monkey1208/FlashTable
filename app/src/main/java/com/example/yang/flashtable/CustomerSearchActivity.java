@@ -2,11 +2,10 @@ package com.example.yang.flashtable;
 
 import android.annotation.TargetApi;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
-import android.database.MatrixCursor;
-import android.graphics.PorterDuff;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -15,8 +14,6 @@ import android.provider.SearchRecentSuggestions;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -24,8 +21,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 
 import com.example.yang.flashtable.customer.provider.SearchSuggestionProvider;
@@ -42,6 +37,27 @@ public class CustomerSearchActivity extends AppCompatActivity {
     CustomerMainAdapter adapter;
     ListView listView;
     LatLng latLng;
+    SearchView search_view;
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+        super.onNewIntent(intent);
+    }
+
+    private void handleIntent(Intent intent){
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            System.out.println("test");
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                    SearchSuggestionProvider.AUTHORITY, SearchSuggestionProvider.MODE);
+            suggestions.saveRecentQuery(query, null);
+            doSearch(query);
+        }
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,12 +103,12 @@ public class CustomerSearchActivity extends AppCompatActivity {
         }
 
         if (restaurant_list != null){
-            for (int i = 0; i < restaurant_list.size(); i++){
-                System.out.println(restaurant_list.get(i).category);
-                if (restaurant_list.get(i).category.contains(query)){
-                    adapter.add(restaurant_list.get(i));
-                }else if(restaurant_list.get(i).name.contains(query)){
-                    adapter.add(restaurant_list.get(i));
+            for (CustomerRestaurantInfo item:restaurant_list){
+                System.out.println(item.category);
+                if (item.category.contains(query)){
+                    adapter.add(item);
+                }else if(item.name.contains(query)){
+                    adapter.add(item);
                 }
             }
             setList();
@@ -130,6 +146,10 @@ public class CustomerSearchActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void readHistory(){
+        SharedPreferences sharedPreferences = getSharedPreferences("search_history", MODE_PRIVATE);
+    }
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setupActionBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -146,19 +166,22 @@ public class CustomerSearchActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.customer_search_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView search_view = (SearchView) MenuItemCompat.getActionView(searchItem);
+        search_view = (SearchView) MenuItemCompat.getActionView(searchItem);
         search_view.setQueryHint(getResources().getString(R.string.customer_search_hint));
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        search_view.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        search_view.setIconifiedByDefault(false);
 
         Drawable ic_search = searchItem.getIcon();
         ic_search = DrawableCompat.wrap(ic_search);
         DrawableCompat.setTint(ic_search, ContextCompat.getColor(this, R.color.gray));
 
-        final String[] history = {"bullshit", "shit"};
+        /*final String[] history = {"bullshit", "shit"};
 
         //int completeTextId = search_view.getResources().getIdentifier("android:id/search_src_text", null, null);
         AutoCompleteTextView completeText = (AutoCompleteTextView) search_view.findViewById(R.id.search_src_text); ;
         completeText.setThreshold(0);
-        completeText.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, history));
+        //completeText.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, history));
         completeText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -179,11 +202,13 @@ public class CustomerSearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
+
                 return false;
             }
 
         });
-
+        */
         searchItem.expandActionView();
         search_view.requestFocus();
 

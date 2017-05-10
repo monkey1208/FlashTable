@@ -8,7 +8,7 @@ import android.content.SearchRecentSuggestionsProvider;
 
 public class SearchSuggestionProvider extends SearchRecentSuggestionsProvider {
 
-    public static String AUTHORITY = "com.example.yang.flashtable.customer.provider.SuggestionProvider";
+    public static String AUTHORITY = "com.example.yang.flashtable.customer.provider.SearchSuggestionProvider";
     public final static int MODE = DATABASE_MODE_QUERIES;
 
     public SearchSuggestionProvider() {
