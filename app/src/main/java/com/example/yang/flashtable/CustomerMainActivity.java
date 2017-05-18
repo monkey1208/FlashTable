@@ -6,12 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,10 +14,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.example.yang.flashtable.customer.CustomerFlashPointFragment;
 
 public class CustomerMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -76,6 +71,10 @@ public class CustomerMainActivity extends AppCompatActivity
             case "profile":
                 fab_map.setVisibility(View.GONE);
                 fragment = new CustomerProfileFragment();
+                break;
+            case "points":
+                fab_map.setVisibility(View.GONE);
+                fragment = new CustomerFlashPointFragment();
                 break;
             case "map":
                 fab_map.setVisibility(View.VISIBLE);
@@ -172,6 +171,8 @@ public class CustomerMainActivity extends AppCompatActivity
             navigate("detail");
         } else if (id == R.id.customer_drawer_profile) {
             navigate("profile");
+        } else if (id == R.id.customer_drawer_points) {
+            navigate("points");
         } else if (id == R.id.customer_drawer_logout) {
             logout();
         }

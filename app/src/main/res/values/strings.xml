@@ -111,6 +111,7 @@
         <item>依折扣</item>
     </string-array>
     <string-array name="customer_sp_distance">
+        <item>全部</item>
         <item>距離&lt;0.5km</item>
         <item>距離&lt;1km</item>
         <item>距離&lt;1.5km</item>
@@ -203,5 +204,8 @@
 
     <!-- Strings related to customer credits -->
     <string name="customer_credit_about">信譽分數介紹</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

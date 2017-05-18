@@ -1,0 +1,49 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.yang.flashtable.StoreManageFragment"
+    android:id="@+id/store_manage_fragment"
+    android:background="@color/white">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/store_manage_comment_tb_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" >
+        <TextView
+            android:id="@+id/store_manage_comment_tv_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="評價及評論"
+            android:textColor="@color/textColor"
+            android:textSize="22sp"/>
+    </android.support.v7.widget.Toolbar>
+
+    <ImageView
+        android:layout_below="@+id/store_manage_comment_tb_toolbar"
+        android:id="@+id/store_manage_comment_iv_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="#90DDDDDD" />
+
+    <ListView
+        android:layout_below="@+id/store_manage_comment_iv_divider"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:dividerHeight="1dp"
+        android:divider="@drawable/store_list_divider"
+        android:id="@id/android:list"/>
+</RelativeLayout>
+
+
+
+
+
+

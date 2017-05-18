@@ -12,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.example.yang.flashtable.customer.database.SqlHandler;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.http.HttpResponse;
@@ -135,7 +136,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                         String lng = tmp[1];
                         LatLng latlng = new LatLng(Float.parseFloat(lat), Float.parseFloat(lng));
                         info = new CustomerRestaurantInfo(name, Integer.valueOf(id), consumption, tag, latlng);
-                        info.detailInfo.setInfo(address, intro);
+                        info.setInfo(address, intro);
                         info.turnBitmap2ByteArray(image);
                         sql_handler.insert(info);
 

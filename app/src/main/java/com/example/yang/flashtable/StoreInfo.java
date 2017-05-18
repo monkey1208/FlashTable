@@ -21,7 +21,6 @@ public class StoreInfo {
         name = n;
         address = a;
         discountList = new ArrayList<>();
-        discountList.add(new StoreDiscountInfo(100,"暫無優惠",0,true));
         discountDefault = 0;
         discountCurrent = discountDefault;
         recordList = new ArrayList<>();
