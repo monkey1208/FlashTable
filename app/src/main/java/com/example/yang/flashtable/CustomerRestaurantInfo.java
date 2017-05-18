@@ -8,26 +8,25 @@ import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
 
 /**
  * Created by Yang on 2017/3/23.
  */
 
 public class CustomerRestaurantInfo implements Parcelable{
-    int id;
-    String name;
-    float rating;
-    int discount;
-    String offer;
-    LatLng latLng;
-    int consumption;
-    String image_url;
-    String promotion_id;
-    String category;
-    byte[] image = null;
-    String address = "";
-    String intro = "";
+    public int id;
+    public String name;
+    public float rating;
+    public int discount;
+    public String offer;
+    public LatLng latLng;
+    public int consumption;
+    public String image_url;
+    public String promotion_id;
+    public String category;
+    public byte[] image = null;
+    public String address = "";
+    public String intro = "";
 
     protected CustomerRestaurantInfo(Parcel in) {
         id = in.readInt();

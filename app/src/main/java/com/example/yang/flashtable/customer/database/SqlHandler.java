@@ -1,4 +1,4 @@
-package com.example.yang.flashtable;
+package com.example.yang.flashtable.customer.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.example.yang.flashtable.CustomerRestaurantInfo;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.ByteArrayOutputStream;
@@ -32,11 +33,9 @@ public class SqlHandler extends SQLiteOpenHelper {
     public static final String INTRO_COLUMN = "intro";
     public static final String IMG_COLUMN = "img";
     public SQLiteDatabase db;
-    private Context context;
     public SqlHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.db = getWritableDatabase();
-        this.context = context;
     }
 
     @Override

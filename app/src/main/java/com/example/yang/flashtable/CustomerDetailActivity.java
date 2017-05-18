@@ -19,6 +19,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
+import com.example.yang.flashtable.customer.database.SqlHandler;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;

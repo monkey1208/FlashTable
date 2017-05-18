@@ -24,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.example.yang.flashtable.customer.database.SqlHandler;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.http.HttpResponse;
@@ -43,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import static android.content.Context.LOCATION_SERVICE;
-import static android.content.Context.SYSTEM_HEALTH_SERVICE;
 
 /**
  * Created by Yang on 2017/3/23.

@@ -121,8 +121,8 @@
         <activity android:name=".CustomerCropProfileActivity"
             android:theme="@style/AppTheme.LightActionBar"/>
 
-        <provider android:name=".customer.provider.SearchSuggestionProvider"
-            android:authorities="com.example.yang.flashtable.customer.provider.SearchSuggestionProvider" />
+        <!--<provider android:name=".customer.provider.SearchSuggestionProvider"
+            android:authorities="com.example.yang.flashtable.customer.provider.SearchSuggestionProvider" />-->
 
     </application>
 

@@ -12,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.example.yang.flashtable.customer.database.SqlHandler;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.apache.http.HttpResponse;

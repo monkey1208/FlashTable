@@ -21,8 +21,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.example.yang.flashtable.customer.database.HistorySqlHandler;
+import com.example.yang.flashtable.customer.database.SqlHandler;
 import com.example.yang.flashtable.customer.provider.SearchSuggestionProvider;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -35,9 +40,14 @@ import java.util.ArrayList;
 public class CustomerSearchActivity extends AppCompatActivity {
     ArrayList<CustomerRestaurantInfo> restaurant_list;
     CustomerMainAdapter adapter;
+    TextView textView;
     ListView listView;
     LatLng latLng;
     SearchView search_view;
+    AutoCompleteTextView completeText;
+    ArrayAdapter<String> history_adapter;
+
+    HistorySqlHandler sqlHandler;
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -47,12 +57,15 @@ public class CustomerSearchActivity extends AppCompatActivity {
 
     private void handleIntent(Intent intent){
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            System.out.println("test");
             String query = intent.getStringExtra(SearchManager.QUERY);
             SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
                     SearchSuggestionProvider.AUTHORITY, SearchSuggestionProvider.MODE);
             suggestions.saveRecentQuery(query, null);
             doSearch(query);
+        } else if (Intent.ACTION_VIEW.equals(intent.getAction())){
+            System.out.println(intent.getData());
+            System.out.println(intent.getData().getLastPathSegment());
+            search_view.setQuery(intent.getDataString(), false);
         }
     }
 
@@ -72,6 +85,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
         setupActionBar();
         setTitle(getResources().getString(R.string.customer_search_title));
         listView = (ListView)findViewById(R.id.customer_search_lv);
+        textView = (TextView)findViewById(R.id.customer_search_tv);
     }
 
     private void initData() {
@@ -111,9 +125,18 @@ public class CustomerSearchActivity extends AppCompatActivity {
                     adapter.add(item);
                 }
             }
-            setList();
+            if(adapter.isEmpty()){
+                listView.setVisibility(View.INVISIBLE);
+                textView.setVisibility(View.VISIBLE);
+            }else {
+                listView.setVisibility(View.VISIBLE);
+                textView.setVisibility(View.INVISIBLE);
+                setList();
+            }
         }else{
             //Api
+            listView.setVisibility(View.INVISIBLE);
+            textView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -125,6 +148,15 @@ public class CustomerSearchActivity extends AppCompatActivity {
                 showRestaurantDetail(i);
             }
         });
+    }
+
+    private void setHistory(){
+        history_adapter.clear();
+        ArrayList<String> history = sqlHandler.getHistoryList();
+        for(String item: history){
+            history_adapter.add(item);
+        }
+        completeText.setAdapter(history_adapter);
     }
 
     private void showRestaurantDetail(final int position) {
@@ -165,6 +197,9 @@ public class CustomerSearchActivity extends AppCompatActivity {
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.customer_search_menu, menu);
+
+        sqlHandler = new HistorySqlHandler(this);
+
         MenuItem searchItem = menu.findItem(R.id.action_search);
         search_view = (SearchView) MenuItemCompat.getActionView(searchItem);
         search_view.setQueryHint(getResources().getString(R.string.customer_search_hint));
@@ -172,20 +207,23 @@ public class CustomerSearchActivity extends AppCompatActivity {
         search_view.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         search_view.setIconifiedByDefault(false);
 
+
         Drawable ic_search = searchItem.getIcon();
         ic_search = DrawableCompat.wrap(ic_search);
         DrawableCompat.setTint(ic_search, ContextCompat.getColor(this, R.color.gray));
 
-        /*final String[] history = {"bullshit", "shit"};
+        final ArrayList<String> history = sqlHandler.getHistoryList();
+        //final String[] history = {"bullshit", "shit"};
 
         //int completeTextId = search_view.getResources().getIdentifier("android:id/search_src_text", null, null);
-        AutoCompleteTextView completeText = (AutoCompleteTextView) search_view.findViewById(R.id.search_src_text); ;
+        completeText = (AutoCompleteTextView) search_view.findViewById(R.id.search_src_text); ;
         completeText.setThreshold(0);
-        //completeText.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, history));
+        history_adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, history);
+        completeText.setAdapter(history_adapter);
         completeText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                search_view.setQuery(history[position], false);
+                search_view.setQuery(history.get(position), false);
             }
         });
         search_view.setIconifiedByDefault(true);
@@ -195,7 +233,8 @@ public class CustomerSearchActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 // perform query here
                 doSearch(query);
-
+                sqlHandler.insert(query);
+                setHistory();
                 search_view.clearFocus();
                 return true;
             }
@@ -208,7 +247,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
             }
 
         });
-        */
+
         searchItem.expandActionView();
         search_view.requestFocus();
 
