@@ -36,8 +36,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -45,6 +48,7 @@ import java.io.File;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -103,7 +107,7 @@ public class CustomerProfileFragment extends Fragment {
 
         tv_username.setText(username);
         tv_credit.setText(credits + "-");
-        new CustomerAPICredits().execute(userID);
+        new CustomerAPIProfile().execute(userID);
 
         ll_reservations.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,7 +155,12 @@ public class CustomerProfileFragment extends Fragment {
 
             }
         });
-        iv_avatar.setImageBitmap(getRoundedShape(((BitmapDrawable) iv_avatar.getDrawable()).getBitmap()));
+
+        // String path = Environment.getExternalStorageDirectory().getPath() +
+        //         getResources().getString(R.string.customer_profile_pic);
+        // Bitmap avatar = readImage(path);
+        // if (avatar == null) iv_avatar.setImageBitmap(getRoundedShape(((BitmapDrawable) iv_avatar.getDrawable()).getBitmap()));
+        // else    iv_avatar.setImageBitmap(getRoundedShape(avatar));
         tv_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -211,6 +220,10 @@ public class CustomerProfileFragment extends Fragment {
                 Log.i("CroppedImagePath", path);
             }
             else iv_avatar.setImageBitmap(getRoundedShape(avatar));
+
+            String pic_url = data.getStringExtra("url");
+            pic_url = "http://i.imgur.com/" + pic_url + ".png";
+            new APIAvatar().execute(userID, pic_url);
         }
     }
 
@@ -282,13 +295,15 @@ public class CustomerProfileFragment extends Fragment {
 
     // APIs
 
-    // API for getting credits
-    class CustomerAPICredits extends AsyncTask<String, Void, String> {
+    // API for getting profile info
+    class CustomerAPIProfile extends AsyncTask<String, Void, String> {
         private String status = null;
+        private Bitmap avatar = null;
 
         @Override
         protected String doInBackground(String... params) {
             String content = null;
+            String pic_url = null;
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet request = new HttpGet(
@@ -301,7 +316,11 @@ public class CustomerProfileFragment extends Fragment {
                 status = responseJSON.getString("status_code");
                 if (status.equals("0")) {
                     content = responseJSON.getString("point");
+                    pic_url = responseJSON.getString("picture_url");
                 }
+
+                // TODO: Get image from local storage if available.
+                if (pic_url != null && !pic_url.equals("")) avatar = getRoundedShape(BitmapFactory.decodeStream((InputStream)new URL(pic_url).getContent()));
             } catch (Exception e) {
                 Log.d("GetCode", "Request exception:" + e.getMessage());
             } finally {
@@ -316,7 +335,50 @@ public class CustomerProfileFragment extends Fragment {
                 dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
             else {
                 tv_credit.setText(credits + _content);
+                iv_avatar.setImageBitmap(avatar);
             }
+        }
+    }
+
+    // API to change profile pic
+    class APIAvatar extends AsyncTask<String, Void, Void> {
+        private ProgressDialog progress_dialog = new ProgressDialog(CustomerProfileFragment.this.getActivity());
+        private String status = null, new_username;
+        @Override
+        protected void onPreExecute() {
+            progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
+            progress_dialog.show();
+        }
+        @Override
+        protected Void doInBackground(String... params) {
+            new_username = params[1];
+            HttpClient httpClient = new DefaultHttpClient();
+            try {
+                HttpPost request = new HttpPost(
+                        "https://" + getString(R.string.server_domain) + "/api/modify_user");
+                StringEntity se = new StringEntity("{ \"user_id\":\"" + params[0] +
+                        "\", \"new_picture_url\":\"" + params[1] + "\"}", HTTP.UTF_8);
+                request.addHeader("Content-Type", "application/json");
+                request.setEntity(se);
+                HttpResponse response = httpClient.execute(request);
+                ResponseHandler<String> handler = new BasicResponseHandler();
+                String httpResponse = handler.handleResponse(response);
+                JSONObject responseJSON = new JSONObject(httpResponse);
+                status = responseJSON.getString("status_code");
+            } catch (Exception e) {
+                status = null;
+                Log.d("GetCode", "Request exception:" + e.getMessage());
+            } finally {
+                httpClient.getConnectionManager().shutdown();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void _params) {
+            progress_dialog.dismiss();
+            if( status.equals("-2") )    dialog_builder.dialogEvent(getResources().getString(R.string.customer_profile_name_used), "normal", null);
+            else if( status == null  || !status.equals("0") )    dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
+
         }
     }
 }

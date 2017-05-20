@@ -40,6 +40,9 @@
     <!-- Strings related to alert -->
     <string name="alert_title">提醒</string>
 
+    <!-- String related to customer info -->
+    <string name="customer_profile_pic">/flashCroppedAvatar.png</string>
+
     <!-- Strings related to customer register -->
     <string name="customer_register_title">一般帳號資料填寫：</string>
     <string name="customer_register_username">暱稱</string>

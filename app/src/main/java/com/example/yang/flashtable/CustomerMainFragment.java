@@ -160,13 +160,15 @@ public class CustomerMainFragment extends Fragment {
         adapter = sortAdapter(adapter, "default");
         adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
         adapter.notifyDataSetChanged();
-        lv_shops.setAdapter(adjusted_adapter);
-        lv_shops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapter_view, View view, int i, long l) {
-                showRestaurantDetail(i);
-            }
-        });
+        if (lv_shops != null) {
+            lv_shops.setAdapter(adjusted_adapter);
+            lv_shops.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapter_view, View view, int i, long l) {
+                    showRestaurantDetail(i);
+                }
+            });
+        }
     }
 
     private void setRefreshLayout() {
