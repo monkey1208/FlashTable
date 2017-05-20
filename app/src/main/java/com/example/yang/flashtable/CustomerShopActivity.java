@@ -153,6 +153,7 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
                                     intent.putExtra("rating", Float.toString(info.rating));
                                     intent.putExtra("shop_location", info.address);
                                     intent.putExtra("shop_id", shop_id);
+                                    intent.putExtra("block", false);
                                     startActivity(intent);
                                 }
                             }

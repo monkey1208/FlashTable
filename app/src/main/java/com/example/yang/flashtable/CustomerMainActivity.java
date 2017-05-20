@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -18,6 +19,25 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.yang.flashtable.customer.CustomerFlashPointFragment;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,9 +56,9 @@ public class CustomerMainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customer_main_activity);
+        checkBlock();
         initView();
         initData();
-        checkBlock();
     }
 
     private void initView() {
@@ -119,11 +139,14 @@ public class CustomerMainActivity extends AppCompatActivity
         nv_view.setNavigationItemSelectedListener(this);
     }
     private void checkBlock(){
-        if(CustomerReservationActivity.GetBlockInfo.getBlockStatus(this)){
+        //Do something!!!!
+        new ApiSessionSuccess().execute();
+
+        /*if(CustomerReservationActivity.GetBlockInfo.getBlockStatus(this)){
             //Go to block page
             Intent intent = new Intent(this, CustomerReservationActivity.class);
             startActivity(intent);
-        }
+        }*/
     }
 
     @Override
@@ -207,13 +230,94 @@ public class CustomerMainActivity extends AppCompatActivity
         }
     }
 
-
-
     private void logout() {
         SharedPreferences preferences = this.getSharedPreferences("USER", MODE_PRIVATE);
         preferences.edit().clear().apply();
         Intent intent = new Intent(CustomerMainActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    class ApiSessionSuccess extends AsyncTask<Void, Void, Boolean> {
+        HttpClient httpClient = new DefaultHttpClient();
+        private String promotion_id, offer, name, address, shop_id, time, session_id;
+        private int discount, person;
+        private float rating;
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            //NameValuePair param = new BasicNameValuePair("user_id", getUserId());
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("user_id", getUserId()));
+            params.add(new BasicNameValuePair("verbose", "1"));
+            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+ URLEncodedUtils.format(params, "utf-8"));
+            request.addHeader("Content-Type", "application/json");
+            try {
+                HttpResponse response = httpClient.execute(request);
+                ResponseHandler<String> handler = new BasicResponseHandler();
+                String session_response = handler.handleResponse(response);
+                JSONArray session_array = new JSONArray(session_response);
+                JSONObject session_object = session_array.getJSONObject(0);
+                System.out.println("session = "+session_response);
+                if(session_object.get("status_code").equals("0")){
+                    int size = Integer.valueOf(session_object.get("size").toString());
+                    if(size == 0){
+                        return false;
+                    }else{
+                        JSONObject object = session_array.getJSONObject(1);
+                        this.promotion_id = object.getString("promotion_id");
+                        this.discount = object.getInt("promotion_name");
+                        this.address = object.getString("shop_address");
+                        this.name = object.getString("shop_name");
+                        this.offer = object.getString("promotion_description");
+                        this.shop_id = object.getString("shop_id");
+                        this.person = object.getInt("number");
+                        this.time = object.getString("due_time");
+                        this.session_id = object.getString("session_id");
+                        request = new HttpGet("http://"+getString(R.string.server_domain)+"/api/shop_comments?shop_id="+shop_id);
+                        request.addHeader("Content-Type", "application/json");
+                        JSONArray responseShopRating = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(request)));
+                        String status = responseShopRating.getJSONObject(0).getString("status_code");
+                        if (status.equals("0"))
+                            this.rating = Float.parseFloat(responseShopRating.getJSONObject(0).getString("average_score"))/2;
+                        else
+                            this.rating = 0;
+                        return true;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean s) {
+            if(s){
+                //block => goto reservation activity
+                Intent intent = new Intent(CustomerMainActivity.this, CustomerReservationActivity.class);
+                intent.putExtra("promotion_id", this.promotion_id);
+                intent.putExtra("discount", this.discount);
+                intent.putExtra("offer", this.offer);
+                intent.putExtra("persons", this.person);
+                intent.putExtra("shop_name", this.name);
+                intent.putExtra("rating", Float.toString(this.rating));
+                intent.putExtra("shop_location", this.address);
+                intent.putExtra("shop_id", this.shop_id);
+                intent.putExtra("time", this.time);
+                intent.putExtra("session_id", this.session_id);
+                intent.putExtra("block", true);
+                startActivity(intent);
+
+            } else {
+
+            }
+        }
+    }
+
+    private String getUserId(){
+        SharedPreferences preferences = getSharedPreferences("USER", MODE_PRIVATE);
+        return preferences.getString("userID", "");
     }
 }
