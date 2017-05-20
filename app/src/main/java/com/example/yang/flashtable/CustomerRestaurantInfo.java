@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream;
  * Created by Yang on 2017/3/23.
  */
 
-public class CustomerRestaurantInfo implements Parcelable{
+public class CustomerRestaurantInfo{
     public int id;
     public String name;
     public float rating;
@@ -27,6 +27,7 @@ public class CustomerRestaurantInfo implements Parcelable{
     public byte[] image = null;
     public String address = "";
     public String intro = "";
+    public String date = "";
 
     protected CustomerRestaurantInfo(Parcel in) {
         id = in.readInt();
@@ -57,40 +58,6 @@ public class CustomerRestaurantInfo implements Parcelable{
     public CustomerRestaurantInfo(String name, int id, int consumption, String tag, LatLng latLng){
         this(name, 101, "暫無優惠", id, consumption, tag, latLng);
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(name);
-        dest.writeFloat(rating);
-        dest.writeInt(discount);
-        dest.writeString(offer);
-        dest.writeParcelable(latLng, flags);
-        dest.writeInt(consumption);
-        dest.writeString(image_url);
-        dest.writeString(promotion_id);
-        dest.writeString(category);
-        dest.writeByteArray(image);
-        dest.writeString(address);
-        dest.writeString(intro);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<CustomerRestaurantInfo> CREATOR = new Creator<CustomerRestaurantInfo>() {
-        @Override
-        public CustomerRestaurantInfo createFromParcel(Parcel in) {
-            return new CustomerRestaurantInfo(in);
-        }
-
-        @Override
-        public CustomerRestaurantInfo[] newArray(int size) {
-            return new CustomerRestaurantInfo[size];
-        }
-    };
 
     public void setInfo(String address, String intro){
         this.address = address;

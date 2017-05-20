@@ -91,8 +91,8 @@ public class CustomerLoadingActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
             setProgress(values[0]);
+            super.onProgressUpdate(values);
         }
 
         private void getServerShop(){
@@ -144,7 +144,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                             image.recycle();
                         }
                     }
-                    //publishProgress(Integer.toString(100*i/size)+"%");
+                    publishProgress(Integer.toString(100*i/size)+"%");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -177,6 +177,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
         private void openDB(){
             sql_handler = new SqlHandler(CustomerLoadingActivity.this);
         }
+
         private Bitmap getBitmapFromURL(String imageUrl)
         {
             try

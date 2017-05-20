@@ -40,8 +40,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.Locale;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -265,6 +270,10 @@ public class CustomerMainFragment extends Fragment {
                         break;
                     case 1:
                         sort_mode = "time";
+                        adapter = sortAdapter(adapter, sort_mode);
+                        adjusted_adapter = filtAdapter(adapter, filter_mode, filter_distance);
+                        lv_shops.setAdapter(adjusted_adapter);
+                        adapter.notifyDataSetChanged();
                         break;
                     case 2:
                         sort_mode = "distance";
@@ -370,6 +379,26 @@ public class CustomerMainFragment extends Fragment {
 
     private CustomerMainAdapter sortAdapter(CustomerMainAdapter sort_adapter, String mode) {
         switch (mode) {
+            case "time":
+                sort_adapter.sort(new Comparator<CustomerRestaurantInfo>() {
+                    @Override
+                    public int compare(CustomerRestaurantInfo info1, CustomerRestaurantInfo info2) {
+                        DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd kk:mm:ss yyyy", Locale.ENGLISH);
+                        try {
+                            Date date1 = dateFormat.parse(info1.date);
+                            Date date2 = dateFormat.parse(info2.date);
+                            if(date1.after(date2)){
+                                return -1;
+                            }else{
+                                return 1;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        return 0;
+                    }
+                });
+                break;
             case "distance":
                 sort_adapter.sort(new Comparator<CustomerRestaurantInfo>() {
                     @Override
@@ -616,6 +645,7 @@ public class CustomerMainFragment extends Fragment {
                 info.discount = list.get(i).discount;
                 info.offer = list.get(i).offer;
                 info.promotion_id = list.get(i).promotion_id;
+                info.date = list.get(i).date;
 
                 String shop_rating;
                 try {
@@ -675,11 +705,13 @@ public class CustomerMainFragment extends Fragment {
                         request.addHeader("Content-Type", "application/json");
                         http_response = httpClient.execute(request);
                         json = handler.handleResponse(http_response);
+                        System.out.println(json);
                         JSONObject jsonObject = new JSONObject(json);
                         Description description = new Description(Integer.valueOf(jsonObject.get("shop_id").toString()),
                                 Integer.valueOf(jsonObject.get("name").toString()),
                                 jsonObject.get("description").toString(),
-                                id);
+                                id,
+                                jsonObject.getString("updated_at"));
                         list.add(description);
                     }
                 }
@@ -693,16 +725,18 @@ public class CustomerMainFragment extends Fragment {
         }
 
         private class Description {
-            public Description(int shop_id, int discount, String offer, String promotion_id){
+            public Description(int shop_id, int discount, String offer, String promotion_id, String date){
                 this.shop_id = shop_id;
                 this.discount = discount;
                 this.offer = offer;
                 this.promotion_id = promotion_id;
+                this.date = date;
             }
             String promotion_id;
             int shop_id;
             int discount;
             String offer;
+            String date;
         }
     }
 }

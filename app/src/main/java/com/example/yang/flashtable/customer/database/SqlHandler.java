@@ -135,8 +135,10 @@ public class SqlHandler extends SQLiteOpenHelper {
             insert(list.get(i));
         }
     }
+
     public void insert(CustomerRestaurantInfo info){
-        Log.d("SQLite", "insert data");
+
+        Log.d("SQLite", "Saving Data");
         ContentValues cv = new ContentValues();
         cv.put(ID_COLUMN, info.id);
         cv.put(NAME_COLUMN, info.name);
@@ -147,9 +149,27 @@ public class SqlHandler extends SQLiteOpenHelper {
         cv.put(ADDRESS_COLUMN, info.address);
         cv.put(INTRO_COLUMN, info.intro);
         cv.put(IMG_COLUMN, info.image);
-        long id = db.insert(DATABASE_TABLE, null, cv);
+        if(checkDataInDB(DATABASE_TABLE, ID_COLUMN, info.id)){
+            db.update(DATABASE_TABLE, cv, ID_COLUMN + "=" + info.id, null);
+        }else {
+            db.insert(DATABASE_TABLE, null, cv);
+        }
         cv = null;
     }
+
+
+
+    public boolean checkDataInDB(String TableName, String dbfield, int id) {
+        String Query = "Select * from " + TableName + " where " + dbfield + " = " + id;
+        Cursor cursor = db.rawQuery(Query, null);
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
+
     public void deleteTable(){
         db.execSQL("DROP DATABASE " + DATABASE_TABLE);
     }
