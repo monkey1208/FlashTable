@@ -10,6 +10,7 @@ public class FlashCouponInfo {
     public int flash_point;
     public String picture_url_small, picture_url_large;
     public String tutorial;
+    public int coupon_id;
 
     // TODO: Init function?
 }
