@@ -11,5 +11,10 @@ public class FlashCouponInfo {
     public String picture_url_small, picture_url_large;
     public String tutorial;
 
-    // TODO: Init function?
+    public FlashCouponInfo(String _name, String _description, int _flash_point, String _tutorial) {
+        name = _name;
+        description = _description;
+        flash_point = _flash_point;
+        tutorial = _tutorial;
+    }
 }

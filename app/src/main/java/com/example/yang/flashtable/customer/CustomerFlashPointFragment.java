@@ -8,12 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ListView;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import com.example.yang.flashtable.CustomerFlashPointAdapter;
+import com.example.yang.flashtable.FlashCouponInfo;
 import com.example.yang.flashtable.R;
 
 import java.util.ArrayList;
@@ -21,6 +24,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.zip.Inflater;
+
+import jp.co.recruit_mp.android.headerfootergridview.HeaderFooterGridView;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -34,20 +39,11 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
     SharedPreferences user;
     String userID, username;
 
-    ListView lv_coupons;
+    HeaderFooterGridView lv_coupons;
     SliderLayout sl_coupons;
 
-    String[] listValue = new String[]
-            {
-                    "ONE",
-                    "TWO",
-                    "THREE",
-                    "FOUR",
-                    "FIVE",
-                    "SIX"
-            };
-
-    List<String> LISTSTRING;
+    CustomerFlashPointAdapter adapter;
+    List<FlashCouponInfo> coupons;
 
     @Override
     public View onCreateView(LayoutInflater _inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,23 +55,26 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
     }
 
     private void initView() {
-        lv_coupons = (ListView) view.findViewById(R.id.customer_points_lv_coupons);
-        ViewGroup header = (ViewGroup) inflater.inflate(
+        lv_coupons = (HeaderFooterGridView) view.findViewById(R.id.customer_points_lv_coupons);
+        View header = inflater.inflate(
                 R.layout.customer_flash_point_header, lv_coupons, false);
-
-        // TODO: Change list to promotion content
-        LISTSTRING = new ArrayList<>(Arrays.asList(listValue));
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_2, android.R.id.text1, LISTSTRING);
-
         lv_coupons.addHeaderView(header);
-        lv_coupons.setAdapter(adapter);
 
         sl_coupons = (SliderLayout) view.findViewById(R.id.customer_points_sl_coupons);
     }
 
     private void initData() {
+
+        // TODO: Change list to promotion content
+        coupons = new ArrayList<>();
+        coupons.add(new FlashCouponInfo("1", "WHADDUP", 10, "I ain't telling you shit"));
+        coupons.add(new FlashCouponInfo("1", "WHADDUP", 10, "I ain't telling you shit"));
+        coupons.add(new FlashCouponInfo("1", "WHADDUP", 10, "I ain't telling you shit"));
+        adapter = new CustomerFlashPointAdapter(getActivity().getBaseContext(), coupons);
+        lv_coupons.setAdapter(adapter);
+
         getUserInfo();
-        setSlider();
+        // setSlider();
     }
 
     private void getUserInfo() {
@@ -85,7 +84,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
     }
     
     private void setSlider() {
-        sl_coupons.removeAllSliders();
+        if (sl_coupons != null) sl_coupons.removeAllSliders();
         HashMap<String, Integer> image_map = new HashMap<>();
         image_map.put("1", R.drawable.slide_1);
         image_map.put("2", R.drawable.slide_2);
