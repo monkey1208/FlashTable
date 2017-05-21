@@ -1,7 +1,12 @@
 package com.example.yang.flashtable;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -9,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -35,6 +42,8 @@ public class StoreAppointFragment extends ListFragment {
     private List<Integer> updateList = new ArrayList<>();
     private List<Integer> deleteList = new ArrayList<>();
     private Timer timer;
+    private Fragment userInfoFragment;
+    private FragmentManager fragmentManager;
 
     public  StoreAppointFragment () {
         // Required empty public constructor
@@ -45,12 +54,13 @@ public class StoreAppointFragment extends ListFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        fragmentManager = getFragmentManager();
         final View v = inflater.inflate(R.layout.store_appoint_fragment, container, false);
         adapter = new StoreAppointAdapter(getContext(), list);
         setListAdapter(adapter);
         Toolbar bar = (Toolbar)v.findViewById(R.id.shop_toolbar);
+
         bar.setPadding(0,getStatusBarHeight(), 0,0);
         bar.inflateMenu(R.menu.shop_reservation_menu);
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
@@ -65,20 +75,20 @@ public class StoreAppointFragment extends ListFragment {
         return v;
     }
 
-    /*@Override
+    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Toast.makeText(getContext(),Integer.toString(position),Toast.LENGTH_LONG).show();
-    }*/
-
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
+        Bundle bundle = new Bundle();
+        bundle.putString("session_id",Integer.toString(list.get(position).id));
+        bundle.putString("name",list.get(position).name);
+        bundle.putString("number",Integer.toString(list.get(position).number));
+        bundle.putInt("promotion_id",list.get(position).promotion_id);
+        bundle.putLong("due_time",list.get(position).due_time);
+        StoreMainActivity.fragmentController.sendBundle(bundle,FragmentController.CONFIRM);
+        //Toast.makeText(getContext(),Integer.toString(position),Toast.LENGTH_LONG).show();
     }
+
+
     public ReservationInfo getItem(int position){
         if(list.size()>position)
             return list.get(position);
@@ -129,10 +139,11 @@ public class StoreAppointFragment extends ListFragment {
                     int id = session.getInt("session_id");
                     String name = session.getString("user_account");
                     int number = session.getInt("number");
+                    int promotion_id = session.getInt("promotion_id");
                     Date due_time = stringToDate(session.getString("due_time"),DateFormat);
                     if(due_time != null)
                         Log.d("Session",Long.toString(due_time.getTime()));
-                    ReservationInfo info = new ReservationInfo(id,name,number,due_time.getTime());
+                    ReservationInfo info = new ReservationInfo(id,name,number,due_time.getTime(),promotion_id);
                     infos.add(info);
                 }
                 Log.d("Session","Refresh "+Integer.toString(sessions.length()));
@@ -167,4 +178,13 @@ public class StoreAppointFragment extends ListFragment {
         }
         return stringDate;
     }
+    private int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
 }

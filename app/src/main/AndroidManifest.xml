@@ -29,7 +29,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD1qukcqJkUZtxiKApJlp6O8oiYP25fyrs" />
-
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
@@ -73,7 +72,16 @@
         <activity
             android:name=".CustomerSearchActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.LightActionBar">
+            android:theme="@style/AppTheme.LightActionBar"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
         </activity>
         <activity
             android:name=".CustomerReservationActivity"
@@ -112,6 +120,10 @@
 
         <activity android:name=".CustomerCropProfileActivity"
             android:theme="@style/AppTheme.LightActionBar"/>
+
+        <!--<provider android:name=".customer.provider.SearchSuggestionProvider"
+            android:authorities="com.example.yang.flashtable.customer.provider.SearchSuggestionProvider" />-->
+
     </application>
 
 </manifest>

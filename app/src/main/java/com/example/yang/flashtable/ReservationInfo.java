@@ -11,13 +11,15 @@ public class ReservationInfo {
     public boolean isActive;
     public String is_succ;
     public int point;
+    public int promotion_id;
 
-    public ReservationInfo(int id, String name,int number,long due_time){
+    public ReservationInfo(int id, String name,int number,long due_time,int promotion_id){
         this.id = id;
         this.name = name;
         this.number = number;
         this.due_time = due_time;
         this.isActive = true;
+        this.promotion_id = promotion_id;
     }
 
     public ReservationInfo(String name, int number, int point, String record_time, String is_succ){

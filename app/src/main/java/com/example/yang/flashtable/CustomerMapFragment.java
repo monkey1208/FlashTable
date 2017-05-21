@@ -20,8 +20,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.yang.flashtable.customer.database.SqlHandler;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -160,10 +163,19 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                         pre_marker = marker;
                         bottom_sheet.setVisibility(View.VISIBLE);
                         bottom_sheet_behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        /*
                         TextView tv_name = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_name);
                         TextView tv_discount = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_discount);
                         TextView tv_offer = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_offer);
                         TextView tv_dis = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_distance);
+                        */
+                        TextView tv_name = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_name);
+                        TextView tv_discount = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_discount);
+                        TextView tv_offer = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_gift);
+                        TextView tv_dis = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_distance);
+                        TextView tv_consume = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_price);
+                        RatingBar rb = (RatingBar) bottom_sheet.findViewById(R.id.customer_main_rb_rating);
+                        ImageView iv_shop = (ImageView) bottom_sheet.findViewById(R.id.customer_main_iv_shop);
                         int index = Integer.valueOf(marker.getSnippet());
                         tv_name.setText(restaurantInfoList.get(index).name);
                         tv_offer.setText(restaurantInfoList.get(index).offer);
@@ -174,6 +186,10 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                         m.setLongitude(latLng.longitude);
                         m.setLatitude(latLng.latitude);
                         tv_dis.setText("< "+ (int)l.distanceTo(m) +" m");
+                        iv_shop.setImageBitmap(restaurantInfoList.get(index).getImage());
+                        tv_consume.setText(restaurantInfoList.get(index).consumption+"");
+                        rb.setRating(restaurantInfoList.get(index).rating);
+                        rb.setIsIndicator(true);
                         int discount = restaurantInfoList.get(index).discount;
                         if( discount == 101 ||discount == 100) {
                             tv_discount.setText("暫無折扣");

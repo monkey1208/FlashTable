@@ -1,4 +1,4 @@
-package com.example.yang.flashtable;
+package com.example.yang.flashtable.customer.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.example.yang.flashtable.CustomerRestaurantInfo;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.ByteArrayOutputStream;
@@ -32,11 +33,9 @@ public class SqlHandler extends SQLiteOpenHelper {
     public static final String INTRO_COLUMN = "intro";
     public static final String IMG_COLUMN = "img";
     public SQLiteDatabase db;
-    private Context context;
     public SqlHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.db = getWritableDatabase();
-        this.context = context;
     }
 
     @Override
@@ -103,7 +102,7 @@ public class SqlHandler extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(SqlHandler.CATEGORY_COLUMN)),
                     new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)), cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN)))
             );
-            info.detailInfo.setInfo(
+            info.setInfo(
                     cursor.getString(cursor.getColumnIndex(SqlHandler.ADDRESS_COLUMN)),
                     cursor.getString(cursor.getColumnIndex(SqlHandler.INTRO_COLUMN))
             );
@@ -123,7 +122,7 @@ public class SqlHandler extends SQLiteOpenHelper {
                 cursor.getString(cursor.getColumnIndex(SqlHandler.CATEGORY_COLUMN)),
                 new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)), cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN)))
         );
-        info.detailInfo.setInfo(
+        info.setInfo(
                     cursor.getString(cursor.getColumnIndex(SqlHandler.ADDRESS_COLUMN)),
                     cursor.getString(cursor.getColumnIndex(SqlHandler.INTRO_COLUMN))
             );
@@ -136,8 +135,10 @@ public class SqlHandler extends SQLiteOpenHelper {
             insert(list.get(i));
         }
     }
+
     public void insert(CustomerRestaurantInfo info){
-        Log.d("SQLite", "insert data");
+
+        Log.d("SQLite", "Saving Data");
         ContentValues cv = new ContentValues();
         cv.put(ID_COLUMN, info.id);
         cv.put(NAME_COLUMN, info.name);
@@ -145,12 +146,30 @@ public class SqlHandler extends SQLiteOpenHelper {
         cv.put(LONGITUDE_COLUMN, info.latLng.longitude);
         cv.put(CONSUMPTION_COLUMN, info.consumption);
         cv.put(CATEGORY_COLUMN, info.category);
-        cv.put(ADDRESS_COLUMN, info.detailInfo.address);
-        cv.put(INTRO_COLUMN, info.detailInfo.intro);
+        cv.put(ADDRESS_COLUMN, info.address);
+        cv.put(INTRO_COLUMN, info.intro);
         cv.put(IMG_COLUMN, info.image);
-        long id = db.insert(DATABASE_TABLE, null, cv);
+        if(checkDataInDB(DATABASE_TABLE, ID_COLUMN, info.id)){
+            db.update(DATABASE_TABLE, cv, ID_COLUMN + "=" + info.id, null);
+        }else {
+            db.insert(DATABASE_TABLE, null, cv);
+        }
         cv = null;
     }
+
+
+
+    public boolean checkDataInDB(String TableName, String dbfield, int id) {
+        String Query = "Select * from " + TableName + " where " + dbfield + " = " + id;
+        Cursor cursor = db.rawQuery(Query, null);
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
+
     public void deleteTable(){
         db.execSQL("DROP DATABASE " + DATABASE_TABLE);
     }
