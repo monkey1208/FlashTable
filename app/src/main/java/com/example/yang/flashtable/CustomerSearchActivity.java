@@ -152,11 +152,17 @@ public class CustomerSearchActivity extends AppCompatActivity {
 
     private void setHistory(){
         history_adapter.clear();
-        ArrayList<String> history = sqlHandler.getHistoryList();
+        final ArrayList<String> history = sqlHandler.getHistoryList();
         for(String item: history){
             history_adapter.add(item);
         }
         completeText.setAdapter(history_adapter);
+        completeText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                search_view.setQuery(history.get(position), false);
+            }
+        });
     }
 
     private void showRestaurantDetail(final int position) {
