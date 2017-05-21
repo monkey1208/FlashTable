@@ -6,7 +6,7 @@
     <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="170dp"
         android:orientation="vertical"
         android:background="@drawable/customer_bg_exchange_info"
         android:paddingTop="20dp"
@@ -43,8 +43,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
+            android:background="@drawable/round_rectangle_white_frame"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center">
 
             <ImageView
                 android:layout_width="30dp"
@@ -59,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:text="1800"
                 android:textColor="@color/white"
-                android:textSize="42sp"/>
+                android:textSize="42dp"/>
         </LinearLayout>
 
         <TextView
