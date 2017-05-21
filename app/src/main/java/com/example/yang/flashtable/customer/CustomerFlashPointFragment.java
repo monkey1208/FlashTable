@@ -60,7 +60,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
                 R.layout.customer_flash_point_header, lv_coupons, false);
         lv_coupons.addHeaderView(header);
 
-        sl_coupons = (SliderLayout) view.findViewById(R.id.customer_points_sl_coupons);
+        sl_coupons = (SliderLayout) header.findViewById(R.id.customer_points_sl_coupons);
     }
 
     private void initData() {
@@ -74,7 +74,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
         lv_coupons.setAdapter(adapter);
 
         getUserInfo();
-        // setSlider();
+        setSlider();
     }
 
     private void getUserInfo() {
@@ -84,7 +84,8 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
     }
     
     private void setSlider() {
-        if (sl_coupons != null) sl_coupons.removeAllSliders();
+        if (sl_coupons != null)
+            sl_coupons.removeAllSliders();
         HashMap<String, Integer> image_map = new HashMap<>();
         image_map.put("1", R.drawable.slide_1);
         image_map.put("2", R.drawable.slide_2);
