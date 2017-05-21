@@ -66,7 +66,7 @@
 
                 <TextView
                     android:layout_width="60dp"
-                    android:layout_height="20dp"
+                    android:layout_height="23dp"
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="5dp"
@@ -77,8 +77,9 @@
                     android:paddingBottom="2dp"
                     android:text="前往兌換"
                     android:textAlignment="center"
-                    android:textSize="12sp"
-                    android:textColor="@color/white"/>
+                    android:textSize="12dp"
+                    android:textColor="@color/white"
+                    android:gravity="center"/>
 
             </RelativeLayout>
         </LinearLayout>
@@ -89,87 +90,5 @@
             android:layout_height="match_parent" />
 
     </FrameLayout>
-<!--
-    <com.example.yang.flashtable.RoundedCornerLayout
-        android:id="@+id/customer_points_rl_2"
-        android:layout_width="1dp"
-        android:layout_height="170dp"
-        android:layout_weight="1"
-        android:layout_marginStart="5dp"
-        android:background="@color/white">
-
-        <LinearLayout
-            android:id="@+id/customer_points_ll_coupon2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="135dp">
-                <ImageView
-                    android:id="@+id/customer_points_iv_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/slide_2"
-                    android:scaleType="centerCrop"/>
-                <TextView
-                    android:id="@+id/customer_points_tv_title_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:padding="5dp"
-                    android:background="@color/transparentBlack"
-                    android:text="我也是好棒棒的優惠嘿嘿"
-                    android:textColor="@color/white"/>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="35dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:src="@drawable/ic_point_coin"/>
-                    <TextView
-                        android:id="@+id/customer_points_tv_price_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="500"
-                        android:textColor="@color/textColor"/>
-
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/customer_bg_grad_button"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
-                    android:text="前往兌換"
-                    android:textSize="12sp"
-                    android:textColor="@color/white"/>
-
-            </RelativeLayout>
-        </LinearLayout>
-
-    </com.example.yang.flashtable.RoundedCornerLayout>
--->
-
 
 </LinearLayout>
