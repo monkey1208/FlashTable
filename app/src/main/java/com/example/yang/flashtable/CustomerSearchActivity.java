@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -184,10 +183,6 @@ public class CustomerSearchActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void readHistory(){
-        SharedPreferences sharedPreferences = getSharedPreferences("search_history", MODE_PRIVATE);
-    }
-
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setupActionBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -219,7 +214,6 @@ public class CustomerSearchActivity extends AppCompatActivity {
         DrawableCompat.setTint(ic_search, ContextCompat.getColor(this, R.color.gray));
 
         final ArrayList<String> history = sqlHandler.getHistoryList();
-        //final String[] history = {"bullshit", "shit"};
 
         //int completeTextId = search_view.getResources().getIdentifier("android:id/search_src_text", null, null);
         completeText = (AutoCompleteTextView) search_view.findViewById(R.id.search_src_text); ;

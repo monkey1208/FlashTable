@@ -10,6 +10,7 @@ public class FlashCouponInfo {
     public int flash_point;
     public String picture_url_small, picture_url_large;
     public String tutorial;
+    public int coupon_id;
 
     public FlashCouponInfo(String _name, String _description, int _flash_point, String _tutorial) {
         name = _name;
