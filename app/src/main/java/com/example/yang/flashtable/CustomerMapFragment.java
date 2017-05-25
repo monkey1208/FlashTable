@@ -31,6 +31,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -52,6 +53,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -59,7 +62,7 @@ import static android.content.Context.LOCATION_SERVICE;
  * Created by Yang on 2017/3/23.
  */
 
-public class CustomerMapFragment extends Fragment implements OnMapReadyCallback {
+public class CustomerMapFragment extends Fragment implements OnMapReadyCallback, Observer {
     private View view;
     private FloatingActionButton fab_my_position;
     public final int COARSE_PERMISSION_CODE = 11;
@@ -108,7 +111,6 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
         //gps.setMarker(new LatLng(25.05, 121.545));
     }
 
-
     private void gpsPermission() {
         if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -120,6 +122,74 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     FINE_LOCATION_CODE);
         }
+    }
+
+    public void setRestMap(){
+        gps.removeMarker();
+        restaurantInfoList = CustomerAppInfo.getInstance().getRestaurantList();
+        ArrayList<CustomerRestaurantInfo> display_list = new ArrayList<>();
+        for(CustomerRestaurantInfo item: restaurantInfoList){
+            if(displayable(item)){
+                display_list.add(item);
+            }
+        }
+        restaurantInfoList = display_list;
+        for(int i = 0; i < restaurantInfoList.size(); i++){
+            gps.setMarker(restaurantInfoList.get(i).latLng, i);
+        }
+    }
+
+    private boolean displayable(CustomerRestaurantInfo item){
+        if(foodFilt(item) && distanceFilt(item))
+            return true;
+        else
+            return false;
+    }
+
+    private boolean foodFilt(CustomerRestaurantInfo item){
+        switch (CustomerObservable.getInstance().food){
+            case "all":
+                return true;
+            case "chinese":
+                if(item.category.equals("中式料理"))
+                    return true;
+                else
+                    return false;
+            case "usa":
+                if(item.category.equals("美式料理"))
+                    return true;
+                else
+                    return false;
+            case "japanese":
+                if(item.category.equals("日式料理"))
+                    return true;
+                else
+                    return false;
+            case "korean":
+                if(item.category.equals("韓式料理"))
+                    return true;
+                else
+                    return false;
+        }
+        return false;
+    }
+
+    private boolean distanceFilt(CustomerRestaurantInfo item){
+        int distance = Integer.parseInt(CustomerObservable.getInstance().distance);
+        if(distance == -1)
+            return true;
+        Location item_location = new Location("");
+        Location my_location = CustomerAppInfo.getInstance().getLocation();
+        item_location.setLatitude(item.latLng.latitude);
+        item_location.setLongitude(item.latLng.longitude);
+        if(item_location.distanceTo(my_location) < distance)
+            return true;
+        return false;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        setRestMap();
     }
 
     public class CustomerGps implements GoogleApiClient.ConnectionCallbacks {
@@ -134,10 +204,13 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
         private Activity c;
         private View bottom_sheet;
         private BottomSheetBehavior bottom_sheet_behavior;
+        private BitmapDescriptor descriptor_origin, descriptor_clicked;
 
         public CustomerGps(Activity c, GoogleMap googleMap) {
             this.c = c;
             this.googleMap = googleMap;
+            descriptor_origin = BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_restaurant));
+            descriptor_clicked = BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_choosedrestaurant));
         }
 
         private void init() {
@@ -153,14 +226,14 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                 if (!marker.getSnippet().equals("me")) {
                     if (pre_marker != null) {
                         //Set prevMarker back to default color
-                        pre_marker.setIcon(BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_restaurant)));
+                        pre_marker.setIcon(descriptor_origin);
                         bottom_sheet.setVisibility(View.INVISIBLE);
                         bottom_sheet_behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                     }
 
                     //leave Marker default color if re-click current Marker
                     if (!marker.equals(pre_marker)) {
-                        marker.setIcon(BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_choosedrestaurant)));
+                        marker.setIcon(descriptor_clicked);
                         pre_marker = marker;
                         bottom_sheet.setVisibility(View.VISIBLE);
                         bottom_sheet_behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -204,6 +277,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                             }
                         }
                     } else {
+                        bottom_sheet.setVisibility(View.INVISIBLE);
+                        bottom_sheet_behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                         pre_marker = null;
                     }
                 }
@@ -260,6 +335,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                 latLng = new LatLng(lat, lng);
                 if (latLng != null) {
                     marker.setPosition(latLng);
+                    CustomerAppInfo.getInstance().setLocation(location);
                 }
             }
         }
@@ -286,6 +362,10 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
                     .snippet(index + "");
             Marker restaurant_marker = googleMap.addMarker(options);
             return restaurant_marker;
+        }
+
+        public void removeMarker(){
+            googleMap.clear();
         }
 
         public Location getLocation() {

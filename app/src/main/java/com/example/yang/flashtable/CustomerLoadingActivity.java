@@ -53,9 +53,17 @@ public class CustomerLoadingActivity extends AppCompatActivity {
         // setVersion("0");
         new ApiUpdate().execute();
     }
+
+    private void checkBlock(){
+        //Do something!!!!
+        new ApiSessionSuccess().execute();
+
+    }
+
     public void setProgress(String input){
         progress_tv.setText(input);
     }
+
     private class ApiUpdate extends AsyncTask<String, String, String>{
         HttpClient httpClient = new DefaultHttpClient();
 
@@ -84,9 +92,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
             if(version != null){
                 setVersion(version);
             }
-            Intent intent = new Intent(CustomerLoadingActivity.this, CustomerMainActivity.class);
-            startActivity(intent);
-            CustomerLoadingActivity.this.finish();
+            checkBlock();
         }
 
         @Override
@@ -203,10 +209,98 @@ public class CustomerLoadingActivity extends AppCompatActivity {
 
 
     }
+
+    class ApiSessionSuccess extends AsyncTask<Void, Void, Boolean> {
+        HttpClient httpClient = new DefaultHttpClient();
+        private String promotion_id, offer, name, address, shop_id, time, session_id;
+        private int discount, person;
+        private float rating;
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            //NameValuePair param = new BasicNameValuePair("user_id", getUserId());
+            List<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("user_id", getUserId()));
+            params.add(new BasicNameValuePair("verbose", "1"));
+            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+ URLEncodedUtils.format(params, "utf-8"));
+            request.addHeader("Content-Type", "application/json");
+            try {
+                HttpResponse response = httpClient.execute(request);
+                ResponseHandler<String> handler = new BasicResponseHandler();
+                String session_response = handler.handleResponse(response);
+                JSONArray session_array = new JSONArray(session_response);
+                JSONObject session_object = session_array.getJSONObject(0);
+                System.out.println("session = "+session_response);
+                if(session_object.get("status_code").equals("0")){
+                    int size = Integer.valueOf(session_object.get("size").toString());
+                    if(size == 0){
+                        return false;
+                    }else{
+                        JSONObject object = session_array.getJSONObject(1);
+                        this.promotion_id = object.getString("promotion_id");
+                        this.discount = object.getInt("promotion_name");
+                        this.address = object.getString("shop_address");
+                        this.name = object.getString("shop_name");
+                        this.offer = object.getString("promotion_description");
+                        this.shop_id = object.getString("shop_id");
+                        this.person = object.getInt("number");
+                        this.time = object.getString("due_time");
+                        this.session_id = object.getString("session_id");
+                        request = new HttpGet("http://"+getString(R.string.server_domain)+"/api/shop_comments?shop_id="+shop_id);
+                        request.addHeader("Content-Type", "application/json");
+                        JSONArray responseShopRating = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(request)));
+                        String status = responseShopRating.getJSONObject(0).getString("status_code");
+                        if (status.equals("0"))
+                            this.rating = Float.parseFloat(responseShopRating.getJSONObject(0).getString("average_score"))/2;
+                        else
+                            this.rating = 0;
+                        return true;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean s) {
+            if(s){
+                //block => goto reservation activity
+                Intent intent = new Intent(CustomerLoadingActivity.this, CustomerReservationActivity.class);
+                intent.putExtra("promotion_id", this.promotion_id);
+                intent.putExtra("discount", this.discount);
+                intent.putExtra("offer", this.offer);
+                intent.putExtra("persons", this.person);
+                intent.putExtra("shop_name", this.name);
+                intent.putExtra("rating", Float.toString(this.rating));
+                intent.putExtra("shop_location", this.address);
+                intent.putExtra("shop_id", this.shop_id);
+                intent.putExtra("time", this.time);
+                intent.putExtra("session_id", this.session_id);
+                intent.putExtra("block", true);
+                startActivity(intent);
+                CustomerLoadingActivity.this.finish();
+            } else {
+                Intent intent = new Intent(CustomerLoadingActivity.this, CustomerMainActivity.class);
+                startActivity(intent);
+                CustomerLoadingActivity.this.finish();
+
+            }
+        }
+    }
+
+    private String getUserId(){
+        SharedPreferences preferences = getSharedPreferences("USER", MODE_PRIVATE);
+        return preferences.getString("userID", "");
+    }
+
     private void setVersion(String version){
         SharedPreferences preferences = getSharedPreferences("VERSION", MODE_PRIVATE);
         preferences.edit().putString("version", version).commit();
     }
+
     private String getCurrentVersion() {
         SharedPreferences preferences = getSharedPreferences("VERSION", MODE_PRIVATE);
         return preferences.getString("version", "0");
