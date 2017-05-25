@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -27,6 +28,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.yang.flashtable.customer.CustomerAppInfo;
 import com.example.yang.flashtable.customer.database.HistorySqlHandler;
 import com.example.yang.flashtable.customer.database.SqlHandler;
 import com.example.yang.flashtable.customer.provider.SearchSuggestionProvider;
@@ -43,7 +45,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
     CustomerMainAdapter adapter;
     TextView textView;
     ListView listView;
-    LatLng latLng;
+    Location my_location;
     SearchView search_view;
     AutoCompleteTextView completeText;
     ArrayAdapter<String> history_adapter;
@@ -99,7 +101,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
         ArrayList<DetailInfo> detailInfos = bundle.getParcelableArrayList("list");
         restaurant_list = new ArrayList<>();
         openDB(detailInfos);
-        latLng = new LatLng(bundle.getDouble("latitude"), bundle.getDouble("longitude"));
+        my_location = CustomerAppInfo.getInstance().getLocation();
     }
 
     private void openDB(ArrayList<DetailInfo> detailInfos){
@@ -117,7 +119,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
 
     private void doSearch(String query) {
         if (adapter == null) {
-            adapter = new CustomerMainAdapter(this, new ArrayList(), latLng);
+            adapter = new CustomerMainAdapter(this, new ArrayList(), my_location);
         }else{
             adapter.clear();
         }

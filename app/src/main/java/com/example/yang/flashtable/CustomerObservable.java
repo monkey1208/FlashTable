@@ -8,13 +8,19 @@ import java.util.Observable;
 
 public class CustomerObservable extends Observable{
     private static CustomerObservable observable = new CustomerObservable();
-    private String distance, food, mode;
+    public String distance, food, mode;
 
     public static CustomerObservable getInstance(){
         return observable;
     }
 
     private CustomerObservable(){
+        food = "all";
+        distance = "-1";
+        mode = "default";
+    }
+
+    public void init(){
         food = "all";
         distance = "-1";
         mode = "default";

@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.yang.flashtable.customer.CustomerAppInfo;
 import com.example.yang.flashtable.customer.database.SqlHandler;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -65,7 +66,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
     public final int FINE_LOCATION_CODE = 12;
     private GoogleMap googleMap;
     private CustomerGps gps;
-    private List<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
+    private ArrayList<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -439,6 +440,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback 
 
         @Override
         protected void onPostExecute(String s) {
+            CustomerAppInfo.getInstance().setRestaurantList(restaurantInfoList);
             for (int i = 0; i < restaurantInfoList.size(); i++) {
                 gps.setMarker(restaurantInfoList.get(i).latLng, i);
                 System.out.println(restaurantInfoList.get(i).latLng.longitude+","+restaurantInfoList.get(i).latLng.latitude);
