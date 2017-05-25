@@ -98,7 +98,8 @@ public class CustomerMainActivity extends AppCompatActivity
                 break;
             case "map":
                 fab_map.setVisibility(View.VISIBLE);
-                fragment = new CustomerMapFragment();
+                //fragment = new CustomerMapFragment();
+                fragment = new CustomerParentMainFragment();
                 map_showing = true;
                 fab_map.setImageResource(R.drawable.ic_float_back);
                 break;

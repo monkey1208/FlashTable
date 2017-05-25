@@ -47,6 +47,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Observable;
+import java.util.Observer;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -54,7 +56,7 @@ import static android.content.Context.LOCATION_SERVICE;
  * Created by Yang on 2017/3/23.
  */
 
-public class CustomerMainFragment extends Fragment {
+public class CustomerMainFragment extends Fragment implements Observer {
 
     DialogBuilder dialog_builder;
     View view;
@@ -143,8 +145,8 @@ public class CustomerMainFragment extends Fragment {
 
         setSpinner();
         setRefreshLayout();
-
-        sp_dis.setSelection(3);
+        CustomerObservable.getInstance().addObserver(this);
+        //sp_dis.setSelection(3);
     }
 
     private void setListView(ArrayList<CustomerRestaurantInfo> res_list) {
@@ -211,6 +213,7 @@ public class CustomerMainFragment extends Fragment {
                         lv_shops.setAdapter(adjusted_adapter);
                         break;
                 }
+                CustomerObservable.getInstance().setData(filter_distance+"","2","3");
             }
 
             @Override
@@ -477,6 +480,7 @@ public class CustomerMainFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        CustomerObservable.getInstance().deleteObserver(this);
         super.onDestroy();
     }
 
@@ -522,6 +526,12 @@ public class CustomerMainFragment extends Fragment {
 
     private void locationPermission() {
         startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), CustomerMainActivity.LOCATION_SETTING_CODE);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        String[] param = (String[])arg;
+        System.out.println("observer result = "+param);
     }
 
     private class CurrentLocation {

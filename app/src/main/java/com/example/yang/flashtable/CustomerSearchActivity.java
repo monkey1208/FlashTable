@@ -15,10 +15,12 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -45,6 +47,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
     SearchView search_view;
     AutoCompleteTextView completeText;
     ArrayAdapter<String> history_adapter;
+    ViewGroup header_history, header_result;
 
     HistorySqlHandler sqlHandler;
 
@@ -85,6 +88,10 @@ public class CustomerSearchActivity extends AppCompatActivity {
         setTitle(getResources().getString(R.string.customer_search_title));
         listView = (ListView)findViewById(R.id.customer_search_lv);
         textView = (TextView)findViewById(R.id.customer_search_tv);
+
+        LayoutInflater inflater = getLayoutInflater();
+        header_history = (ViewGroup)inflater.inflate(R.layout.customer_search_history_header, listView, false);
+        header_result = (ViewGroup)inflater.inflate(R.layout.customer_search_result_header, listView, false);
     }
 
     private void initData() {
@@ -140,13 +147,18 @@ public class CustomerSearchActivity extends AppCompatActivity {
     }
 
     private void setList(){
+        listView.addHeaderView(header_result, null, false);
+        TextView search_num = (TextView)findViewById(R.id.customer_search_result_num);
+        search_num.setText(adapter.getCount()+"");
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                showRestaurantDetail(i);
+                showRestaurantDetail(i-1);
             }
         });
+        //listView.addHeaderView(header_history, null, false);
+
     }
 
     private void setHistory(){
