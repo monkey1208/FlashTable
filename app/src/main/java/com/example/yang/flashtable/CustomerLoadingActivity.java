@@ -28,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -49,8 +50,9 @@ public class CustomerLoadingActivity extends AppCompatActivity {
         setContentView(R.layout.customer_loading_layout);
 
         progress_tv = (TextView)CustomerLoadingActivity.this.findViewById(R.id.customer_loading_tv);
-        // SqlHandler.deleteDB(this);
-        // setVersion("0");
+
+        //initDatabase();
+
         new ApiUpdate().execute();
     }
 
@@ -58,6 +60,11 @@ public class CustomerLoadingActivity extends AppCompatActivity {
         //Do something!!!!
         new ApiSessionSuccess().execute();
 
+    }
+
+    private void initDatabase(){
+        SqlHandler.deleteDB(this);
+        setVersion("0");
     }
 
     public void setProgress(String input){
@@ -144,7 +151,13 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                         info = new CustomerRestaurantInfo(name, Integer.valueOf(id), consumption, tag, latlng);
                         info.setInfo(address, intro);
                         info.turnBitmap2ByteArray(image);
-                        sql_handler.insert(info);
+
+                        byte[] img2 = bitmap2ByteArray(shop_object.getString("picture_url2"));
+                        byte[] img3 = bitmap2ByteArray(shop_object.getString("picture_url3"));
+                        byte[] img4 = bitmap2ByteArray(shop_object.getString("picture_url4"));
+                        byte[] img5 = bitmap2ByteArray(shop_object.getString("picture_url5"));
+
+                        sql_handler.insert(info, img2, img3, img4, img5);
 
                         if(!image.isRecycled()){
                             image.recycle();
@@ -159,6 +172,18 @@ public class CustomerLoadingActivity extends AppCompatActivity {
             } finally {
                 request = null;
             }
+        }
+
+        private byte[] bitmap2ByteArray(String picture_url){
+            if(picture_url.equals(""))
+                return null;
+            Bitmap image = getBitmapFromURL(picture_url);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.PNG, 0, bos);
+            byte[] img = bos.toByteArray();
+            if(!image.isRecycled())
+                image.recycle();
+            return img;
         }
 
         private String checkServerVersion(){

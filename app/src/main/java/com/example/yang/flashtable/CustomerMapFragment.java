@@ -89,6 +89,13 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         super.onViewCreated(view, savedInstanceState);
         MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.customer_map);
         mapFragment.getMapAsync(this);
+        CustomerObservable.getInstance().addObserver(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        CustomerObservable.getInstance().deleteObserver(this);
     }
 
     @Override
@@ -261,7 +268,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                         m.setLatitude(latLng.latitude);
                         tv_dis.setText("< "+ (int)l.distanceTo(m) +" m");
                         iv_shop.setImageBitmap(restaurantInfoList.get(index).getImage());
-                        tv_consume.setText(restaurantInfoList.get(index).consumption+"");
+                        tv_consume.setText("均消$" + restaurantInfoList.get(index).consumption);
                         rb.setRating(restaurantInfoList.get(index).rating);
                         rb.setIsIndicator(true);
                         int discount = restaurantInfoList.get(index).discount;
