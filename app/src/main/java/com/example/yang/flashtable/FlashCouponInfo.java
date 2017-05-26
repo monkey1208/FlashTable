@@ -1,10 +1,12 @@
 package com.example.yang.flashtable;
 
+import java.io.Serializable;
+
 /**
  * Created by CS on 2017/5/22.
  */
 
-public class FlashCouponInfo {
+public class FlashCouponInfo implements Serializable {
     // Named according to API
     public String name, description;
     public int flash_point;
@@ -12,10 +14,4 @@ public class FlashCouponInfo {
     public String tutorial;
     public int coupon_id;
 
-    public FlashCouponInfo(String _name, String _description, int _flash_point, String _tutorial) {
-        name = _name;
-        description = _description;
-        flash_point = _flash_point;
-        tutorial = _tutorial;
-    }
 }
