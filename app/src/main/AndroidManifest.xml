@@ -67,7 +67,8 @@
             android:name=".CustomerMainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="singleTask">
         </activity>
         <activity
             android:name=".CustomerSearchActivity"

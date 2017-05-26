@@ -201,6 +201,8 @@
     <!-- Strings related to customer search -->
     <string name="customer_search_title">搜尋餐廳</string>
     <string name="customer_search_hint">請輸入搜尋餐廳</string>
+    <string name="customer_search_result_1">已找到</string>
+    <string name="customer_search_result_2">筆相關資料</string>
 
     <!-- Strings related to customer credits -->
     <string name="customer_credit_about">信譽分數介紹</string>

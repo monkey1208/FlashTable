@@ -32,6 +32,10 @@ public class SqlHandler extends SQLiteOpenHelper {
     public static final String ADDRESS_COLUMN = "address";
     public static final String INTRO_COLUMN = "intro";
     public static final String IMG_COLUMN = "img";
+    public static final String IMG_COLUMN_2 = "img_2";
+    public static final String IMG_COLUMN_3 = "img_3";
+    public static final String IMG_COLUMN_4 = "img_4";
+    public static final String IMG_COLUMN_5 = "img_5";
     public SQLiteDatabase db;
     public SqlHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -52,7 +56,11 @@ public class SqlHandler extends SQLiteOpenHelper {
                 CATEGORY_COLUMN + " text, " +
                 ADDRESS_COLUMN + " text, " +
                 INTRO_COLUMN + " text, " +
-                IMG_COLUMN + " blob no null" +
+                IMG_COLUMN + " blob no null, " +
+                IMG_COLUMN_2 + " blob, " +
+                IMG_COLUMN_3 + " blob, " +
+                IMG_COLUMN_4 + " blob, " +
+                IMG_COLUMN_5 + " blob" +
                 ");";
         db.execSQL(createDB);
     }
@@ -131,12 +139,16 @@ public class SqlHandler extends SQLiteOpenHelper {
     }
 
     public void insertList(List<CustomerRestaurantInfo> list){
+        insertList(list, null, null, null, null);
+    }
+
+    public void insertList(List<CustomerRestaurantInfo> list, byte[] img_2, byte[] img_3, byte[] img_4, byte[] img_5){
         for(int i = 0;i<list.size(); i++){
-            insert(list.get(i));
+            insert(list.get(i), img_2, img_3, img_4, img_5);
         }
     }
 
-    public void insert(CustomerRestaurantInfo info){
+    public void insert(CustomerRestaurantInfo info, byte[] img_2, byte[] img_3, byte[] img_4, byte[] img_5){
 
         Log.d("SQLite", "Saving Data");
         ContentValues cv = new ContentValues();
@@ -173,9 +185,11 @@ public class SqlHandler extends SQLiteOpenHelper {
     public void deleteTable(){
         db.execSQL("DROP DATABASE " + DATABASE_TABLE);
     }
+
     public static void deleteDB(Context c){
         c.deleteDatabase(DATABASE_NAME);
     }
+
     public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);

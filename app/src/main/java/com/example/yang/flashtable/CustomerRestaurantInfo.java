@@ -29,23 +29,6 @@ public class CustomerRestaurantInfo{
     public String intro = "";
     public String date = "";
 
-    protected CustomerRestaurantInfo(Parcel in) {
-        id = in.readInt();
-        name = in.readString();
-        rating = in.readFloat();
-        discount = in.readInt();
-        offer = in.readString();
-        latLng = in.readParcelable(LatLng.class.getClassLoader());
-        consumption = in.readInt();
-        image_url = in.readString();
-        promotion_id = in.readString();
-        category = in.readString();
-        image = in.createByteArray();
-    }
-
-
-
-
     public CustomerRestaurantInfo(String name, int discount, String offer, int id, int consumption, String tag,LatLng latLng){
         this.name = name;
         this.discount = discount;

@@ -171,6 +171,8 @@ public class CustomerReservationActivity extends AppCompatActivity {
                             timer.cancel();
                             new ApiCancel("request").execute(request_id);
                             finish();
+                            Intent intent = new Intent(CustomerReservationActivity.this, CustomerMainActivity.class);
+                            startActivity(intent);
                         }
                     }
                 });
@@ -187,6 +189,8 @@ public class CustomerReservationActivity extends AppCompatActivity {
                             timer.cancel();
                             new ApiCancel("session").execute(session_id);
                             finish();
+                            Intent intent = new Intent(CustomerReservationActivity.this, CustomerMainActivity.class);
+                            startActivity(intent);
                         }
                     }
                 });
@@ -297,6 +301,8 @@ public class CustomerReservationActivity extends AppCompatActivity {
         @Override
         public void clickEvent(boolean ok, int status) {
             finish();
+            Intent intent = new Intent(CustomerReservationActivity.this, CustomerMainActivity.class);
+            startActivity(intent);
         }
     };
 
@@ -396,6 +402,8 @@ public class CustomerReservationActivity extends AppCompatActivity {
                 }else if(status_code.equals("-2")){
                     //No promotion Id
                     finish();
+                    Intent intent = new Intent(CustomerReservationActivity.this, CustomerMainActivity.class);
+                    startActivity(intent);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
