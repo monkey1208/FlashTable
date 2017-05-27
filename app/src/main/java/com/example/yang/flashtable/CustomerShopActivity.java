@@ -1,6 +1,7 @@
 package com.example.yang.flashtable;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -16,8 +18,11 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import com.example.yang.flashtable.customer.database.SqlHandler;
+import com.example.yang.flashtable.customer.slider.BitmapSliderView;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CustomerShopActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
@@ -69,7 +74,6 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
 
         ll_comments = (LinearLayout) findViewById(R.id.customer_main_ll_show_comments);
 
-        setDetail();
     }
 
     private void initData(){
@@ -83,6 +87,7 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
 
         shop_id = getIntent().getStringExtra("shop_id");
 
+        setDetail();
         ll_comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,17 +101,26 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
 
     private void setDetail(){
         sl_restaurant.removeAllSliders();
-        HashMap<String, Integer> image_map = new HashMap<>();
+        /*HashMap<String, Integer> image_map = new HashMap<>();
         image_map.put("1", R.drawable.slide_1);
         image_map.put("2", R.drawable.slide_2);
-        image_map.put("3", R.drawable.slide_3);
-
-        for (String name : image_map.keySet()) {
+        image_map.put("3", R.drawable.slide_3);*/
+        HashMap<String, Bitmap> img_map = new HashMap<>();
+        SqlHandler sqlHandler = new SqlHandler(this);
+        ArrayList<Bitmap> list = sqlHandler.getBitmapList(Integer.parseInt(shop_id));
+        int index = 1;
+        for(Bitmap item: list) {
+            img_map.put(index+"", item);
+            index++;
+        }
+        for (String name : img_map.keySet()) {
             // Change DefaultSliderView to TextSliderView if you want text below it
-            DefaultSliderView slider_view = new DefaultSliderView(getBaseContext());
+            //DefaultSliderView slider_view = new DefaultSliderView(getBaseContext());
+            BitmapSliderView slider_view = new BitmapSliderView(this);
+
             slider_view
+                    .image(img_map.get(name))
                     .description(name)
-                    .image(image_map.get(name))
                     .setScaleType(BaseSliderView.ScaleType.CenterCrop)
                     .setOnSliderClickListener(this);
             sl_restaurant.addSlider(slider_view);
