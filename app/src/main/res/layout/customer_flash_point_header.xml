@@ -61,7 +61,7 @@
                 android:id="@+id/customer_points_tv_points"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1800"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="42dp"/>
         </LinearLayout>
