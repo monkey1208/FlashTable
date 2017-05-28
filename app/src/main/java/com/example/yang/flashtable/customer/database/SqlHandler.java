@@ -162,6 +162,10 @@ public class SqlHandler extends SQLiteOpenHelper {
         cv.put(ADDRESS_COLUMN, info.address);
         cv.put(INTRO_COLUMN, info.intro);
         cv.put(IMG_COLUMN, info.image);
+        cv.put(IMG_COLUMN_2, img_2);
+        cv.put(IMG_COLUMN_3, img_3);
+        cv.put(IMG_COLUMN_4, img_4);
+        cv.put(IMG_COLUMN_5, img_5);
         if(checkDataInDB(DATABASE_TABLE, ID_COLUMN, info.id)){
             db.update(DATABASE_TABLE, cv, ID_COLUMN + "=" + info.id, null);
         }else {
