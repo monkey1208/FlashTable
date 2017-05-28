@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.example.yang.flashtable.CustomerRestaurantInfo;
@@ -161,6 +162,10 @@ public class SqlHandler extends SQLiteOpenHelper {
         cv.put(ADDRESS_COLUMN, info.address);
         cv.put(INTRO_COLUMN, info.intro);
         cv.put(IMG_COLUMN, info.image);
+        cv.put(IMG_COLUMN_2, img_2);
+        cv.put(IMG_COLUMN_3, img_3);
+        cv.put(IMG_COLUMN_4, img_4);
+        cv.put(IMG_COLUMN_5, img_5);
         if(checkDataInDB(DATABASE_TABLE, ID_COLUMN, info.id)){
             db.update(DATABASE_TABLE, cv, ID_COLUMN + "=" + info.id, null);
         }else {
@@ -169,7 +174,36 @@ public class SqlHandler extends SQLiteOpenHelper {
         cv = null;
     }
 
-
+    public ArrayList<Bitmap> getBitmapList(int shop_id){
+        Cursor cursor = db.query(true,
+                DATABASE_TABLE,
+                new String[] {IMG_COLUMN_2, IMG_COLUMN_3, IMG_COLUMN_4, IMG_COLUMN_5},	//column
+                ID_COLUMN+"="+ shop_id,				//WHERE
+                null, // WHERE 的參數
+                null, // GROUP BY
+                null, // HAVING
+                null, // ORDOR BY
+                null  // 限制回傳的rows數量
+        );
+        if (cursor != null) {
+            cursor.moveToFirst();	//cursor to the first data
+        }
+        ArrayList<Bitmap> list = new ArrayList<>();
+        byte[] array = cursor.getBlob(cursor.getColumnIndex(IMG_COLUMN_2));
+        if(array != null)
+            list.add(BitmapFactory.decodeByteArray(array, 0, array.length));
+        array = cursor.getBlob(cursor.getColumnIndex(IMG_COLUMN_3));
+        if(array != null)
+            list.add(BitmapFactory.decodeByteArray(array, 0, array.length));
+        array = cursor.getBlob(cursor.getColumnIndex(IMG_COLUMN_4));
+        if(array != null)
+            list.add(BitmapFactory.decodeByteArray(array, 0, array.length));
+        array = cursor.getBlob(cursor.getColumnIndex(IMG_COLUMN_5));
+        if(array != null)
+            list.add(BitmapFactory.decodeByteArray(array, 0, array.length));
+        cursor.close();
+        return list;
+    }
 
     public boolean checkDataInDB(String TableName, String dbfield, int id) {
         String Query = "Select * from " + TableName + " where " + dbfield + " = " + id;
