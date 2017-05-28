@@ -406,6 +406,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             } catch (IOException e) {
+                publishProgress();
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -421,6 +422,15 @@ public class CustomerReservationActivity extends AppCompatActivity {
             super.onPostExecute(s);
         }
 
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            new DialogBuilder(CustomerReservationActivity.this).dialogEvent(getString(R.string.dialog_network_unable), "normal", new DialogEventListener() {
+                @Override
+                public void clickEvent(boolean ok, int status) {
+
+                }
+            });
+        }
 
     }
 
@@ -529,6 +539,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
             super.onPostExecute(s);
         }
+
     }
 
     class ApiSessionSuccess extends AsyncTask<Void, Void, String>{
