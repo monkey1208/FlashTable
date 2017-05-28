@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 public class FragmentController extends StoreMainActivity{
-    public static final int FRAG_COUNT = 12;
+    public static final int FRAG_COUNT = 13;
     public static final int HOME = 0;
     public static final int RECENT = 1;
     public static final int APPOINT = 2;
@@ -20,13 +20,14 @@ public class FragmentController extends StoreMainActivity{
     public static final int MANAGE_RECORD = 9;
     public static final int MANAGE_COMMENT = 10;
     public static final int CONFIRM = 11;
+    public static final int MANAGE_RECORD_INFO = 12;
     public StoreRecentFragment storeRecentFragment;
     public StoreHomeFragment storeHomeFragment;
     public StoreAppointFragment storeAppointFragment;
     public StoreManageFragment storeManageFragment;
 
     public Fragment[] fragment;
-
+    private int prev_fragment;
     private static final int DEAD = 0;
     private static final int ALIVE = 1;
     private static final int SHOW = 2;
@@ -42,6 +43,7 @@ public class FragmentController extends StoreMainActivity{
         for(int i=0;i<FRAG_COUNT;i++) viewContainer[i]= R.id.fragment_space;
         viewContainer[CONFIRM] = R.id.fragment_full;
         viewContainer[MANAGE_COMMENT] = R.id.fragment_full;
+        viewContainer[MANAGE_RECORD_INFO] = R.id.fragment_full;
         for(int i=0;i<FRAG_COUNT;i++) frag_stat[i]=DEAD;
         fragmentManager  = fm;
         storeRecentFragment = new StoreRecentFragment();
@@ -99,9 +101,13 @@ public class FragmentController extends StoreMainActivity{
                 setActive(MANAGE_OPENTIME);
                 break;
             case MANAGE_BILL:
+                if(frag_stat[MANAGE_BILL]!=DEAD)
+                    kill(MANAGE_BILL);
                 setActive(MANAGE_BILL);
                 break;
             case MANAGE_STATISTIC:
+                if(frag_stat[MANAGE_STATISTIC]!=DEAD)
+                    kill(MANAGE_STATISTIC);
                 setActive(MANAGE_STATISTIC);
                 break;
             case MANAGE_RECORD:
@@ -110,6 +116,8 @@ public class FragmentController extends StoreMainActivity{
                 setActive(MANAGE_RECORD);
                 break;
             case MANAGE_DISCOUNT:
+                if(frag_stat[MANAGE_DISCOUNT]!=DEAD)
+                    kill(MANAGE_DISCOUNT);
                 setActive(MANAGE_DISCOUNT);
                 break;
             case MANAGE_COMMENT:
@@ -119,6 +127,11 @@ public class FragmentController extends StoreMainActivity{
                 if(frag_stat[CONFIRM]!=DEAD)
                     kill(CONFIRM);
                 setActive(CONFIRM);
+                break;
+            case MANAGE_RECORD_INFO:
+                if(frag_stat[MANAGE_RECORD_INFO]!=DEAD)
+                    kill(MANAGE_RECORD_INFO);
+                setActive(MANAGE_RECORD_INFO);
                 break;
         }
     }
@@ -165,6 +178,8 @@ public class FragmentController extends StoreMainActivity{
             case CONFIRM:
                 fragment[select] = new StoreHomeConfirmFragment();
                 break;
+            case MANAGE_RECORD_INFO:
+                fragment[select] = new StoreManageRecordInfoFragment();
         }
     }
     public void sendBundle(Bundle bundle,int mode){
@@ -175,7 +190,20 @@ public class FragmentController extends StoreMainActivity{
                 fragment[CONFIRM].setArguments(bundle);
                 setActive(CONFIRM);
                 break;
-
+            case MANAGE_RECORD_INFO:
+                if(frag_stat[MANAGE_RECORD_INFO]!=DEAD)
+                    kill(MANAGE_RECORD_INFO);
+                fragment[MANAGE_RECORD_INFO].setArguments(bundle);
+                setActive(MANAGE_RECORD_INFO);
+                break;
         }
+    }
+
+    public void change_prev_fragment(int mode){
+        prev_fragment = mode;
+    }
+
+    public int get_prev_fragment(){
+        return prev_fragment;
     }
 }

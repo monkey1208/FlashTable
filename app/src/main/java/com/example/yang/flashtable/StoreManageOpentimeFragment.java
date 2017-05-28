@@ -236,6 +236,7 @@ public class StoreManageOpentimeFragment extends Fragment {
     private class APITimeDetail extends AsyncTask<String, Void, Void> {
         boolean new_record_flag = true;
         List<ReservationInfo> list;
+        boolean exception = false;
         @Override
         protected Void doInBackground(String...params) {
             list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
@@ -255,40 +256,49 @@ public class StoreManageOpentimeFragment extends Fragment {
                     String is_success = recordInfo.getString("is_succ");
                     String account = recordInfo.getString("user_account");
                     int point = recordInfo.getInt("user_point");
+                    String url = recordInfo.getString("user_picture_url");
+                    String promotion_name = recordInfo.getString("promotion_name");
+                    String promotion_des = recordInfo.getString("promotion_description");
 
                     String time = recordInfo.getString("created_at");
                     DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
                     Date date =  df.parse(time);
-                    df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.getDefault());
+                    df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
                     time = df.format(date);
-                    ReservationInfo info = new ReservationInfo(account, num, point, time, is_success);
+                    ReservationInfo info = new ReservationInfo(account, num, point, time, is_success, url, promotion_name, promotion_des);
                     list.add(info);
                 }
             } catch (Exception e) {
+                exception = true;
                 e.printStackTrace();
             }
             return null;
         }
         @Override
         protected void onPostExecute(Void _params){
-            if(new_record_flag) {
-                StoreMainActivity.storeInfo.setRecordList(list);
-            }
-            try {
-                int sum = 0;
-                for (int i = 0; i < list.size(); i++) {
-                    String is_success = list.get(i).is_succ;
-                    if (is_success.equals("true")) {
-                        sum += 1;
-                        String time = list.get(i).record_time;
-                        DateFormat df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.getDefault());
-                        Date date = df.parse(time);
-                        dateList.add(date);
-                    }
+            if(!exception) {
+                if (new_record_flag) {
+                    StoreMainActivity.storeInfo.setRecordList(list);
                 }
-                StoreMainActivity.storeInfo.setSuccess_record_num(sum);
-            }catch (Exception e){
-                e.printStackTrace();
+                try {
+                    int sum = 0;
+                    for (int i = 0; i < list.size(); i++) {
+                        String is_success = list.get(i).is_succ;
+                        if (is_success.equals("true")) {
+                            sum += 1;
+                            String time = list.get(i).record_time;
+                            DateFormat df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
+                            Date date = df.parse(time);
+                            dateList.add(date);
+                        }
+                    }
+                    StoreMainActivity.storeInfo.setSuccess_record_num(sum);
+                } catch (Exception e) {
+                    new AlertDialogController().warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+                    e.printStackTrace();
+                }
+            }else{
+                new AlertDialogController().warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
             }
 
         }

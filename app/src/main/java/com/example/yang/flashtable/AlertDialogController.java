@@ -263,7 +263,7 @@ public class AlertDialogController {
         });
 
         alertDialog.show();
-        setDialogSize(context, 0.75, 0.3);
+        setDialogSize(context, 0.75, 0.33);
     }
 
 
@@ -379,7 +379,7 @@ public class AlertDialogController {
             }
         });
         alertDialog.show();
-        setDialogSize(context, 0.72, 0.45);
+        setDialogSize(context, 0.8, 0.43);
     }
 
     //Change dialog size

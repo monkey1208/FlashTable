@@ -1,8 +1,5 @@
 package com.example.yang.flashtable;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -66,6 +62,7 @@ public class StoreAppointFragment extends ListFragment {
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
+                StoreMainActivity.fragmentController.change_prev_fragment(FragmentController.APPOINT);
                 StoreMainActivity.fragmentController.act(FragmentController.MANAGE_RECORD);
                 return true;
             }
@@ -85,7 +82,6 @@ public class StoreAppointFragment extends ListFragment {
         bundle.putInt("promotion_id",list.get(position).promotion_id);
         bundle.putLong("due_time",list.get(position).due_time);
         StoreMainActivity.fragmentController.sendBundle(bundle,FragmentController.CONFIRM);
-        //Toast.makeText(getContext(),Integer.toString(position),Toast.LENGTH_LONG).show();
     }
 
 
