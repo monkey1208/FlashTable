@@ -47,7 +47,6 @@ public class CustomerSearchActivity extends AppCompatActivity {
     ListView listView;
     Location my_location;
     SearchView search_view;
-    AutoCompleteTextView completeText;
     ArrayAdapter<String> history_adapter;
     ViewGroup header_history, header_result;
 
@@ -149,6 +148,11 @@ public class CustomerSearchActivity extends AppCompatActivity {
     }
 
     private void setList(){
+
+        if(listView.getHeaderViewsCount() > 0) {
+            listView.removeHeaderView(header_history);
+            listView.removeHeaderView(header_result);
+        }
         listView.addHeaderView(header_result, null, false);
         TextView search_num = (TextView)findViewById(R.id.customer_search_result_num);
         search_num.setText(adapter.getCount()+"");
@@ -164,16 +168,15 @@ public class CustomerSearchActivity extends AppCompatActivity {
     }
 
     private void setHistory(){
-        history_adapter.clear();
         final ArrayList<String> history = sqlHandler.getHistoryList();
-        for(String item: history){
-            history_adapter.add(item);
-        }
-        completeText.setAdapter(history_adapter);
-        completeText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        history_adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, history);
+        listView.addHeaderView(header_history, null, false);
+        listView.setAdapter(history_adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                search_view.setQuery(history.get(position), false);
+                search_view.setQuery(history.get(position-1), false);
             }
         });
     }
@@ -227,19 +230,6 @@ public class CustomerSearchActivity extends AppCompatActivity {
         ic_search = DrawableCompat.wrap(ic_search);
         DrawableCompat.setTint(ic_search, ContextCompat.getColor(this, R.color.gray));
 
-        final ArrayList<String> history = sqlHandler.getHistoryList();
-
-        //int completeTextId = search_view.getResources().getIdentifier("android:id/search_src_text", null, null);
-        completeText = (AutoCompleteTextView) search_view.findViewById(R.id.search_src_text); ;
-        completeText.setThreshold(0);
-        history_adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, history);
-        completeText.setAdapter(history_adapter);
-        completeText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                search_view.setQuery(history.get(position), false);
-            }
-        });
         search_view.setIconifiedByDefault(true);
         search_view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
@@ -248,7 +238,6 @@ public class CustomerSearchActivity extends AppCompatActivity {
                 // perform query here
                 doSearch(query);
                 sqlHandler.insert(query);
-                setHistory();
                 search_view.clearFocus();
                 return true;
             }
@@ -264,6 +253,8 @@ public class CustomerSearchActivity extends AppCompatActivity {
 
         searchItem.expandActionView();
         search_view.requestFocus();
+
+        setHistory();
 
         return super.onCreateOptionsMenu(menu);
     }

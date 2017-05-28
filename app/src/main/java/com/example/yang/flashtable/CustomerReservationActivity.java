@@ -222,7 +222,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
             try {
                 Date date = dateFormat.parse(time);
                 long nowtime = date.getTime();
-                long remain_time = 15*60000+nowtime-Calendar.getInstance().getTimeInMillis();
+                long remain_time = nowtime-Calendar.getInstance().getTimeInMillis();
                 if(remain_time<0)
                     remain_time = 0;
                 reservationAccepted((int)remain_time);
