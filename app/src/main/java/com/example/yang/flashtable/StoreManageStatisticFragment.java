@@ -3,19 +3,12 @@ package com.example.yang.flashtable;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,25 +66,4 @@ public class StoreManageStatisticFragment extends ListFragment {
         return result;
     }
 
-    private class Promotion_Succ_Detail extends AsyncTask<Object, Void, Void> {
-        @Override
-        protected Void doInBackground(Object... params) {
-            HttpClient httpClient = new DefaultHttpClient();
-            try {
-                List<StoreDiscountInfo> list = new ArrayList<>(StoreMainActivity.storeInfo.discountList);
-                for(int i = 0; i < list.size(); i++) {
-                    HttpGet getPromotionInfo = new HttpGet("https://flash-table.herokuapp.com/api/promotion_info?promotion_id="+String.valueOf(list.get(i).id));
-                    JSONObject info = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getPromotionInfo)));
-                    int num = info.getInt("n_succ");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void _params){
-        }
-    }
 }
