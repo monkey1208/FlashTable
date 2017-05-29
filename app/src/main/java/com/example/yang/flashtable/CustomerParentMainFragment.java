@@ -159,6 +159,8 @@ public class CustomerParentMainFragment extends Fragment {
             fragmentTransaction.replace(R.id.parent_main_container, fragment_main).commit();
             map_showing = false;
             fab_map.setImageResource(R.drawable.ic_float_map);
+            if(progress_dialog.isShowing())
+                progress_dialog.dismiss();
         }
     }
 
@@ -453,7 +455,6 @@ public class CustomerParentMainFragment extends Fragment {
         protected void onPostExecute(String s) {
             closeDB();
             CustomerAppInfo.getInstance().setRestaurantList(restaurantInfoList);
-            progress_dialog.dismiss();
             navigate("main");
             super.onPostExecute(s);
         }
