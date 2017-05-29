@@ -51,7 +51,8 @@ import static android.content.Context.LOCATION_SERVICE;
  */
 
 public class CustomerParentMainFragment extends Fragment {
-    boolean map_showing;
+    boolean map_showing = false;
+    boolean request_promotion = true;
     String filter_food = "all", filter_mode = "default", filter_distance = "-1";
 
     View view;
@@ -111,6 +112,7 @@ public class CustomerParentMainFragment extends Fragment {
 
         progress_dialog = new ProgressDialog(view.getContext());
         progress_dialog.setMessage("載入中...");
+        progress_dialog.setCanceledOnTouchOutside(false);
         progress_dialog.show();
         setSpinner();
         gpsPermission();
@@ -159,6 +161,8 @@ public class CustomerParentMainFragment extends Fragment {
             fragmentTransaction.replace(R.id.parent_main_container, fragment_main).commit();
             map_showing = false;
             fab_map.setImageResource(R.drawable.ic_float_map);
+            if(progress_dialog.isShowing())
+                progress_dialog.dismiss();
         }
     }
 
@@ -313,7 +317,11 @@ public class CustomerParentMainFragment extends Fragment {
             if (location != null) {
                 my_location = location;
                 CustomerAppInfo.getInstance().setLocation(my_location);
-                new ApiPromotion().execute(my_location.getLatitude(), my_location.getLongitude());
+                if(request_promotion){
+                    request_promotion = false;
+                    new ApiPromotion().execute(my_location.getLatitude(), my_location.getLongitude());
+                }
+
             } else {
                 if(flag) {
                     gpsPermission();
@@ -438,7 +446,7 @@ public class CustomerParentMainFragment extends Fragment {
                     if (!status.equals("0")) break;
                     shop_rating = responseShopRating.getJSONObject(0).getString("average_score");
                 } catch (Exception e) {
-                    publishProgress();
+                    //publishProgress();
                     shop_rating = "0";
                 }
                 info.rating = Float.parseFloat(shop_rating) / 2;
@@ -453,7 +461,7 @@ public class CustomerParentMainFragment extends Fragment {
         protected void onPostExecute(String s) {
             closeDB();
             CustomerAppInfo.getInstance().setRestaurantList(restaurantInfoList);
-            progress_dialog.dismiss();
+
             navigate("main");
             super.onPostExecute(s);
         }
@@ -505,10 +513,12 @@ public class CustomerParentMainFragment extends Fragment {
                 }
                 Log.d("PromotionAPI", json);
             } catch (IOException e) {
-                publishProgress();
+                //publishProgress();
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
+            } finally {
+                httpClient.getConnectionManager().shutdown();
             }
             return list;
         }

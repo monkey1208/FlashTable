@@ -107,7 +107,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public void setMap() {
-        new ApiPromotion(gps).execute(24.0, 121.0);
+        new ApiPromotion(gps).execute(CustomerAppInfo.getInstance().getLocation().getLatitude(), CustomerAppInfo.getInstance().getLocation().getLongitude());
         gps.execute();
         fab_my_position.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -495,6 +495,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
     private class ApiPromotion extends AsyncTask<Double, Void, String> {
         HttpClient httpClient = new DefaultHttpClient();
         CustomerGps gps;
+        ArrayList<CustomerRestaurantInfo> mlist = new ArrayList<>();
         private ProgressDialog progress_dialog = new ProgressDialog(view.getContext());
         public ApiPromotion(CustomerGps gps) {
             this.gps = gps;
@@ -503,6 +504,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         @Override
         protected void onPreExecute() {
             progress_dialog.setMessage( "載入中..." );
+            progress_dialog.setCanceledOnTouchOutside(false);
             progress_dialog.show();
             super.onPreExecute();
         }
@@ -519,7 +521,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                 CustomerRestaurantInfo info = sqlHandler.getDetail(list.get(i).shop_id);
                 info.discount = list.get(i).discount;
                 info.offer = list.get(i).offer;
-                restaurantInfoList.add(info);
+                mlist.add(info);
             }
 
             return null;
@@ -527,11 +529,12 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
 
         @Override
         protected void onPostExecute(String s) {
-            CustomerAppInfo.getInstance().setRestaurantList(restaurantInfoList);
-            for (int i = 0; i < restaurantInfoList.size(); i++) {
-                gps.setMarker(restaurantInfoList.get(i).latLng, i);
-                System.out.println(restaurantInfoList.get(i).latLng.longitude+","+restaurantInfoList.get(i).latLng.latitude);
+            CustomerAppInfo.getInstance().setRestaurantList(mlist);
+            for (int i = 0; i < mlist.size(); i++) {
+                gps.setMarker(mlist.get(i).latLng, i);
+                System.out.println(mlist.get(i).latLng.longitude+","+mlist.get(i).latLng.latitude);
             }
+            restaurantInfoList = mlist;
             progress_dialog.dismiss();
             super.onPostExecute(s);
 

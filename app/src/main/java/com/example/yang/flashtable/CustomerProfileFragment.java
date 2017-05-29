@@ -338,7 +338,7 @@ public class CustomerProfileFragment extends Fragment {
                 dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
             else {
                 tv_credit.setText(credits + _content);
-                iv_avatar.setImageBitmap(avatar);
+                if (avatar != null) iv_avatar.setImageBitmap(avatar);
                 tv_points.setText(flash_points);
             }
         }
