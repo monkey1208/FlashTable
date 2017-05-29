@@ -111,6 +111,7 @@ public class CustomerParentMainFragment extends Fragment {
 
         progress_dialog = new ProgressDialog(view.getContext());
         progress_dialog.setMessage("載入中...");
+        progress_dialog.setCanceledOnTouchOutside(false);
         progress_dialog.show();
         setSpinner();
         gpsPermission();
