@@ -64,22 +64,13 @@
 
                 </LinearLayout>
 
-                <TextView
+                <ImageView
                     android:layout_width="60dp"
                     android:layout_height="23dp"
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="5dp"
-                    android:background="@drawable/customer_bg_grad_button"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
-                    android:text="前往兌換"
-                    android:textAlignment="center"
-                    android:textSize="12dp"
-                    android:textColor="@color/white"
-                    android:gravity="center"/>
+                    android:src="@drawable/ic_go_exchange"/>
 
             </RelativeLayout>
         </LinearLayout>

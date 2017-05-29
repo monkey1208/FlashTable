@@ -1,24 +1,26 @@
-package com.example.yang.flashtable.customer;
+package com.example.yang.flashtable;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ListView;
+import android.widget.TextView;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
-import com.example.yang.flashtable.CustomerFlashPointAdapter;
-import com.example.yang.flashtable.FlashCouponInfo;
-import com.example.yang.flashtable.R;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -33,11 +35,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import jp.co.recruit_mp.android.headerfootergridview.HeaderFooterGridView;
 
@@ -55,6 +58,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
 
     HeaderFooterGridView lv_coupons;
     SliderLayout sl_coupons;
+    TextView tv_points, tv_records;
 
     CustomerFlashPointAdapter adapter;
     List<FlashCouponInfo> coupons;
@@ -65,8 +69,6 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
         view = inflater.inflate(R.layout.customer_flash_point_fragment, container, false);
         initView();
         initData();
-        new ApiPoints().execute(userID);
-        new ApiCoupons().execute();
         return view;
     }
 
@@ -76,21 +78,51 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
                 R.layout.customer_flash_point_header, lv_coupons, false);
         lv_coupons.addHeaderView(header);
 
+        // Header views
         sl_coupons = (SliderLayout) header.findViewById(R.id.customer_points_sl_coupons);
+        tv_points = (TextView) header.findViewById(R.id.customer_points_tv_points);
+        tv_records = (TextView) header.findViewById(R.id.customer_points_tv_records);
     }
 
     private void initData() {
+        getUserInfo();
 
-        // TODO: Change list to promotion content
         coupons = new ArrayList<>();
-        coupons.add(new FlashCouponInfo("1", "WHADDUP", 10, "I ain't telling you shit"));
-        coupons.add(new FlashCouponInfo("1", "WHADDUP", 10, "I ain't telling you shit"));
-        coupons.add(new FlashCouponInfo("1", "WHADDUP", 10, "I ain't telling you shit"));
         adapter = new CustomerFlashPointAdapter(getActivity().getBaseContext(), coupons);
         lv_coupons.setAdapter(adapter);
+        lv_coupons.setOnItemClickListener(new GridView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView adapter_view, View view, int i, long l) {
+                FlashCouponInfo info = coupons.get(i - lv_coupons.getNumColumns());
+                Intent intent = new Intent(getActivity(), CustomerCouponActivity.class);
+                Bundle bundle = new Bundle();
 
-        getUserInfo();
-        setSlider();
+                SerializableCouponInfo _info = new SerializableCouponInfo();
+                _info.name = info.name;
+                _info.description = info.description;
+                _info.coupon_id = info.coupon_id;
+                _info.flash_point = info.flash_point;
+                _info.picture_url_small = info.picture_url_small;
+                _info.picture_url_large = info.picture_url_large;
+                _info.tutorial = info.tutorial;
+                _info.description = info.description;
+
+                bundle.putSerializable("info", _info);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+        new ApiPoints().execute(userID);
+        new ApiCoupons().execute();
+
+        tv_records.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CustomerCouponRecordActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void getUserInfo() {
@@ -102,10 +134,9 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
     private void setSlider() {
         if (sl_coupons != null)
             sl_coupons.removeAllSliders();
-        HashMap<String, Integer> image_map = new HashMap<>();
-        image_map.put("1", R.drawable.slide_1);
-        image_map.put("2", R.drawable.slide_2);
-        image_map.put("3", R.drawable.slide_3);
+        HashMap<String, String> image_map = new HashMap<>();
+        for (int i = 0; i < coupons.size(); i++)
+            image_map.put(String.valueOf(i), coupons.get(i).picture_url_large);
 
         for (String name : image_map.keySet()) {
             // Change DefaultSliderView to TextSliderView if you want text below it
@@ -144,47 +175,72 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
         super.onStop();
     }
 
-    private class ApiPoints extends AsyncTask<String, Void, Integer>{
+    private void updateCoupons() {
+        adapter.notifyDataSetChanged();
+        lv_coupons.setAdapter(adapter);
+    }
+
+    private class ApiPoints extends AsyncTask<String, Void, Void>{
+        // private ProgressDialog progress_dialog = new ProgressDialog(CustomerFlashPointFragment.this.getActivity());
+        private String status;
+        private int points = 0;
+
+//        @Override
+//        protected void onPreExecute() {
+//            progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
+//            progress_dialog.show();
+//        }
 
         @Override
-        protected Integer doInBackground(String ...value) {
+        protected Void doInBackground(String ...value) {
             NameValuePair param = new BasicNameValuePair("user_id", value[0]);
             HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_info?" + param.toString());
             httpGet.addHeader("Content-Type", "application/json");
-            int points = 0;
             try {
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpResponse httpResponse = httpClient.execute(httpGet);
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 String json = handler.handleResponse(httpResponse);
-                System.out.println("user info:"+json);
-                JSONArray jsonArray = new JSONArray(json);
-                JSONObject jsonObject = jsonArray.getJSONObject(0);
-                if(jsonObject.get("status_code").equals("0")){
-                    points = jsonArray.getJSONObject(1).getInt("flash_point");
+
+                JSONObject responseJSON = new JSONObject(json);
+                status = responseJSON.getString("status_code");
+                if (status.equals("0")) {
+                    points = Integer.parseInt(responseJSON.getString("flash_point"));
                 }
+
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return points;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Integer points) {
+        protected void onPostExecute(Void params) {
+//            progress_dialog.dismiss();
+            Log.e("UserInfo", status);
+
             //get points
+            tv_points.setText(Integer.toString(points));
         }
     }
 
-    private class ApiCoupons extends AsyncTask<Void, Void, ArrayList<FlashCouponInfo>>{
+    private class ApiCoupons extends AsyncTask<Void, Void, Void>{
+
+//        private ProgressDialog progress_dialog = new ProgressDialog(CustomerFlashPointFragment.this.getActivity());
+//
+//        @Override
+//        protected void onPreExecute() {
+//            progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
+//            progress_dialog.show();
+//        }
 
         @Override
-        protected ArrayList<FlashCouponInfo> doInBackground(Void ...value) {
+        protected Void doInBackground(Void ...value) {
             NameValuePair param = new BasicNameValuePair("verbose", "1");
             HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/flash_coupons?" + param.toString());
             httpGet.addHeader("Content-Type", "application/json");
-            ArrayList<FlashCouponInfo> infos = new ArrayList<>();
             try {
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpResponse httpResponse = httpClient.execute(httpGet);
@@ -193,30 +249,41 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
                 System.out.println("coupons : "+json);
                 JSONArray jsonArray = new JSONArray(json);
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
-                FlashCouponInfo info = new FlashCouponInfo(null, null, 0, null);
                 for(int i = 1; i <= jsonObject.getInt("size"); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                    FlashCouponInfo info = new FlashCouponInfo();
                     info.coupon_id = jsonObject1.getInt("coupon_id");
                     info.description = jsonObject1.getString("description");
                     info.flash_point = jsonObject1.getInt("flash_point");
-                    info.tutorial = jsonObject1.getString("toturial");
+                    info.tutorial = jsonObject1.getString("tutorial");
                     info.name = jsonObject1.getString("name");
                     info.picture_url_large = jsonObject1.getString("picture_url_large");
                     info.picture_url_small = jsonObject1.getString("picture_url_small");
-                    infos.add(info);
+
+                    URL url = new URL(info.picture_url_small);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    info.picture_small = BitmapFactory.decodeStream(input);
+
+                    coupons.add(info);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return infos;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<FlashCouponInfo> infos) {
-            //get coupon list
+        protected void onPostExecute(Void params) {
+//            progress_dialog.dismiss();
 
+            //get coupon list
+            updateCoupons();
+            setSlider();
         }
     }
 

@@ -116,7 +116,14 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
         for (String name : img_map.keySet()) {
             // Change DefaultSliderView to TextSliderView if you want text below it
             //DefaultSliderView slider_view = new DefaultSliderView(getBaseContext());
-            BitmapSliderView slider_view = new BitmapSliderView(this);
+            // BitmapSliderView slider_view = new BitmapSliderView(this);
+            com.example.yang.flashtable.customer.slider.BaseSliderView slider_view =
+                    new com.example.yang.flashtable.customer.slider.BaseSliderView(this) {
+                        @Override
+                        public View getView() {
+                            return null;
+                        }
+                    };
 
             slider_view
                     .image(img_map.get(name))

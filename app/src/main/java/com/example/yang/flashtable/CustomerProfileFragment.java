@@ -67,7 +67,7 @@ public class CustomerProfileFragment extends Fragment {
     DialogBuilder dialog_builder;
 
     private View view;
-    TextView tv_username, tv_credit, tv_edit, tv_exchange_gifts_content;
+    TextView tv_username, tv_credit, tv_edit, tv_exchange_gifts_content, tv_points;
     LinearLayout ll_comments, ll_reservations;
     ImageView iv_avatar;
     Button bt_about_credits;
@@ -96,6 +96,7 @@ public class CustomerProfileFragment extends Fragment {
         iv_avatar = (ImageView) view.findViewById(R.id.customer_profile_iv_avatar);
         tv_edit = (TextView) view.findViewById(R.id.customer_profile_bt_edit);
         bt_about_credits = (Button) view.findViewById(R.id.customer_profile_bt_about_credit);
+        tv_points = (TextView) view.findViewById(R.id.customer_profile_tv_points);
 
         credits = getResources().getString(R.string.customer_profile_credit);
 
@@ -299,6 +300,7 @@ public class CustomerProfileFragment extends Fragment {
     class CustomerAPIProfile extends AsyncTask<String, Void, String> {
         private String status = null;
         private Bitmap avatar = null;
+        private String flash_points = null;
 
         @Override
         protected String doInBackground(String... params) {
@@ -317,6 +319,7 @@ public class CustomerProfileFragment extends Fragment {
                 if (status.equals("0")) {
                     content = responseJSON.getString("point");
                     pic_url = responseJSON.getString("picture_url");
+                    flash_points = responseJSON.getString("flash_point");
                 }
 
                 // TODO: Get image from local storage if available.
@@ -336,6 +339,7 @@ public class CustomerProfileFragment extends Fragment {
             else {
                 tv_credit.setText(credits + _content);
                 iv_avatar.setImageBitmap(avatar);
+                tv_points.setText(flash_points);
             }
         }
     }
