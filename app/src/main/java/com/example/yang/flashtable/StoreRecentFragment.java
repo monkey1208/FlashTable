@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +69,6 @@ public class StoreRecentFragment extends Fragment {
                              Bundle savedInstanceState) {
         //test-------------
         list = new ArrayList<>();
-        //func_test();
         //init-------------
         v =  inflater.inflate(R.layout.store_recent_fregment, container, false);
         Toolbar bar = (Toolbar)v.findViewById(R.id.title);
@@ -81,6 +81,7 @@ public class StoreRecentFragment extends Fragment {
         adapter = new StoreRecentAdapter(getActivity(),list);
         lv_recent.setAdapter(adapter);
         countDown();
+        Log.d("RecentInit","done");
         //------------------
         return v;
     }
@@ -121,5 +122,4 @@ public class StoreRecentFragment extends Fragment {
         requestIDupper = upper;
         return;
     }
-
 }

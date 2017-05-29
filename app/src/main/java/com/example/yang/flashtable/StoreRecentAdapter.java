@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,6 +64,8 @@ public class StoreRecentAdapter extends BaseAdapter{
         }
         final CustomerAppointInfo info = list.get(position);
         Bitmap icon = BitmapFactory.decodeResource(context.getResources(),info.im_id);
+        if(info.picture !=null)
+            icon = info.picture;
         holder.im_photo.setImageBitmap(icon);
         holder.tv_name.setText(info.name+"(信譽"+ Integer.toString(info.honor) +")");
         holder.tv_number.setText("正向您即將預約("+info.number+"人)");

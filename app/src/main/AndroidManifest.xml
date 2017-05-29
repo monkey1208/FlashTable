@@ -122,6 +122,12 @@
         <activity android:name=".CustomerCropProfileActivity"
             android:theme="@style/AppTheme.LightActionBar"/>
 
+        <activity android:name=".CustomerCouponActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".CustomerCouponRecordActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <!--<provider android:name=".customer.provider.SearchSuggestionProvider"
             android:authorities="com.example.yang.flashtable.customer.provider.SearchSuggestionProvider" />-->
 

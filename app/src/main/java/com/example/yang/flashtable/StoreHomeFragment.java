@@ -34,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -91,7 +92,9 @@ public class StoreHomeFragment extends Fragment {
         //Image---------
         im_photo = (ImageView) v.findViewById(R.id.im_photo);
         Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_temp_store);
-        im_photo.setImageBitmap(icon);
+        Log.d("picture",storeInfo.url);
+        new ImageDownloader(im_photo).execute(storeInfo.url);
+        //im_photo.setImageBitmap(icon);
         //--------------
         //TextView init-
         tv_storename = (TextView) v.findViewById(R.id.tv_storename);
@@ -148,6 +151,7 @@ public class StoreHomeFragment extends Fragment {
             }
         });
         new APIpromotion().execute(StoreMainActivity.storeInfo.id);
+        Log.d("HomeInit","done");
         //--------------
         return v;
     }
@@ -281,5 +285,33 @@ public class StoreHomeFragment extends Fragment {
                 });
             }
         },0,1000);
+    }
+    private class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+        boolean connect_error = false;
+
+        private ImageDownloader(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            Log.d("picture","start getting picture");
+            String url = urls[0];
+            Bitmap mIcon = null;
+            try {
+                InputStream in = new java.net.URL(url).openStream();
+                mIcon = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                connect_error = true;
+                Log.d("picture","fail");
+                Log.e("Error", e.getMessage());
+            }
+            Log.d("picture","success");
+            return mIcon;
+        }
+        protected void onPostExecute(Bitmap result) {
+            Log.d("picture","home picture set");
+            bmImage.setImageBitmap(result);
+        }
     }
 }

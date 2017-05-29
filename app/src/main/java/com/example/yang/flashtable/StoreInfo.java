@@ -7,6 +7,7 @@ public class StoreInfo {
     public String id;
     public String name;
     public String address;
+    public String url;
     public int discountDefault;
     public int discountCurrent;
     public int totalAppointment;
@@ -18,9 +19,10 @@ public class StoreInfo {
     private int contract_fee;
 
     public StoreInfo(){};
-    public StoreInfo(String n,String a){
+    public StoreInfo(String n,String a,String url){
         name = n;
         address = a;
+        this.url = url;
         discountList = new ArrayList<>();
         discountDefault = 0;
         discountCurrent = discountDefault;

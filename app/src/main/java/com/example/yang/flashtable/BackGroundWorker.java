@@ -1,9 +1,12 @@
 package com.example.yang.flashtable;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -16,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +67,8 @@ public class BackGroundWorker {
                     String user_account = object.getString("user_account");
                     int number = object.getInt("number");
                     int point = object.getInt("user_point");
-                    CustomerAppointInfo newInfo = new CustomerAppointInfo(id,user_account,point,number);
+                    String url = object.getString("user_picture_url");
+                    CustomerAppointInfo newInfo = new CustomerAppointInfo(id,user_account,point,number,url);
                     if(id>StoreMainActivity.fragmentController.storeRecentFragment.getRequestIDupper()) {
                         request_id.add(id);
                         newInfoList.add(newInfo);
@@ -79,13 +84,71 @@ public class BackGroundWorker {
         }
         @Override
         protected void onPostExecute(Void _params) {
+            final List<Thread> threadList = new ArrayList<>();
             Collections.sort(request_id);
             if(request_id.size()>0)
                 StoreMainActivity.fragmentController.storeRecentFragment.setRequestIDupper(request_id.get(request_id.size()-1));
-            StoreMainActivity.fragmentController.storeRecentFragment.addItem(newInfoList);
-            newInfoList.clear();
-            request_id.clear();
+            for(int i=0;i<newInfoList.size();i++) {
+                final CustomerAppointInfo info = newInfoList.get(i);
+                Bitmap image = null;
+                //new ImageDownloader(image).execute(newInfoList.get(i).url);
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Bitmap mIcon = null;
+                        try {
+                            InputStream in = new java.net.URL(info.url).openStream();
+                            mIcon = BitmapFactory.decodeStream(in);
+                        } catch (Exception e) {
+                            Log.e("Error", e.getMessage());
+                        }
+                        info.picture = mIcon;
+                        Log.e("picture", info.name + " get picture!");
+                    }
+                });
+                threadList.add(t);
+            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for(int i=0;i<threadList.size();i++)
+                        threadList.get(i).start();
+                    for(int i=0;i<threadList.size();i++) {
+                        try {
+                            threadList.get(i).join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    StoreMainActivity.fragmentController.storeRecentFragment.addItem(newInfoList);
+                    newInfoList.clear();
+                    request_id.clear();
+                }
+            }).start();
         }
     }
+    private class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
+        Bitmap image;
+        boolean connect_error = false;
 
+        private ImageDownloader(Bitmap image) {
+            this.image = image;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String url = urls[0];
+            Bitmap mIcon = null;
+            try {
+                InputStream in = new java.net.URL(url).openStream();
+                mIcon = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                connect_error = true;
+                Log.e("Error", e.getMessage());
+            }
+            return mIcon;
+        }
+        protected void onPostExecute(Bitmap result) {
+            this.image = result;
+        }
+    }
 }

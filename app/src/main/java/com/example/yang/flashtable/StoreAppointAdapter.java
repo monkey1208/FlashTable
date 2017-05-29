@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +72,7 @@ public class StoreAppointAdapter extends BaseAdapter{
                     (TextView) convertView.findViewById(R.id.store_appoint_row_tv_state),
                     (TextView) convertView.findViewById(R.id.tv_countdown),
                     (TextView) convertView.findViewById(R.id.tv_remaining_time),
+                    (ImageView) convertView.findViewById(R.id.store_appoint_row_iv_icon),
                     (ImageButton) convertView.findViewById(R.id.bt_cancel));
             convertView.setTag(holder);
         }
@@ -93,16 +95,18 @@ public class StoreAppointAdapter extends BaseAdapter{
         TextView tv_state;
         TextView tv_countdown;
         TextView tv_remaintime;
+        ImageView im_photo;
         ImageButton bt_cancel;
         int position;
         ReservationInfo info;
-        public ViewHolder(int position,TextView tv_name,TextView tv_date,TextView tv_state,TextView tv_countdown,TextView tv_remaintime,ImageButton bt_cancel){
+        public ViewHolder(int position,TextView tv_name,TextView tv_date,TextView tv_state,TextView tv_countdown,TextView tv_remaintime,ImageView im_photo,ImageButton bt_cancel){
             this.position = position;
             this.tv_name = tv_name;
             this.tv_date = tv_date;
             this.tv_state = tv_state;
             this.tv_countdown = tv_countdown;
             this.tv_remaintime = tv_remaintime;
+            this.im_photo = im_photo;
             this.bt_cancel = bt_cancel;
         }
         public void setData(ReservationInfo info){
@@ -112,6 +116,10 @@ public class StoreAppointAdapter extends BaseAdapter{
             tv_state.setText("已成功向您預約("+Integer.toString(info.number)+")人桌位");
             int remain_time = (int)(info.due_time - System.currentTimeMillis())/1000;
             tv_countdown.setText(Integer.toString(remain_time/60)+":"+Integer.toString(remain_time%60));
+            if(info.picture != null)
+                im_photo.setImageBitmap(info.picture);
+            else
+                Log.d("Session","picture null");
             if(info.isActive) {
                 buttonControl(this, WAITING);
                 bt_cancel.setOnClickListener(new View.OnClickListener() {
