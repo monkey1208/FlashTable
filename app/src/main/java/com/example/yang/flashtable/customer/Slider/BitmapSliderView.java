@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.example.yang.flashtable.R;
 
 /**
