@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 public class FragmentController extends StoreMainActivity{
-    public static final int FRAG_COUNT = 13;
+    public static final int FRAG_COUNT = 14;
     public static final int HOME = 0;
     public static final int RECENT = 1;
     public static final int APPOINT = 2;
@@ -21,6 +21,7 @@ public class FragmentController extends StoreMainActivity{
     public static final int MANAGE_COMMENT = 10;
     public static final int CONFIRM = 11;
     public static final int MANAGE_RECORD_INFO = 12;
+    public static final int MANAGE_DISCOUNT_DELETE = 13;
     public StoreRecentFragment storeRecentFragment;
     public StoreHomeFragment storeHomeFragment;
     public StoreAppointFragment storeAppointFragment;
@@ -44,6 +45,7 @@ public class FragmentController extends StoreMainActivity{
         viewContainer[CONFIRM] = R.id.fragment_full;
         viewContainer[MANAGE_COMMENT] = R.id.fragment_full;
         viewContainer[MANAGE_RECORD_INFO] = R.id.fragment_full;
+        viewContainer[MANAGE_DISCOUNT_DELETE] = R.id.fragment_full;
         for(int i=0;i<FRAG_COUNT;i++) frag_stat[i]=DEAD;
         fragmentManager  = fm;
         storeRecentFragment = new StoreRecentFragment();
@@ -133,6 +135,11 @@ public class FragmentController extends StoreMainActivity{
                     kill(MANAGE_RECORD_INFO);
                 setActive(MANAGE_RECORD_INFO);
                 break;
+            case MANAGE_DISCOUNT_DELETE:
+                if(frag_stat[MANAGE_DISCOUNT_DELETE]!=DEAD)
+                    kill(MANAGE_DISCOUNT_DELETE);
+                setActive(MANAGE_DISCOUNT_DELETE);
+                break;
         }
     }
     private void kill(int select){
@@ -180,6 +187,10 @@ public class FragmentController extends StoreMainActivity{
                 break;
             case MANAGE_RECORD_INFO:
                 fragment[select] = new StoreManageRecordInfoFragment();
+                break;
+            case MANAGE_DISCOUNT_DELETE:
+                fragment[select] = new StoreManageDiscountDeleteFragment();
+                break;
         }
     }
     public void sendBundle(Bundle bundle,int mode){

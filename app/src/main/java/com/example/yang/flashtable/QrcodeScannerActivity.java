@@ -6,8 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -22,7 +20,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.zxing.Result;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -48,8 +46,11 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import me.dm7.barcodescanner.core.DisplayUtils;
 import me.dm7.barcodescanner.core.IViewFinder;
@@ -62,8 +63,9 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
     private String status;
     private static String session_id;
     private static String record_id = "2";
+    private static String session_create_time;
     private static FragmentManager fragmentManager;
-    private static String name, arrive_time, promotionName, promotionDes;
+    private static String name, arrive_time, promotionName, promotionDes, image_url;
     private static int num, point;
     private static int status_bar_height;
 
@@ -116,7 +118,7 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
     public void handleResult(Result result) {
         String session = result.toString();
         session_id = session.substring(session.indexOf("=")+1);
-
+        new Get_Session_Info().execute(session_id);
         mScannerView.stopCamera();
         new Finish_Session().execute(session_id);
     }
@@ -394,18 +396,20 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
             TextView tv_discount = (TextView) view.findViewById(R.id.store_home_confirm_fragment_tv_discount);
             TextView tv_description = (TextView) view.findViewById(R.id.store_home_confirm_fragment_tv_gift);
             tv_name.setText(name);
-            tv_point.setText(String.valueOf(point));
+            tv_point.setText(" ( 信譽"+String.valueOf(point)+" )");
             tv_number.setText(arrive_time);
-            tv_sessiont_time.setText(arrive_time);
+            tv_sessiont_time.setText(session_create_time);
             tv_arrive_time.setText(arrive_time);
             tv_discount.setText(promotionName);
             tv_description.setText(promotionDes);
             tv_number.setText(String.valueOf(num));
 
-            Log.e("qrcode", "recreate view");
             ImageView iv_photo = (ImageView)view.findViewById(R.id.iv_photo);
-            Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.ic_temp_store);
-            iv_photo.setImageBitmap(icon);
+            if(!image_url.equals("")){
+                Picasso.with(getContext()).load(image_url).into(iv_photo);
+            }else{
+                iv_photo.setImageResource(R.drawable.default_avatar);
+            }
 
             ImageButton ib_comfirm = (ImageButton) view.findViewById(R.id.bt_click);
             ib_comfirm.setOnClickListener(new View.OnClickListener() {
@@ -424,6 +428,27 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         }
     }
 
+    private class Get_Session_Info extends AsyncTask<String,Void,Void> {
+        @Override
+        protected Void doInBackground(String... params) {
+            HttpClient httpClient = new DefaultHttpClient();
+            try {
+                HttpGet getSessionInfo = new HttpGet("https://flash-table.herokuapp.com/api/session_info?session_id="+session_id);
+                JSONObject sessionInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getSessionInfo)));
+                if(sessionInfo.getInt("status_code") == 0){
+                    SimpleDateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
+                    Date session_date = df.parse(sessionInfo.getString("created_at"));
+                    df = new SimpleDateFormat("yyyy MM/dd  hh:mm a", Locale.ENGLISH);
+                    session_create_time = df.format(session_date);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
     private class Get_Record_Info extends AsyncTask<String,Void,Void> {
         @Override
         protected Void doInBackground(String... params) {
@@ -434,12 +459,16 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
                 num = recordInfo.getInt("number");
                 int user = recordInfo.getInt("user_id");
                 int promotion = recordInfo.getInt("promotion_id");
-                arrive_time = recordInfo.getString("created_at");
+                SimpleDateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
+                Date arrive_date = df.parse(recordInfo.getString("created_at"));
+                df = new SimpleDateFormat("yyyy MM/dd  hh:mm a", Locale.ENGLISH);
+                arrive_time = df.format(arrive_date);
 
                 HttpGet getUserInfo = new HttpGet("https://flash-table.herokuapp.com/api/user_info?user_id="+String.valueOf(user));
                 JSONObject userInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getUserInfo)));
                 name = userInfo.getString("account");
                 point = userInfo.getInt("point");
+                image_url = userInfo.getString("picture_url");
 
                 HttpGet getPromotionInfo = new HttpGet("https://flash-table.herokuapp.com/api/promotion_info?promotion_id="+String.valueOf(promotion));
                 JSONObject promotionInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getPromotionInfo)));

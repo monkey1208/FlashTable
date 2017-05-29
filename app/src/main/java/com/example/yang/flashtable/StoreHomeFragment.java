@@ -4,8 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +22,7 @@ import android.widget.TextView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -34,7 +33,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -91,10 +89,7 @@ public class StoreHomeFragment extends Fragment {
         v.setPadding(0, getStatusBarHeight(), 0, 0);
         //Image---------
         im_photo = (ImageView) v.findViewById(R.id.im_photo);
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_temp_store);
-        Log.d("picture",storeInfo.url);
-        new ImageDownloader(im_photo).execute(storeInfo.url);
-        //im_photo.setImageBitmap(icon);
+        Picasso.with(getContext()).load(storeInfo.url).into(im_photo);
         //--------------
         //TextView init-
         tv_storename = (TextView) v.findViewById(R.id.tv_storename);
@@ -286,32 +281,5 @@ public class StoreHomeFragment extends Fragment {
             }
         },0,1000);
     }
-    private class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-        boolean connect_error = false;
 
-        private ImageDownloader(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            Log.d("picture","start getting picture");
-            String url = urls[0];
-            Bitmap mIcon = null;
-            try {
-                InputStream in = new java.net.URL(url).openStream();
-                mIcon = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                connect_error = true;
-                Log.d("picture","fail");
-                Log.e("Error", e.getMessage());
-            }
-            Log.d("picture","success");
-            return mIcon;
-        }
-        protected void onPostExecute(Bitmap result) {
-            Log.d("picture","home picture set");
-            bmImage.setImageBitmap(result);
-        }
-    }
 }

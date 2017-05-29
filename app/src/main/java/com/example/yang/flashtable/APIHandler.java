@@ -11,7 +11,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -194,11 +193,7 @@ public class APIHandler {
                 param.add(new BasicNameValuePair("description",params[1]));
                 param.add(new BasicNameValuePair("shop_id",params[2]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
-                //HttpResponse response = httpClient.execute(post);
                 JSONObject recordInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(post)));
-                /*HttpEntity resEntity = response.getEntity();
-                if(resEntity != null) {
-                    if(recordInfo.getInt("status_code") == 0) {*/
                 new_promotion_id = recordInfo.getInt("promotion_id");
                 Log.d("ChangePromotion",Integer.toString(new_promotion_id));
                 //}

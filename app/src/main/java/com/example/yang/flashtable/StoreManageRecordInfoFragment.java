@@ -1,11 +1,7 @@
 package com.example.yang.flashtable;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.io.InputStream;
+import com.squareup.picasso.Picasso;
 
 import static com.example.yang.flashtable.R.id.store_home_confirm_fragment_tv_discount;
 import static com.example.yang.flashtable.R.id.store_home_confirm_fragment_tv_gift;
@@ -80,7 +76,7 @@ public class StoreManageRecordInfoFragment extends Fragment {
 
     private void setContent(Bundle content){
         if(!content.getString("image_url").equals("")){
-            new ImageDownloader(iv_photo).execute(content.getString("image_url"));
+            Picasso.with(getContext()).load(content.getString("image_url")).into(iv_photo);
         }else{
             iv_photo.setImageResource(R.drawable.default_avatar);
         }
@@ -88,6 +84,7 @@ public class StoreManageRecordInfoFragment extends Fragment {
         tv_point.setText(" ( 信譽"+content.getString("point")+" )");
         tv_people_number.setText(content.getString("number"));
         //TODO: Get Appoint time
+
         tv_appoint_time.setText(content.getString("record_time"));
         tv_info_first.setText("預約 ");
         if(content.getString("is_succ").equals("true")){
@@ -101,31 +98,6 @@ public class StoreManageRecordInfoFragment extends Fragment {
 
     }
 
-
-    private class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-        boolean connect_error = false;
-
-        private ImageDownloader(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String url = urls[0];
-            Bitmap mIcon = null;
-            try {
-                InputStream in = new java.net.URL(url).openStream();
-                mIcon = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                connect_error = true;
-                Log.e("Error", e.getMessage());
-            }
-            return mIcon;
-        }
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
 
     private int getStatusBarHeight() {
         int result = 0;

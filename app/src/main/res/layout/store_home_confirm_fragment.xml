@@ -10,7 +10,7 @@
         android:id="@+id/bt_click"
         android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:scaleType="centerCrop"
         android:background="@color/transparentGreen"
         android:src="@drawable/bt_confirm_bottom"/>
