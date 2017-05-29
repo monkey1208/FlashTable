@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -31,7 +32,7 @@ public class StoreMainActivity extends AppCompatActivity{
         //TODO: Get Store Info
         //TODO: start a thread getting updating request
         //arguments init temp
-        storeInfo = new StoreInfo(bundle.getString("name"),bundle.getString("address"));
+        storeInfo = new StoreInfo(bundle.getString("name"),bundle.getString("address"),bundle.getString("url"));
         getStoreInfo();
         button = new ImageButton[PRIM_FRAG];
         setContentView(R.layout.store_main_activity);
@@ -41,6 +42,8 @@ public class StoreMainActivity extends AppCompatActivity{
         fragmentController.act(APPOINT);
         fragmentController.act(current_stat);
         init_bt_button();
+        Log.d("MainActivity","done");
+
     }
 
     private void getStoreInfo() {
@@ -48,6 +51,7 @@ public class StoreMainActivity extends AppCompatActivity{
         String shop_id = store.getString("userID", "");
         storeInfo.name = store.getString("name", "");
         storeInfo.address = store.getString("address", "");
+        storeInfo.url = store.getString("url","");
         storeInfo.id = shop_id;
     }
 

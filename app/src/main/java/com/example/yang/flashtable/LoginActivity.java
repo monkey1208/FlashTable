@@ -176,6 +176,7 @@ public class LoginActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("name",storeInfo.name);
         bundle.putString("address",storeInfo.address);
+        bundle.putString("url",storeInfo.url);
         Intent intent = new Intent(LoginActivity.this, StoreMainActivity.class);
         intent.putExtras(bundle);
         LoginActivity.this.startActivity(intent);
@@ -255,6 +256,7 @@ public class LoginActivity extends AppCompatActivity {
                 .putString("username", preference_username)
                 .putString("name",storeInfo.name)
                 .putString("address",storeInfo.address)
+                .putString("url",storeInfo.url)
                 .apply();
     }
 
@@ -339,6 +341,7 @@ public class LoginActivity extends AppCompatActivity {
         private String status = null;
         private String name;
         private String address;
+        private String url;
         @Override
         protected void onPreExecute() {
             // TODO: Style this.
@@ -367,7 +370,8 @@ public class LoginActivity extends AppCompatActivity {
                     JSONObject shopInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getRequestInfo)));
                     name = shopInfo.getString("name");
                     address = shopInfo.getString("address");
-                    storeInfo = new StoreInfo(name,address);
+                    url = shopInfo.getString("picture_url");
+                    storeInfo = new StoreInfo(name,address,url);
                     storeInfo.id = _userID;
                 }
 

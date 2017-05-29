@@ -1,5 +1,7 @@
 package com.example.yang.flashtable;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -69,6 +72,7 @@ public class StoreAppointFragment extends ListFragment {
         };
         bar.setOnMenuItemClickListener(onMenuItemClick);
         refresh();
+        Log.d("AppointInit","done");
         return v;
     }
 
@@ -136,13 +140,13 @@ public class StoreAppointFragment extends ListFragment {
                     String name = session.getString("user_account");
                     int number = session.getInt("number");
                     int promotion_id = session.getInt("promotion_id");
+                    String url = session.getString("user_picture_url");
                     Date due_time = stringToDate(session.getString("due_time"),DateFormat);
                     if(due_time != null)
                         Log.d("Session",Long.toString(due_time.getTime()));
-                    ReservationInfo info = new ReservationInfo(id,name,number,due_time.getTime(),promotion_id);
+                    ReservationInfo info = new ReservationInfo(id,name,number,due_time.getTime(),promotion_id,url);
                     infos.add(info);
                 }
-                Log.d("Session","Refresh "+Integer.toString(sessions.length()));
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -154,11 +158,44 @@ public class StoreAppointFragment extends ListFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            list.clear();
-            for(int i=0;i<infos.size();i++)
-                list.add(infos.get(i));
-            Log.d("Session","Refresh "+Integer.toString(list.size()));
-            adapter.notifyDataSetChanged();
+            final List<Thread> threadList = new ArrayList<>();
+            for(int i=0;i<infos.size();i++) {
+                final ReservationInfo info = infos.get(i);
+                Bitmap image = null;
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Bitmap mIcon = null;
+                        try {
+                            InputStream in = new java.net.URL(info.url).openStream();
+                            mIcon = BitmapFactory.decodeStream(in);
+                        } catch (Exception e) {
+                            Log.e("Error", e.getMessage());
+                        }
+                        info.picture = mIcon;
+                        Log.e("picture", info.name + " get picture!");
+                    }
+                });
+                threadList.add(t);
+            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for(int i=0;i<threadList.size();i++)
+                        threadList.get(i).start();
+                    for(int i=0;i<threadList.size();i++) {
+                        try {
+                            threadList.get(i).join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    list.clear();
+                    for(int i=0;i<infos.size();i++)
+                        list.add(infos.get(i));
+                    Log.d("Session","Refresh "+Integer.toString(list.size()));
+                }
+            }).start();
         }
     }
     private Date stringToDate(String aDate, String aFormat) {
