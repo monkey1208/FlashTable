@@ -63,15 +63,11 @@ public class CustomerCouponRecordFragment extends Fragment {
 
         lv_records = (ListView) view.findViewById(R.id.customer_coupon_lv_records);
         records = new ArrayList<>();
-        CustomerCouponRecordInfo info = new CustomerCouponRecordInfo();
-        info.name = "hi";
-        info.time = "2017/5/29 11:10";
-        info.points = 100;
-        records.add(info);
         adapter = new CustomerCouponRecordAdapter(getActivity(), records);
         lv_records.setAdapter(adapter);
 
-        new ApiRecords().execute(userID);
+        if (position == 1) new ApiRedeemRecords().execute(userID);
+        else new ApiGetRecords().execute(userID);
     }
 
     private void getUserInfo() {
@@ -85,7 +81,7 @@ public class CustomerCouponRecordFragment extends Fragment {
         lv_records.setAdapter(adapter);
     }
 
-    private class ApiRecords extends AsyncTask<String, Void, Void> {
+    private class ApiRedeemRecords extends AsyncTask<String, Void, Void> {
 
         @Override
         protected Void doInBackground(String ...value) {
@@ -107,11 +103,57 @@ public class CustomerCouponRecordFragment extends Fragment {
                     System.out.println("record: " + jsonObject1.toString());
                     CustomerCouponRecordInfo info = new CustomerCouponRecordInfo();
                     info.name = jsonObject1.getString("name");
+                    info.type = 1;
                     info.code_id = jsonObject1.getString("code_id");
                     info.points = jsonObject1.getInt("flash_point");
                     info.time = jsonObject1.getString("redeem_time");
 
                     records.add(info);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void params) {
+
+            //get record list
+            updateRecords();
+        }
+    }
+
+    private class ApiGetRecords extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String ...value) {
+            NameValuePair user = new BasicNameValuePair("user_id", value[0]);
+            NameValuePair param = new BasicNameValuePair("verbose", "1");
+            HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_records?"
+                    + user.toString() + "&"+ param.toString());
+            httpGet.addHeader("Content-Type", "application/json");
+            try {
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpResponse httpResponse = httpClient.execute(httpGet);
+                ResponseHandler<String> handler = new BasicResponseHandler();
+                String json = handler.handleResponse(httpResponse);
+                System.out.println("records : "+json);
+                JSONArray jsonArray = new JSONArray(json);
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                for(int i = 1; i <= jsonObject.getInt("size"); i++) {
+                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                    System.out.println("record: " + jsonObject1.toString());
+                    CustomerCouponRecordInfo info = new CustomerCouponRecordInfo();
+                    info.name = jsonObject1.getString("promotion_name");
+                    info.code_id = jsonObject1.getString("promotion_id");
+                    info.points = jsonObject1.getInt("delta_flash_point");
+                    info.time = jsonObject1.getString("created_at");
+                    info.type = 0;
+
+                    if (info.points > 0) records.add(info);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
