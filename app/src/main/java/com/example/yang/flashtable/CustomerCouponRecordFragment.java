@@ -102,7 +102,7 @@ public class CustomerCouponRecordFragment extends Fragment {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                     System.out.println("record: " + jsonObject1.toString());
                     CustomerCouponRecordInfo info = new CustomerCouponRecordInfo();
-                    info.name = jsonObject1.getString("name");
+                    info.name = "已成功兌換" + jsonObject1.getString("name");
                     info.type = 1;
                     info.code_id = jsonObject1.getString("code_id");
                     info.points = jsonObject1.getInt("flash_point");
@@ -147,7 +147,8 @@ public class CustomerCouponRecordFragment extends Fragment {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                     System.out.println("record: " + jsonObject1.toString());
                     CustomerCouponRecordInfo info = new CustomerCouponRecordInfo();
-                    info.name = jsonObject1.getString("promotion_name");
+                    info.name = "已成功在" + jsonObject1.getString("shop_name")
+                            + "領取" + jsonObject1.getString("number") + "人桌位";
                     info.code_id = jsonObject1.getString("promotion_id");
                     info.points = jsonObject1.getInt("delta_flash_point");
                     info.time = jsonObject1.getString("created_at");

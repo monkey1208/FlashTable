@@ -86,7 +86,7 @@
         app:stl_overlineColor="#4D000000"
         app:stl_overlineThickness="0dp"
         app:stl_underlineColor="@color/lightgray"
-        app:stl_underlineThickness="2dp"
+        app:stl_underlineThickness="3dp"
         app:stl_dividerColor="@color/lightgray"
         app:stl_dividerThickness="0dp"
         app:stl_defaultTabBackground="?attr/selectableItemBackground"
