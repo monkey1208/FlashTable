@@ -20,7 +20,7 @@ public class CustomerCouponRecordAdapter extends BaseAdapter {
     private Context context;
     List<CustomerCouponRecordInfo> records;
 
-    TextView tv_description, tv_time, tv_points;
+    TextView tv_description, tv_time, tv_points, tv_plus;
 
     public CustomerCouponRecordAdapter(Context _context, List<CustomerCouponRecordInfo> _records) {
         inflater = LayoutInflater.from(_context);
@@ -44,6 +44,7 @@ public class CustomerCouponRecordAdapter extends BaseAdapter {
             tv_description = (TextView) convertView.findViewById(R.id.customer_coupon_tv_records_description);
             tv_time = (TextView) convertView.findViewById(R.id.customer_coupon_tv_records_time);
             tv_points = (TextView) convertView.findViewById(R.id.customer_coupon_tv_records_points);
+            tv_plus = (TextView) convertView.findViewById(R.id.customer_coupon_tv_records_plus);
             setView(position);
         }
         return convertView;
@@ -54,6 +55,8 @@ public class CustomerCouponRecordAdapter extends BaseAdapter {
         tv_description.setText(info.name);
         tv_time.setText(info.time);
         tv_points.setText(String.valueOf(info.points));
+        if (info.type == 1) tv_plus.setText("-");
+        else tv_plus.setText("+");
     }
 
 
