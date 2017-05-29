@@ -92,7 +92,7 @@ public class CustomerCouponRecordFragment extends Fragment {
             NameValuePair user = new BasicNameValuePair("user_id", value[0]);
             NameValuePair param = new BasicNameValuePair("verbose", "1");
             HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_codes?"
-                    + user.toString() + ","+ param.toString());
+                    + user.toString() + "&"+ param.toString());
             httpGet.addHeader("Content-Type", "application/json");
             try {
                 HttpClient httpClient = new DefaultHttpClient();
@@ -109,7 +109,7 @@ public class CustomerCouponRecordFragment extends Fragment {
                     info.name = jsonObject1.getString("name");
                     info.code_id = jsonObject1.getString("code_id");
                     info.points = jsonObject1.getInt("flash_point");
-                    info.time = jsonObject1.getString("tutorial");
+                    info.time = jsonObject1.getString("redeem_time");
 
                     records.add(info);
                 }
