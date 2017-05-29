@@ -453,8 +453,11 @@ public class CustomerParentMainFragment extends Fragment {
         protected void onPostExecute(String s) {
             closeDB();
             CustomerAppInfo.getInstance().setRestaurantList(restaurantInfoList);
-            progress_dialog.dismiss();
-            navigate("main");
+
+            if (!CustomerParentMainFragment.this.isDetached()) {
+                navigate("main");
+                if (progress_dialog.isShowing()) progress_dialog.dismiss();
+            }
             super.onPostExecute(s);
         }
 

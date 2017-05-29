@@ -52,7 +52,7 @@ public class DialogBuilder {
             @Override
             public void onClick(View view) {
                 int persons = Integer.parseInt(tv_persons.getText().toString());
-                persons += 1;
+                if (persons < 15) persons += 1;
                 tv_persons.setText(Integer.toString(persons));
             }
         };

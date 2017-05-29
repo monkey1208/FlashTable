@@ -418,7 +418,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             request_id = s;
             new ApiRequestSuccess(request_id).execute();
-            startCountDown("waiting", 60000);
+            startCountDown("waiting", 120000);
             super.onPostExecute(s);
         }
 

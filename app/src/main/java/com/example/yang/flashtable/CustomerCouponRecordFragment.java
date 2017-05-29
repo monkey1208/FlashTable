@@ -1,6 +1,7 @@
 package com.example.yang.flashtable;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,11 +34,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by CS on 2017/5/29.
  */
 
 public class CustomerCouponRecordFragment extends Fragment {
+    SharedPreferences user;
+    String userID, username;
+
     ListView lv_records;
     List<CustomerCouponRecordInfo> records;
     CustomerCouponRecordAdapter adapter;
@@ -46,6 +52,7 @@ public class CustomerCouponRecordFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        getUserInfo();
         return inflater.inflate(R.layout.customer_coupon_record_fragment, container, false);
     }
 
@@ -63,6 +70,14 @@ public class CustomerCouponRecordFragment extends Fragment {
         records.add(info);
         adapter = new CustomerCouponRecordAdapter(getActivity(), records);
         lv_records.setAdapter(adapter);
+
+        new ApiRecords().execute(userID);
+    }
+
+    private void getUserInfo() {
+        user = this.getActivity().getSharedPreferences("USER", MODE_PRIVATE);
+        userID = user.getString("userID", "");
+        username = user.getString("username", "");
     }
 
     public void updateRecords() {
@@ -76,7 +91,8 @@ public class CustomerCouponRecordFragment extends Fragment {
         protected Void doInBackground(String ...value) {
             NameValuePair user = new BasicNameValuePair("user_id", value[0]);
             NameValuePair param = new BasicNameValuePair("verbose", "1");
-            HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_codes?" + user.toString() + param.toString());
+            HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_codes?"
+                    + user.toString() + ","+ param.toString());
             httpGet.addHeader("Content-Type", "application/json");
             try {
                 HttpClient httpClient = new DefaultHttpClient();
@@ -88,6 +104,7 @@ public class CustomerCouponRecordFragment extends Fragment {
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 for(int i = 1; i <= jsonObject.getInt("size"); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                    System.out.println("record: " + jsonObject1.toString());
                     CustomerCouponRecordInfo info = new CustomerCouponRecordInfo();
                     info.name = jsonObject1.getString("name");
                     info.code_id = jsonObject1.getString("code_id");
