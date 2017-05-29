@@ -66,6 +66,8 @@ public class CustomerParentMainFragment extends Fragment {
     Location my_location;
     LocationManager locationManager;
 
+    ProgressDialog progress_dialog;
+
     final int FINE_LOCATION_CODE = 13;
 
     @Nullable
@@ -107,6 +109,9 @@ public class CustomerParentMainFragment extends Fragment {
         sort_adapter.setDropDownViewResource(R.layout.customer_main_spinner_dropdown_item);
         sp_sort.setAdapter(sort_adapter);
 
+        progress_dialog = new ProgressDialog(view.getContext());
+        progress_dialog.setMessage("載入中...");
+        progress_dialog.show();
         setSpinner();
         gpsPermission();
         ib_search.setOnClickListener(new View.OnClickListener() {
@@ -285,13 +290,26 @@ public class CustomerParentMainFragment extends Fragment {
     }
 
     private void locationPermission() {
-        startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), CustomerMainActivity.LOCATION_SETTING_CODE);
+        new DialogBuilder(getActivity()).dialogEvent(getString(R.string.dialog_gps_permission), "withCancel", new DialogEventListener() {
+            @Override
+            public void clickEvent(boolean ok, int status) {
+                if(!ok) {
+                    ((CustomerMainActivity)getActivity()).logout();
+                }else{
+                    startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), CustomerMainActivity.LOCATION_SETTING_CODE);
+                }
+            }
+        });
     }
 
     private class CurrentLocation {
         boolean flag = true;
         public void execute() {
-            Location location = getLocation();
+            getLocation();
+
+        }
+
+        public void setLocation(Location location){
             if (location != null) {
                 my_location = location;
                 CustomerAppInfo.getInstance().setLocation(my_location);
@@ -305,7 +323,7 @@ public class CustomerParentMainFragment extends Fragment {
             }
         }
 
-        public Location getLocation() {
+        public void getLocation() {
             Location location = null;
             try {
                 locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
@@ -321,18 +339,18 @@ public class CustomerParentMainFragment extends Fragment {
                 if (!isGPSEnabled && !isNetworkEnabled) {
                     // no network provider is enabled
                     flag = false;
-                    return null;
+                    setLocation(null);
                 } else {
                     if (isNetworkEnabled) {
                         locationManager.requestLocationUpdates(
                                 LocationManager.NETWORK_PROVIDER,
-                                0,
+                                500,
                                 0, listener);
                         Log.d("Network", "Network Enabled");
                         if (locationManager != null) {
                             if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-                                return null;
+                                setLocation(null);
                             }
                             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
@@ -343,7 +361,7 @@ public class CustomerParentMainFragment extends Fragment {
                         if (location == null) {
                             locationManager.requestLocationUpdates(
                                     LocationManager.GPS_PROVIDER,
-                                    0,
+                                    500,
                                     0, listener);
                             Log.d("GPS", "GPS Enabled");
                             if (locationManager != null) {
@@ -351,7 +369,6 @@ public class CustomerParentMainFragment extends Fragment {
                                         .getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
                             }
-                            locationManager.removeUpdates(listener);
                         }
                     }
                 }
@@ -359,19 +376,22 @@ public class CustomerParentMainFragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return location;
+            if(location != null){
+                setLocation(location);
+            }
         }
 
         LocationListener listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 Log.d("CurrentLocationUpdate", location.getLatitude() + "," + location.getLongitude());
-
-                //locationManager.removeUpdates(this);
+                setLocation(location);
+                locationManager.removeUpdates(this);
             }
 
             @Override
             public void onStatusChanged(String s, int i, Bundle bundle) {
+                Log.d("ParentMainFragment" ,"status changed to "+s);
             }
 
             @Override
@@ -388,16 +408,11 @@ public class CustomerParentMainFragment extends Fragment {
         SqlHandler sqlHandler;
         HttpClient httpClient = new DefaultHttpClient();
         ArrayList<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
-        private ProgressDialog progress_dialog;
         private String status = null;
 
         @Override
         protected void onPreExecute() {
             openDB();
-            progress_dialog = new ProgressDialog(view.getContext());
-            progress_dialog.setMessage("載入中...");
-            progress_dialog.show();
-
         }
         @Override
         protected String doInBackground(Double... params) {
@@ -423,6 +438,7 @@ public class CustomerParentMainFragment extends Fragment {
                     if (!status.equals("0")) break;
                     shop_rating = responseShopRating.getJSONObject(0).getString("average_score");
                 } catch (Exception e) {
+                    publishProgress();
                     shop_rating = "0";
                 }
                 info.rating = Float.parseFloat(shop_rating) / 2;
@@ -440,6 +456,16 @@ public class CustomerParentMainFragment extends Fragment {
             progress_dialog.dismiss();
             navigate("main");
             super.onPostExecute(s);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            new DialogBuilder(getActivity()).dialogEvent(getString(R.string.dialog_network_unable), "normal", new DialogEventListener() {
+                @Override
+                public void clickEvent(boolean ok, int status) {
+
+                }
+            });
         }
 
         private ArrayList<Description> getPromotionId(String latlng){
@@ -479,6 +505,7 @@ public class CustomerParentMainFragment extends Fragment {
                 }
                 Log.d("PromotionAPI", json);
             } catch (IOException e) {
+                publishProgress();
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();

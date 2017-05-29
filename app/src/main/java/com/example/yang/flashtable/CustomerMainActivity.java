@@ -187,7 +187,7 @@ public class CustomerMainActivity extends AppCompatActivity
         }
     }
 
-    private void logout() {
+    public void logout() {
         SharedPreferences preferences = this.getSharedPreferences("USER", MODE_PRIVATE);
         preferences.edit().clear().apply();
         Intent intent = new Intent(CustomerMainActivity.this, LoginActivity.class);

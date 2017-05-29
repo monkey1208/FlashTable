@@ -19,6 +19,8 @@
     <string name="dialog_restaurant_cancel_reservation">餐廳已取消你的訂位</string>
     <string name="dialog_restaurant_no_response">店家無回應</string>
     <string name="dialog_loading_data_fail">資料載入失敗，請重試</string>
+    <string name="dialog_network_unable">網路連線失敗，請檢查你的網路</string>
+    <string name="dialog_gps_permission">您需要允許裝置使用定位服務才可以搜尋自己附近的餐廳喔！</string>
 
     <!-- Strings related to login -->
     <string name="login_as_customer">一般用戶登入</string>

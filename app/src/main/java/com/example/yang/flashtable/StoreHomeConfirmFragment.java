@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -45,6 +46,8 @@ public class StoreHomeConfirmFragment extends Fragment {
         String due_time_str = sdf.format(due_time_date);
         Log.d("Session",id);
         View v = inflater.inflate(R.layout.store_home_confirm_fragment, container, false);
+        LinearLayout ll_user_info = (LinearLayout) v.findViewById(R.id.store_home_confirm_fragment_ll_info);
+        ll_user_info.setPadding(0, getStatusBarHeight(), 0, 0);
         tv_name = (TextView)v.findViewById(R.id.tv_name);
         tv_name.setText(name);
         tv_number = (TextView)v.findViewById(R.id.tv_number);
@@ -75,5 +78,14 @@ public class StoreHomeConfirmFragment extends Fragment {
             }
         });
         return v;
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }

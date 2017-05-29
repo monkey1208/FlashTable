@@ -12,9 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -36,7 +34,7 @@ public class StoreManageRecordFragment extends ListFragment {
     SharedPreferences store;
     String shop_id;
     public static StoreManageRecordAdapter adapter;
-    public static List<ReservationInfo> list =  new ArrayList<>();
+    public static List<ReservationInfo> list;
 
     public StoreManageRecordFragment() {
         // Required empty public constructor
@@ -52,16 +50,10 @@ public class StoreManageRecordFragment extends ListFragment {
         final View v = inflater.inflate(R.layout.store_manage_record_fragment, container, false);
 
         getStoreInfo();
-        new APIRecordDetail().execute();
+        list =  new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
         adapter = new StoreManageRecordAdapter(getActivity(), list);
         setListAdapter(adapter);
-
-        ListView lv =(ListView) v.findViewById(android.R.id.list);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-            }
-        });
+        new APIRecordDetail().execute();
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_record_tb_toolbar);
         bar.setPadding(0, getStatusBarHeight(), 0, 0);
@@ -71,7 +63,7 @@ public class StoreManageRecordFragment extends ListFragment {
         bar.setNavigationIcon(d);
         bar.setNavigationOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                StoreMainActivity.fragmentController.act(FragmentController.MANAGE);
+                StoreMainActivity.fragmentController.act(StoreMainActivity.fragmentController.get_prev_fragment());
             }
         });
 
@@ -80,8 +72,18 @@ public class StoreManageRecordFragment extends ListFragment {
     }
 
     public void onListItemClick(ListView l, View v, int position, long id) {
-        //To each record detail
-        Toast.makeText(getContext(), "Jump to page ", Toast.LENGTH_SHORT).show();
+        Bundle content = new Bundle();
+        ReservationInfo info = list.get(position);
+        content.putString("id", String.valueOf(info.id));
+        content.putString("name", info.name);
+        content.putString("number", String.valueOf(info.number));
+        content.putString("point", String.valueOf(info.point));
+        content.putString("record_time", info.record_time);
+        content.putString("is_succ", info.is_succ);
+        content.putString("image_url", info.get_Image_Url());
+        content.putString("promotion_name", info.promotion_name);
+        content.putString("promotion_des", info.promotion_des);
+        StoreMainActivity.fragmentController.sendBundle(content, FragmentController.MANAGE_RECORD_INFO);
     }
 
     public int getStatusBarHeight() {
@@ -100,11 +102,11 @@ public class StoreManageRecordFragment extends ListFragment {
 
     private class APIRecordDetail extends AsyncTask<String, Void, Void> {
         boolean new_record_flag = true;
+        List<ReservationInfo> tmp_list = new ArrayList<>();
         @Override
         protected Void doInBackground(String...params) {
-            list.clear();
-            list.addAll(StoreMainActivity.storeInfo.getRecordList());
-            int origin_size = list.size();
+            tmp_list.addAll(StoreMainActivity.storeInfo.getRecordList());
+            int origin_size = tmp_list.size();
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet getRecordsInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ shop_id+"&verbose=1");
@@ -119,14 +121,18 @@ public class StoreManageRecordFragment extends ListFragment {
                     String is_success = recordInfo.getString("is_succ");
                     String account = recordInfo.getString("user_account");
                     int point = recordInfo.getInt("user_point");
+                    String url = recordInfo.getString("user_picture_url");
+                    String promotion_name = recordInfo.getString("promotion_name");
+                    String promotion_des = recordInfo.getString("promotion_description");
 
                     String time = recordInfo.getString("created_at");
                     DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
                     Date date =  df.parse(time);
-                    df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.getDefault());
+                    df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
                     time = df.format(date);
-                    final ReservationInfo info = new ReservationInfo(account, num, point, time, is_success);
-                    list.add(info);
+
+                    final ReservationInfo info = new ReservationInfo(account, num, point, time, is_success, url, promotion_name, promotion_des);
+                    tmp_list.add(info);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -136,6 +142,8 @@ public class StoreManageRecordFragment extends ListFragment {
         @Override
         protected void onPostExecute(Void _params){
             if(new_record_flag) {
+                list.clear();
+                list.addAll(tmp_list);
                 adapter.notifyDataSetChanged();
                 Log.e("record", "update");
                 StoreMainActivity.storeInfo.setRecordList(list);
@@ -148,7 +156,6 @@ public class StoreManageRecordFragment extends ListFragment {
                 }
                 StoreMainActivity.storeInfo.setSuccess_record_num(sum);
             }else{
-                adapter.notifyDataSetChanged();
                 Log.e("record", "remain");
             }
         }
