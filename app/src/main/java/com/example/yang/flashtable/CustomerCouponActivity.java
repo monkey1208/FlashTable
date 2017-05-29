@@ -210,7 +210,7 @@ public class CustomerCouponActivity extends AppCompatActivity {
                         }
                     }
                 };
-                dialog_builder.dialogEvent("恭喜成功兌換好禮！是否前往歷史紀錄查看好禮序號？", "withCancel", null);
+                dialog_builder.dialogEvent("恭喜成功兌換好禮！是否前往歷史紀錄查看好禮序號？", "withCancel", success_listener);
             }
             else if (status.equals("-3"))
                 dialog_builder.dialogEvent("您的FLASH Points點數不足", "normal", null);
