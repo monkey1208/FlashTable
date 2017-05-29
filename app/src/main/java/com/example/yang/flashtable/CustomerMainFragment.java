@@ -69,7 +69,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
     CustomerMainAdapter adjusted_adapter;
     SqlHandler sqlHandler = null;
 
-
+    ApiPromotion apiPromotion;
     // Location
 
     Location my_location;
@@ -133,11 +133,12 @@ public class CustomerMainFragment extends Fragment implements Observer {
     }
 
     private void setRefreshLayout() {
+        apiPromotion = new ApiPromotion();
         swipe_refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 my_location = CustomerAppInfo.getInstance().getLocation();
-                new ApiPromotion().execute(my_location.getLatitude(), my_location.getLongitude());
+                apiPromotion.execute(my_location.getLatitude(), my_location.getLongitude());
             }
         });
     }
@@ -307,6 +308,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
     @Override
     public void onDestroy() {
         CustomerObservable.getInstance().deleteObserver(this);
+        apiPromotion.cancel(true);
         super.onDestroy();
     }
 
@@ -354,8 +356,12 @@ public class CustomerMainFragment extends Fragment implements Observer {
             String lng = String.valueOf(params[1]);
             String latlng = lat + "," + lng;//need current location
             Log.d("APIPromotion", "latlng = "+latlng);
+            if(isCancelled())
+                return null;
             ArrayList<Description> list = getPromotionId(latlng);
             for(int i = 0; i < list.size(); i++) {
+                if(isCancelled())
+                    return null;
                 CustomerRestaurantInfo info = sqlHandler.getDetail(list.get(i).shop_id);
                 info.id = list.get(i).shop_id;
                 info.discount = list.get(i).discount;
@@ -365,6 +371,8 @@ public class CustomerMainFragment extends Fragment implements Observer {
 
                 String shop_rating;
                 try {
+                    if(isCancelled())
+                        return null;
                     HttpGet requestShopRating = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + list.get(i).shop_id);
                     requestShopRating.addHeader("Content-Type", "application/json");
                     JSONArray responseShopRating = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(requestShopRating)));
@@ -398,6 +406,8 @@ public class CustomerMainFragment extends Fragment implements Observer {
             ArrayList<Description> list = new ArrayList<>();
             NameValuePair nameValuePair = new BasicNameValuePair("location", latlng);
             String s = nameValuePair.toString();
+            if(isCancelled())
+                return null;
             HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/surrounding_promotions"+"?"+s);
             request.addHeader("Content-Type", "application/json");
             try {
@@ -415,6 +425,8 @@ public class CustomerMainFragment extends Fragment implements Observer {
                         nameValuePair = null;
                         nameValuePair = new BasicNameValuePair("promotion_id", id);
                         s = nameValuePair.toString();
+                        if(isCancelled())
+                            return null;
                         request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/promotion_info"+"?"+s);
                         request.addHeader("Content-Type", "application/json");
                         http_response = httpClient.execute(request);
