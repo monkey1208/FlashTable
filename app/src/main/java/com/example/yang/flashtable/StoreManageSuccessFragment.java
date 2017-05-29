@@ -81,11 +81,9 @@ public class StoreManageSuccessFragment extends Fragment {
         tv_fail = (TextView)v.findViewById(R.id.store_manage_success_tv_fail);
         tv_success = (TextView)v.findViewById(R.id.store_manage_success_tv_success);
 
-        //DecimalFormat df2 = new DecimalFormat(".##");
         int total =  StoreMainActivity.storeInfo.getRecordList().size();
         int success_num = StoreMainActivity.storeInfo.getSuccess_record_num();
 
-        //tv_rate.setText(total==0? "0" : df2.format((success_num+0.0)/total * 100));
         tv_rate.setText(total==0? "0" : String.valueOf((int)((success_num+0.0)/total * 100)));
         tv_total.setText(String.valueOf(total));
         tv_fail.setText(String.valueOf(total - success_num));
@@ -98,6 +96,7 @@ public class StoreManageSuccessFragment extends Fragment {
         int sum = 0, new_size;
         List<ReservationInfo> list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
         boolean new_records_flag = true;
+        boolean exception = false;
         @Override
         protected Void doInBackground(Object... params) {
             int origin_size = list.size();
@@ -115,19 +114,24 @@ public class StoreManageSuccessFragment extends Fragment {
                     Log.e("record", "update");
                     JSONObject recordInfo = recordsInfo.getJSONObject(i);
                     int num = recordInfo.getInt("number");
+                    int id = recordInfo.getInt("record_id");
                     String is_success = recordInfo.getString("is_succ");
                     String account = recordInfo.getString("user_account");
                     int point = recordInfo.getInt("user_point");
+                    String url = recordInfo.getString("user_picture_url");
+                    String promotion_name = recordInfo.getString("promotion_name");
+                    String promotion_des = recordInfo.getString("promotion_description");
 
                     String time = recordInfo.getString("created_at");
                     DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
                     Date date =  df.parse(time);
-                    df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.getDefault());
+                    df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
                     time = df.format(date);
-                    ReservationInfo info = new ReservationInfo(account, num, point, time, is_success);
+                    ReservationInfo info = new ReservationInfo(account, num, point, time, is_success, url, promotion_name, promotion_des);
                     list.add(info);
                 }
             } catch (Exception e) {
+                exception = true;
                 e.printStackTrace();
             }
             return null;
@@ -135,22 +139,26 @@ public class StoreManageSuccessFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void _params){
-            if(new_records_flag || !was_browsed){
-                Log.e("success", "refresh");
-                StoreMainActivity.storeInfo.setRecordList(list);
+            if(!exception) {
+                if (new_records_flag || !was_browsed) {
+                    Log.e("success", "refresh");
+                    StoreMainActivity.storeInfo.setRecordList(list);
 
-                for (int i = 0; i < list.size(); i++) {
-                    String is_success = list.get(i).is_succ;
-                    if(is_success.equals("true")){
-                        sum += 1;
+                    for (int i = 0; i < list.size(); i++) {
+                        String is_success = list.get(i).is_succ;
+                        if (is_success.equals("true")) {
+                            sum += 1;
+                        }
                     }
+                    DecimalFormat df2 = new DecimalFormat(".##");
+                    tv_rate.setText(df2.format((sum + 0.0) / list.size() * 100));
+                    tv_total.setText(String.valueOf(list.size()));
+                    tv_fail.setText(String.valueOf(list.size() - sum));
+                    tv_success.setText(String.valueOf(sum));
+                    StoreMainActivity.storeInfo.setSuccess_record_num(sum);
                 }
-                DecimalFormat df2 = new DecimalFormat(".##");
-                tv_rate.setText(df2.format((sum + 0.0) / list.size() * 100));
-                tv_total.setText(String.valueOf(list.size()));
-                tv_fail.setText(String.valueOf(list.size() - sum));
-                tv_success.setText(String.valueOf(sum));
-                StoreMainActivity.storeInfo.setSuccess_record_num(sum);
+            }else{
+                new AlertDialogController().warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
             }
         }
     }

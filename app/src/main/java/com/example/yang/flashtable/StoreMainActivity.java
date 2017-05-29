@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -41,6 +42,8 @@ public class StoreMainActivity extends AppCompatActivity{
         fragmentController.act(APPOINT);
         fragmentController.act(current_stat);
         init_bt_button();
+        Log.d("MainActivity","done");
+
     }
 
     private void getStoreInfo() {

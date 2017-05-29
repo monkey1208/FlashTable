@@ -23,24 +23,19 @@ import java.util.List;
  */
 
 public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
-    private Context c;
     private LayoutInflater inflater;
 
-    List objects;
+
     DialogBuilder dialog_builder;
     ImageView iv_shop;
     TextView tv_shop, tv_price, tv_distance, tv_discount, tv_gift;
     RatingBar rb_rating;
     Location current_location;
 
-    public CustomerMainAdapter(Context context, List _objects, LatLng current_latlng) {
+    public CustomerMainAdapter(Context context, List _objects, Location location) {
         super(context, R.layout.customer_main_item, _objects);
-        objects = _objects;
-        c = context;
         inflater = LayoutInflater.from(context);
-        this.current_location = new Location("");
-        current_location.setLatitude(current_latlng.latitude);
-        current_location.setLongitude(current_latlng.longitude);
+        this.current_location = location;
     }
 
     @NonNull

@@ -16,6 +16,7 @@ public class StoreInfo {
 
     private List<ReservationInfo> recordList;
     private int success_record_num;
+    private int contract_fee;
 
     public StoreInfo(){};
     public StoreInfo(String n,String a,String url){
@@ -53,6 +54,13 @@ public class StoreInfo {
 
     public void  setSuccess_record_num(int num){
         this.success_record_num = num;
+    }
+
+    void setContract_fee(int fee){
+        this.contract_fee = fee;
+    }
+    int getContract_fee(){
+        return contract_fee;
     }
 
 }

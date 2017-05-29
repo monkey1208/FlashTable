@@ -18,7 +18,9 @@
     <string name="dialog_restaurant_refuse_reservation">餐廳已拒絕你的訂位</string>
     <string name="dialog_restaurant_cancel_reservation">餐廳已取消你的訂位</string>
     <string name="dialog_restaurant_no_response">店家無回應</string>
-
+    <string name="dialog_loading_data_fail">資料載入失敗，請重試</string>
+    <string name="dialog_network_unable">網路連線失敗，請檢查你的網路</string>
+    <string name="dialog_gps_permission">您需要允許裝置使用定位服務才可以搜尋自己附近的餐廳喔！</string>
 
     <!-- Strings related to login -->
     <string name="login_as_customer">一般用戶登入</string>
@@ -39,6 +41,9 @@
 
     <!-- Strings related to alert -->
     <string name="alert_title">提醒</string>
+
+    <!-- String related to customer info -->
+    <string name="customer_profile_pic">/flashCroppedAvatar.png</string>
 
     <!-- Strings related to customer register -->
     <string name="customer_register_title">一般帳號資料填寫：</string>
@@ -108,6 +113,7 @@
         <item>依折扣</item>
     </string-array>
     <string-array name="customer_sp_distance">
+        <item>全部</item>
         <item>距離&lt;0.5km</item>
         <item>距離&lt;1km</item>
         <item>距離&lt;1.5km</item>
@@ -197,6 +203,8 @@
     <!-- Strings related to customer search -->
     <string name="customer_search_title">搜尋餐廳</string>
     <string name="customer_search_hint">請輸入搜尋餐廳</string>
+    <string name="customer_search_result_1">已找到</string>
+    <string name="customer_search_result_2">筆相關資料</string>
 
     <!-- Strings related to customer credits -->
     <string name="customer_credit_about">信譽分數介紹</string>

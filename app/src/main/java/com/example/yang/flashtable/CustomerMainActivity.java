@@ -5,13 +5,9 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,18 +15,35 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.example.yang.flashtable.customer.CustomerFlashPointFragment;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
-    private FloatingActionButton fab_map;
     private Fragment fragment;
-    private boolean map_showing;
     private NavigationView nv_view;
     public final int COARSE_PERMISSION_CODE = 11;
     public final int FINE_LOCATION_MAP_CODE = 12;
@@ -43,7 +56,6 @@ public class CustomerMainActivity extends AppCompatActivity
         setContentView(R.layout.customer_main_activity);
         initView();
         initData();
-        checkBlock();
     }
 
     private void initView() {
@@ -53,20 +65,15 @@ public class CustomerMainActivity extends AppCompatActivity
 
     private void initData() {
         setDrawer();
-        setMapButton();
         navigate("main");
         nv_view.getMenu().getItem(0).setChecked(true);
-        map_showing = false;
     }
 
     // Change setFragment to navigate for more general-purposed naming
     private void navigate(String input){
         switch (input){
             case "main":
-                fab_map.setVisibility(View.VISIBLE);
-                fragment = new CustomerMainFragment();
-                map_showing = false;
-                fab_map.setImageResource(R.drawable.ic_float_map);
+                fragment = new CustomerParentMainFragment();
                 break;
             case "detail":
                 // TODO: Handle checked item properly.
@@ -74,14 +81,10 @@ public class CustomerMainActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case "profile":
-                fab_map.setVisibility(View.GONE);
                 fragment = new CustomerProfileFragment();
                 break;
-            case "map":
-                fab_map.setVisibility(View.VISIBLE);
-                fragment = new CustomerMapFragment();
-                map_showing = true;
-                fab_map.setImageResource(R.drawable.ic_float_back);
+            case "points":
+                fragment = new CustomerFlashPointFragment();
                 break;
             default:
                 break;
@@ -89,20 +92,7 @@ public class CustomerMainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.customer_frame, fragment).commit();
     }
-    private void setMapButton(){
-        fab_map = (FloatingActionButton) findViewById(R.id.customer_fab_map);
-        fab_map.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!map_showing) {
-                    navigate("map");
-                } else {
-                    navigate("main");
-                }
-            }
-        });
-        fab_map.setImageResource(R.drawable.ic_float_map);
-    }
+
     private void setDrawer(){
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, null, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -118,13 +108,6 @@ public class CustomerMainActivity extends AppCompatActivity
         });
         nv_view = (NavigationView) findViewById(R.id.nav_view);
         nv_view.setNavigationItemSelectedListener(this);
-    }
-    private void checkBlock(){
-        if(CustomerReservationActivity.GetBlockInfo.getBlockStatus(this)){
-            //Go to block page
-            Intent intent = new Intent(this, CustomerReservationActivity.class);
-            startActivity(intent);
-        }
     }
 
     @Override
@@ -172,6 +155,8 @@ public class CustomerMainActivity extends AppCompatActivity
             navigate("detail");
         } else if (id == R.id.customer_drawer_profile) {
             navigate("profile");
+        } else if (id == R.id.customer_drawer_points) {
+            navigate("points");
         } else if (id == R.id.customer_drawer_logout) {
             logout();
         }
@@ -196,9 +181,9 @@ public class CustomerMainActivity extends AppCompatActivity
                 break;
             case FINE_LOCATION_MAIN_CODE :
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    ((CustomerMainFragment)fragment).getShopStatus(true);
+                    ((CustomerParentMainFragment)fragment).getShopStatus(true);
                 } else {
-                    ((CustomerMainFragment)fragment).getShopStatus(false);
+                    ((CustomerParentMainFragment)fragment).getShopStatus(false);
                 }
 
             default:
@@ -206,13 +191,18 @@ public class CustomerMainActivity extends AppCompatActivity
         }
     }
 
-
-
-    private void logout() {
+    public void logout() {
         SharedPreferences preferences = this.getSharedPreferences("USER", MODE_PRIVATE);
         preferences.edit().clear().apply();
         Intent intent = new Intent(CustomerMainActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+
+
+    private String getUserId(){
+        SharedPreferences preferences = getSharedPreferences("USER", MODE_PRIVATE);
+        return preferences.getString("userID", "");
     }
 }

@@ -22,9 +22,11 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.yang.flashtable.AlertDialogController.LOGOUT;
@@ -51,6 +53,7 @@ public class StoreManageFragment extends ListFragment {
         setListAdapter(adapter);
 
         getStoreInfo();
+        new StoreContractFee().execute();
         new APIFirstRecordDetail().execute();
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_tb_toolbar);
@@ -68,6 +71,9 @@ public class StoreManageFragment extends ListFragment {
     }
 
     public void onListItemClick(ListView l, View v, int position, long id) {
+        if(itemname[position].equals("預約紀錄")){
+            StoreMainActivity.fragmentController.change_prev_fragment(FragmentController.MANAGE);
+        }
         StoreMainActivity.fragmentController.act(position+4);
     }
 
@@ -107,9 +113,38 @@ public class StoreManageFragment extends ListFragment {
         shop_id = store.getString("userID", "");
     }
 
+    private class StoreContractFee extends AsyncTask<String, Void, Void> {
+        boolean exception = false;
+        @Override
+        protected Void doInBackground(String...params) {
+            HttpClient httpClient = new DefaultHttpClient();
+            try {
+                HttpGet getShopInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_info?shop_id="+shop_id);
+                JSONObject shopInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getShopInfo)));
+                if(shopInfo.getInt("status_code") == 0){
+                    StoreMainActivity.storeInfo.setContract_fee(shopInfo.getInt("contract_fee"));
+                }else{
+                    exception = true;
+                }
+
+            } catch (Exception e) {
+                exception = true;
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void _params){
+            if(exception) {
+                new AlertDialogController().warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+            }
+        }
+    }
+
     private class APIFirstRecordDetail extends AsyncTask<String, Void, Void> {
         List<ReservationInfo> list;
         ProgressDialog pd;
+        boolean exception = false;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -131,16 +166,21 @@ public class StoreManageFragment extends ListFragment {
                     String is_success = recordInfo.getString("is_succ");
                     String account = recordInfo.getString("user_account");
                     int point = recordInfo.getInt("user_point");
+                    String url = recordInfo.getString("user_picture_url");
+                    String promotion_name = recordInfo.getString("promotion_name");
+                    String promotion_des = recordInfo.getString("promotion_description");
 
                     String time = recordInfo.getString("created_at");
                     DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
                     Date date =  df.parse(time);
-                    df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.getDefault());
+                    df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
                     time = df.format(date);
-                    final ReservationInfo info = new ReservationInfo(account, num, point, time, is_success);
+
+                    final ReservationInfo info = new ReservationInfo(account, num, point, time, is_success, url, promotion_name, promotion_des);
                     list.add(info);
                 }
             } catch (Exception e) {
+                exception = true;
                 e.printStackTrace();
             }
             return null;
@@ -150,18 +190,43 @@ public class StoreManageFragment extends ListFragment {
             if (pd != null) {
                 pd.dismiss();
             }
-            StoreMainActivity.storeInfo.setRecordList(list);
-            int sum = 0;
-            for (int i = 0; i < list.size(); i++) {
-                String is_success = list.get(i).is_succ;
-                if(is_success.equals("true")){
-                    sum += 1;
+            if(!exception) {
+                try {
+                    Calendar today = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+                    int start, end;
+                    if(today.get(Calendar.DAY_OF_MONTH) <= 15){
+                        start = 1;
+                        end = 15;
+                    }else{
+                        start = 16;
+                        end = today.getActualMaximum(Calendar.DAY_OF_MONTH);
+                    }
+                    Calendar date = Calendar.getInstance();
+                    StoreMainActivity.storeInfo.setRecordList(list);
+                    int sum = 0;
+                    int num_succ = 0; //to calculate the fee
+                    for (int i = 0; i < list.size(); i++) {
+                        String is_success = list.get(i).is_succ;
+                        if (is_success.equals("true")) {
+                            SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
+                            date.setTime(df.parse(list.get(i).record_time));
+                            if (date.get(Calendar.YEAR) == today.get(Calendar.YEAR) && date.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
+                                start <= date.get(Calendar.DAY_OF_MONTH) && date.get(Calendar.DAY_OF_MONTH) <= end) {
+                                num_succ++;
+                            }
+                            sum += 1;
+                        }
+                    }
+                    StoreMainActivity.storeInfo.setSuccess_record_num(sum);
+                    value[0] = (int) ((sum + 0.0) / list.size() * 100);
+                    value[2] = num_succ * StoreMainActivity.storeInfo.getContract_fee();
+                    adapter.notifyDataSetChanged();
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
+            }else{
+                new AlertDialogController().warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
             }
-            StoreMainActivity.storeInfo.setSuccess_record_num(sum);
-            value[0]= (int)((sum+0.0)/list.size()*100);
-            adapter.notifyDataSetChanged();
-
         }
     }
 

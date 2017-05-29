@@ -32,7 +32,7 @@ public class StoreManageCommentFragment extends ListFragment {
     DialogBuilder dialog_builder;
 
     StoreManageCommentAdapter comment_adapter;
-    List<CustomerCommentInfo> comments;
+    List<StoreCommentInfo> comments;
 
     public StoreManageCommentFragment() {
         // Required empty public constructor
@@ -96,37 +96,20 @@ public class StoreManageCommentFragment extends ListFragment {
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + params[0]);
+                HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + params[0] +"&verbose=1");
                 request.addHeader("Content-Type", "application/json");
                 JSONArray responseJSON = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
                 status = responseJSON.getJSONObject(0).getString("status_code");
                 if( status.equals("0") ) {
                     int size = Integer.parseInt( responseJSON.getJSONObject(0).getString("size") );
                     for(int i = 1 ; i <= size ; i++) {
-                        HttpGet requestInfo = new HttpGet( "https://flash-table.herokuapp.com/api/comment_info?comment_id=" + responseJSON.getJSONObject(i).getString("comment_id") );
-                        requestInfo.addHeader("Content-Type", "application/json");
-                        JSONObject responseInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestInfo) ) );
-                        status =  responseInfo.getString("status_code");
+                        JSONObject user_comment = responseJSON.getJSONObject(i);
+                        String userAccount = user_comment.getString("user_account");
+                        String body = user_comment.getString("body");
+                        String score = user_comment.getString("score");
+                        String user_picture_url = user_comment.getString("user_picture_url");
 
-                        if( !status.equals("0") )   break;
-                        String body = responseInfo.getString("body"), score = responseInfo.getString("score"), user_id = responseInfo.getString("user_id"), shop_id = responseInfo.getString("shop_id");
-
-                        // TODO: Show information that has already been received (or at least the UI).
-                        HttpGet requestUser = new HttpGet("https://flash-table.herokuapp.com/api/user_info?user_id=" + user_id);
-                        requestUser.addHeader("Content-Type", "application/json");
-                        JSONObject responseUser = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestUser) ) );
-                        status = responseUser.getString("status_code");
-                        if( !status.equals("0") )   break;
-                        String userAccount = responseUser.getString("account");
-
-                        HttpGet requestShop = new HttpGet("https://flash-table.herokuapp.com/api/shop_info?shop_id=" + shop_id);
-                        requestShop.addHeader("Content-Type", "application/json");
-                        JSONObject responseShop = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestShop) ) );
-                        status = responseShop.getString("status_code");
-
-                        if( !status.equals("0") )   break;
-                        String shopName = responseShop.getString("name");
-                        comments.add( new CustomerCommentInfo( userAccount, shopName, body, Float.parseFloat(score) / 2, Integer.parseInt(user_id), Integer.parseInt(shop_id) ) );
+                        comments.add( new StoreCommentInfo(userAccount, body, Float.parseFloat(score) / 2, user_picture_url) );
                     }
                 }
             } catch (Exception e) {

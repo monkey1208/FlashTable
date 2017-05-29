@@ -151,6 +151,7 @@ public class StoreHomeFragment extends Fragment {
             }
         });
         new APIpromotion().execute(StoreMainActivity.storeInfo.id);
+        Log.d("HomeInit","done");
         //--------------
         return v;
     }
@@ -294,6 +295,7 @@ public class StoreHomeFragment extends Fragment {
         }
 
         protected Bitmap doInBackground(String... urls) {
+            Log.d("picture","start getting picture");
             String url = urls[0];
             Bitmap mIcon = null;
             try {
@@ -301,11 +303,14 @@ public class StoreHomeFragment extends Fragment {
                 mIcon = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
                 connect_error = true;
+                Log.d("picture","fail");
                 Log.e("Error", e.getMessage());
             }
+            Log.d("picture","success");
             return mIcon;
         }
         protected void onPostExecute(Bitmap result) {
+            Log.d("picture","home picture set");
             bmImage.setImageBitmap(result);
         }
     }

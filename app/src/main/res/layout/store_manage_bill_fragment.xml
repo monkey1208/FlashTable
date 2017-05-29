@@ -104,7 +104,7 @@
         android:layout_below="@id/store_manage_bill_ll_top"
         android:background="@color/colorHalfTransparent"
         android:gravity="center"
-        android:text="TextView"
+        android:text=""
         android:textColor="@color/textColor"/>
 
     <LinearLayout
@@ -130,9 +130,10 @@
                 android:textColor="@color/textColor"/>
             <TextView
                 android:id="@+id/store_manage_bill_tv_success"
-                android:layout_width="wrap_content"
+                android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:textColor="@color/textColorOrangeDark"
                 android:text="" />
 
@@ -140,7 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="135px"
                 android:layout_marginRight="55px"
-                android:layout_weight="1"
+                android:layout_weight="1.00"
                 android:textColor="@color/textColor"
                 android:text="人" />
         </LinearLayout>
@@ -150,19 +151,23 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/colorHalfTransparent">
+
             <TextView
+                android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="55px"
-                android:paddingTop="10dp"
                 android:layout_weight="7"
+                android:paddingTop="10dp"
                 android:text="預約成交費"
-                android:textColor="@color/textColor"/>
+                android:textColor="@color/textColor" />
+
             <TextView
                 android:id="@+id/store_manage_bill_tv_money"
-                android:layout_width="wrap_content"
+                android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:textColor="@color/textColorOrangeDark"
                 android:text="" />
 
@@ -198,9 +203,10 @@
                 android:textColor="@color/textColor"/>
             <TextView
                 android:id="@+id/store_manage_bill_tv_totalmoney"
-                android:layout_width="wrap_content"
+                android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:textColor="@color/textColorOrangeDark"
                 android:text="" />
 

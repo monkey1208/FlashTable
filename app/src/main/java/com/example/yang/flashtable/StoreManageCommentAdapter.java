@@ -1,6 +1,10 @@
 package com.example.yang.flashtable;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,19 +13,22 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import java.io.InputStream;
 import java.util.List;
+
+import static com.example.yang.flashtable.R.id.store_manage_comment_iv_avatar;
 
 
 public class StoreManageCommentAdapter extends BaseAdapter{
     private LayoutInflater inflater;
     private Context context;
-    List<CustomerCommentInfo> comments;
+    private List<StoreCommentInfo> comments;
 
-    TextView tv_user, tv_shop, tv_content;
-    RatingBar rb_rating;
-    ImageView iv_avatar;
+    private TextView tv_user, tv_content;
+    private RatingBar rb_rating;
+    private ImageView iv_avatar;
 
-    public StoreManageCommentAdapter(Context _context, List<CustomerCommentInfo> _comments) {
+    public StoreManageCommentAdapter(Context _context, List<StoreCommentInfo> _comments) {
         inflater = LayoutInflater.from(_context);
         context = _context;
         comments = _comments;
@@ -29,26 +36,17 @@ public class StoreManageCommentAdapter extends BaseAdapter{
 
     @Override
     public int getCount() {
-        if(comments != null)
-            return comments.size();
-        else
-            return 0;
+        return comments.size();
     }
 
     @Override
     public Object getItem(int index) {
-        if(comments != null)
-            return comments.get(index);
-        else
-            return null;
+        return comments.get(index);
     }
 
     @Override
     public long getItemId(int position) {
-        if(comments != null)
-            return comments.indexOf(getItem(position));
-        else
-            return -1;
+        return comments.indexOf(getItem(position));
     }
 
 
@@ -59,18 +57,14 @@ public class StoreManageCommentAdapter extends BaseAdapter{
             tv_user = (TextView) convertView.findViewById(R.id.store_manage_comment_tv_user);
             tv_content = (TextView) convertView.findViewById(R.id.store_manage_comment_tv_content);
             rb_rating = (RatingBar) convertView.findViewById(R.id.store_manage_comment_rb_rating);
-            iv_avatar = (ImageView) convertView.findViewById(R.id.store_manage_comment_iv_avatar);
+            iv_avatar = (ImageView) convertView.findViewById(store_manage_comment_iv_avatar);
             setView(position);
         }
         return convertView;
     }
 
     private void setView(int position) {
-        CustomerCommentInfo comment = comments.get(position);
-        /*if (comment.shop != null) {
-            tv_shop.setText(comment.shop);
-            tv_shop.setBackgroundResource(android.R.color.transparent);
-        }*/
+        StoreCommentInfo comment = comments.get(position);
         if (comment.user != null) {
             tv_user.setText(comment.user);
             tv_user.setBackgroundResource(android.R.color.transparent);
@@ -84,5 +78,39 @@ public class StoreManageCommentAdapter extends BaseAdapter{
             comment.content = comment.content.replace("%0D%0A", "\n");
             tv_content.setText(comment.content);
         }
+
+        if (!comment.user_pic_url.equals("")){
+            Log.e("comment", comment.user_pic_url);
+            new ImageDownloader(iv_avatar).execute(comment.user_pic_url);
+        } else{
+            Log.e("comment", "default image");
+            iv_avatar.setImageResource(R.drawable.default_avatar);
+        }
     }
+
+    private class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+        boolean connect_error = false;
+
+        private ImageDownloader(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String url = urls[0];
+            Bitmap mIcon = null;
+            try {
+                InputStream in = new java.net.URL(url).openStream();
+                mIcon = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                connect_error = true;
+                Log.e("Error", e.getMessage());
+            }
+            return mIcon;
+        }
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
+    }
+
 }

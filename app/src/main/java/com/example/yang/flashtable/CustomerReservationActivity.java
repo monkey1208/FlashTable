@@ -28,6 +28,7 @@ import com.google.zxing.common.BitMatrix;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -43,8 +44,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -100,6 +105,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         initData();
 
     }
+    /*
     public static class GetBlockInfo{
 
 
@@ -127,7 +133,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
             return pref.getString("offer", "N");
         }
     }
-
+    */
     private void initView() {
         vf_flipper = (ViewFlipper) findViewById(R.id.customer_reservation_vf_flipper);
 
@@ -165,6 +171,8 @@ public class CustomerReservationActivity extends AppCompatActivity {
                             timer.cancel();
                             new ApiCancel("request").execute(request_id);
                             finish();
+                            Intent intent = new Intent(CustomerReservationActivity.this, CustomerMainActivity.class);
+                            startActivity(intent);
                         }
                     }
                 });
@@ -179,9 +187,10 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     public void clickEvent(boolean ok, int status) {
                         if(ok) {
                             timer.cancel();
-                            clearBlockPreference();
                             new ApiCancel("session").execute(session_id);
                             finish();
+                            Intent intent = new Intent(CustomerReservationActivity.this, CustomerMainActivity.class);
+                            startActivity(intent);
                         }
                     }
                 });
@@ -191,32 +200,36 @@ public class CustomerReservationActivity extends AppCompatActivity {
         bt_cancel.setOnClickListener(cancel_listener);
         bt_arrive_cancel.setOnClickListener(cancel_arrive_listener);
 
+
         shop_name = getIntent().getStringExtra("shop_name");
         rating = Float.parseFloat(getIntent().getStringExtra("rating"));
         tv_shop.setText(shop_name);
         rb_shop.setRating(rating);
         rb_shop.setIsIndicator(true);
-
-        if(!GetBlockInfo.getBlockStatus(this)) {
-            promotion_id = getIntent().getStringExtra("promotion_id");
-            discount = getIntent().getIntExtra("discount", 101);
-            offer = getIntent().getStringExtra("offer");
-            persons = getIntent().getIntExtra("persons", 1);
-            new ApiRequest().execute();
-        } else {
-            session_id = GetBlockInfo.getSession(this);
-            discount = GetBlockInfo.getDiscount(this);
-            offer = GetBlockInfo.getOffer(this);
-            long time = GetBlockInfo.getTime(this);
-            long remain_time = 15*60000+time-Calendar.getInstance().getTimeInMillis();
-            if(remain_time<0){
-                remain_time = 0;
-            }
-            reservationAccepted((int)remain_time);
-        }
-
+        promotion_id = getIntent().getStringExtra("promotion_id");
+        discount = getIntent().getIntExtra("discount", 101);
+        offer = getIntent().getStringExtra("offer");
+        persons = getIntent().getIntExtra("persons", 1);
         shop_location = getIntent().getStringExtra("shop_location");
         shop_id = getIntent().getStringExtra("shop_id");
+        if(!getIntent().getBooleanExtra("block", false)){
+            new ApiRequest().execute();
+        }else{
+            System.out.println("BLOCK!!!!!!!");
+            String time = getIntent().getStringExtra("time");
+            session_id = getIntent().getStringExtra("session_id");
+            DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd kk:mm:ss yyyy", Locale.ENGLISH);
+            try {
+                Date date = dateFormat.parse(time);
+                long nowtime = date.getTime();
+                long remain_time = nowtime-Calendar.getInstance().getTimeInMillis();
+                if(remain_time<0)
+                    remain_time = 0;
+                reservationAccepted((int)remain_time);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -247,22 +260,23 @@ public class CustomerReservationActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private void requestSuccess(){
-        setBlockPreference();
         timer.cancel();
         reservationAccepted(60000*15);
     }
+
     private void requestRejected(){
         timer.cancel();
         new DialogBuilder(this).dialogEvent(getString(R.string.dialog_restaurant_refuse_reservation), "normal", finish_listener);
     }
+
     private void qrRejected(){
         timer.cancel();
-        clearBlockPreference();
         new DialogBuilder(this).dialogEvent(getString(R.string.dialog_restaurant_cancel_reservation), "normal", finish_listener);
     }
+
     private void qrSuccess(){
-        clearBlockPreference();
         timer.cancel();
         Intent intent = new Intent(CustomerReservationActivity.this, CustomerRatingActivity.class);
         intent.putExtra("shop", shop_name);
@@ -271,6 +285,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         startActivity(intent);
         CustomerReservationActivity.this.finish();
     }
+
     private void requestNoResponse(){
         new DialogBuilder(CustomerReservationActivity.this).dialogEvent(getString(R.string.customer_reservation_canceled), "normal", new DialogEventListener() {
             @Override
@@ -281,27 +296,15 @@ public class CustomerReservationActivity extends AppCompatActivity {
             }
         });
     }
+
     DialogEventListener finish_listener = new DialogEventListener() {
         @Override
         public void clickEvent(boolean ok, int status) {
             finish();
+            Intent intent = new Intent(CustomerReservationActivity.this, CustomerMainActivity.class);
+            startActivity(intent);
         }
     };
-
-    private void setBlockPreference(){
-        SharedPreferences pref = getSharedPreferences("BLOCK", MODE_PRIVATE);
-        pref.edit().putLong("block_time", Calendar.getInstance().getTimeInMillis())
-                .putString("block", "true")
-                .putString("session", session_id)
-                .putInt("discount", discount)
-                .putString("offer", offer)
-                .commit();
-
-    }
-    private void clearBlockPreference(){
-        SharedPreferences pref = getSharedPreferences("BLOCK", MODE_PRIVATE);
-        pref.edit().clear().commit();
-    }
 
     private void startCountDown(String state, final int countdown_millis) {
         if (state.equals("waiting")) {
@@ -311,7 +314,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                 public void onTick(long millis_left) {
                     if((pre_millis-millis_left)>2000 && request_flag == true){
                         pre_millis = millis_left;
-                        new ApiRequestSuccess().execute();
+                        new ApiRequestSuccess(request_id).execute();
                     }
                     time_left = (millis_left / 1000) + seconds;
                     tv_time.setText(time_left);
@@ -373,6 +376,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         bitmap.setPixels(pixels, 0, w, 0, 0, w, h);
         return bitmap;
     }
+
     class ApiRequest extends AsyncTask<Void, Void, String>{
         HttpClient httpClient = new DefaultHttpClient();
         @Override
@@ -398,8 +402,11 @@ public class CustomerReservationActivity extends AppCompatActivity {
                 }else if(status_code.equals("-2")){
                     //No promotion Id
                     finish();
+                    Intent intent = new Intent(CustomerReservationActivity.this, CustomerMainActivity.class);
+                    startActivity(intent);
                 }
             } catch (IOException e) {
+                publishProgress();
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -410,15 +417,29 @@ public class CustomerReservationActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             request_id = s;
-            new ApiRequestSuccess().execute();
+            new ApiRequestSuccess(request_id).execute();
             startCountDown("waiting", 60000);
             super.onPostExecute(s);
         }
 
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            new DialogBuilder(CustomerReservationActivity.this).dialogEvent(getString(R.string.dialog_network_unable), "normal", new DialogEventListener() {
+                @Override
+                public void clickEvent(boolean ok, int status) {
+
+                }
+            });
+        }
 
     }
-    class ApiRequestSuccess extends AsyncTask<Void, Void, String>{
+
+    class ApiRequestSuccess extends AsyncTask<Void, String, String>{
         HttpClient httpClient = new DefaultHttpClient();
+        private String requestId;
+        public ApiRequestSuccess(String requestId){
+            this.requestId = requestId;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -429,53 +450,62 @@ public class CustomerReservationActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             NameValuePair param = new BasicNameValuePair("user_id", getUserId());
-            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+param.toString());
+            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_requests?"+param.toString());
             request.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse response = httpClient.execute(request);
                 ResponseHandler<String> handler = new BasicResponseHandler();
-                String session_response = handler.handleResponse(response);
-                JSONArray session_array = new JSONArray(session_response);
-                JSONObject session_object = session_array.getJSONObject(0);
-                System.out.println("session = "+session_response);
-                if(session_object.get("status_code").equals("0")){
-                    if(session_object.get("size").equals("0")){
-                        //no sessions
-                        request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_requests?"+param.toString());
+                String request_response = handler.handleResponse(response);
+                JSONArray request_array = new JSONArray(request_response);
+                JSONObject request_object = request_array.getJSONObject(0);
+                System.out.println("request = "+request_response);
+                if(request_object.get("status_code").equals("0")){
+                    int request_size = Integer.valueOf(request_object.getString("size"));
+                    if(request_size == 0){
+                        //no request
+                        request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+param.toString());
                         request.addHeader("Content-Type", "application/json");
                         response = httpClient.execute(request);
-                        String request_response = handler.handleResponse(response);
-                        JSONArray request_array = new JSONArray(request_response);
-                        JSONObject request_object = request_array.getJSONObject(0);
-                        System.out.println("request = "+request_response);
-                        if(request_object.get("status_code").equals("0")){
-                            int size = Integer.valueOf(request_object.get("size").toString());
+                        String session_response = handler.handleResponse(response);
+                        JSONArray session_array = new JSONArray(session_response);
+                        JSONObject session_object = session_array.getJSONObject(0);
+                        System.out.println("session = "+session_response);
+                        if(session_object.get("status_code").equals("0")){
+                            int size = Integer.valueOf(session_object.get("size").toString());
                             if(size == 0){
-                                //no request -> request is rejected
-                                request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+param.toString());
-                                request.addHeader("Content-Type", "application/json");
-                                response = httpClient.execute(request);
-                                session_response = handler.handleResponse(response);
-                                session_array = new JSONArray(session_response);
-                                session_object = session_array.getJSONObject(0);
-                                if(session_object.get("status_code").equals("0")) {
-                                    if (session_object.get("size").equals("0")) {
-                                        return "reject";
-                                    }
-                                }
-                                return session_array.getJSONObject(1).get("session_id").toString();
+                                //no session -> request is rejected
+                                return "reject";
                             }else{
-                                for(int i = 1; i <= size; i++){
-                                    if(request_array.getJSONObject(i).get("request_id").toString().equals(request_id)){
-                                        // request still waiting
-                                        return "waiting";
-                                    }
-                                }
+                                return session_array.getJSONObject(1).get("session_id").toString();
                             }
                         }
                     }else{
-                        //accept
-                        return session_array.getJSONObject(1).get("session_id").toString();
+                        //request still exists
+                        System.out.println("id = "+requestId);
+                        for (int i = 1; i <= request_size; i++) {
+                            if(request_array.getJSONObject(i).getString("request_id").equals(requestId))
+                                return "waiting";
+                            else{
+                                publishProgress(request_array.getJSONObject(i).getString("request_id"));
+                            }
+                        }
+
+                        request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+param.toString());
+                        request.addHeader("Content-Type", "application/json");
+                        response = httpClient.execute(request);
+                        String session_response = handler.handleResponse(response);
+                        JSONArray session_array = new JSONArray(session_response);
+                        JSONObject session_object = session_array.getJSONObject(0);
+                        System.out.println("session = "+session_response);
+                        if(session_object.get("status_code").equals("0")){
+                            int size = Integer.valueOf(session_object.get("size").toString());
+                            if(size == 0){
+                                //no session -> request is rejected
+                                return "reject";
+                            }else{
+                                return session_array.getJSONObject(1).get("session_id").toString();
+                            }
+                        }
                     }
                 }
             } catch (IOException e) {
@@ -483,9 +513,12 @@ public class CustomerReservationActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
             return "waiting";
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            new ApiCancel("request").execute(values[0]);
         }
 
         @Override
@@ -506,6 +539,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
             super.onPostExecute(s);
         }
+
     }
 
     class ApiSessionSuccess extends AsyncTask<Void, Void, String>{
@@ -567,6 +601,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
             super.onPostExecute(s);
         }
     }
+
     class ApiCancel extends AsyncTask<String, Void, Void>{
         HttpClient httpClient = new DefaultHttpClient();
         ResponseHandler<String> handler = new BasicResponseHandler();
@@ -608,6 +643,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
             return null;
         }
     }
+
     class ApiRecord extends AsyncTask<Void, Void, String>{
         HttpClient httpClient = new DefaultHttpClient();
         ResponseHandler<String> handler = new BasicResponseHandler();

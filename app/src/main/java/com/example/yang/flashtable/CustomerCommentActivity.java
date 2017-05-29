@@ -95,6 +95,8 @@ public class CustomerCommentActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
+        Intent intent = new Intent(CustomerCommentActivity.this, CustomerMainActivity.class);
+        startActivity(intent);
         return super.onOptionsItemSelected(item);
     }
 

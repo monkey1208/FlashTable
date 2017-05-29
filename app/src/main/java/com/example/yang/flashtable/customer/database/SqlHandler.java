@@ -1,4 +1,4 @@
-package com.example.yang.flashtable;
+package com.example.yang.flashtable.customer.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,8 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.example.yang.flashtable.CustomerRestaurantInfo;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.ByteArrayOutputStream;
@@ -31,12 +33,14 @@ public class SqlHandler extends SQLiteOpenHelper {
     public static final String ADDRESS_COLUMN = "address";
     public static final String INTRO_COLUMN = "intro";
     public static final String IMG_COLUMN = "img";
+    public static final String IMG_COLUMN_2 = "img_2";
+    public static final String IMG_COLUMN_3 = "img_3";
+    public static final String IMG_COLUMN_4 = "img_4";
+    public static final String IMG_COLUMN_5 = "img_5";
     public SQLiteDatabase db;
-    private Context context;
     public SqlHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.db = getWritableDatabase();
-        this.context = context;
     }
 
     @Override
@@ -53,7 +57,11 @@ public class SqlHandler extends SQLiteOpenHelper {
                 CATEGORY_COLUMN + " text, " +
                 ADDRESS_COLUMN + " text, " +
                 INTRO_COLUMN + " text, " +
-                IMG_COLUMN + " blob no null" +
+                IMG_COLUMN + " blob no null, " +
+                IMG_COLUMN_2 + " blob, " +
+                IMG_COLUMN_3 + " blob, " +
+                IMG_COLUMN_4 + " blob, " +
+                IMG_COLUMN_5 + " blob" +
                 ");";
         db.execSQL(createDB);
     }
@@ -103,7 +111,7 @@ public class SqlHandler extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(SqlHandler.CATEGORY_COLUMN)),
                     new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)), cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN)))
             );
-            info.detailInfo.setInfo(
+            info.setInfo(
                     cursor.getString(cursor.getColumnIndex(SqlHandler.ADDRESS_COLUMN)),
                     cursor.getString(cursor.getColumnIndex(SqlHandler.INTRO_COLUMN))
             );
@@ -123,7 +131,7 @@ public class SqlHandler extends SQLiteOpenHelper {
                 cursor.getString(cursor.getColumnIndex(SqlHandler.CATEGORY_COLUMN)),
                 new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)), cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN)))
         );
-        info.detailInfo.setInfo(
+        info.setInfo(
                     cursor.getString(cursor.getColumnIndex(SqlHandler.ADDRESS_COLUMN)),
                     cursor.getString(cursor.getColumnIndex(SqlHandler.INTRO_COLUMN))
             );
@@ -132,12 +140,18 @@ public class SqlHandler extends SQLiteOpenHelper {
     }
 
     public void insertList(List<CustomerRestaurantInfo> list){
+        insertList(list, null, null, null, null);
+    }
+
+    public void insertList(List<CustomerRestaurantInfo> list, byte[] img_2, byte[] img_3, byte[] img_4, byte[] img_5){
         for(int i = 0;i<list.size(); i++){
-            insert(list.get(i));
+            insert(list.get(i), img_2, img_3, img_4, img_5);
         }
     }
-    public void insert(CustomerRestaurantInfo info){
-        Log.d("SQLite", "insert data");
+
+    public void insert(CustomerRestaurantInfo info, byte[] img_2, byte[] img_3, byte[] img_4, byte[] img_5){
+
+        Log.d("SQLite", "Saving Data");
         ContentValues cv = new ContentValues();
         cv.put(ID_COLUMN, info.id);
         cv.put(NAME_COLUMN, info.name);
@@ -145,18 +159,71 @@ public class SqlHandler extends SQLiteOpenHelper {
         cv.put(LONGITUDE_COLUMN, info.latLng.longitude);
         cv.put(CONSUMPTION_COLUMN, info.consumption);
         cv.put(CATEGORY_COLUMN, info.category);
-        cv.put(ADDRESS_COLUMN, info.detailInfo.address);
-        cv.put(INTRO_COLUMN, info.detailInfo.intro);
+        cv.put(ADDRESS_COLUMN, info.address);
+        cv.put(INTRO_COLUMN, info.intro);
         cv.put(IMG_COLUMN, info.image);
-        long id = db.insert(DATABASE_TABLE, null, cv);
+        cv.put(IMG_COLUMN_2, img_2);
+        cv.put(IMG_COLUMN_3, img_3);
+        cv.put(IMG_COLUMN_4, img_4);
+        cv.put(IMG_COLUMN_5, img_5);
+        if(checkDataInDB(DATABASE_TABLE, ID_COLUMN, info.id)){
+            db.update(DATABASE_TABLE, cv, ID_COLUMN + "=" + info.id, null);
+        }else {
+            db.insert(DATABASE_TABLE, null, cv);
+        }
         cv = null;
     }
+
+    public ArrayList<Bitmap> getBitmapList(int shop_id){
+        Cursor cursor = db.query(true,
+                DATABASE_TABLE,
+                new String[] {IMG_COLUMN_2, IMG_COLUMN_3, IMG_COLUMN_4, IMG_COLUMN_5},	//column
+                ID_COLUMN+"="+ shop_id,				//WHERE
+                null, // WHERE 的參數
+                null, // GROUP BY
+                null, // HAVING
+                null, // ORDOR BY
+                null  // 限制回傳的rows數量
+        );
+        if (cursor != null) {
+            cursor.moveToFirst();	//cursor to the first data
+        }
+        ArrayList<Bitmap> list = new ArrayList<>();
+        byte[] array = cursor.getBlob(cursor.getColumnIndex(IMG_COLUMN_2));
+        if(array != null)
+            list.add(BitmapFactory.decodeByteArray(array, 0, array.length));
+        array = cursor.getBlob(cursor.getColumnIndex(IMG_COLUMN_3));
+        if(array != null)
+            list.add(BitmapFactory.decodeByteArray(array, 0, array.length));
+        array = cursor.getBlob(cursor.getColumnIndex(IMG_COLUMN_4));
+        if(array != null)
+            list.add(BitmapFactory.decodeByteArray(array, 0, array.length));
+        array = cursor.getBlob(cursor.getColumnIndex(IMG_COLUMN_5));
+        if(array != null)
+            list.add(BitmapFactory.decodeByteArray(array, 0, array.length));
+        cursor.close();
+        return list;
+    }
+
+    public boolean checkDataInDB(String TableName, String dbfield, int id) {
+        String Query = "Select * from " + TableName + " where " + dbfield + " = " + id;
+        Cursor cursor = db.rawQuery(Query, null);
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+        return true;
+    }
+
     public void deleteTable(){
         db.execSQL("DROP DATABASE " + DATABASE_TABLE);
     }
+
     public static void deleteDB(Context c){
         c.deleteDatabase(DATABASE_NAME);
     }
+
     public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
