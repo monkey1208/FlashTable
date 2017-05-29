@@ -72,7 +72,7 @@ public class StoreManageOpentimeFragment extends Fragment {
     private final int OPENTIME_CHOOSE_MONTH = 8;
     private static int opentime_choose_result;
     private static final String[] month_to_Chinese = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"};
-    private static final String[] period_type = {"當日時段整理", "一週時段整理", "每月時段整理"};
+    private static final String[] period_type = {"單日時段整理", "單週時段整理", "單月時段整理"};
     private String shop_id;
 
     public StoreManageOpentimeFragment() {
@@ -88,6 +88,7 @@ public class StoreManageOpentimeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getStoreInfo();
+        dateList = new ArrayList<>();
         new APITimeDetail().execute();
 
         v = inflater.inflate(R.layout.store_manage_opentime_fragment, container, false);

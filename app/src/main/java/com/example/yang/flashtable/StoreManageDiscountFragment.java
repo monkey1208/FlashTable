@@ -50,7 +50,7 @@ public class StoreManageDiscountFragment extends ListFragment {
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                //Logout
+                StoreMainActivity.fragmentController.act(FragmentController.MANAGE_DISCOUNT_DELETE);
                 Toast.makeText(v.getContext(),"Delete", Toast.LENGTH_SHORT).show();
                 return true;
             }

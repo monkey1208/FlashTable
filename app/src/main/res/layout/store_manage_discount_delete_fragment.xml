@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_home"
     tools:context="com.example.yang.flashtable.StoreManageDiscountFragment">
 
     <android.support.v7.widget.Toolbar
@@ -30,8 +31,8 @@
         android:layout_below="@id/store_manage_discount_tb_toolbar"
         android:layout_marginTop="4dp"
         android:orientation="horizontal"
-        android:id="@+id/store_manage_discount_ll_add"
-        android:background="@color/colorHalfTransparent">
+        android:background="@color/colorHalfTransparent"
+        android:id="@+id/store_manage_discount_delete_ll_add">
         <ImageView
             android:layout_gravity="center_vertical"
             android:layout_width="24dp"
@@ -52,11 +53,23 @@
     </LinearLayout>
 
     <ListView
-        android:layout_below="@+id/store_manage_discount_ll_add"
+        android:layout_above="@+id/store_discount_ib_delete_confirm"
+        android:layout_below="@+id/store_manage_discount_delete_ll_add"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginTop="3dp"
         android:dividerHeight="3dp"
+        android:choiceMode="multipleChoice"
         android:id="@id/android:list"/>
+
+    <ImageButton
+        android:id="@+id/store_discount_ib_delete_confirm"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:scaleType="centerCrop"
+        android:background="@color/transparentGreen"
+        app:srcCompat="@drawable/bt_confirm_bottom" />
+
 
 </RelativeLayout>

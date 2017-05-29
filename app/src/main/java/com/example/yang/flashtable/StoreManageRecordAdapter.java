@@ -1,12 +1,8 @@
 package com.example.yang.flashtable;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.InputStream;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +70,7 @@ public class StoreManageRecordAdapter extends BaseAdapter {
             holder.tv_state.setText("店家已取消預約 ( " + info.number + " ) 人桌位");
         }
         if (!info.get_Image_Url().equals("")) {
-            new ImageDownloader(holder.iv_avatar).execute(info.get_Image_Url());
+            Picasso.with(c).load(info.get_Image_Url()).into(holder.iv_avatar);
         }else{
             holder.iv_avatar.setImageResource(R.drawable.default_avatar);
         }
@@ -90,29 +87,4 @@ public class StoreManageRecordAdapter extends BaseAdapter {
         ImageView iv_avatar;
     }
 
-
-    private class ImageDownloader extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-        boolean connect_error = false;
-
-        private ImageDownloader(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String url = urls[0];
-            Bitmap mIcon = null;
-            try {
-                InputStream in = new java.net.URL(url).openStream();
-                mIcon = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                connect_error = true;
-                Log.e("Error", e.getMessage());
-            }
-            return mIcon;
-        }
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
 }
