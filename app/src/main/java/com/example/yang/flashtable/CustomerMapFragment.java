@@ -504,6 +504,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         @Override
         protected void onPreExecute() {
             progress_dialog.setMessage( "載入中..." );
+            progress_dialog.setCanceledOnTouchOutside(false);
             progress_dialog.show();
             super.onPreExecute();
         }
