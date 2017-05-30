@@ -69,7 +69,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
     ViewFlipper vf_flipper;
     GifImageView gv_time;
     GifDrawable gif_drawable;
-    TextView tv_status, tv_time, tv_arrival_time, tv_shop, tv_discount, tv_gift;
+    TextView tv_status, tv_time, tv_arrival_time, tv_shop, tv_gift;
     String seconds, no_response, late;
     RatingBar rb_shop;
     LinearLayout ll_time_left;
@@ -150,7 +150,6 @@ public class CustomerReservationActivity extends AppCompatActivity {
         tv_arrival_time = (TextView) findViewById(R.id.customer_reservation_tv_arrival_time);
         tv_shop = (TextView) findViewById(R.id.customer_reservation_tv_shop);
         rb_shop = (RatingBar) findViewById(R.id.customer_reservation_rb_rating);
-        tv_discount = (TextView) findViewById(R.id.customer_reservation_tv_discount);
         tv_gift = (TextView) findViewById(R.id.customer_reservation_tv_gift);
         late = getResources().getString(R.string.customer_reservation_late);
         ll_time_left = (LinearLayout) findViewById(R.id.customer_reservation_ll_time_left);
@@ -238,17 +237,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
     private void reservationAccepted(int sec) {
         vf_flipper.setDisplayedChild(1);
-        if( discount == 101 ||discount == 100) {
-            tv_discount.setText("暫無折扣");
-        }else{
-            int dis = discount/10;
-            int point = discount%10;
-            if(point == 0){
-                tv_discount.setText(dis+"折");
-            }else{
-                tv_discount.setText(discount+"折");
-            }
-        }
+
         tv_gift.setText(offer);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);

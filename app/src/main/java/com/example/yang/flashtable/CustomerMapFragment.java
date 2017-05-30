@@ -251,7 +251,6 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                         TextView tv_dis = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_distance);
                         */
                         TextView tv_name = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_name);
-                        TextView tv_discount = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_discount);
                         TextView tv_offer = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_gift);
                         TextView tv_dis = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_distance);
                         TextView tv_consume = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_price);
@@ -271,18 +270,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                         tv_consume.setText("均消$" + restaurantInfoList.get(index).consumption);
                         rb.setRating(restaurantInfoList.get(index).rating);
                         rb.setIsIndicator(true);
-                        int discount = restaurantInfoList.get(index).discount;
-                        if( discount == 101 ||discount == 100) {
-                            tv_discount.setText("暫無折扣");
-                        }else{
-                            int dis = discount/10;
-                            int point = discount%10;
-                            if(point == 0){
-                                tv_discount.setText(dis+"折");
-                            }else{
-                                tv_discount.setText(discount+"折");
-                            }
-                        }
+
                     } else {
                         bottom_sheet.setVisibility(View.INVISIBLE);
                         bottom_sheet_behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);

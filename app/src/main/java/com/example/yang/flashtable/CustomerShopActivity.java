@@ -28,7 +28,7 @@ import java.util.HashMap;
 public class CustomerShopActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener {
     private ShowInfo info;
     private String shop_id;
-    TextView tv_show_name, tv_show_consumption, tv_show_discount, tv_show_offer, tv_show_location, tv_show_category, tv_show_intro;
+    TextView tv_show_name, tv_show_consumption, tv_show_offer, tv_show_location, tv_show_category, tv_show_intro;
     SliderLayout sl_restaurant;
     Button bt_show_reserve;
     RatingBar rb_show_rating;
@@ -65,7 +65,6 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
         rb_show_rating = (RatingBar) findViewById(R.id.customer_main_rb_show_rating);
 
         tv_show_name = (TextView) findViewById(R.id.customer_main_tv_show_shop);
-        tv_show_discount = (TextView) findViewById(R.id.customer_main_tv_show_discount);
         tv_show_offer = (TextView) findViewById(R.id.customer_main_tv_show_gift);
         tv_show_consumption = (TextView) findViewById(R.id.customer_main_tv_show_price);
         tv_show_location = (TextView) findViewById(R.id.customer_main_tv_show_location);
@@ -140,17 +139,7 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
 
         tv_show_name.setText(info.name);
         tv_show_consumption.setText("均消$" + info.consumption);
-        if (info.discount == 101 || info.discount == 100) {
-            tv_show_discount.setText("暫無折扣");
-        } else {
-            int point = info.discount % 10;
-            int discount = info.discount / 10;
-            if (point != 0) {
-                tv_show_discount.setText(info.discount + "折");
-            } else {
-                tv_show_discount.setText(discount + "折");
-            }
-        }
+
         tv_show_offer.setText(info.offer);
         tv_show_location.setText(info.address);
         tv_show_category.setText(info.category);
