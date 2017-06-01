@@ -51,7 +51,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
 
     // Elements in show
     TextView tv_record_success, tv_record_arrival_time, tv_record_shop,
-            tv_discount, tv_gift, tv_description, tv_location, tv_category;
+            tv_gift, tv_description, tv_location, tv_category;
     ImageView iv_record_credit;
     RatingBar rb_record_rating;
 
@@ -80,7 +80,6 @@ public class CustomerDetailActivity extends AppCompatActivity {
         tv_record_success = (TextView) findViewById(R.id.customer_detail_tv_record_success);
         tv_record_arrival_time = (TextView) findViewById(R.id.customer_detail_tv_record_arrival_time);
         tv_record_shop = (TextView) findViewById(R.id.customer_detail_tv_record_shop);
-        tv_discount = (TextView) findViewById(R.id.customer_detail_tv_discount);
         tv_gift = (TextView) findViewById(R.id.customer_detail_tv_gift);
         tv_description = (TextView) findViewById(R.id.customer_detail_tv_description);
         tv_location = (TextView) findViewById(R.id.customer_detail_tv_show_location);
@@ -186,15 +185,6 @@ public class CustomerDetailActivity extends AppCompatActivity {
         tv_location.setText(record.location);
         tv_category.setText(record.category);
 
-        String discount;
-        if (record.discount == 101) {
-            discount = no_discount;
-        } else if (record.discount % 10 == 0) {
-            discount = Integer.toString(record.discount / 10) + discount_off;
-        } else {
-            discount = Integer.toString(record.discount) + discount_off;
-        }
-        tv_discount.setText(discount);
         if (!record.gift.equals("")) {
             tv_gift.setText(record.gift);
         } else {

@@ -110,7 +110,6 @@
         <item>依最新</item>
         <item>依距離</item>
         <item>依評價</item>
-        <item>依折扣</item>
     </string-array>
     <string-array name="customer_sp_distance">
         <item>全部</item>

@@ -28,7 +28,7 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
 
     DialogBuilder dialog_builder;
     ImageView iv_shop;
-    TextView tv_shop, tv_price, tv_distance, tv_discount, tv_gift;
+    TextView tv_shop, tv_price, tv_distance, tv_gift;
     RatingBar rb_rating;
     Location current_location;
 
@@ -49,7 +49,6 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
             tv_shop = (TextView) convertView.findViewById(R.id.customer_main_tv_name);
             tv_price = (TextView) convertView.findViewById(R.id.customer_main_tv_price);
             tv_distance = (TextView) convertView.findViewById(R.id.customer_main_tv_distance);
-            tv_discount = (TextView) convertView.findViewById(R.id.customer_main_tv_discount);
             tv_gift = (TextView) convertView.findViewById(R.id.customer_main_tv_gift);
             rb_rating = (RatingBar) convertView.findViewById(R.id.customer_main_rb_rating);
             rb_rating.setRating(info.rating);
@@ -57,18 +56,7 @@ public class CustomerMainAdapter extends ArrayAdapter<CustomerRestaurantInfo> {
             iv_shop.setImageBitmap(info.getImage());
             tv_shop.setText(info.name);
             tv_price.setText("均消"+Integer.toString(info.consumption)+"元");
-            int discount = info.discount;
-            if( discount == 101 ||discount == 100) {
-                tv_discount.setText("暫無折扣");
-            }else{
-                int dis = discount/10;
-                int point = discount%10;
-                if(point == 0){
-                    tv_discount.setText(dis+"折");
-                }else{
-                    tv_discount.setText(discount+"折");
-                }
-            }
+
             tv_gift.setText(info.offer);
 
             Location loc_shop = new Location("");
