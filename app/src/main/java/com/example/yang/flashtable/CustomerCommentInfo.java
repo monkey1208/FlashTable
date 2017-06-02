@@ -1,5 +1,7 @@
 package com.example.yang.flashtable;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by CS on 2017/3/25.
  */
@@ -20,4 +22,6 @@ public class CustomerCommentInfo {
         userID = _userID;
         shopID = _shopID;
     }
+
+    Bitmap avatar;
 }

@@ -73,5 +73,7 @@ public class CustomerCommentAdapter extends BaseAdapter {
             comment.content = comment.content.replace("%0D%0A", "\n");
             tv_content.setText(comment.content);
         }
+
+        if (comment.avatar != null) iv_avatar.setImageBitmap(comment.avatar);
     }
 }

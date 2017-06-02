@@ -4,6 +4,11 @@ import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Path;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +29,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,6 +113,30 @@ public class CustomerCommentActivity extends AppCompatActivity {
         lv_comments.setAdapter(comment_adapter);
     }
 
+    // Trim rounded shape from image
+    public Bitmap getRoundedShape(Bitmap scaleBitmapImage) {
+
+        int targetWidth = 200;
+        int targetHeight = 200;
+        Bitmap targetBitmap = Bitmap.createBitmap(targetWidth,
+                targetHeight,Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(targetBitmap);
+        Path path = new Path();
+        path.addCircle(((float) targetWidth - 1) / 2,
+                ((float) targetHeight - 1) / 2,
+                (Math.min(((float) targetWidth),
+                        ((float) targetHeight)) / 2),
+                Path.Direction.CCW);
+
+        canvas.clipPath(path);
+        Bitmap sourceBitmap = scaleBitmapImage;
+        canvas.drawBitmap(sourceBitmap,
+                new Rect(0, 0, sourceBitmap.getWidth(),
+                        sourceBitmap.getHeight()),
+                new Rect(0, 0, targetWidth,
+                        targetHeight), null);
+        return targetBitmap;
+    }
 
     class APIShopComments extends AsyncTask<String, Void, Void> {
         private ProgressDialog progress_dialog = new ProgressDialog(CustomerCommentActivity.this);
@@ -118,27 +150,31 @@ public class CustomerCommentActivity extends AppCompatActivity {
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + params[0]);
+                HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + params[0]
+                    + "&verbose=1");
                 request.addHeader("Content-Type", "application/json");
                 JSONArray responseJSON = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
                 status = responseJSON.getJSONObject(0).getString("status_code");
                 if( status.equals("0") ) {
                     int size = Integer.parseInt( responseJSON.getJSONObject(0).getString("size") );
                     for(int i = 1 ; i <= size ; i++) {
-                        HttpGet requestInfo = new HttpGet( "https://flash-table.herokuapp.com/api/comment_info?comment_id=" + responseJSON.getJSONObject(i).getString("comment_id") );
-                        requestInfo.addHeader("Content-Type", "application/json");
-                        JSONObject responseInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestInfo) ) );
-                        status =  responseInfo.getString("status_code");
-                        if( !status.equals("0") )   break;
-                        String body = responseInfo.getString("body"), score = responseInfo.getString("score"), user_id = responseInfo.getString("user_id"), shop_id = responseInfo.getString("shop_id");
+                        JSONObject jsonObject1 = responseJSON.getJSONObject(i);
 
-                        // TODO: Show information that has already been received (or at least the UI).
-                        HttpGet requestUser = new HttpGet("https://flash-table.herokuapp.com/api/user_info?user_id=" + user_id);
-                        requestUser.addHeader("Content-Type", "application/json");
-                        JSONObject responseUser = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestUser) ) );
-                        status = responseUser.getString("status_code");
-                        if( !status.equals("0") )   break;
-                        String userAccount = responseUser.getString("account");
+                        String body = jsonObject1.getString("body"), score = jsonObject1.getString("score"),
+                                user_id = jsonObject1.getString("user_id"), shop_id = params[0];
+
+                        String userAccount = jsonObject1.getString("user_account");
+                        String userImage = jsonObject1.getString("user_picture_url");
+
+                        Bitmap avatar = null;
+                        if (!userImage.equals("")) {
+                            URL url = new URL(userImage);
+                            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                            connection.setDoInput(true);
+                            connection.connect();
+                            InputStream input = connection.getInputStream();
+                            avatar = BitmapFactory.decodeStream(input);
+                        }
 
                         HttpGet requestShop = new HttpGet("https://flash-table.herokuapp.com/api/shop_info?shop_id=" + shop_id);
                         requestShop.addHeader("Content-Type", "application/json");
@@ -146,7 +182,10 @@ public class CustomerCommentActivity extends AppCompatActivity {
                         status = responseShop.getString("status_code");
                         if( !status.equals("0") )   break;
                         String shopName = responseShop.getString("name");
-                        comments.add( new CustomerCommentInfo( userAccount, shopName, body, Float.parseFloat(score) / 2, Integer.parseInt(user_id), Integer.parseInt(shop_id) ) );
+
+                        CustomerCommentInfo comment = new CustomerCommentInfo( userAccount, shopName, body, Float.parseFloat(score) / 2, Integer.parseInt(user_id), Integer.parseInt(shop_id) );
+                        if (avatar != null) comment.avatar = getRoundedShape(avatar);
+                        comments.add( comment );
                     }
                 }
             } catch (Exception e) {
@@ -177,36 +216,46 @@ public class CustomerCommentActivity extends AppCompatActivity {
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/user_comments?user_id=" + params[0]);
+                HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/user_comments?user_id=" + params[0]
+                    + "&verbose=1");
                 request.addHeader("Content-Type", "application/json");
                 JSONArray responseJSON = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
+
+                Bitmap avatar = null;
+
+                String user_id = params[0];
+                HttpGet requestUser = new HttpGet("https://flash-table.herokuapp.com/api/user_info?user_id=" + user_id);
+                requestUser.addHeader("Content-Type", "application/json");
+                JSONObject responseUser = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestUser) ) );
+                status = responseUser.getString("status_code");
+                String userAccount = responseUser.getString("account");
+                String picture_url = responseUser.getString("picture_url");
+
+                if (!picture_url.equals("")) {
+                    URL url = new URL(picture_url);
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+                    InputStream input = connection.getInputStream();
+                    avatar = getRoundedShape(BitmapFactory.decodeStream(input));
+                }
+
                 status = responseJSON.getJSONObject(0).getString("status_code");
                 if( status.equals("0") ) {
                     int size = Integer.parseInt( responseJSON.getJSONObject(0).getString("size") );
                     for(int i = 1 ; i <= size ; i++) {
-                        HttpGet requestInfo = new HttpGet( "https://flash-table.herokuapp.com/api/comment_info?comment_id=" + responseJSON.getJSONObject(i).getString("comment_id") );
-                        requestInfo.addHeader("Content-Type", "application/json");
-                        JSONObject responseInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestInfo) ) );
-                        status =  responseInfo.getString("status_code");
-                        if( !status.equals("0") )   break;
-                        String body = responseInfo.getString("body"), score = responseInfo.getString("score"), user_id = responseInfo.getString("user_id"), shop_id = responseInfo.getString("shop_id");
+                        JSONObject jsonObject1 = responseJSON.getJSONObject(i);
 
-                        // TODO: Show information that has already been received (or at least the UI).
-                        HttpGet requestUser = new HttpGet("https://flash-table.herokuapp.com/api/user_info?user_id=" + user_id);
-                        requestUser.addHeader("Content-Type", "application/json");
-                        JSONObject responseUser = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestUser) ) );
-                        status = responseUser.getString("status_code");
-                        if( !status.equals("0") )   break;
-                        String userAccount = responseUser.getString("account");
+                        String body = jsonObject1.getString("body"), score = jsonObject1.getString("score"),
+                                shop_id = jsonObject1.getString("shop_id");
 
-                        HttpGet requestShop = new HttpGet("https://flash-table.herokuapp.com/api/shop_info?shop_id=" + shop_id);
-                        requestShop.addHeader("Content-Type", "application/json");
-                        JSONObject responseShop = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestShop) ) );
-                        status = responseShop.getString("status_code");
-                        if( !status.equals("0") )   break;
-                        String shopName = responseShop.getString("name");
-                        comments.add( new CustomerCommentInfo( userAccount, shopName, body, Float.parseFloat(score) / 2, Integer.parseInt(user_id), Integer.parseInt(shop_id) ) );
+                        String shopName = jsonObject1.getString("shop_name");
+                        CustomerCommentInfo comment = new CustomerCommentInfo( userAccount, shopName, body, Float.parseFloat(score) / 2, Integer.parseInt(user_id), Integer.parseInt(shop_id) );
+                        if (avatar != null) comment.avatar = avatar;
+                        comments.add( comment );
                     }
+
+
                 }
             } catch (Exception e) {
                 status = null;
