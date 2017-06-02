@@ -194,6 +194,8 @@
     <string name="customer_comments_success">成功留下評論！</string>
     <string name="customer_comments_error_no_rating">您尚未選擇評分喔</string>
     <string name="customer_comments_error_not_sent">填寫的內容尚未送出，確定回到上一頁嗎？</string>
+    <string name="customer_comments_error_fail_reservation">預約失敗不能夠評論喔！</string>
+    <string name="customer_comments_error_already_comment">您已經評論過這個店家咯！</string>
 
     <!-- Strings related to customer rating -->
     <string name="customer_rating_title">評價及評論</string>

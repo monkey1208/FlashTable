@@ -52,6 +52,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import pl.droidsonroids.gif.GifDrawable;
@@ -88,6 +90,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
     float rating;
 
     CountDownTimer timer;
+    Timer timer1;
 
     boolean request_flag = true;//true means no request
     boolean session_flag = true;
@@ -337,6 +340,9 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     tv_arrival_time.setText(late);
                     tv_arrival_time.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
                     tv_arrival_time.setTextColor(getResources().getColor(R.color.textColorRed));
+                    timer1 = new Timer();
+                    TimerTask sessionTask = new SessionTimer();
+                    timer1.schedule(sessionTask, 1000, 2000);
                 }
             }.start();
         }
@@ -578,15 +584,18 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            session_flag = true;
+
             switch (s){
                 case "finish":
+                    if(timer1 != null)
+                        timer1.cancel();
+                    session_flag = true;
                     new ApiRecord().execute();
                     break;
                 default:
                     break;
             }
-
+            session_flag = true;
             super.onPostExecute(s);
         }
     }
@@ -676,6 +685,16 @@ public class CustomerReservationActivity extends AppCompatActivity {
                 qrRejected();
             }
             super.onPostExecute(s);
+        }
+    }
+
+    class SessionTimer extends TimerTask{
+
+        @Override
+        public void run() {
+            if(session_flag == true){
+                new ApiSessionSuccess().execute();
+            }
         }
     }
 
