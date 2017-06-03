@@ -15,7 +15,7 @@ public class StoreDialogAdapter extends BaseAdapter{
     public List<String> list = new ArrayList<>();
     public Context context;
     public LayoutInflater inflater;
-    public int listPosition;
+    public int listPosition = -1;
 
     public StoreDialogAdapter(Context context, List<String> items){
         this.list = items;

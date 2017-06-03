@@ -187,11 +187,10 @@ public class APIHandler {
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/new_promotion");
                 List<NameValuePair> param = new ArrayList<NameValuePair>();
-                name = params[0];
-                description = params[1];
-                param.add(new BasicNameValuePair("name",params[0]));
-                param.add(new BasicNameValuePair("description",params[1]));
-                param.add(new BasicNameValuePair("shop_id",params[2]));
+                description = params[0];
+                param.add(new BasicNameValuePair("name", "11"));
+                param.add(new BasicNameValuePair("description",params[0]));
+                param.add(new BasicNameValuePair("shop_id",params[1]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
                 JSONObject recordInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(post)));
                 new_promotion_id = recordInfo.getInt("promotion_id");
@@ -210,7 +209,7 @@ public class APIHandler {
 
         @Override
         protected void onPostExecute(Void _params){
-            StoreDiscountInfo info = new StoreDiscountInfo(new_promotion_id, Integer.valueOf(name), description, 0);
+            StoreDiscountInfo info = new StoreDiscountInfo(new_promotion_id, description, 0);
             StoreMainActivity.storeInfo.discountList.add(info);
             StoreManageDiscountFragment.adapter.notifyDataSetChanged();
         }

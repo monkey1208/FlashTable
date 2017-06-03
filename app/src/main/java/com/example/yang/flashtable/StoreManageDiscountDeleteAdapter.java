@@ -44,7 +44,7 @@ public class StoreManageDiscountDeleteAdapter extends BaseAdapter{
         view = inflater.inflate(R.layout.store_manage_discount_delete_row, null,true);
 
         TextView tv = (TextView) view.findViewById(R.id.store_manage_discount_delete_row_tv_description);
-        tv.setText(Integer.toString(list.get(position).discount)+" "+list.get(position).description);
+        tv.setText(list.get(position).description);
 
         if(checked_position[position]){
             view.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));

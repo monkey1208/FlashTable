@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -51,7 +50,6 @@ public class StoreManageDiscountFragment extends ListFragment {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 StoreMainActivity.fragmentController.act(FragmentController.MANAGE_DISCOUNT_DELETE);
-                Toast.makeText(v.getContext(),"Delete", Toast.LENGTH_SHORT).show();
                 return true;
             }
         };

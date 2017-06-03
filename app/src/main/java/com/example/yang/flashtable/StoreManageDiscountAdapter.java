@@ -1,6 +1,5 @@
 package com.example.yang.flashtable;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -46,7 +44,7 @@ public class StoreManageDiscountAdapter extends BaseAdapter {
         view = inflater.inflate(R.layout.store_manage_discount_row, null,true);
 
         TextView tv = (TextView) view.findViewById(R.id.store_manage_discount_row_tv_description);
-        tv.setText(Integer.toString(list.get(position).discount)+" "+list.get(position).description);
+        tv.setText(list.get(position).description);
 
         LinearLayout row = (LinearLayout)view.findViewById(R.id.store_manage_discount_row);
         ImageView _default = (ImageView) view.findViewById(R.id.store_manage_discount_row_iv_default);

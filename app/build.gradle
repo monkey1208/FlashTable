@@ -60,5 +60,6 @@ dependencies {
     compile 'jp.co.recruit_mp:android-HeaderFooterGridView:0.2.5'
     compile 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
     compile 'com.ogaclejapan.smarttablayout:utils-v4:1.6.1@aar'
+    compile 'com.roomorama:caldroid:3.0.1'
     testCompile 'junit:junit:4.12'
 }

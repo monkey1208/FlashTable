@@ -14,7 +14,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,11 +50,11 @@ public class AlertDialogController {
     public int listPosition = -1;
     public int result = 0;
     private boolean first = true;
-    private String discountName, discountDes;
+    private String discountDes;
     private int discountNameChoose = -1; //-1=no choose, 0=no discount, 1=have discount
 
 
-    public AlertDialog discountDialog(final Context context, final StoreInfo storeInfo, final TextView tv_discount, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind){
+    public AlertDialog discountDialog(final Context context, final StoreInfo storeInfo, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind){
         //init view---------
         View item = LayoutInflater.from(context).inflate(R.layout.store_discount_list, null);
         //listview adapt----
@@ -82,7 +81,6 @@ public class AlertDialogController {
         bt_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tv_discount.setText(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).discount)+"折");
                 tv_gift.setText(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
                 //TODO: notify server dicount change
                 new APIpromotion_modify().execute(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
@@ -157,72 +155,17 @@ public class AlertDialogController {
         setBackground(context);
         alertDialog.setCanceledOnTouchOutside(false);
 
-        final boolean[] no_discount = {true}; // ture= 暫無優惠, false= add a promotion with name/description
-        final TextView tv_no_discount = (TextView)item.findViewById(R.id.store_add_discount_dialog_tv_no_discount);
-        final LinearLayout select_discount_name = (LinearLayout)item.findViewById(R.id.store_add_discount_ll_name);
-
-        tv_no_discount.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                tv_no_discount.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
-                select_discount_name.setBackgroundColor(context.getResources().getColor(R.color.colorHalfTransparent));
-                no_discount[0] = true;
-                discountNameChoose = 0;
-
-            }
-        });
-
-        final TextView tv_discount_num = (TextView)item.findViewById(R.id.store_add_discount_dialog_tv_discount_num);
-        select_discount_name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                select_discount_name.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
-                tv_no_discount.setBackgroundColor(context.getResources().getColor(R.color.white));
-                no_discount[0] = false;
-                discountNameChoose = 1;
-            }
-        });
-        ImageButton ib_minus = (ImageButton)item.findViewById(R.id.store_add_discount_dialog_ib_minus);
-        ib_minus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int value = Integer.valueOf(tv_discount_num.getText().toString());
-                if(value > 10)
-                    tv_discount_num.setText(String.valueOf(value-1));
-            }
-        });
-        ImageButton ib_plus = (ImageButton)item.findViewById(R.id.store_add_discount_dialog_ib_plus);
-        ib_plus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int value = Integer.valueOf(tv_discount_num.getText().toString());
-                if(value < 100)
-                    tv_discount_num.setText(String.valueOf(value+1));
-            }
-        });
-
         final EditText et_gift = (EditText) item.findViewById(R.id.store_add_discount_dialog_et_gift);
         if(resumeStatus){
-            tv_discount_num.setText(discountName);
             et_gift.setText(discountDes);
-            if(discountNameChoose == 0) {
-                tv_no_discount.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
-            }else if(discountNameChoose == 1){
-                select_discount_name.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
-            }
         }
 
         ImageButton bt_confirm = (ImageButton)item.findViewById(R.id.store_add_discount_dialog_bt_confirm);
         bt_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String tv_name = tv_discount_num.getText().toString();
                 String gift_content = et_gift.getText().toString();
-                if(no_discount[0]){ //暫無優惠
-                    new APIHandler.Post_promotion().execute("101", gift_content, StoreMainActivity.storeInfo.id);
-                }else{
-                    new APIHandler.Post_promotion().execute(tv_name, gift_content, StoreMainActivity.storeInfo.id);
-                }
+                new APIHandler.Post_promotion().execute(gift_content, StoreMainActivity.storeInfo.id);
                 alertDialog.dismiss();
             }
         });
@@ -232,14 +175,13 @@ public class AlertDialogController {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-                discountName = tv_discount_num.getText().toString();
                 discountDes = et_gift.getText().toString();
                 confirmCancelDialog(context, "提醒", "填寫的內容尚未送出\n確定回到上一頁嗎？",UNFINISHED_CONTENT, -1);
             }
         });
 
         alertDialog.show();
-        setDialogSize(context, 0.78, 0.75);
+        setDialogSize(context, 0.78, 0.55);
     }
 
     public void warningConfirmDialog(final Context context, String title, String content){
@@ -263,7 +205,7 @@ public class AlertDialogController {
         });
 
         alertDialog.show();
-        setDialogSize(context, 0.75, 0.33);
+        setDialogSize(context, 0.78, 0.33);
     }
 
 
@@ -315,7 +257,7 @@ public class AlertDialogController {
             }
         });
         alertDialog.show();
-            setDialogSize(context, 0.75 , 0.5);
+        setDialogSize(context, 0.78 , 0.5);
     }
 
 
@@ -393,7 +335,10 @@ public class AlertDialogController {
         int displayHeight = dm.heightPixels;
         lp.width = (int) (displayWidth * relativeWidth);
         lp.height = (int) (displayHeight * relativeHeight);
+        lp.dimAmount=0.65f;
         alertDialog.getWindow().setAttributes(lp);
+        alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+
     }
 
     private void setTitle(Context context, String title, int fontSize){

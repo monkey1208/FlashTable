@@ -45,7 +45,6 @@ public class StoreHomeFragment extends Fragment {
     private ImageButton bt_QRcode;
     private TextView tv_storename;
     private TextView tv_address;
-    private TextView tv_discount;
     private TextView tv_gift;
     private ImageButton bt_active;
     private GifImageView bt_active_gif;
@@ -96,8 +95,6 @@ public class StoreHomeFragment extends Fragment {
         tv_storename.setText(storeInfo.name);
         tv_address = (TextView) v.findViewById(R.id.tv_address);
         tv_address.setText(storeInfo.address);
-        tv_discount = (TextView) v.findViewById(R.id.tv_discount);
-        tv_discount.setText("暫無優惠");
         tv_gift = (TextView) v.findViewById(R.id.tv_gift);
         tv_gift.setText("");
         tv_active_time = (TextView) v.findViewById(R.id.tv_active_time);
@@ -113,7 +110,7 @@ public class StoreHomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 alertdialog_active = true;
-                alertDialog = new AlertDialogController().discountDialog(getContext(), storeInfo, tv_discount, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+                alertDialog = new AlertDialogController().discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
                 alertDialog.show();
                 setDialogSize();
             }
@@ -194,7 +191,7 @@ public class StoreHomeFragment extends Fragment {
                     int discount = promotion.getInt("name");
                     String description = promotion.getString("description");
                     int count = promotion.getInt("n_succ");
-                    StoreDiscountInfo info = new StoreDiscountInfo(id, discount, description, count);
+                    StoreDiscountInfo info = new StoreDiscountInfo(id, description, count);
                     StoreMainActivity.storeInfo.discountList.add(info);
                 }
             } catch (JSONException e) {
@@ -211,7 +208,7 @@ public class StoreHomeFragment extends Fragment {
         protected void onPostExecute(Void _params) {
             if (alertdialog_active) {
                 alertDialog.dismiss();
-                alertDialog = new AlertDialogController().discountDialog(getContext(), storeInfo, tv_discount, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+                alertDialog = new AlertDialogController().discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
                 alertDialog.show();
                 setDialogSize();
             }
@@ -260,8 +257,10 @@ public class StoreHomeFragment extends Fragment {
         int displayWidth = dm.widthPixels;
         int displayHeight = dm.heightPixels;
         lp.width = (int) (displayWidth * 0.8);
-        lp.height = (int) (displayHeight * 0.8);
+        lp.height = (int) (displayHeight * 0.75);
+        lp.dimAmount=0.65f;
         alertDialog.getWindow().setAttributes(lp);
+        alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
     private void counting(){
         timer.schedule(new TimerTask() {
@@ -274,7 +273,7 @@ public class StoreHomeFragment extends Fragment {
                         int sec = (int)time/1000;
                         int min = sec/60;sec = sec%60;
                         int hr = min/60;min = min%60;
-                        String str_time = String.format("%02d:%02d:%02d",hr,min,sec);
+                        String str_time = String.format("%02d：%02d：%02d",hr,min,sec);
                         tv_active_time.setText(str_time);
                     }
                 });

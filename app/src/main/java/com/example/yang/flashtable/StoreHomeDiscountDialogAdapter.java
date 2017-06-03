@@ -56,7 +56,7 @@ public class StoreHomeDiscountDialogAdapter extends BaseAdapter{
             holder = (ViewHolder) convertView.getTag();
         }
         StoreDiscountInfo discountInfo = discount.get(position);
-        holder.tv_discount.setText(Integer.toString(discountInfo.discount)+"折 "+discountInfo.description);
+        holder.tv_discount.setText(discountInfo.description);
         if(position == StoreMainActivity.storeInfo.discountCurrent)
             convertView.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
         else
