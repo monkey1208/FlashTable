@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/alert_title"
-        android:background="@drawable/round_top_rectangle_orange"
+        android:background="@drawable/round_top_rectangle_light_orange"
         android:textColor="@color/white"
         android:padding="10dp"
         android:textAlignment="center"
@@ -91,7 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/round_rectangle_orange"
+            android:background="@drawable/round_rectangle_light_orange"
             android:text="@string/ok"
             android:textColor="@color/white"
             android:padding="10dp"/>
@@ -101,9 +101,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/round_rectangle_white_orange"
+            android:background="@drawable/round_rectangle_white_light_orange"
             android:text="@string/cancel"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/textColorOrange"
             android:padding="10dp"/>
 
     </LinearLayout>

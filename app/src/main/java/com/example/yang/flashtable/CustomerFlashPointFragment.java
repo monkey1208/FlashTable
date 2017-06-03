@@ -80,6 +80,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
 
         // Header views
         sl_coupons = (SliderLayout) header.findViewById(R.id.customer_points_sl_coupons);
+        sl_coupons.startAutoCycle();
         tv_points = (TextView) header.findViewById(R.id.customer_points_tv_points);
         tv_records = (TextView) header.findViewById(R.id.customer_points_tv_records);
     }
@@ -152,7 +153,6 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
         sl_coupons.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
         sl_coupons.setDuration(4000);
         sl_coupons.addOnPageChangeListener(this);
-        sl_coupons.startAutoCycle();
     }
 
     @Override

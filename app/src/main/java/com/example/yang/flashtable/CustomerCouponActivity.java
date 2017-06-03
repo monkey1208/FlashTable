@@ -1,6 +1,7 @@
 package com.example.yang.flashtable;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -199,8 +200,18 @@ public class CustomerCouponActivity extends AppCompatActivity {
             }
             dialog_builder = new DialogBuilder(CustomerCouponActivity.this);
 
-            if (status.equals("0"))
-                dialog_builder.dialogEvent("恭喜成功兌換好禮！到歷史紀錄查看好禮序號？", "withCancel", null);
+            if (status.equals("0")) {
+                DialogEventListener success_listener = new DialogEventListener() {
+                    @Override
+                    public void clickEvent(boolean ok, int status) {
+                        if (ok) {
+                            Intent intent = new Intent(CustomerCouponActivity.this, CustomerCouponRecordActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                };
+                dialog_builder.dialogEvent("恭喜成功兌換好禮！是否前往歷史紀錄查看好禮序號？", "withCancel", success_listener);
+            }
             else if (status.equals("-3"))
                 dialog_builder.dialogEvent("您的FLASH Points點數不足", "normal", null);
             else if (status.equals("-4"))

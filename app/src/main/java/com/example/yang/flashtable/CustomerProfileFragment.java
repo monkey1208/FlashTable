@@ -68,7 +68,7 @@ public class CustomerProfileFragment extends Fragment {
 
     private View view;
     TextView tv_username, tv_credit, tv_edit, tv_exchange_gifts_content, tv_points;
-    LinearLayout ll_comments, ll_reservations;
+    LinearLayout ll_comments, ll_reservations, ll_points_record, ll_contact_us;
     ImageView iv_avatar;
     Button bt_about_credits;
 
@@ -93,6 +93,8 @@ public class CustomerProfileFragment extends Fragment {
         tv_credit = (TextView) view.findViewById(R.id.customer_profile_tv_credit);
         ll_reservations = (LinearLayout) view.findViewById(R.id.customer_profile_ll_reservations);
         ll_comments = (LinearLayout)  view.findViewById(R.id.customer_profile_ll_comments);
+        ll_points_record = (LinearLayout) view.findViewById(R.id.customer_profile_ll_points_record);
+        ll_contact_us = (LinearLayout) view.findViewById(R.id.customer_profile_ll_contact_us);
         iv_avatar = (ImageView) view.findViewById(R.id.customer_profile_iv_avatar);
         tv_edit = (TextView) view.findViewById(R.id.customer_profile_bt_edit);
         bt_about_credits = (Button) view.findViewById(R.id.customer_profile_bt_about_credit);
@@ -123,6 +125,19 @@ public class CustomerProfileFragment extends Fragment {
                 Intent intent = new Intent(getActivity().getApplicationContext(), CustomerCommentActivity.class);
                 intent.putExtra("type", "user");
                 startActivity(intent);
+            }
+        });
+        ll_points_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CustomerCouponRecordActivity.class);
+                startActivity(intent);
+            }
+        });
+        ll_contact_us.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), CustomerContactUsActivity.class));
             }
         });
         iv_avatar.setOnClickListener(new View.OnClickListener() {

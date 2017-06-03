@@ -2,6 +2,7 @@ package com.example.yang.flashtable;
 
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -130,12 +131,19 @@ public class CustomerRatingActivity extends AppCompatActivity {
                     new DialogEventListener() {
                         @Override
                         public void clickEvent(boolean ok, int status) {
-                            if (ok)
+                            if (ok) {
+                                Intent intent = new Intent(CustomerRatingActivity.this, CustomerMainActivity.class);
+                                startActivity(intent);
                                 CustomerRatingActivity.this.finish();
+                            }
                         }
                     });
         }
-        else finish();
+        else{
+            Intent intent = new Intent(CustomerRatingActivity.this, CustomerMainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     class CustomerAPINewComment extends AsyncTask<String, Void, Void> {

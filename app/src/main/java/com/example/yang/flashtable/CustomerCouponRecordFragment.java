@@ -1,6 +1,7 @@
 package com.example.yang.flashtable;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -65,6 +67,14 @@ public class CustomerCouponRecordFragment extends Fragment {
         records = new ArrayList<>();
         adapter = new CustomerCouponRecordAdapter(getActivity(), records);
         lv_records.setAdapter(adapter);
+        lv_records.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getActivity(), CustomerCouponCodeActivity.class);
+                intent.putExtra("code_id", records.get(i).code_id);
+                startActivity(intent);
+            }
+        });
 
         if (position == 1) new ApiRedeemRecords().execute(userID);
         else new ApiGetRecords().execute(userID);
@@ -102,7 +112,7 @@ public class CustomerCouponRecordFragment extends Fragment {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                     System.out.println("record: " + jsonObject1.toString());
                     CustomerCouponRecordInfo info = new CustomerCouponRecordInfo();
-                    info.name = jsonObject1.getString("name");
+                    info.name = "已成功兌換" + jsonObject1.getString("name");
                     info.type = 1;
                     info.code_id = jsonObject1.getString("code_id");
                     info.points = jsonObject1.getInt("flash_point");
@@ -147,7 +157,8 @@ public class CustomerCouponRecordFragment extends Fragment {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                     System.out.println("record: " + jsonObject1.toString());
                     CustomerCouponRecordInfo info = new CustomerCouponRecordInfo();
-                    info.name = jsonObject1.getString("promotion_name");
+                    info.name = "已成功在" + jsonObject1.getString("shop_name")
+                            + "領取" + jsonObject1.getString("number") + "人桌位";
                     info.code_id = jsonObject1.getString("promotion_id");
                     info.points = jsonObject1.getInt("delta_flash_point");
                     info.time = jsonObject1.getString("created_at");

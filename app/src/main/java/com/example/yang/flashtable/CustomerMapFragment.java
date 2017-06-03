@@ -133,6 +133,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
 
     public void setRestMap(){
         gps.removeMarker();
+        gps.initMarker(false);
         restaurantInfoList = CustomerAppInfo.getInstance().getRestaurantList();
         ArrayList<CustomerRestaurantInfo> display_list = new ArrayList<>();
         for(CustomerRestaurantInfo item: restaurantInfoList){
@@ -251,7 +252,6 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                         TextView tv_dis = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_distance);
                         */
                         TextView tv_name = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_name);
-                        TextView tv_discount = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_discount);
                         TextView tv_offer = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_gift);
                         TextView tv_dis = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_distance);
                         TextView tv_consume = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_price);
@@ -271,18 +271,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                         tv_consume.setText("均消$" + restaurantInfoList.get(index).consumption);
                         rb.setRating(restaurantInfoList.get(index).rating);
                         rb.setIsIndicator(true);
-                        int discount = restaurantInfoList.get(index).discount;
-                        if( discount == 101 ||discount == 100) {
-                            tv_discount.setText("暫無折扣");
-                        }else{
-                            int dis = discount/10;
-                            int point = discount%10;
-                            if(point == 0){
-                                tv_discount.setText(dis+"折");
-                            }else{
-                                tv_discount.setText(discount+"折");
-                            }
-                        }
+
                     } else {
                         bottom_sheet.setVisibility(View.INVISIBLE);
                         bottom_sheet_behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -308,15 +297,18 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                 // for ActivityCompat#requestPermissions for more details.
                 return;
             }
-            initMarker();
+            initMarker(true);
             Location location = getLocation();
             moveMap(new LatLng(location.getLatitude(), location.getLongitude()));
             updateWithNewLocation(location);
             init();
         }
 
-        private void initMarker() {
+        private void initMarker(boolean moveCamera) {
             markerOptions = new MarkerOptions();
+            double lng = CustomerAppInfo.getInstance().getLocation().getLongitude();
+            double lat = CustomerAppInfo.getInstance().getLocation().getLatitude();
+            latLng = new LatLng(lat, lng);
             if (latLng == null) {
                 latLng = new LatLng(25.021918, 121.535285);
             }
@@ -324,7 +316,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                     .position(latLng)
                     .snippet("me")
                     .icon(BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.customer_map_me)));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+            if(moveCamera)
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
             marker = googleMap.addMarker(markerOptions);
 
         }
@@ -530,10 +523,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         @Override
         protected void onPostExecute(String s) {
             CustomerAppInfo.getInstance().setRestaurantList(mlist);
-            for (int i = 0; i < mlist.size(); i++) {
-                gps.setMarker(mlist.get(i).latLng, i);
-                System.out.println(mlist.get(i).latLng.longitude+","+mlist.get(i).latLng.latitude);
-            }
+            setRestMap();
             restaurantInfoList = mlist;
             progress_dialog.dismiss();
             super.onPostExecute(s);

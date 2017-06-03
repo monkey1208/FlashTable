@@ -252,10 +252,6 @@ public class CustomerParentMainFragment extends Fragment {
                         filter_mode = "rate";
                         CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
                         break;
-                    case 4:
-                        filter_mode = "discount";
-                        CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
-                        break;
                 }
             }
 
