@@ -373,7 +373,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
                 try {
                     if(isCancelled())
                         return null;
-                    HttpGet requestShopRating = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + list.get(i).shop_id);
+                    HttpGet requestShopRating = new HttpGet(getString(R.string.server_domain)+"api/shop_comments?shop_id=" + list.get(i).shop_id);
                     requestShopRating.addHeader("Content-Type", "application/json");
                     JSONArray responseShopRating = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(requestShopRating)));
                     status = responseShopRating.getJSONObject(0).getString("status_code");
@@ -408,7 +408,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
             String s = nameValuePair.toString();
             if(isCancelled())
                 return null;
-            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/surrounding_promotions"+"?"+s);
+            HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/surrounding_promotions"+"?"+s);
             request.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse http_response = httpClient.execute(request);
@@ -427,7 +427,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
                         s = nameValuePair.toString();
                         if(isCancelled())
                             return null;
-                        request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/promotion_info"+"?"+s);
+                        request = new HttpGet(getString(R.string.server_domain)+"api/promotion_info"+"?"+s);
                         request.addHeader("Content-Type", "application/json");
                         http_response = httpClient.execute(request);
                         json = handler.handleResponse(http_response);

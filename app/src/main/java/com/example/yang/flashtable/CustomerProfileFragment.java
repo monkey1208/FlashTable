@@ -321,14 +321,16 @@ public class CustomerProfileFragment extends Fragment {
         protected String doInBackground(String... params) {
             String content = null;
             String pic_url = null;
+            System.out.println("APIProfile");
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet request = new HttpGet(
-                        "https://flash-table.herokuapp.com/api/user_info?user_id=" + params[0]);
+                        getString(R.string.server_domain)+"api/user_info?user_id=" + params[0]);
                 request.addHeader("Content-Type", "application/json");
                 HttpResponse response = httpClient.execute(request);
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 String httpResponse = handler.handleResponse(response);
+                System.out.println(httpResponse);
                 JSONObject responseJSON = new JSONObject(httpResponse);
                 status = responseJSON.getString("status_code");
                 if (status.equals("0")) {
@@ -374,7 +376,7 @@ public class CustomerProfileFragment extends Fragment {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpPost request = new HttpPost(
-                        "https://" + getString(R.string.server_domain) + "/api/modify_user");
+                        getString(R.string.server_domain) + "api/modify_user");
                 StringEntity se = new StringEntity("{ \"user_id\":\"" + params[0] +
                         "\", \"new_picture_url\":\"" + params[1] + "\"}", HTTP.UTF_8);
                 request.addHeader("Content-Type", "application/json");

@@ -172,7 +172,7 @@ public class CustomerCouponActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpPost request = new HttpPost(
-                        "https://"+getString(R.string.server_domain)+"/api/redeem_coupon");
+                        getString(R.string.server_domain)+"api/redeem_coupon");
                 StringEntity se = new StringEntity("{ \"user_id\":\"" + params[0] +
                         "\", \"coupon_id\":\"" + params[1] + "\"}", HTTP.UTF_8);
                 request.addHeader("Content-Type", "application/json");

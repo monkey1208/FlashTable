@@ -445,7 +445,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             NameValuePair param = new BasicNameValuePair("user_id", getUserId());
-            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_requests?"+param.toString());
+            HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/user_requests?"+param.toString());
             request.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse response = httpClient.execute(request);
@@ -458,7 +458,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     int request_size = Integer.valueOf(request_object.getString("size"));
                     if(request_size == 0){
                         //no request
-                        request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+param.toString());
+                        request = new HttpGet(getString(R.string.server_domain)+"api/user_sessions?"+param.toString());
                         request.addHeader("Content-Type", "application/json");
                         response = httpClient.execute(request);
                         String session_response = handler.handleResponse(response);
@@ -485,7 +485,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                             }
                         }
 
-                        request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+param.toString());
+                        request = new HttpGet(getString(R.string.server_domain)+"api/user_sessions?"+param.toString());
                         request.addHeader("Content-Type", "application/json");
                         response = httpClient.execute(request);
                         String session_response = handler.handleResponse(response);
@@ -549,7 +549,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             NameValuePair param = new BasicNameValuePair("user_id", getUserId());
-            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+param.toString());
+            HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/user_sessions?"+param.toString());
             request.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse response = httpClient.execute(request);

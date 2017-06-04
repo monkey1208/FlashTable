@@ -229,7 +229,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             SqlHandler sqlHandler = new SqlHandler(CustomerDetailActivity.this);
             try {
-                HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/user_records?user_id=" + params[0]);
+                HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/user_records?user_id=" + params[0]);
                 request.addHeader("Content-Type", "application/json");
                 JSONArray responseJSON = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
                 status = responseJSON.getJSONObject(0).getString("status_code");
@@ -239,14 +239,14 @@ public class CustomerDetailActivity extends AppCompatActivity {
 
                         // TODO: Show information that has already been received (or at least the UI).
                         int record_id = responseJSON.getJSONObject(i).getInt("record_id");
-                        HttpGet requestInfo = new HttpGet( "https://flash-table.herokuapp.com/api/record_info?record_id=" + responseJSON.getJSONObject(i).getString("record_id") );
+                        HttpGet requestInfo = new HttpGet( getString(R.string.server_domain)+"api/record_info?record_id=" + responseJSON.getJSONObject(i).getString("record_id") );
                         requestInfo.addHeader("Content-Type", "application/json");
                         JSONObject responseInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestInfo) ) );
                         status =  responseInfo.getString("status_code");
                         if( !status.equals("0") )   break;
                         String promotion_id = responseInfo.getString("promotion_id"), is_succ = responseInfo.getString("is_succ"), persons = responseInfo.getString("number"), created_at = responseInfo.getString("created_at"), user_id = responseInfo.getString("user_id"), shop_id = responseInfo.getString("shop_id");
 
-                        HttpGet requestPromotion = new HttpGet("https://flash-table.herokuapp.com/api/promotion_info?promotion_id=" + promotion_id);
+                        HttpGet requestPromotion = new HttpGet(getString(R.string.server_domain)+"api/promotion_info?promotion_id=" + promotion_id);
                         requestPromotion.addHeader("Content-Type", "application/json");
                         JSONObject responsePromotion = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestPromotion) ) );
                         status = responsePromotion.getString("status_code");
@@ -254,7 +254,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         String promotion_discount = responsePromotion.getString("name");
                         String promotion_gift = responsePromotion.getString("description");
                         /*
-                        HttpGet requestShop = new HttpGet("https://flash-table.herokuapp.com/api/shop_info?shop_id=" + shop_id);
+                        HttpGet requestShop = new HttpGet(getString(R.string.server_domain)+"api/shop_info?shop_id=" + shop_id);
                         requestShop.addHeader("Content-Type", "application/json");
                         JSONObject responseShop = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestShop) ) );
                         status = responseShop.getString("status_code");
@@ -270,7 +270,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         String shop_intro = info.intro;
                         String shop_category = info.category;
 
-                        HttpGet requestShopRating = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + shop_id);
+                        HttpGet requestShopRating = new HttpGet(getString(R.string.server_domain)+"api/shop_comments?shop_id=" + shop_id);
                         requestShopRating.addHeader("Content-Type", "application/json");
                         JSONArray responseShopRating = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(requestShopRating) ) );
                         status = responseShopRating.getJSONObject(0).getString("status_code");
@@ -311,7 +311,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         protected Boolean doInBackground(Integer... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/record_id?record_id=" + params[0]);
+                HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/record_id?record_id=" + params[0]);
                 request.addHeader("Content-Type", "application/json");
                 JSONArray responseJSON = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
                 String status = responseJSON.getJSONObject(0).getString("status_code");

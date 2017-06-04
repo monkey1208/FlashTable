@@ -150,7 +150,7 @@ public class CustomerCommentActivity extends AppCompatActivity {
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + params[0]
+                HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/shop_comments?shop_id=" + params[0]
                     + "&verbose=1");
                 request.addHeader("Content-Type", "application/json");
                 JSONArray responseJSON = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
@@ -176,7 +176,7 @@ public class CustomerCommentActivity extends AppCompatActivity {
                             avatar = BitmapFactory.decodeStream(input);
                         }
 
-                        HttpGet requestShop = new HttpGet("https://flash-table.herokuapp.com/api/shop_info?shop_id=" + shop_id);
+                        HttpGet requestShop = new HttpGet(getString(R.string.server_domain)+"api/shop_info?shop_id=" + shop_id);
                         requestShop.addHeader("Content-Type", "application/json");
                         JSONObject responseShop = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestShop) ) );
                         status = responseShop.getString("status_code");
@@ -216,7 +216,7 @@ public class CustomerCommentActivity extends AppCompatActivity {
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/user_comments?user_id=" + params[0]
+                HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/user_comments?user_id=" + params[0]
                     + "&verbose=1");
                 request.addHeader("Content-Type", "application/json");
                 JSONArray responseJSON = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
@@ -224,7 +224,7 @@ public class CustomerCommentActivity extends AppCompatActivity {
                 Bitmap avatar = null;
 
                 String user_id = params[0];
-                HttpGet requestUser = new HttpGet("https://flash-table.herokuapp.com/api/user_info?user_id=" + user_id);
+                HttpGet requestUser = new HttpGet(getString(R.string.server_domain)+"api/user_info?user_id=" + user_id);
                 requestUser.addHeader("Content-Type", "application/json");
                 JSONObject responseUser = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestUser) ) );
                 status = responseUser.getString("status_code");

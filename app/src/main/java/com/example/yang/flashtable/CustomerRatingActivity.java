@@ -164,7 +164,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpPost request = new HttpPost(
-                        "https://flash-table.herokuapp.com/api/new_comment");
+                        getString(R.string.server_domain)+"api/new_comment");
                 StringEntity se = new StringEntity("{ \"body\":\"" + params[0] +
                         "\", \"score\":\"" + params[1] +
                         "\", \"user_id\":\"" + params[2] +
