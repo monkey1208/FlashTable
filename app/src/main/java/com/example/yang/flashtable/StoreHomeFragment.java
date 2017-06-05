@@ -194,7 +194,9 @@ public class StoreHomeFragment extends Fragment {
                     int discount = promotion.getInt("name");
                     String description = promotion.getString("description");
                     int count = promotion.getInt("n_succ");
-                    StoreDiscountInfo info = new StoreDiscountInfo(id, discount, description, count);
+                    String notDelete = promotion.getString("is_removed");
+                    boolean isRemoved = (notDelete.equals("true"))? true:false;
+                    StoreDiscountInfo info = new StoreDiscountInfo(id, discount, description,isRemoved, count);
                     StoreMainActivity.storeInfo.discountList.add(info);
                 }
             } catch (JSONException e) {

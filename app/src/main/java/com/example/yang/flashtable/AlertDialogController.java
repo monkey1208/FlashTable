@@ -60,7 +60,11 @@ public class AlertDialogController {
         View item = LayoutInflater.from(context).inflate(R.layout.store_discount_list, null);
         //listview adapt----
         ListView lv_discount = (ListView)item.findViewById(R.id.lv_discount);
-        final StoreHomeDiscountDialogAdapter adapter = new StoreHomeDiscountDialogAdapter(context,storeInfo.discountList);
+        List<StoreDiscountInfo> notRemovedList = new ArrayList<>();
+        for(int i=0;i<storeInfo.discountList.size();i++)
+            if(storeInfo.discountList.get(i).notDelete)
+                notRemovedList.add(storeInfo.discountList.get(i));
+        final StoreHomeDiscountDialogAdapter adapter = new StoreHomeDiscountDialogAdapter(context,notRemovedList);
         lv_discount.setAdapter(adapter);
         lv_discount.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

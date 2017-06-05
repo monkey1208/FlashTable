@@ -12,6 +12,7 @@ public class CustomerAppointInfo {
     public int expireTime;
     public Bitmap picture;
     public String url;
+    public boolean isDelete = false;
     public CustomerAppointInfo(int id,String name,int honor,int number,String url){
         this.id = id;
         this.name = name;

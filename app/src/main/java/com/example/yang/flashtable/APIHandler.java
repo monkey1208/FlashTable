@@ -210,7 +210,7 @@ public class APIHandler {
 
         @Override
         protected void onPostExecute(Void _params){
-            StoreDiscountInfo info = new StoreDiscountInfo(new_promotion_id, Integer.valueOf(name), description, 0);
+            StoreDiscountInfo info = new StoreDiscountInfo(new_promotion_id, Integer.valueOf(name), description,true, 0);
             StoreMainActivity.storeInfo.discountList.add(info);
             StoreManageDiscountFragment.adapter.notifyDataSetChanged();
         }

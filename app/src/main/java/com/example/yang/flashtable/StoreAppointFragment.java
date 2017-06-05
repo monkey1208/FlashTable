@@ -56,6 +56,12 @@ public class StoreAppointFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         fragmentManager = getFragmentManager();
         final View v = inflater.inflate(R.layout.store_appoint_fragment, container, false);
+        List<ReservationInfo> newList = new ArrayList<>();
+        for(int i=0;i<list.size();i++)
+            if(System.currentTimeMillis()-list.get(i).due_time < 85500000)
+                newList.add(list.get(i));
+        list.clear();
+        list = newList;
         adapter = new StoreAppointAdapter(getContext(), list);
         setListAdapter(adapter);
         Toolbar bar = (Toolbar)v.findViewById(R.id.shop_toolbar);

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.R.id.list;
@@ -41,7 +42,11 @@ public class StoreManageDiscountFragment extends ListFragment {
 
         ListView lv =(ListView) v.findViewById(list);
 
-        adapter = new StoreManageDiscountAdapter(getContext(),discountList);
+        List<StoreDiscountInfo> notRemovedList = new ArrayList<>();
+        for(int i=0;i<discountList.size();i++)
+            if(discountList.get(i).notDelete)
+                notRemovedList.add(discountList.get(i));
+        adapter = new StoreManageDiscountAdapter(getContext(),notRemovedList);
         lv.setAdapter(adapter);
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_discount_tb_toolbar);
