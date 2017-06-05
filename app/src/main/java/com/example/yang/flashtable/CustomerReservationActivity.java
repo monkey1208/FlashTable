@@ -273,7 +273,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         Intent intent = new Intent(CustomerReservationActivity.this, CustomerRatingActivity.class);
         intent.putExtra("shop", shop_name);
         intent.putExtra("shop_location", "");
-        intent.putExtra("shop_id", 0);
+        intent.putExtra("shop_id", shop_id);
         startActivity(intent);
         CustomerReservationActivity.this.finish();
     }
