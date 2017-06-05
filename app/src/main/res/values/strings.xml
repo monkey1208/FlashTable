@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">Flash Table</string>
 
-    <string name="server_domain">flash-table.herokuapp.com</string>
+    <string name="server_domain">http://35.186.159.16/</string>
+    <string name="server_ip">35.186.159.16</string>
+    <string name="server_acc">service_flashtable</string>
+    <string name="server_pwd">service_flashtable</string>
 
     <string name="title_activity_customer_main">CustomerMainActivity</string>
 

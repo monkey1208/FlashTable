@@ -435,7 +435,7 @@ public class CustomerParentMainFragment extends Fragment {
 
                 String shop_rating;
                 try {
-                    HttpGet requestShopRating = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + list.get(i).shop_id);
+                    HttpGet requestShopRating = new HttpGet(getString(R.string.server_domain)+"api/shop_comments?shop_id=" + list.get(i).shop_id);
                     requestShopRating.addHeader("Content-Type", "application/json");
                     JSONArray responseShopRating = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(requestShopRating)));
                     status = responseShopRating.getJSONObject(0).getString("status_code");
@@ -476,7 +476,7 @@ public class CustomerParentMainFragment extends Fragment {
             ArrayList<Description> list = new ArrayList<>();
             NameValuePair nameValuePair = new BasicNameValuePair("location", latlng);
             String s = nameValuePair.toString();
-            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/surrounding_promotions"+"?"+s);
+            HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/surrounding_promotions"+"?"+s);
             request.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse http_response = httpClient.execute(request);
@@ -493,7 +493,7 @@ public class CustomerParentMainFragment extends Fragment {
                         nameValuePair = null;
                         nameValuePair = new BasicNameValuePair("promotion_id", id);
                         s = nameValuePair.toString();
-                        request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/promotion_info"+"?"+s);
+                        request = new HttpGet(getString(R.string.server_domain)+"api/promotion_info"+"?"+s);
                         request.addHeader("Content-Type", "application/json");
                         http_response = httpClient.execute(request);
                         json = handler.handleResponse(http_response);

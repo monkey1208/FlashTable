@@ -74,6 +74,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
     private class ApiUpdate extends AsyncTask<String, String, String>{
         HttpClient httpClient = new DefaultHttpClient();
 
+
         @Override
         protected String doInBackground(String... strings) {
             //check data version
@@ -109,7 +110,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
         }
 
         private void getServerShop(){
-            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/flash_shops");
+            HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/flash_shops");
             request.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse http_response = httpClient.execute(request);
@@ -125,7 +126,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                     List<NameValuePair> params = new ArrayList<>();
                     params.add(new BasicNameValuePair("shop_id", id));
                     String paramsString = URLEncodedUtils.format(params, "UTF-8");
-                    request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/shop_info"+"?"+paramsString);
+                    request = new HttpGet(getString(R.string.server_domain)+"api/shop_info"+"?"+paramsString);
                     http_response = httpClient.execute(request);
                     String shop_json = handler.handleResponse(http_response);
                     Log.d(getLocalClassName(), shop_json);
@@ -187,7 +188,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
         }
 
         private String checkServerVersion(){
-            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/check_version");
+            HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/check_version");
             request.addHeader("Content-Type", "application/json");
             String version = "";
             try {
@@ -246,7 +247,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("user_id", getUserId()));
             params.add(new BasicNameValuePair("verbose", "1"));
-            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+ URLEncodedUtils.format(params, "utf-8"));
+            HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/user_sessions?"+ URLEncodedUtils.format(params, "utf-8"));
             request.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse response = httpClient.execute(request);

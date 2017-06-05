@@ -116,7 +116,7 @@ public class CustomerCouponCodeActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet request = new HttpGet(
-                        "https://flash-table.herokuapp.com/api/code_info?code_id=" + value[0]);
+                        getString(R.string.server_domain)+"api/code_info?code_id=" + value[0]);
                 request.addHeader("Content-Type", "application/json");
                 HttpResponse response = httpClient.execute(request);
                 ResponseHandler<String> handler = new BasicResponseHandler();
