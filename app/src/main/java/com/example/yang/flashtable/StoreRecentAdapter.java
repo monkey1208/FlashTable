@@ -101,8 +101,6 @@ public class StoreRecentAdapter extends BaseAdapter{
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         StoreMainActivity.fragmentController.storeRecentFragment.removeItem(position);
-                        StoreMainActivity.fragmentController.storeRecentFragment.getView().setClickable(true);
-
                     }
                     @Override
                     public void onAnimationRepeat(Animation animation) {
@@ -117,7 +115,28 @@ public class StoreRecentAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 new APIHandler().postRequestDeny(list.get(position).id,list.get(position).name);
-                StoreMainActivity.fragmentController.storeRecentFragment.removeItem(position);
+                finalHolder.im_confirmed.setImageResource(R.drawable.ic_confirmed_false);
+                list.get(position).isDelete = true;
+                Log.d("Animation","Start");
+                //Animation anim = new TranslateAnimation(100f,100.0f,0.0f,0.0f);
+                Animation anim = AnimationUtils.loadAnimation(context,R.anim.store_slide_left2right);
+                anim.setDuration(500);
+                anim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        StoreMainActivity.fragmentController.storeRecentFragment.removeItem(position);
+                    }
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                finalHolder.im_confirmed.startAnimation(anim);
+                Log.d("Animation","End");
             }
         });
         holder.bt_confirm.setTag(this);

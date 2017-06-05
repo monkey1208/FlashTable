@@ -110,7 +110,10 @@ public class StoreAppointFragment extends ListFragment {
         Collections.reverse(delete);
         for(int i=0;i<delete.size();i++)
             list.remove(delete.get(i).intValue());
-
+        int size = list.size();
+        if(size>9)
+            size = 10;
+        StoreMainActivity.appointUpdateNumber(size);
         adapter.notifyDataSetChanged();
         return 0;
     }

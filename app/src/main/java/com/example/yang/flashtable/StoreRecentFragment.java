@@ -89,6 +89,10 @@ public class StoreRecentFragment extends Fragment {
     public synchronized void removeItem(int position){
         selected = position;
         list.remove(position);
+        int size = list.size();
+        if(size>9)
+            size = 10;
+        StoreMainActivity.recentUpdateNumber(size);
         adapter.notifyDataSetChanged();
     }
 
