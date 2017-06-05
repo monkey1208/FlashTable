@@ -70,9 +70,11 @@ public class CustomerCouponRecordFragment extends Fragment {
         lv_records.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getActivity(), CustomerCouponCodeActivity.class);
-                intent.putExtra("code_id", records.get(i).code_id);
-                startActivity(intent);
+                if (position == 1) {
+                    Intent intent = new Intent(getActivity(), CustomerCouponCodeActivity.class);
+                    intent.putExtra("code_id", records.get(i).code_id);
+                    startActivity(intent);
+                }
             }
         });
 
