@@ -66,7 +66,7 @@ public class CustomerMainActivity extends AppCompatActivity
     }
 
     // Change setFragment to navigate for more general-purposed naming
-    private void navigate(String input){
+    public void navigate(String input){
         switch (input){
             case "main":
                 fragment = new CustomerParentMainFragment();
