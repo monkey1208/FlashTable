@@ -53,12 +53,14 @@ public class BackGroundWorker {
     }
     public class APIRequestUpdate extends AsyncTask<String, Void, Void> {
         private List<Integer> request_id = new ArrayList<>();
+        private int total;
         @Override
         protected Void doInBackground(String... params) {
             final HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_requests?shop_id="+params[0]+"&verbose=1");
                 final JSONArray responseRequest = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(get)));
+                total = responseRequest.length()-1;
                 for(int i=1;i<responseRequest.length();i++) {
                     JSONObject object = responseRequest.getJSONObject(i);
                     int id  = object.getInt("request_id");
@@ -125,6 +127,9 @@ public class BackGroundWorker {
                     request_id.clear();
                 }
             }).start();
+            if(total>9)
+                total =10;
+            StoreMainActivity.recentUpdateNumber(total);
         }
     }
     private class ImageDownloader extends AsyncTask<String, Void, Bitmap> {

@@ -134,12 +134,14 @@ public class StoreAppointFragment extends ListFragment {
     }
     public class API_Refresh extends AsyncTask<String,Void,Void>{
         List<ReservationInfo> infos = new ArrayList<>();
+        private int total;
         @Override
         protected Void doInBackground(String... params) {
             try {
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_sessions?shop_id="+params[0]+"&verbose=1");
                 JSONArray sessions = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(get)));
+                total = sessions.length()-1;
                 for(int i=1;i<sessions.length();i++){
                     JSONObject session = sessions.getJSONObject(i);
                     int id = session.getInt("session_id");
@@ -151,7 +153,10 @@ public class StoreAppointFragment extends ListFragment {
                     if(due_time != null)
                         Log.d("Session",Long.toString(due_time.getTime()));
                     ReservationInfo info = new ReservationInfo(id,name,number,due_time.getTime(),promotion_id,url);
-                    infos.add(info);
+                    if(System.currentTimeMillis() - info.due_time < 85500000)
+                        infos.add(info);
+                    else
+                        total--;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -202,6 +207,9 @@ public class StoreAppointFragment extends ListFragment {
                     Log.d("Session","Refresh "+Integer.toString(list.size()));
                 }
             }).start();
+            if(total>9)
+                total=10;
+            StoreMainActivity.appointUpdateNumber(total);
         }
     }
     private Date stringToDate(String aDate, String aFormat) {

@@ -10,7 +10,7 @@ import android.widget.ImageButton;
 
 public class StoreMainActivity extends AppCompatActivity{
 
-    private ImageButton[] button;
+    private static ImageButton[] button;
     public static StoreInfo storeInfo;
 
     private static final int PRIM_FRAG = 4;
@@ -111,5 +111,81 @@ public class StoreMainActivity extends AppCompatActivity{
     protected void onDestroy(){
         Log.d("Destroy","Destroyed");
         super.onDestroy();
+    }
+
+    public static void recentUpdateNumber(int num){
+        switch(num){
+            case 0:
+                button[RECENT].setImageResource(R.drawable.bt_recent);
+                break;
+            case 1:
+                button[RECENT].setImageResource(R.drawable.recent_red_dot_1);
+                break;
+            case 2:
+                button[RECENT].setImageResource(R.drawable.recent_red_dot_2);
+                break;
+            case 3:
+                button[RECENT].setImageResource(R.drawable.recent_red_dot_3);
+                break;
+            case 4:
+                button[RECENT].setImageResource(R.drawable.recent_red_dot_4);
+                break;
+            case 5:
+                button[RECENT].setImageResource(R.drawable.recent_red_dot_5);
+                break;
+            case 6:
+                button[RECENT].setImageResource(R.drawable.recent_red_dot_6);
+                break;
+            case 7:
+                button[RECENT].setImageResource(R.drawable.recent_red_dot_7);
+                break;
+            case 8:
+                button[RECENT].setImageResource(R.drawable.recent_red_dot_8);
+                break;
+            case 9:
+                button[RECENT].setImageResource(R.drawable.recent_red_dot_9);
+                break;
+            case 10:
+                button[RECENT].setImageResource(R.drawable.recent_red_dot_10);
+                break;
+        }
+        return;
+    }
+    public static void appointUpdateNumber(int num){
+        switch(num){
+            case 0:
+                button[APPOINT].setImageResource(R.drawable.bt_appoint);
+                break;
+            case 1:
+                button[APPOINT].setImageResource(R.drawable.appoint_red_dot_1);
+                break;
+            case 2:
+                button[APPOINT].setImageResource(R.drawable.appoint_red_dot_2);
+                break;
+            case 3:
+                button[APPOINT].setImageResource(R.drawable.appoint_red_dot_3);
+                break;
+            case 4:
+                button[APPOINT].setImageResource(R.drawable.appoint_red_dot_4);
+                break;
+            case 5:
+                button[APPOINT].setImageResource(R.drawable.appoint_red_dot_5);
+                break;
+            case 6:
+                button[APPOINT].setImageResource(R.drawable.appoint_red_dot_6);
+                break;
+            case 7:
+                button[APPOINT].setImageResource(R.drawable.appoint_red_dot_7);
+                break;
+            case 8:
+                button[APPOINT].setImageResource(R.drawable.appoint_red_dot_8);
+                break;
+            case 9:
+                button[APPOINT].setImageResource(R.drawable.appoint_red_dot_9);
+                break;
+            case 10:
+                button[APPOINT].setImageResource(R.drawable.appoint_red_dot_10);
+                break;
+        }
     }
 }
