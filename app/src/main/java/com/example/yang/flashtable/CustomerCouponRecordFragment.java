@@ -97,7 +97,7 @@ public class CustomerCouponRecordFragment extends Fragment {
         protected Void doInBackground(String ...value) {
             NameValuePair user = new BasicNameValuePair("user_id", value[0]);
             NameValuePair param = new BasicNameValuePair("verbose", "1");
-            HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_codes?"
+            HttpGet httpGet = new HttpGet(getString(R.string.server_domain) + "/api/user_codes?"
                     + user.toString() + "&"+ param.toString());
             httpGet.addHeader("Content-Type", "application/json");
             try {
@@ -142,7 +142,7 @@ public class CustomerCouponRecordFragment extends Fragment {
         protected Void doInBackground(String ...value) {
             NameValuePair user = new BasicNameValuePair("user_id", value[0]);
             NameValuePair param = new BasicNameValuePair("verbose", "1");
-            HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_records?"
+            HttpGet httpGet = new HttpGet(getString(R.string.server_domain) + "/api/user_records?"
                     + user.toString() + "&"+ param.toString());
             httpGet.addHeader("Content-Type", "application/json");
             try {
