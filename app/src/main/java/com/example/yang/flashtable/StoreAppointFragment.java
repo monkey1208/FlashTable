@@ -62,7 +62,7 @@ public class StoreAppointFragment extends ListFragment {
                 newList.add(list.get(i));
         list.clear();
         list = newList;
-        adapter = new StoreAppointAdapter(getContext(), list);
+        adapter = new StoreAppointAdapter(getContext(), list,getString(R.string.server_domain));
         setListAdapter(adapter);
         Toolbar bar = (Toolbar)v.findViewById(R.id.shop_toolbar);
 
@@ -142,7 +142,7 @@ public class StoreAppointFragment extends ListFragment {
         protected Void doInBackground(String... params) {
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_sessions?shop_id="+params[0]+"&verbose=1");
+                HttpGet get = new HttpGet(getString(R.string.server_domain)+"api/shop_sessions?shop_id="+params[0]+"&verbose=1");
                 JSONArray sessions = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(get)));
                 total = sessions.length()-1;
                 for(int i=1;i<sessions.length();i++){

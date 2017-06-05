@@ -96,7 +96,7 @@ public class StoreManageCommentFragment extends ListFragment {
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + params[0] +"&verbose=1");
+                HttpGet request = new HttpGet(getString(R.string.server_domain)+"/api/shop_comments?shop_id=" + params[0] +"&verbose=1");
                 request.addHeader("Content-Type", "application/json");
                 JSONArray responseJSON = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
                 status = responseJSON.getJSONObject(0).getString("status_code");

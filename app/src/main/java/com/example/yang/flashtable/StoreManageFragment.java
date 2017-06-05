@@ -62,7 +62,7 @@ public class StoreManageFragment extends ListFragment {
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                new AlertDialogController().confirmCancelDialog(getContext(), "提醒", "確定要登出嗎？", LOGOUT, -1);
+                new AlertDialogController(getString(R.string.server_domain)).confirmCancelDialog(getContext(), "提醒", "確定要登出嗎？", LOGOUT, -1);
                 return true;
             }
         };
@@ -119,7 +119,7 @@ public class StoreManageFragment extends ListFragment {
         protected Void doInBackground(String...params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getShopInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_info?shop_id="+shop_id);
+                HttpGet getShopInfo = new HttpGet(getString(R.string.server_domain)+"/api/shop_info?shop_id="+shop_id);
                 JSONObject shopInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getShopInfo)));
                 if(shopInfo.getInt("status_code") == 0){
                     StoreMainActivity.storeInfo.setContract_fee(shopInfo.getInt("contract_fee"));
@@ -136,7 +136,7 @@ public class StoreManageFragment extends ListFragment {
         @Override
         protected void onPostExecute(Void _params){
             if(exception) {
-                new AlertDialogController().warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
             }
         }
     }
@@ -158,7 +158,7 @@ public class StoreManageFragment extends ListFragment {
             list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getRecordsInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ shop_id+"&verbose=1");
+                HttpGet getRecordsInfo = new HttpGet(getString(R.string.server_domain)+"/api/shop_records?shop_id="+ shop_id+"&verbose=1");
                 JSONArray recordsInfo = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordsInfo)));
                 for (int i = 1; i < recordsInfo.length(); i++) {
                     JSONObject recordInfo = recordsInfo.getJSONObject(i);
@@ -225,7 +225,7 @@ public class StoreManageFragment extends ListFragment {
                     e.printStackTrace();
                 }
             }else{
-                new AlertDialogController().warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
             }
         }
     }

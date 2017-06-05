@@ -109,7 +109,7 @@ public class StoreManageRecordFragment extends ListFragment {
             int origin_size = tmp_list.size();
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getRecordsInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+ shop_id+"&verbose=1");
+                HttpGet getRecordsInfo = new HttpGet(getString(R.string.server_domain)+"/api/shop_records?shop_id="+ shop_id+"&verbose=1");
                 JSONArray recordsInfo = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordsInfo)));
                 int new_size = recordsInfo.getJSONObject(0).getInt("size");
                 if(new_size <= origin_size){

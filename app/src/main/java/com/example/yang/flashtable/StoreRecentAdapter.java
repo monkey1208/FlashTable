@@ -30,11 +30,13 @@ public class StoreRecentAdapter extends BaseAdapter{
     private Context context;
     private List<CustomerAppointInfo> list = new ArrayList<>();
     private LayoutInflater layoutInflater;
+    private String domain;
 
-    public StoreRecentAdapter(Context context,List<CustomerAppointInfo> list){
+    public StoreRecentAdapter(Context context,List<CustomerAppointInfo> list,String domain){
         this.context =context;
         this.list = list;
         layoutInflater = LayoutInflater.from(context);
+        this.domain = domain;
     }
     @Override
     public int getCount() {
@@ -85,7 +87,7 @@ public class StoreRecentAdapter extends BaseAdapter{
         holder.bt_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StoreMainActivity.storeInfo.addAppointment(info);
+                StoreMainActivity.storeInfo.addAppointment(info,domain);
                 //finalHolder.background.setBackgroundResource(R.drawable.ic_confirmed);
                 finalHolder.im_confirmed.setImageResource(R.drawable.ic_confirmed);
                 list.get(position).isDelete = true;
@@ -114,7 +116,7 @@ public class StoreRecentAdapter extends BaseAdapter{
         holder.bt_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new APIHandler().postRequestDeny(list.get(position).id,list.get(position).name);
+                new APIHandler(domain).postRequestDeny(list.get(position).id,list.get(position).name);
                 finalHolder.im_confirmed.setImageResource(R.drawable.ic_confirmed_false);
                 list.get(position).isDelete = true;
                 Log.d("Animation","Start");

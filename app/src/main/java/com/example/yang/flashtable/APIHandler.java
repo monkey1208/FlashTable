@@ -38,8 +38,11 @@ public class APIHandler {
     private boolean isActive = false;
     private boolean stat = false;
     private int sum = 0;
+    private static String domain_name;
 
-    public APIHandler(){};
+    public APIHandler(String domain){
+        this.domain_name = domain;
+    };
 
     public void postPromotionInactive(){
         new APIpromotion_inactive().execute(Integer.toString(StoreMainActivity.storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
@@ -66,7 +69,7 @@ public class APIHandler {
         protected Void doInBackground(String... params) {
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/cancel_request");
+                HttpPost post = new HttpPost(domain_name+"api/cancel_request");
                 List<NameValuePair> param = new ArrayList<NameValuePair>();
                 param.add(new BasicNameValuePair("request_id",params[0]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
@@ -93,7 +96,7 @@ public class APIHandler {
             number = params[2];
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/accept_request");
+                HttpPost post = new HttpPost(domain_name+"api/accept_request");
                 List<NameValuePair> param = new ArrayList<NameValuePair>();
                 param.add(new BasicNameValuePair("request_id",params[0]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
@@ -133,7 +136,7 @@ public class APIHandler {
         protected Void doInBackground(String... params) {
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/cancel_session");
+                HttpPost post = new HttpPost(domain_name+"api/cancel_session");
                 List<NameValuePair> param = new ArrayList<NameValuePair>();
                 param.add(new BasicNameValuePair("session_id",params[0]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
@@ -157,7 +160,7 @@ public class APIHandler {
         protected Void doInBackground(String... params) {
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/inactivate_promotion");
+                HttpPost post = new HttpPost(domain_name+"api/inactivate_promotion");
                 List<NameValuePair> param = new ArrayList<NameValuePair>();
                 param.add(new BasicNameValuePair("promotion_id",params[0]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
@@ -185,7 +188,7 @@ public class APIHandler {
         protected Void doInBackground(String... params) {
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/new_promotion");
+                HttpPost post = new HttpPost(domain_name+"api/new_promotion");
                 List<NameValuePair> param = new ArrayList<NameValuePair>();
                 description = params[0];
                 param.add(new BasicNameValuePair("name", "11"));

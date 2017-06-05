@@ -26,6 +26,7 @@ public class StoreAppointAdapter extends BaseAdapter{
     private List<ReservationInfo> list = new ArrayList<>();
     private Context context;
     private Handler handler = new Handler();
+    String domain;
     private Runnable countDownRunnable = new Runnable() {
         @Override
         public void run() {
@@ -42,10 +43,11 @@ public class StoreAppointAdapter extends BaseAdapter{
     private static final int TIMEOUT = 0;
     private static final int WAITING = 1;
 
-    public StoreAppointAdapter(Context context, List<ReservationInfo> reservation_list) {
+    public StoreAppointAdapter(Context context, List<ReservationInfo> reservation_list,String domain) {
         this.context = context;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.list = reservation_list;
+        this.domain = domain;
         countDown();
     }
     @Override
@@ -126,7 +128,7 @@ public class StoreAppointAdapter extends BaseAdapter{
                 @Override
                 public void onClick(View v) {
                     Log.d("PressButton","Pressed"+Integer.toString(position));
-                    new AlertDialogController().confirmCancelDialog(context,"提醒","選擇未見該客戶\n將扣除客戶的信譽分數喔",AlertDialogController.NOTICE1_APPOINT,position);
+                    new AlertDialogController(domain).confirmCancelDialog(context,"提醒","選擇未見該客戶\n將扣除客戶的信譽分數喔",AlertDialogController.NOTICE1_APPOINT,position);
                 }
             });
             if(info.picture != null)

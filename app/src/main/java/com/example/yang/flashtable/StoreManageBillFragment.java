@@ -77,7 +77,7 @@ public class StoreManageBillFragment extends Fragment {
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-                new AlertDialogController().confirmCancelDialog(getContext(), "提醒", "確定要登出嗎？", LOGOUT, -1);
+                new AlertDialogController(getString(R.string.server_domain)).confirmCancelDialog(getContext(), "提醒", "確定要登出嗎？", LOGOUT, -1);
                 return true;
             }
         };
@@ -227,7 +227,7 @@ public class StoreManageBillFragment extends Fragment {
             int origin_size = list.size();
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getRecordsInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_records?shop_id="+shop_id+"&verbose=1");
+                HttpGet getRecordsInfo = new HttpGet(R.string.server_domain+"/api/shop_records?shop_id="+shop_id+"&verbose=1");
                 JSONArray recordsInfo = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordsInfo)));
                 int new_size = recordsInfo.getJSONObject(0).getInt("size");
                 if(new_size <= origin_size){
@@ -278,12 +278,12 @@ public class StoreManageBillFragment extends Fragment {
                     }
                     StoreMainActivity.storeInfo.setSuccess_record_num(sum);
                 } catch (Exception e) {
-                    new AlertDialogController().warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+                    new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
                     e.printStackTrace();
                 }
                 setValues(view);
             }else{
-                new AlertDialogController().warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
             }
             progress_dialog.dismiss();
         }
@@ -295,7 +295,7 @@ public class StoreManageBillFragment extends Fragment {
         protected Void doInBackground(String...params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getShopInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_info?shop_id="+shop_id);
+                HttpGet getShopInfo = new HttpGet(getString(R.string.server_domain)+"/api/shop_info?shop_id="+shop_id);
                 JSONObject shopInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getShopInfo)));
                 if(shopInfo.getInt("status_code") == 0){
                     contract_fee = shopInfo.getInt("contract_fee");
@@ -312,7 +312,7 @@ public class StoreManageBillFragment extends Fragment {
         @Override
         protected void onPostExecute(Void _params){
             if(exception) {
-                new AlertDialogController().warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
             }
         }
     }

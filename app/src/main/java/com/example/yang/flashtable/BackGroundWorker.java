@@ -1,6 +1,7 @@
 package com.example.yang.flashtable;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -30,6 +31,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import static com.example.yang.flashtable.R.string.server_domain;
+
 public class BackGroundWorker {
 
     private List<CustomerAppointInfo> newInfoList = new ArrayList<>();
@@ -39,12 +42,12 @@ public class BackGroundWorker {
     public BackGroundWorker(Context context){
         this.context = context;
     }
-    public void updateRequestList(){
+    public void updateRequestList(final String domain){
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                new APIRequestUpdate().execute(StoreMainActivity.storeInfo.id);
+                new APIRequestUpdate(domain).execute(StoreMainActivity.storeInfo.id);
             }
         },0,5000);
     }
@@ -53,12 +56,17 @@ public class BackGroundWorker {
     }
     public class APIRequestUpdate extends AsyncTask<String, Void, Void> {
         private List<Integer> request_id = new ArrayList<>();
+        private String domain;
         private int total;
+
+        public APIRequestUpdate(String domain){
+            this.domain =domain;
+        }
         @Override
         protected Void doInBackground(String... params) {
             final HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_requests?shop_id="+params[0]+"&verbose=1");
+                HttpGet get = new HttpGet(domain +"api/shop_requests?shop_id="+params[0]+"&verbose=1");
                 final JSONArray responseRequest = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(get)));
                 total = responseRequest.length()-1;
                 for(int i=1;i<responseRequest.length();i++) {

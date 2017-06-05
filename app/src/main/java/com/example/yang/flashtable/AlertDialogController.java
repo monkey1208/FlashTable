@@ -51,9 +51,12 @@ public class AlertDialogController {
     public int result = 0;
     private boolean first = true;
     private String discountDes;
+    private String domain;
     private int discountNameChoose = -1; //-1=no choose, 0=no discount, 1=have discount
 
-
+    public AlertDialogController(String domain){
+        this.domain = domain;
+    }
     public AlertDialog discountDialog(final Context context, final StoreInfo storeInfo, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind){
         //init view---------
         View item = LayoutInflater.from(context).inflate(R.layout.store_discount_list, null);
@@ -244,7 +247,7 @@ public class AlertDialogController {
                     case NOTICELIST_APPOINT:
                         //TODO: send FAIL msg
                         Log.d("Accept","Denying "+Integer.toString(StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id));
-                        new APIHandler().postSessionDeny(StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id);
+                        new APIHandler(domain).postSessionDeny(StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id);
                         List<Integer> deleteList = new ArrayList<Integer>();
                         deleteList.add(position);
                         Log.e("Appoint Delete",Integer.toString(deleteList.get(0)));
@@ -294,7 +297,7 @@ public class AlertDialogController {
                         break;
                     case NOTICELIST_APPOINT:
                         //TODO: send FAIL msg
-                        new APIHandler().postSessionDeny( StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id);
+                        new APIHandler(domain).postSessionDeny( StoreMainActivity.fragmentController.storeAppointFragment.getItem(position).id);
                         List<Integer> deleteList = new ArrayList<Integer>();
                         deleteList.add(position);
                         StoreMainActivity.fragmentController.storeAppointFragment.removeItem(deleteList);
