@@ -70,9 +70,11 @@ public class CustomerCouponRecordFragment extends Fragment {
         lv_records.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getActivity(), CustomerCouponCodeActivity.class);
-                intent.putExtra("code_id", records.get(i).code_id);
-                startActivity(intent);
+                if (position == 1) {
+                    Intent intent = new Intent(getActivity(), CustomerCouponCodeActivity.class);
+                    intent.putExtra("code_id", records.get(i).code_id);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -97,7 +99,7 @@ public class CustomerCouponRecordFragment extends Fragment {
         protected Void doInBackground(String ...value) {
             NameValuePair user = new BasicNameValuePair("user_id", value[0]);
             NameValuePair param = new BasicNameValuePair("verbose", "1");
-            HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_codes?"
+            HttpGet httpGet = new HttpGet(getString(R.string.server_domain) + "/api/user_codes?"
                     + user.toString() + "&"+ param.toString());
             httpGet.addHeader("Content-Type", "application/json");
             try {
@@ -142,7 +144,7 @@ public class CustomerCouponRecordFragment extends Fragment {
         protected Void doInBackground(String ...value) {
             NameValuePair user = new BasicNameValuePair("user_id", value[0]);
             NameValuePair param = new BasicNameValuePair("verbose", "1");
-            HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_records?"
+            HttpGet httpGet = new HttpGet(getString(R.string.server_domain) + "/api/user_records?"
                     + user.toString() + "&"+ param.toString());
             httpGet.addHeader("Content-Type", "application/json");
             try {

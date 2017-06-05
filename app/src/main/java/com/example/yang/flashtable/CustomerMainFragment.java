@@ -344,6 +344,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
         HttpClient httpClient = new DefaultHttpClient();
         ArrayList<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
         private String status = null;
+        private String shop_rating;
 
         @Override
         protected void onPreExecute() {
@@ -367,7 +368,6 @@ public class CustomerMainFragment extends Fragment implements Observer {
                 info.offer = list.get(i).offer;
                 info.promotion_id = list.get(i).promotion_id;
                 info.date = list.get(i).date;
-
                 String shop_rating = "0";
                 try {
                     if(isCancelled())
@@ -392,6 +392,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
 
         @Override
         protected void onPostExecute(String s) {
+
             closeDB();
             if(restaurant_list != null)
                 restaurant_list.clear();
@@ -399,7 +400,6 @@ public class CustomerMainFragment extends Fragment implements Observer {
             setListView();
             swipe_refresh_layout.setRefreshing(false);
             super.onPostExecute(s);
-
         }
 
         private ArrayList<Description> getPromotionId(String latlng){

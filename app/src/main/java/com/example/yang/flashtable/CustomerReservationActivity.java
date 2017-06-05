@@ -273,7 +273,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         Intent intent = new Intent(CustomerReservationActivity.this, CustomerRatingActivity.class);
         intent.putExtra("shop", shop_name);
         intent.putExtra("shop_location", "");
-        intent.putExtra("shop_id", 0);
+        intent.putExtra("shop_id", shop_id);
         startActivity(intent);
         CustomerReservationActivity.this.finish();
     }
@@ -376,7 +376,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         HttpClient httpClient = new DefaultHttpClient();
         @Override
         protected String doInBackground(Void... voids) {
-            HttpPost httpPost = new HttpPost("http://"+getString(R.string.server_domain)+"/api/new_request");
+            HttpPost httpPost = new HttpPost(getString(R.string.server_domain)+"/api/new_request");
             List<NameValuePair> params = new ArrayList<>();
             System.out.println("userid="+getUserId()+"  promotion_id="+promotion_id);
             params.add(new BasicNameValuePair("user_id", getUserId()));
@@ -619,10 +619,10 @@ public class CustomerReservationActivity extends AppCompatActivity {
             HttpPost httpPost;
             if(request_session_flag) {
                 NameValuePair param = new BasicNameValuePair("request_id", id[0]);
-                httpPost = new HttpPost("http://" + getString(R.string.server_domain) + "/api/cancel_request?" + param.toString());
+                httpPost = new HttpPost(getString(R.string.server_domain) + "/api/cancel_request?" + param.toString());
             }else{
                 NameValuePair param = new BasicNameValuePair("session_id", id[0]);
-                httpPost = new HttpPost("http://" + getString(R.string.server_domain) + "/api/cancel_session?" + param.toString());
+                httpPost = new HttpPost(getString(R.string.server_domain) + "/api/cancel_session?" + param.toString());
             }
             httpPost.addHeader("Content-Type", "application/json");
             try {
@@ -648,7 +648,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             NameValuePair param = new BasicNameValuePair("user_id", getUserId());
-            HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_records?" + param.toString());
+            HttpGet httpGet = new HttpGet(getString(R.string.server_domain) + "/api/user_records?" + param.toString());
             httpGet.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse httpResponse = httpClient.execute(httpGet);
@@ -660,7 +660,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     int last = Integer.valueOf(jsonObject.get("size").toString());
                     String record_id = jsonArray.getJSONObject(last).getString("record_id");
                     param = new BasicNameValuePair("record_id", record_id);
-                    httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/record_info?" + param.toString());
+                    httpGet = new HttpGet(getString(R.string.server_domain) + "/api/record_info?" + param.toString());
                     httpResponse = httpClient.execute(httpGet);
                     json = handler.handleResponse(httpResponse);
                     System.out.println("record:"+json);

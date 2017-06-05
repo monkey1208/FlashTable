@@ -210,7 +210,7 @@ public class CustomerRegisterActivity extends AppCompatActivity {
         String cellphone =
                 "+886-" + et_cellphone_2.getText().toString().substring(1)
                 + "-" + et_cellphone_3.getText().toString()
-                + "-" + et_cellphone_3.getText().toString();
+                + "-" + et_cellphone_4.getText().toString();
 
         if (!isAccountValid(account))
             fail = 1;

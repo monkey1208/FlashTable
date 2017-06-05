@@ -137,6 +137,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         intent.putExtra("shop", reservations.get(current_record).shop);
         intent.putExtra("shop_location", reservations.get(current_record).location);
         intent.putExtra("shop_id", Integer.toString(reservations.get(current_record).shop_id));
+        intent.putExtra("record_id", reservations.get(current_record).record_id);
         startActivity(intent);
     }
 
@@ -253,17 +254,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         if( !status.equals("0") )   break;
                         String promotion_discount = responsePromotion.getString("name");
                         String promotion_gift = responsePromotion.getString("description");
-                        /*
-                        HttpGet requestShop = new HttpGet(getString(R.string.server_domain)+"api/shop_info?shop_id=" + shop_id);
-                        requestShop.addHeader("Content-Type", "application/json");
-                        JSONObject responseShop = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestShop) ) );
-                        status = responseShop.getString("status_code");
-                        if( !status.equals("0") )   break;
-                        String shop_name = responseShop.getString("name");
-                        String shop_address = responseShop.getString("address");
-                        String shop_intro = responseShop.getString("intro");
-                        String shop_category = responseShop.getString("tag");
-                        */
+
                         CustomerRestaurantInfo info = sqlHandler.getDetail(Integer.valueOf(shop_id));
                         String shop_name = info.name;
                         String shop_address = info.address;
@@ -311,12 +302,15 @@ public class CustomerDetailActivity extends AppCompatActivity {
         protected Boolean doInBackground(Integer... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/record_id?record_id=" + params[0]);
+                HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/record_info?record_id=" + params[0]);
                 request.addHeader("Content-Type", "application/json");
-                JSONArray responseJSON = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
-                String status = responseJSON.getJSONObject(0).getString("status_code");
+
+                JSONObject responseJSON = new JSONObject(
+                        new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
+                String status = responseJSON.getString("status_code");
                 if( status.equals("0") ) {
-                    return responseJSON.getJSONObject(0).getBoolean("is_used");
+                    return responseJSON.
+                            getString("is_used").equals("true");
                 }
             } catch (Exception e) {
                 Log.d("GetCode", "Request exception:" + e.getMessage());
