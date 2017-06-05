@@ -194,7 +194,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
         @Override
         protected Void doInBackground(String ...value) {
             NameValuePair param = new BasicNameValuePair("user_id", value[0]);
-            HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_info?" + param.toString());
+            HttpGet httpGet = new HttpGet(getString(R.string.server_domain) + "/api/user_info?" + param.toString());
             httpGet.addHeader("Content-Type", "application/json");
             try {
                 HttpClient httpClient = new DefaultHttpClient();
@@ -219,7 +219,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
         @Override
         protected void onPostExecute(Void params) {
 //            progress_dialog.dismiss();
-            Log.e("UserInfo", status);
+//            Log.e("UserInfo", status);
 
             //get points
             tv_points.setText(Integer.toString(points));
@@ -239,7 +239,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
         @Override
         protected Void doInBackground(Void ...value) {
             NameValuePair param = new BasicNameValuePair("verbose", "1");
-            HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/flash_coupons?" + param.toString());
+            HttpGet httpGet = new HttpGet(getString(R.string.server_domain) + "/api/flash_coupons?" + param.toString());
             httpGet.addHeader("Content-Type", "application/json");
             try {
                 HttpClient httpClient = new DefaultHttpClient();

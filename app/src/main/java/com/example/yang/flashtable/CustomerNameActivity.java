@@ -113,7 +113,7 @@ public class CustomerNameActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpPost request = new HttpPost(
-                        "https://" + getString(R.string.server_domain) + "/api/modify_user");
+                        getString(R.string.server_domain) + "api/modify_user");
                 StringEntity se = new StringEntity("{ \"user_id\":\"" + params[0] +
                         "\", \"new_account\":\"" + params[1] + "\"}", HTTP.UTF_8);
                 request.addHeader("Content-Type", "application/json");

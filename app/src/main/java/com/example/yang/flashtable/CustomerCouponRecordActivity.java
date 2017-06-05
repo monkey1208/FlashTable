@@ -110,7 +110,7 @@ public class CustomerCouponRecordActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String ...value) {
             NameValuePair param = new BasicNameValuePair("user_id", value[0]);
-            HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_info?" + param.toString());
+            HttpGet httpGet = new HttpGet(getString(R.string.server_domain) + "/api/user_info?" + param.toString());
             httpGet.addHeader("Content-Type", "application/json");
             try {
                 HttpClient httpClient = new DefaultHttpClient();

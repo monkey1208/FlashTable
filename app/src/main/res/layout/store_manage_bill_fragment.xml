@@ -132,8 +132,9 @@
                 android:id="@+id/store_manage_bill_tv_success"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
+                android:layout_weight="1.2"
+                android:paddingEnd="5dp"
+                android:gravity="end|center_vertical"
                 android:textColor="@color/textColorOrangeDark"
                 android:text="" />
 
@@ -166,8 +167,9 @@
                 android:id="@+id/store_manage_bill_tv_money"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
+                android:layout_weight="1.2"
+                android:gravity="end|center_vertical"
+                android:paddingEnd="5dp"
                 android:textColor="@color/textColorOrangeDark"
                 android:text="" />
 
@@ -205,8 +207,9 @@
                 android:id="@+id/store_manage_bill_tv_totalmoney"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
+                android:layout_weight="1.2"
+                android:gravity="end|center_vertical"
+                android:paddingEnd="5dp"
                 android:textColor="@color/textColorOrangeDark"
                 android:text="" />
 

@@ -1,5 +1,6 @@
 package com.example.yang.flashtable;
 
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -47,6 +48,8 @@ public class StoreManageBillFragment extends Fragment {
     private String shop_id;
     private List<Date> dateList;
     private int contract_fee;
+    private Calendar currentDate;
+    private int half_month; // 0 == first half(1-15), 1 == second half(16~)
 
     public StoreManageBillFragment() {
         // Required empty public constructor
@@ -117,6 +120,7 @@ public class StoreManageBillFragment extends Fragment {
 
         //Get transactions detail, then set values
         new APITimeDetail().execute();
+        currentDate = Calendar.getInstance(Locale.getDefault());
 
         return view;
     }
@@ -128,6 +132,7 @@ public class StoreManageBillFragment extends Fragment {
 
     private void setValues(View v){
         Calendar today = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+        currentDate = Calendar.getInstance(Locale.getDefault());
         int thisYear = today.get(Calendar.YEAR);
         int thisMonth = today.get(Calendar.MONTH);
         int thisDay = today.get(Calendar.DAY_OF_MONTH);
@@ -141,9 +146,11 @@ public class StoreManageBillFragment extends Fragment {
         if(thisDay <= 15){
             start = 1;
             end = 15;
+            half_month = 0;
         }else{
             start = 16;
             end = today.getActualMaximum(Calendar.DAY_OF_MONTH);
+            half_month = 1;
         }
         tv_period.setText(String.format(Locale.TAIWAN, "%d/%02d/%02d - %d%02d/%02d", thisYear, thisMonth+1, start, thisYear, thisMonth+1,  end));
 
@@ -162,17 +169,57 @@ public class StoreManageBillFragment extends Fragment {
     }
 
     private void change_values(int command){
+        int start, end;
         if(command == PREV){
-
+            if(half_month == 0){
+                currentDate.add(Calendar.MONTH, -1);
+                half_month = 1;
+            }else{
+                half_month = 0;
+            }
         }else if(command == NEXT){
-
+            if(half_month == 0){
+                half_month = 1;
+            }else{
+                currentDate.add(Calendar.MONTH, 1);
+                half_month = 0;
+            }
         }
+
+        int currentYear = currentDate.get(Calendar.YEAR);
+        int currentMonth = currentDate.get(Calendar.MONTH) +1;
+        if(half_month == 0){
+            start = 1;
+            end = 15;
+        }else{
+            start = 16;
+            end = currentDate.getActualMaximum(Calendar.DAY_OF_MONTH);
+        }
+        tv_period.setText(String.format(Locale.TAIWAN, "%d/%02d/%02d - %d%02d/%02d", currentYear, currentMonth, start, currentYear, currentMonth,  end));
+        int num_succ = 0;
+        for(int i = dateList.size()-1; i >= 0; i--) {
+            Calendar date = Calendar.getInstance();
+            date.setTime(dateList.get(i));
+            if (date.get(Calendar.YEAR) == currentYear && (date.get(Calendar.MONTH)) == (currentMonth-1) &&
+                    start <= date.get(Calendar.DAY_OF_MONTH) && date.get(Calendar.DAY_OF_MONTH) <= end) {
+                num_succ++;
+            }
+        }
+        tv_success.setText(String.valueOf(num_succ));
+        tv_totalmoney.setText(String.valueOf(contract_fee*num_succ));
     }
 
     private class APITimeDetail extends AsyncTask<String, Void, Void> {
+        private ProgressDialog progress_dialog = new ProgressDialog(getContext());
         boolean new_record_flag = true;
         List<ReservationInfo> list;
         boolean exception = false;
+        @Override
+        protected void onPreExecute() {
+            progress_dialog.setCanceledOnTouchOutside(false);
+            progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
+            progress_dialog.show();
+        }
         @Override
         protected Void doInBackground(String...params) {
             list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
@@ -212,6 +259,7 @@ public class StoreManageBillFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(Void _params){
+
             if(!exception) {
                 if (new_record_flag) {
                     StoreMainActivity.storeInfo.setRecordList(list);
@@ -237,7 +285,7 @@ public class StoreManageBillFragment extends Fragment {
             }else{
                 new AlertDialogController().warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
             }
-
+            progress_dialog.dismiss();
         }
     }
 

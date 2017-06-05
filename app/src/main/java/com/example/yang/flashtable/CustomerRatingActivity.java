@@ -2,7 +2,9 @@ package com.example.yang.flashtable;
 
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,9 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.yang.flashtable.customer.database.SqlHandler;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -36,7 +41,7 @@ import java.util.List;
 public class CustomerRatingActivity extends AppCompatActivity {
 
     SharedPreferences user;
-    private String shop_id, user_id;
+    private String shop_id, user_id, record_id;
 
     DialogBuilder dialog_builder;
 
@@ -44,6 +49,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
     RatingBar rb_rating;
     EditText et_content;
     Button bt_submit;
+    ImageView iv_shop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +72,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
         rb_rating = (RatingBar) findViewById(R.id.customer_rating_rb_rating);
         et_content = (EditText) findViewById(R.id.customer_rating_et_content);
         bt_submit = (Button) findViewById(R.id.customer_rating_bt_submit);
+        iv_shop = (ImageView) findViewById(R.id.customer_rating_iv_shop);
     }
 
     private void initData() {
@@ -75,8 +82,10 @@ public class CustomerRatingActivity extends AppCompatActivity {
             tv_shop.setText(extras.getString("shop"));
             tv_location.setText(extras.getString("shop_location"));
             shop_id = extras.getString("shop_id");
+            record_id = String.valueOf(extras.getInt("record_id", -1));
         }
 
+        new ApiShopImage().execute();
         bt_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,12 +139,36 @@ public class CustomerRatingActivity extends AppCompatActivity {
                     new DialogEventListener() {
                         @Override
                         public void clickEvent(boolean ok, int status) {
-                            if (ok)
+                            if (ok) {
+                                Intent intent = new Intent(CustomerRatingActivity.this, CustomerMainActivity.class);
+                                startActivity(intent);
                                 CustomerRatingActivity.this.finish();
+                            }
                         }
                     });
         }
-        else finish();
+        else{
+            Intent intent = new Intent(CustomerRatingActivity.this, CustomerMainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    class ApiShopImage extends AsyncTask<String, Void, Void> {
+        SqlHandler sqlHandler = new SqlHandler(CustomerRatingActivity.this);
+        Bitmap image = null;
+
+        @Override
+        protected Void doInBackground(String... params) {
+            CustomerRestaurantInfo info = sqlHandler.getDetail(Integer.valueOf(shop_id));
+            image = info.getImage();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void _params) {
+            iv_shop.setImageBitmap(image);
+        }
     }
 
     class CustomerAPINewComment extends AsyncTask<String, Void, Void> {
@@ -156,11 +189,21 @@ public class CustomerRatingActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpPost request = new HttpPost(
-                        "https://flash-table.herokuapp.com/api/new_comment");
-                StringEntity se = new StringEntity("{ \"body\":\"" + params[0] +
-                        "\", \"score\":\"" + params[1] +
-                        "\", \"user_id\":\"" + params[2] +
-                        "\", \"shop_id\":\"" + params[3] +"\"}", HTTP.UTF_8);
+                        getString(R.string.server_domain)+"api/new_comment");
+                StringEntity se;
+                if (!record_id.equals("-1")) {
+                    se = new StringEntity("{ \"body\":\"" + params[0] +
+                            "\", \"score\":\"" + params[1] +
+                            "\", \"user_id\":\"" + params[2] +
+                            "\", \"shop_id\":\"" + params[3] +
+                            "\", \"record_id\":\"" + record_id + "\"}", HTTP.UTF_8);
+                }
+                else {
+                    se = new StringEntity("{ \"body\":\"" + params[0] +
+                            "\", \"score\":\"" + params[1] +
+                            "\", \"user_id\":\"" + params[2] +
+                            "\", \"shop_id\":\"" + params[3] +"\"}", HTTP.UTF_8);
+                }
                 request.addHeader("Content-Type", "application/json");
                 request.setEntity(se);
                 HttpResponse response = httpClient.execute(request);

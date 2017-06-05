@@ -53,12 +53,10 @@ public class StoreHomeConfirmFragment extends Fragment {
         tv_number = (TextView)v.findViewById(R.id.tv_number);
         for(int i=0;i<StoreMainActivity.storeInfo.discountList.size();i++){
             if(StoreMainActivity.storeInfo.discountList.get(i).id==promtion_id) {
-                TextView tv_discount = (TextView)v.findViewById(R.id.store_home_confirm_fragment_tv_discount);
                 TextView tv_gift = (TextView)v.findViewById(R.id.store_home_confirm_fragment_tv_gift);
                 TextView tv_create_time = (TextView)v.findViewById(R.id.store_home_confirm_fragment_tv_appoint_time);
                 TextView tv_due_time = (TextView)v.findViewById(R.id.store_home_confirm_fragment_tv_arrive_time) ;
                 TextView tv_not_arrive = (TextView)v.findViewById(R.id.store_home_comfirm_fragment_tv_info_last);
-                tv_discount.setText(Integer.toString(StoreMainActivity.storeInfo.discountList.get(i).discount));
                 tv_gift.setText(StoreMainActivity.storeInfo.discountList.get(i).description);
                 tv_create_time.setText(create_time_str);
                 tv_due_time.setText(due_time_str);

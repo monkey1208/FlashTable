@@ -210,7 +210,7 @@ public class CustomerRegisterActivity extends AppCompatActivity {
         String cellphone =
                 "+886-" + et_cellphone_2.getText().toString().substring(1)
                 + "-" + et_cellphone_3.getText().toString()
-                + "-" + et_cellphone_3.getText().toString();
+                + "-" + et_cellphone_4.getText().toString();
 
         if (!isAccountValid(account))
             fail = 1;
@@ -283,7 +283,7 @@ public class CustomerRegisterActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpPost request = new HttpPost(
-                        "https://"+getString(R.string.server_domain)+"/api/new_user");
+                        getString(R.string.server_domain)+"api/new_user");
                 StringEntity se = new StringEntity("{ \"phone_number\":\"" + params[0] +
                         "\", \"password\":\"" + params[1] +
                         "\", \"account\":\"" + params[2]+ "\"}", HTTP.UTF_8);
@@ -352,7 +352,7 @@ public class CustomerRegisterActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpPost request = new HttpPost(
-                        "https://"+getString(R.string.server_domain)+"/api/sign_up");
+                        getString(R.string.server_domain)+"api/sign_up");
                 StringEntity se = new StringEntity("{ \"verification_id\":\"" + params[0] +
                         "\", \"verification_code\":\"" + params[1] + "\"}", HTTP.UTF_8);
                 request.addHeader("Content-Type", "application/json");

@@ -26,7 +26,7 @@ import java.util.TimerTask;
 
 
 public class StoreRecentAdapter extends BaseAdapter{
-    
+
     private Context context;
     private List<CustomerAppointInfo> list = new ArrayList<>();
     private LayoutInflater layoutInflater;

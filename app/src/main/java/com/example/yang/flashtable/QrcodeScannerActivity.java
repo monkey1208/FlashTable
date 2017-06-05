@@ -393,14 +393,12 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
             TextView tv_number = (TextView) view.findViewById(R.id.tv_number);
             TextView tv_arrive_time = (TextView) view.findViewById(R.id.store_home_confirm_fragment_tv_arrive_time);
             TextView tv_sessiont_time = (TextView) view.findViewById(R.id.store_home_confirm_fragment_tv_appoint_time);
-            TextView tv_discount = (TextView) view.findViewById(R.id.store_home_confirm_fragment_tv_discount);
             TextView tv_description = (TextView) view.findViewById(R.id.store_home_confirm_fragment_tv_gift);
             tv_name.setText(name);
             tv_point.setText(" ( 信譽"+String.valueOf(point)+" )");
             tv_number.setText(arrive_time);
             tv_sessiont_time.setText(session_create_time);
             tv_arrive_time.setText(arrive_time);
-            tv_discount.setText(promotionName);
             tv_description.setText(promotionDes);
             tv_number.setText(String.valueOf(num));
 

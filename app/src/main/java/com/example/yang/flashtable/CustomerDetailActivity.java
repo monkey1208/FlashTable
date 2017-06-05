@@ -21,10 +21,13 @@ import android.widget.ViewFlipper;
 
 import com.example.yang.flashtable.customer.database.SqlHandler;
 
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -46,12 +49,13 @@ public class CustomerDetailActivity extends AppCompatActivity {
     ListView lv_reservations;
     CustomerDetailAdapter reservation_adapter;
     List<CustomerDetailInfo> reservations;
+    int current_index;
     Button bt_comment;
     private int current_record;
 
     // Elements in show
     TextView tv_record_success, tv_record_arrival_time, tv_record_shop,
-            tv_discount, tv_gift, tv_description, tv_location, tv_category;
+            tv_gift, tv_description, tv_location, tv_category;
     ImageView iv_record_credit;
     RatingBar rb_record_rating;
 
@@ -80,7 +84,6 @@ public class CustomerDetailActivity extends AppCompatActivity {
         tv_record_success = (TextView) findViewById(R.id.customer_detail_tv_record_success);
         tv_record_arrival_time = (TextView) findViewById(R.id.customer_detail_tv_record_arrival_time);
         tv_record_shop = (TextView) findViewById(R.id.customer_detail_tv_record_shop);
-        tv_discount = (TextView) findViewById(R.id.customer_detail_tv_discount);
         tv_gift = (TextView) findViewById(R.id.customer_detail_tv_gift);
         tv_description = (TextView) findViewById(R.id.customer_detail_tv_description);
         tv_location = (TextView) findViewById(R.id.customer_detail_tv_show_location);
@@ -107,11 +110,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         bt_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), CustomerRatingActivity.class);
-                intent.putExtra("shop", reservations.get(current_record).shop);
-                intent.putExtra("shop_location", reservations.get(current_record).location);
-                intent.putExtra("shop_id", Integer.toString(reservations.get(current_record).shop_id));
-                startActivity(intent);
+                checkAvailable();
             }
         });
         rb_record_rating.setIsIndicator(true);
@@ -124,6 +123,29 @@ public class CustomerDetailActivity extends AppCompatActivity {
 
         no_discount = getResources().getString(R.string.customer_detail_record_discount);
         no_gift = getResources().getString(R.string.customer_detail_record_gift);
+    }
+
+    public void checkAvailable(){
+        if(reservations.get(current_index).success)
+            new ApiComment().execute(reservations.get(current_index).record_id);
+        else
+            commentDenied(true);
+    }
+
+    public void commentAvailable(){
+        Intent intent = new Intent(getApplicationContext(), CustomerRatingActivity.class);
+        intent.putExtra("shop", reservations.get(current_record).shop);
+        intent.putExtra("shop_location", reservations.get(current_record).location);
+        intent.putExtra("shop_id", Integer.toString(reservations.get(current_record).shop_id));
+        intent.putExtra("record_id", reservations.get(current_record).record_id);
+        startActivity(intent);
+    }
+
+    public void commentDenied(boolean reservation_fail){
+        if(reservation_fail)
+            dialog_builder.dialogEvent(getString(R.string.customer_comments_error_fail_reservation), "normal", null);
+        else
+            dialog_builder.dialogEvent(getString(R.string.customer_comments_error_already_comment), "normal", null);
     }
 
     public void updateReservations() {
@@ -170,6 +192,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         setTitle(getResources().getString(R.string.customer_detail_record_title));
 
         CustomerDetailInfo record = reservations.get(position);
+        current_index = position;
         if (record.success) {
             tv_record_success.setText(success + Integer.toString(record.persons) + persons);
             tv_record_success.setTextColor(getResources().getColor(R.color.textColorOrange));
@@ -186,15 +209,6 @@ public class CustomerDetailActivity extends AppCompatActivity {
         tv_location.setText(record.location);
         tv_category.setText(record.category);
 
-        String discount;
-        if (record.discount == 101) {
-            discount = no_discount;
-        } else if (record.discount % 10 == 0) {
-            discount = Integer.toString(record.discount / 10) + discount_off;
-        } else {
-            discount = Integer.toString(record.discount) + discount_off;
-        }
-        tv_discount.setText(discount);
         if (!record.gift.equals("")) {
             tv_gift.setText(record.gift);
         } else {
@@ -208,6 +222,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
+            progress_dialog.setCanceledOnTouchOutside(false);
             progress_dialog.show();
         }
         @Override
@@ -215,7 +230,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             SqlHandler sqlHandler = new SqlHandler(CustomerDetailActivity.this);
             try {
-                HttpGet request = new HttpGet("https://flash-table.herokuapp.com/api/user_records?user_id=" + params[0]);
+                HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/user_records?user_id=" + params[0]);
                 request.addHeader("Content-Type", "application/json");
                 JSONArray responseJSON = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
                 status = responseJSON.getJSONObject(0).getString("status_code");
@@ -224,38 +239,29 @@ public class CustomerDetailActivity extends AppCompatActivity {
                     for(int i = 1 ; i <= size ; i++) {
 
                         // TODO: Show information that has already been received (or at least the UI).
-                        HttpGet requestInfo = new HttpGet( "https://flash-table.herokuapp.com/api/record_info?record_id=" + responseJSON.getJSONObject(i).getString("record_id") );
+                        int record_id = responseJSON.getJSONObject(i).getInt("record_id");
+                        HttpGet requestInfo = new HttpGet( getString(R.string.server_domain)+"api/record_info?record_id=" + responseJSON.getJSONObject(i).getString("record_id") );
                         requestInfo.addHeader("Content-Type", "application/json");
                         JSONObject responseInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestInfo) ) );
                         status =  responseInfo.getString("status_code");
                         if( !status.equals("0") )   break;
                         String promotion_id = responseInfo.getString("promotion_id"), is_succ = responseInfo.getString("is_succ"), persons = responseInfo.getString("number"), created_at = responseInfo.getString("created_at"), user_id = responseInfo.getString("user_id"), shop_id = responseInfo.getString("shop_id");
 
-                        HttpGet requestPromotion = new HttpGet("https://flash-table.herokuapp.com/api/promotion_info?promotion_id=" + promotion_id);
+                        HttpGet requestPromotion = new HttpGet(getString(R.string.server_domain)+"api/promotion_info?promotion_id=" + promotion_id);
                         requestPromotion.addHeader("Content-Type", "application/json");
                         JSONObject responsePromotion = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestPromotion) ) );
                         status = responsePromotion.getString("status_code");
                         if( !status.equals("0") )   break;
                         String promotion_discount = responsePromotion.getString("name");
                         String promotion_gift = responsePromotion.getString("description");
-                        /*
-                        HttpGet requestShop = new HttpGet("https://flash-table.herokuapp.com/api/shop_info?shop_id=" + shop_id);
-                        requestShop.addHeader("Content-Type", "application/json");
-                        JSONObject responseShop = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestShop) ) );
-                        status = responseShop.getString("status_code");
-                        if( !status.equals("0") )   break;
-                        String shop_name = responseShop.getString("name");
-                        String shop_address = responseShop.getString("address");
-                        String shop_intro = responseShop.getString("intro");
-                        String shop_category = responseShop.getString("tag");
-                        */
+
                         CustomerRestaurantInfo info = sqlHandler.getDetail(Integer.valueOf(shop_id));
                         String shop_name = info.name;
                         String shop_address = info.address;
                         String shop_intro = info.intro;
                         String shop_category = info.category;
 
-                        HttpGet requestShopRating = new HttpGet("https://flash-table.herokuapp.com/api/shop_comments?shop_id=" + shop_id);
+                        HttpGet requestShopRating = new HttpGet(getString(R.string.server_domain)+"api/shop_comments?shop_id=" + shop_id);
                         requestShopRating.addHeader("Content-Type", "application/json");
                         JSONArray responseShopRating = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(requestShopRating) ) );
                         status = responseShopRating.getJSONObject(0).getString("status_code");
@@ -264,7 +270,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
 
                         reservations.add(new CustomerDetailInfo(shop_name, shop_address, Float.parseFloat(shop_rating) / 2,
                                 created_at, Integer.parseInt(promotion_discount), promotion_gift, is_succ.equals("true"), Integer.parseInt(persons)
-                                , shop_intro, shop_category, Integer.parseInt(shop_id), info.getImage()));
+                                , shop_intro, shop_category, Integer.parseInt(shop_id), record_id, info.getImage()));
                     }
                 }
             } catch (Exception e) {
@@ -280,6 +286,49 @@ public class CustomerDetailActivity extends AppCompatActivity {
             if( status == null  || !status.equals("0") )    dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
             else    updateReservations();
             progress_dialog.dismiss();
+        }
+    }
+
+    class ApiComment extends AsyncTask<Integer, Void, Boolean> {
+        private ProgressDialog progress_dialog = new ProgressDialog(CustomerDetailActivity.this);
+        @Override
+        protected void onPreExecute() {
+            progress_dialog.setMessage(getString(R.string.login_wait));
+            progress_dialog.setCanceledOnTouchOutside(false);
+            progress_dialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+            HttpClient httpClient = new DefaultHttpClient();
+            try {
+                HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/record_info?record_id=" + params[0]);
+                request.addHeader("Content-Type", "application/json");
+
+                JSONObject responseJSON = new JSONObject(
+                        new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
+                String status = responseJSON.getString("status_code");
+                if( status.equals("0") ) {
+                    return responseJSON.
+                            getString("is_used").equals("true");
+                }
+            } catch (Exception e) {
+                Log.d("GetCode", "Request exception:" + e.getMessage());
+            } finally {
+                httpClient.getConnectionManager().shutdown();
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean already) {
+            progress_dialog.dismiss();
+            if(already){
+                commentDenied(false);
+            }else {
+                commentAvailable();
+            }
+
         }
     }
 

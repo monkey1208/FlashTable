@@ -24,7 +24,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="聯絡我們"
-            android:textSize="24sp"
+            android:textSize="22sp"
             android:textColor="@color/white"/>
 
     </RelativeLayout>
@@ -92,13 +92,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Email"/>
+                    android:text="Email"
+                    android:textColor="@color/textColor"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="service@daydreamstudio.co"
                     android:textSize="15sp"
-                    android:textColor="@color/textColorLight"/>
+                    android:textColor="@color/textColorLighter"/>
 
             </LinearLayout>
 
@@ -122,13 +123,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Facebook：Flash Table 閃桌"/>
+                    android:text="Facebook：Flash Table 閃桌"
+                    android:textColor="@color/textColor"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="https://www.facebook.com/FLASHTABLE"
                     android:textSize="14sp"
-                    android:textColor="@color/textColorLight"/>
+                    android:textColor="@color/textColorLighter"/>
 
             </LinearLayout>
 

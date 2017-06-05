@@ -183,31 +183,6 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:orientation="horizontal"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="8dp">
-
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_gravity="center_vertical"
-                app:srcCompat="@drawable/ic_store_gift" />
-
-            <TextView
-                android:id="@+id/store_home_confirm_fragment_tv_discount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="10dp"
-                android:text=""
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:orientation="horizontal"
             android:layout_marginStart="10dp">
 
             <ImageView

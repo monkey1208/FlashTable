@@ -2,6 +2,7 @@ package com.example.yang.flashtable;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -67,7 +68,7 @@ public class CustomerProfileFragment extends Fragment {
     DialogBuilder dialog_builder;
 
     private View view;
-    TextView tv_username, tv_credit, tv_edit, tv_exchange_gifts_content, tv_points;
+    TextView tv_username, tv_credit, tv_edit, tv_exchange_gifts_content, tv_points, tv_go;
     LinearLayout ll_comments, ll_reservations, ll_points_record, ll_contact_us;
     ImageView iv_avatar;
     Button bt_about_credits;
@@ -99,6 +100,7 @@ public class CustomerProfileFragment extends Fragment {
         tv_edit = (TextView) view.findViewById(R.id.customer_profile_bt_edit);
         bt_about_credits = (Button) view.findViewById(R.id.customer_profile_bt_about_credit);
         tv_points = (TextView) view.findViewById(R.id.customer_profile_tv_points);
+        tv_go = (TextView) view.findViewById(R.id.customer_profile_tv_go_exchange);
 
         credits = getResources().getString(R.string.customer_profile_credit);
 
@@ -195,6 +197,13 @@ public class CustomerProfileFragment extends Fragment {
         tv_exchange_gifts_content.setText(Html.fromHtml("<font color=\"#FFFFFF\">每次預約用餐每人可得</font> " +
                 "<font color=\"#FFD800\"><big><big><big>5</big></big></big></font> " +
                 "<font color=\"#FFFFFF\">FLASH Points<br>現在開始累積你的FLASH Points<br>各種專屬回饋好禮在兌換區等你喔！</font>"));
+
+        tv_go.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((CustomerMainActivity)getActivity()).navigate("points");
+            }
+        });
     }
 
     // Functions related to getting image
@@ -321,14 +330,16 @@ public class CustomerProfileFragment extends Fragment {
         protected String doInBackground(String... params) {
             String content = null;
             String pic_url = null;
+            System.out.println("APIProfile");
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet request = new HttpGet(
-                        "https://flash-table.herokuapp.com/api/user_info?user_id=" + params[0]);
+                        getString(R.string.server_domain)+"api/user_info?user_id=" + params[0]);
                 request.addHeader("Content-Type", "application/json");
                 HttpResponse response = httpClient.execute(request);
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 String httpResponse = handler.handleResponse(response);
+                System.out.println(httpResponse);
                 JSONObject responseJSON = new JSONObject(httpResponse);
                 status = responseJSON.getString("status_code");
                 if (status.equals("0")) {
@@ -374,7 +385,7 @@ public class CustomerProfileFragment extends Fragment {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpPost request = new HttpPost(
-                        "https://" + getString(R.string.server_domain) + "/api/modify_user");
+                        getString(R.string.server_domain) + "api/modify_user");
                 StringEntity se = new StringEntity("{ \"user_id\":\"" + params[0] +
                         "\", \"new_picture_url\":\"" + params[1] + "\"}", HTTP.UTF_8);
                 request.addHeader("Content-Type", "application/json");

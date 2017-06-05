@@ -12,7 +12,10 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import static com.example.yang.flashtable.R.id.store_home_confirm_fragment_tv_discount;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import static com.example.yang.flashtable.R.id.store_home_confirm_fragment_tv_gift;
 
 public class StoreManageRecordInfoFragment extends Fragment {
@@ -24,7 +27,6 @@ public class StoreManageRecordInfoFragment extends Fragment {
     private TextView tv_info_last;
     private TextView tv_appoint_time;
     private TextView tv_arrive_time;
-    private TextView tv_promotion_name;
     private TextView tv_promotion_description;
     private ImageButton bt_confirm;
 
@@ -49,7 +51,6 @@ public class StoreManageRecordInfoFragment extends Fragment {
         tv_people_number = (TextView)view.findViewById(R.id.tv_number);
         tv_info_last = (TextView)view.findViewById(R.id.store_home_comfirm_fragment_tv_info_last);
         tv_appoint_time = (TextView)view.findViewById(R.id.store_home_confirm_fragment_tv_appoint_time);
-        tv_promotion_name = (TextView)view.findViewById(store_home_confirm_fragment_tv_discount);
         tv_promotion_description  = (TextView)view.findViewById(store_home_confirm_fragment_tv_gift);
         bt_confirm = (ImageButton)view.findViewById(R.id.bt_click);
 
@@ -85,7 +86,16 @@ public class StoreManageRecordInfoFragment extends Fragment {
         tv_people_number.setText(content.getString("number"));
         //TODO: Get Appoint time
 
-        tv_appoint_time.setText(content.getString("record_time"));
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
+            Date date = df.parse(content.getString("record_time"));
+            df = new SimpleDateFormat("yyyy MM/dd  hh:mm a", Locale.ENGLISH);
+            String formatted_date = df.format(date).replace("AM", "am").replace("PM","pm");
+            tv_appoint_time.setText(formatted_date);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         tv_info_first.setText("預約 ");
         if(content.getString("is_succ").equals("true")){
             tv_info_last.setText(" 人已到達");
@@ -93,7 +103,6 @@ public class StoreManageRecordInfoFragment extends Fragment {
         }else {
             tv_info_last.setText(" 人已取消");
         }
-        tv_promotion_name.setText(content.getString("promotion_name"));
         tv_promotion_description.setText(content.getString("promotion_des"));
 
     }

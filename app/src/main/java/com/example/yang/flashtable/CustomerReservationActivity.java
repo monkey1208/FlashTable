@@ -52,6 +52,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import pl.droidsonroids.gif.GifDrawable;
@@ -69,7 +71,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
     ViewFlipper vf_flipper;
     GifImageView gv_time;
     GifDrawable gif_drawable;
-    TextView tv_status, tv_time, tv_arrival_time, tv_shop, tv_discount, tv_gift;
+    TextView tv_status, tv_time, tv_arrival_time, tv_shop, tv_gift;
     String seconds, no_response, late;
     RatingBar rb_shop;
     LinearLayout ll_time_left;
@@ -88,6 +90,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
     float rating;
 
     CountDownTimer timer;
+    Timer timer1;
 
     boolean request_flag = true;//true means no request
     boolean session_flag = true;
@@ -150,7 +153,6 @@ public class CustomerReservationActivity extends AppCompatActivity {
         tv_arrival_time = (TextView) findViewById(R.id.customer_reservation_tv_arrival_time);
         tv_shop = (TextView) findViewById(R.id.customer_reservation_tv_shop);
         rb_shop = (RatingBar) findViewById(R.id.customer_reservation_rb_rating);
-        tv_discount = (TextView) findViewById(R.id.customer_reservation_tv_discount);
         tv_gift = (TextView) findViewById(R.id.customer_reservation_tv_gift);
         late = getResources().getString(R.string.customer_reservation_late);
         ll_time_left = (LinearLayout) findViewById(R.id.customer_reservation_ll_time_left);
@@ -238,17 +240,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
     private void reservationAccepted(int sec) {
         vf_flipper.setDisplayedChild(1);
-        if( discount == 101 ||discount == 100) {
-            tv_discount.setText("暫無折扣");
-        }else{
-            int dis = discount/10;
-            int point = discount%10;
-            if(point == 0){
-                tv_discount.setText(dis+"折");
-            }else{
-                tv_discount.setText(discount+"折");
-            }
-        }
+
         tv_gift.setText(offer);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -281,7 +273,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         Intent intent = new Intent(CustomerReservationActivity.this, CustomerRatingActivity.class);
         intent.putExtra("shop", shop_name);
         intent.putExtra("shop_location", "");
-        intent.putExtra("shop_id", 0);
+        intent.putExtra("shop_id", shop_id);
         startActivity(intent);
         CustomerReservationActivity.this.finish();
     }
@@ -348,6 +340,9 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     tv_arrival_time.setText(late);
                     tv_arrival_time.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
                     tv_arrival_time.setTextColor(getResources().getColor(R.color.textColorRed));
+                    timer1 = new Timer();
+                    TimerTask sessionTask = new SessionTimer();
+                    timer1.schedule(sessionTask, 1000, 2000);
                 }
             }.start();
         }
@@ -381,7 +376,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         HttpClient httpClient = new DefaultHttpClient();
         @Override
         protected String doInBackground(Void... voids) {
-            HttpPost httpPost = new HttpPost("http://"+getString(R.string.server_domain)+"/api/new_request");
+            HttpPost httpPost = new HttpPost(getString(R.string.server_domain)+"/api/new_request");
             List<NameValuePair> params = new ArrayList<>();
             System.out.println("userid="+getUserId()+"  promotion_id="+promotion_id);
             params.add(new BasicNameValuePair("user_id", getUserId()));
@@ -450,7 +445,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             NameValuePair param = new BasicNameValuePair("user_id", getUserId());
-            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_requests?"+param.toString());
+            HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/user_requests?"+param.toString());
             request.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse response = httpClient.execute(request);
@@ -463,7 +458,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     int request_size = Integer.valueOf(request_object.getString("size"));
                     if(request_size == 0){
                         //no request
-                        request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+param.toString());
+                        request = new HttpGet(getString(R.string.server_domain)+"api/user_sessions?"+param.toString());
                         request.addHeader("Content-Type", "application/json");
                         response = httpClient.execute(request);
                         String session_response = handler.handleResponse(response);
@@ -490,7 +485,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                             }
                         }
 
-                        request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+param.toString());
+                        request = new HttpGet(getString(R.string.server_domain)+"api/user_sessions?"+param.toString());
                         request.addHeader("Content-Type", "application/json");
                         response = httpClient.execute(request);
                         String session_response = handler.handleResponse(response);
@@ -554,7 +549,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             NameValuePair param = new BasicNameValuePair("user_id", getUserId());
-            HttpGet request = new HttpGet("https://"+getString(R.string.server_domain)+"/api/user_sessions?"+param.toString());
+            HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/user_sessions?"+param.toString());
             request.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse response = httpClient.execute(request);
@@ -589,15 +584,18 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            session_flag = true;
+
             switch (s){
                 case "finish":
+                    if(timer1 != null)
+                        timer1.cancel();
+                    session_flag = true;
                     new ApiRecord().execute();
                     break;
                 default:
                     break;
             }
-
+            session_flag = true;
             super.onPostExecute(s);
         }
     }
@@ -621,10 +619,10 @@ public class CustomerReservationActivity extends AppCompatActivity {
             HttpPost httpPost;
             if(request_session_flag) {
                 NameValuePair param = new BasicNameValuePair("request_id", id[0]);
-                httpPost = new HttpPost("http://" + getString(R.string.server_domain) + "/api/cancel_request?" + param.toString());
+                httpPost = new HttpPost(getString(R.string.server_domain) + "/api/cancel_request?" + param.toString());
             }else{
                 NameValuePair param = new BasicNameValuePair("session_id", id[0]);
-                httpPost = new HttpPost("http://" + getString(R.string.server_domain) + "/api/cancel_session?" + param.toString());
+                httpPost = new HttpPost(getString(R.string.server_domain) + "/api/cancel_session?" + param.toString());
             }
             httpPost.addHeader("Content-Type", "application/json");
             try {
@@ -650,7 +648,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... voids) {
             NameValuePair param = new BasicNameValuePair("user_id", getUserId());
-            HttpGet httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/user_records?" + param.toString());
+            HttpGet httpGet = new HttpGet(getString(R.string.server_domain) + "/api/user_records?" + param.toString());
             httpGet.addHeader("Content-Type", "application/json");
             try {
                 HttpResponse httpResponse = httpClient.execute(httpGet);
@@ -662,7 +660,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     int last = Integer.valueOf(jsonObject.get("size").toString());
                     String record_id = jsonArray.getJSONObject(last).getString("record_id");
                     param = new BasicNameValuePair("record_id", record_id);
-                    httpGet = new HttpGet("http://" + getString(R.string.server_domain) + "/api/record_info?" + param.toString());
+                    httpGet = new HttpGet(getString(R.string.server_domain) + "/api/record_info?" + param.toString());
                     httpResponse = httpClient.execute(httpGet);
                     json = handler.handleResponse(httpResponse);
                     System.out.println("record:"+json);
@@ -687,6 +685,16 @@ public class CustomerReservationActivity extends AppCompatActivity {
                 qrRejected();
             }
             super.onPostExecute(s);
+        }
+    }
+
+    class SessionTimer extends TimerTask{
+
+        @Override
+        public void run() {
+            if(session_flag == true){
+                new ApiSessionSuccess().execute();
+            }
         }
     }
 

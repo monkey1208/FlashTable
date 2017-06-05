@@ -2,6 +2,7 @@ package com.example.yang.flashtable;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -53,6 +54,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.example.yang.flashtable.AlertDialogController.LOGOUT;
 
 
+
 public class StoreManageOpentimeFragment extends Fragment {
     private static int[] DATA_COUNT = {24, 7, 12};
     private static final int DAY = 0;
@@ -74,7 +76,7 @@ public class StoreManageOpentimeFragment extends Fragment {
     private static final String[] month_to_Chinese = {"一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"};
     private static final String[] period_type = {"單日時段整理", "單週時段整理", "單月時段整理"};
     private String shop_id;
-
+    private static final int REQUEST_CODE = 1;
     public StoreManageOpentimeFragment() {
         // Required empty public constructor
     }
@@ -356,7 +358,8 @@ public class StoreManageOpentimeFragment extends Fragment {
                     case OPENTIME_CHOOSE:
                         switch (opentime_choose_result){
                             case OPENTIME_CHOOSE_DAY:
-                                String date = String.format(Locale.getDefault(),"%d/%02d/%02d", thisYear, thisMonth+1, thisDay);
+                                show_calendar_dialog();
+                                /*String date = String.format(Locale.getDefault(),"%d/%02d/%02d", thisYear, thisMonth+1, thisDay);
                                 tv_period.setText(date);
                                 tv_info.setText((date+" 時段整理"));
                                 tv_time_choose.setText(StoreManageOpentimeFragment.period_type[adapter.listPosition]);
@@ -372,7 +375,7 @@ public class StoreManageOpentimeFragment extends Fragment {
                                 for(int i = 0; i < DATA_COUNT[current_state]; i++){
                                     max_value = value[i]>max_value? value[i] : max_value;
                                 }
-                                setBarChart(value, max_value);
+                                setBarChart(value, max_value);*/
                                 break;
                             case OPENTIME_CHOOSE_WEEK:
                                 calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
@@ -472,7 +475,54 @@ public class StoreManageOpentimeFragment extends Fragment {
         int displayHeight = dm.heightPixels;
         lp.width = (int) (displayWidth * 0.75);
         lp.height = (int) (displayHeight * 0.6);
+        lp.dimAmount=0.65f;
         alertDialog.getWindow().setAttributes(lp);
+        alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
+
+    private void show_calendar_dialog(){
+        final CalendarFragment calendarFragment = new CalendarFragment();
+        calendarFragment.setTargetFragment(this, REQUEST_CODE);
+        calendarFragment.show(getFragmentManager(), "EditNameDialog");
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE) {
+            String date_string = data.getStringExtra("Checked_Date");
+            change_chart_values(date_string);
+            Log.e("result", date_string);
+        }
+    }
+
+    private void change_chart_values(String date){
+        Calendar tmp_calender = Calendar.getInstance();
+        Calendar checked_date = Calendar.getInstance(Locale.getDefault());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
+        try{
+            checked_date.setTime(df.parse(date));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        tv_period.setText(date);
+        tv_info.setText((date+" 時段整理"));
+        tv_time_choose.setText(StoreManageOpentimeFragment.period_type[0]);
+        tv_time_choose.setBackgroundResource(R.color.colorHalfTransparent);
+        int value[] = new int[DATA_COUNT[current_state]];
+        for(int i = 0; i < dateList.size(); i+=1){
+            tmp_calender.setTime(dateList.get(i));
+            if(tmp_calender.get(Calendar.DAY_OF_MONTH) == checked_date.get(Calendar.DAY_OF_MONTH)
+                    && tmp_calender.get(Calendar.YEAR) == checked_date.get(Calendar.YEAR) && tmp_calender.get(Calendar.MONTH) == checked_date.get(Calendar.MONTH)){
+                value[tmp_calender.get(Calendar.HOUR_OF_DAY)] += 1;
+            }
+        }
+        chart_bar.clear();
+        int max_value = 0;
+        for(int i = 0; i < DATA_COUNT[current_state]; i++){
+            max_value = value[i]>max_value? value[i] : max_value;
+        }
+        setBarChart(value, max_value);
+    }
+
+
 
 }
