@@ -102,4 +102,14 @@ public class StoreMainActivity extends AppCompatActivity{
             button[i].setBackgroundColor(getResources().getColor(R.color.btBottomColor));
         button[current_stat].setBackgroundColor(getResources().getColor(R.color.btBottomPressColor));
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        //.super.onSaveInstanceState(savedInstanceState);
+    }
+    @Override
+    protected void onDestroy(){
+        Log.d("Destroy","Destroyed");
+        super.onDestroy();
+    }
 }

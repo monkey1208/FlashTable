@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -43,11 +44,13 @@ public class StoreManageDiscountDeleteAdapter extends BaseAdapter{
     public View getView(int position, View view, ViewGroup parent) {
         view = inflater.inflate(R.layout.store_manage_discount_delete_row, null,true);
 
-        TextView tv = (TextView) view.findViewById(R.id.store_manage_discount_delete_row_tv_description);
-        tv.setText(list.get(position).description);
+        TextView tv_discount_description = (TextView) view.findViewById(R.id.store_manage_discount_delete_row_tv_description);
+        tv_discount_description.setText(list.get(position).description);
 
         if(checked_position[position]){
             view.setBackgroundColor(context.getResources().getColor(R.color.btListviewPressColor));
+            ImageView iv_choose_icon = (ImageView) view.findViewById(R.id.store_discount_delete_iv_choose);
+            iv_choose_icon.setImageResource(R.drawable.circle_choosen);
         }
         return view;
     }
