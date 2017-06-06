@@ -287,7 +287,7 @@ public class LoginActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet request = new HttpGet(
-                        "https://flash-table.herokuapp.com/api/sign_in?phone_number=" + params[0] + "&password=" + params[1]);
+                        getString(R.string.server_domain) + "api/sign_in?phone_number=" + params[0] + "&password=" + params[1]);
                 request.addHeader("Content-Type", "application/json");
                 HttpResponse response = httpClient.execute(request);
                 ResponseHandler<String> handler = new BasicResponseHandler();
@@ -298,7 +298,7 @@ public class LoginActivity extends AppCompatActivity {
                     _userID = responseJSON.getString("user_id");
 
                 HttpGet infoRequest = new HttpGet(
-                        "https://flash-table.herokuapp.com/api/user_info?user_id=" + _userID);
+                        getString(R.string.server_domain) + "api/user_info?user_id=" + _userID);
                 infoRequest.addHeader("Content-Type", "application/json");
                 HttpResponse infoResponse = httpClient.execute(infoRequest);
                 ResponseHandler<String> infoHandler = new BasicResponseHandler();
@@ -357,7 +357,7 @@ public class LoginActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet request = new HttpGet(
-                        "https://flash-table.herokuapp.com/api/shop_login?account=" + params[0] + "&password=" + params[1]);
+                        getString(R.string.server_domain) + "api/shop_login?account=" + params[0] + "&password=" + params[1]);
                 request.addHeader("Content-Type", "application/json");
                 HttpResponse response = httpClient.execute(request);
                 ResponseHandler<String> handler = new BasicResponseHandler();
@@ -366,7 +366,7 @@ public class LoginActivity extends AppCompatActivity {
                 status = responseJSON.getString("status_code");
                 if (status.equals("0")) {
                     _userID = responseJSON.getString("shop_id");
-                    HttpGet getRequestInfo = new HttpGet("https://flash-table.herokuapp.com/api/shop_info?shop_id="+_userID);
+                    HttpGet getRequestInfo = new HttpGet(getString(R.string.server_domain) + "api/shop_info?shop_id="+_userID);
                     JSONObject shopInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getRequestInfo)));
                     name = shopInfo.getString("name");
                     address = shopInfo.getString("address");

@@ -134,6 +134,9 @@
         <activity android:name=".CustomerContactUsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <activity android:name=".CustomerGuideActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <!--<provider android:name=".customer.provider.SearchSuggestionProvider"
             android:authorities="com.example.yang.flashtable.customer.provider.SearchSuggestionProvider" />-->
 

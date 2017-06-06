@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -52,12 +53,16 @@ import java.util.Observable;
 import java.util.Observer;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Yang on 2017/3/23.
  */
 
 public class CustomerMainFragment extends Fragment implements Observer {
+
+    private SharedPreferences user;
+    private Boolean viewed_guide;
 
     DialogBuilder dialog_builder;
     View view;
@@ -93,6 +98,17 @@ public class CustomerMainFragment extends Fragment implements Observer {
     }
 
     private void initData() {
+
+        user = this.getActivity().getSharedPreferences("USER", MODE_PRIVATE);
+        viewed_guide = user.getBoolean("viewed_guide", false);
+
+        Log.e("ViewedGuide", viewed_guide.toString());
+        if (!viewed_guide) {
+            Intent intent = new Intent(this.getActivity(), CustomerGuideActivity.class);
+            startActivity(intent);
+            user.edit().putBoolean("viewed_guide", true).apply();
+        }
+
         my_location = CustomerAppInfo.getInstance().getLocation();
         if(my_location == null){
             my_location = new Location("");
@@ -337,8 +353,6 @@ public class CustomerMainFragment extends Fragment implements Observer {
         setSortedList();
         System.out.println("observer result = "+param);
     }
-
-
 
     private class ApiPromotion extends AsyncTask<Double, Void, String> {
         HttpClient httpClient = new DefaultHttpClient();
