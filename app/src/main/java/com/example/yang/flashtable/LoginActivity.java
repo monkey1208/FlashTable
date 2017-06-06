@@ -287,7 +287,7 @@ public class LoginActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet request = new HttpGet(
-                        "https://flash-table.herokuapp.com/api/sign_in?phone_number=" + params[0] + "&password=" + params[1]);
+                        getString(R.string.server_domain) + "api/sign_in?phone_number=" + params[0] + "&password=" + params[1]);
                 request.addHeader("Content-Type", "application/json");
                 HttpResponse response = httpClient.execute(request);
                 ResponseHandler<String> handler = new BasicResponseHandler();
@@ -357,7 +357,7 @@ public class LoginActivity extends AppCompatActivity {
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet request = new HttpGet(
-                        "https://flash-table.herokuapp.com/api/shop_login?account=" + params[0] + "&password=" + params[1]);
+                        getString(R.string.server_domain) + "api/shop_login?account=" + params[0] + "&password=" + params[1]);
                 request.addHeader("Content-Type", "application/json");
                 HttpResponse response = httpClient.execute(request);
                 ResponseHandler<String> handler = new BasicResponseHandler();
