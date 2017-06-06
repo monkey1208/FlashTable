@@ -13,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,10 +26,12 @@ public class StoreAppointAdapter extends BaseAdapter{
     private List<ReservationInfo> list = new ArrayList<>();
     private Context context;
     private Handler handler = new Handler();
+    String domain;
     private Runnable countDownRunnable = new Runnable() {
         @Override
         public void run() {
             for(int i=0;i<list.size();i++){
+
                 long timeDiff = list.get(i).due_time - System.currentTimeMillis();
                 if(timeDiff <= 0) {
                     list.get(i).isActive = false;
@@ -39,10 +43,11 @@ public class StoreAppointAdapter extends BaseAdapter{
     private static final int TIMEOUT = 0;
     private static final int WAITING = 1;
 
-    public StoreAppointAdapter(Context context, List<ReservationInfo> reservation_list) {
+    public StoreAppointAdapter(Context context, List<ReservationInfo> reservation_list,String domain) {
         this.context = context;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.list = reservation_list;
+        this.domain = domain;
         countDown();
     }
     @Override
@@ -112,23 +117,28 @@ public class StoreAppointAdapter extends BaseAdapter{
         public void setData(ReservationInfo info){
             this.info = info;
             tv_name.setText(info.name);
-            tv_date.setText("2017/07/21");
+            long val = info.due_time;
+            Date date=new Date(val);
+            SimpleDateFormat df2 = new SimpleDateFormat("yyyy/MM/dd");
+            String dateText = df2.format(date);
+            tv_date.setText(dateText);
             tv_state.setText("已成功向您預約("+Integer.toString(info.number)+")人桌位");
-            int remain_time = (int)(info.due_time - System.currentTimeMillis())/1000;
-            tv_countdown.setText(Integer.toString(remain_time/60)+":"+Integer.toString(remain_time%60));
+            tv_remaintime.setText("剩餘到達時間");
+            bt_cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("PressButton","Pressed"+Integer.toString(position));
+                    new AlertDialogController(domain).confirmCancelDialog(context,"提醒","選擇未見該客戶\n將扣除客戶的信譽分數喔",AlertDialogController.NOTICE1_APPOINT,position);
+                }
+            });
             if(info.picture != null)
                 im_photo.setImageBitmap(info.picture);
             else
                 Log.d("Session","picture null");
-            if(info.isActive) {
+            if(info.isActive && (info.due_time - System.currentTimeMillis())>0) {
                 buttonControl(this, WAITING);
-                bt_cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.d("PressButton","Pressed"+Integer.toString(position));
-                        new AlertDialogController().confirmCancelDialog(context,"提醒","選擇未見該客戶\n將扣除客戶的信譽分數喔",AlertDialogController.NOTICE1_APPOINT,position);
-                    }
-                });
+                int remain_time = (int)(info.due_time - System.currentTimeMillis())/1000;
+                tv_countdown.setText(Integer.toString(remain_time/60)+":"+Integer.toString(remain_time%60));
             }
             else
                 buttonControl(this,TIMEOUT);

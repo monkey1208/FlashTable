@@ -110,7 +110,7 @@ public class StoreHomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 alertdialog_active = true;
-                alertDialog = new AlertDialogController().discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+                alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
                 alertDialog.show();
                 setDialogSize();
             }
@@ -126,7 +126,7 @@ public class StoreHomeFragment extends Fragment {
                 bt_active.setEnabled(true);
                 bt_active_gif.setVisibility(View.INVISIBLE);
                 bt_active_gif.setEnabled(false);
-                new APIHandler().postPromotionInactive();
+                new APIHandler(getString(R.string.server_domain)).postPromotionInactive();
                 stopUpdate();
             }
         });
@@ -183,7 +183,7 @@ public class StoreHomeFragment extends Fragment {
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet get = new HttpGet("https://flash-table.herokuapp.com/api/shop_promotions?shop_id=" + params[0]+"&verbose=1");
+                HttpGet get = new HttpGet(getString(R.string.server_domain)+"/api/shop_promotions?shop_id=" + params[0]+"&verbose=1");
                 JSONArray responsePromotion = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(get)));
                 for (int i = 1; i < responsePromotion.length(); i++) {
                     JSONObject promotion = responsePromotion.getJSONObject(i);
@@ -191,7 +191,10 @@ public class StoreHomeFragment extends Fragment {
                     int discount = promotion.getInt("name");
                     String description = promotion.getString("description");
                     int count = promotion.getInt("n_succ");
-                    StoreDiscountInfo info = new StoreDiscountInfo(id, description, count);
+                    String notDelete = promotion.getString("is_removed");
+                    boolean isRemoved = (notDelete.equals("true"))? true:false;
+                    StoreDiscountInfo info = new StoreDiscountInfo(id, discount, description,isRemoved, count);
+
                     StoreMainActivity.storeInfo.discountList.add(info);
                 }
             } catch (JSONException e) {
@@ -208,7 +211,7 @@ public class StoreHomeFragment extends Fragment {
         protected void onPostExecute(Void _params) {
             if (alertdialog_active) {
                 alertDialog.dismiss();
-                alertDialog = new AlertDialogController().discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+                alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
                 alertDialog.show();
                 setDialogSize();
             }
@@ -230,7 +233,7 @@ public class StoreHomeFragment extends Fragment {
         return;
     }
     public void startUpdate(){
-        worker.updateRequestList();
+        worker.updateRequestList(getString(R.string.server_domain));
         return;
     }
     public void stopUpdate(){

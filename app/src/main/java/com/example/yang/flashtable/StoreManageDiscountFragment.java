@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.R.id.list;
@@ -40,7 +41,11 @@ public class StoreManageDiscountFragment extends ListFragment {
 
         ListView lv =(ListView) v.findViewById(list);
 
-        adapter = new StoreManageDiscountAdapter(getContext(),discountList);
+        List<StoreDiscountInfo> notRemovedList = new ArrayList<>();
+        for(int i=0;i<discountList.size();i++)
+            if(!discountList.get(i).notDelete)
+                notRemovedList.add(discountList.get(i));
+        adapter = new StoreManageDiscountAdapter(getContext(),notRemovedList);
         lv.setAdapter(adapter);
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_discount_tb_toolbar);
@@ -68,7 +73,7 @@ public class StoreManageDiscountFragment extends ListFragment {
         LinearLayout add = (LinearLayout)v.findViewById(R.id.store_manage_discount_ll_add);
         add.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                new AlertDialogController().addDiscountDialog(getContext(), false);
+                new AlertDialogController(getString(R.string.server_domain)).addDiscountDialog(getContext(), false);
             }
         });
         return v;

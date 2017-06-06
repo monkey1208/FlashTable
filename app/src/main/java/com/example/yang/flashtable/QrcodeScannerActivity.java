@@ -299,7 +299,7 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         protected Void doInBackground(String... params) {
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/finish_session");
+                HttpPost post = new HttpPost(R.string.server_domain+"/api/finish_session");
                 List<NameValuePair> param = new ArrayList<>();
                 param.add(new BasicNameValuePair("session_id", params[0]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
@@ -431,7 +431,7 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getSessionInfo = new HttpGet("https://flash-table.herokuapp.com/api/session_info?session_id="+session_id);
+                HttpGet getSessionInfo = new HttpGet(R.string.server_domain+"/api/session_info?session_id="+session_id);
                 JSONObject sessionInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getSessionInfo)));
                 if(sessionInfo.getInt("status_code") == 0){
                     SimpleDateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
@@ -452,7 +452,7 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getRecordInfo = new HttpGet("https://flash-table.herokuapp.com/api/record_info?record_id="+params[0]);
+                HttpGet getRecordInfo = new HttpGet(R.string.server_domain+"/api/record_info?record_id="+params[0]);
                 JSONObject recordInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordInfo)));
                 num = recordInfo.getInt("number");
                 int user = recordInfo.getInt("user_id");
@@ -462,13 +462,13 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
                 df = new SimpleDateFormat("yyyy MM/dd  hh:mm a", Locale.ENGLISH);
                 arrive_time = df.format(arrive_date);
 
-                HttpGet getUserInfo = new HttpGet("https://flash-table.herokuapp.com/api/user_info?user_id="+String.valueOf(user));
+                HttpGet getUserInfo = new HttpGet(R.string.server_domain+"/api/user_info?user_id="+String.valueOf(user));
                 JSONObject userInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getUserInfo)));
                 name = userInfo.getString("account");
                 point = userInfo.getInt("point");
                 image_url = userInfo.getString("picture_url");
 
-                HttpGet getPromotionInfo = new HttpGet("https://flash-table.herokuapp.com/api/promotion_info?promotion_id="+String.valueOf(promotion));
+                HttpGet getPromotionInfo = new HttpGet(R.string.server_domain+"/api/promotion_info?promotion_id="+String.valueOf(promotion));
                 JSONObject promotionInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getPromotionInfo)));
                 promotionName = promotionInfo.getString("name");
                 promotionDes = promotionInfo.getString("description");

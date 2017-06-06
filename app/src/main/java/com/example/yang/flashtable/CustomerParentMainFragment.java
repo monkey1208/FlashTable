@@ -433,20 +433,23 @@ public class CustomerParentMainFragment extends Fragment {
                 info.promotion_id = list.get(i).promotion_id;
                 info.date = list.get(i).date;
 
-                String shop_rating;
+                String shop_rating = "0";
                 try {
                     HttpGet requestShopRating = new HttpGet(getString(R.string.server_domain)+"api/shop_comments?shop_id=" + list.get(i).shop_id);
                     requestShopRating.addHeader("Content-Type", "application/json");
-                    JSONArray responseShopRating = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(requestShopRating)));
+                    String s = new BasicResponseHandler().handleResponse(httpClient.execute(requestShopRating));
+                    JSONArray responseShopRating = new JSONArray(s);
                     status = responseShopRating.getJSONObject(0).getString("status_code");
                     if (!status.equals("0")) break;
                     shop_rating = responseShopRating.getJSONObject(0).getString("average_score");
                 } catch (Exception e) {
+                    e.printStackTrace();
                     //publishProgress();
-                    shop_rating = "0";
+                    //shop_rating = "0";
+                } finally {
+                    httpClient.getConnectionManager().shutdown();
                 }
                 info.rating = Float.parseFloat(shop_rating) / 2;
-
                 restaurantInfoList.add(info);
             }
 
@@ -514,7 +517,7 @@ public class CustomerParentMainFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             } finally {
-                httpClient.getConnectionManager().shutdown();
+
             }
             return list;
         }

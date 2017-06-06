@@ -99,7 +99,7 @@ public class StoreManageDiscountDeleteFragment extends Fragment {
         LinearLayout add = (LinearLayout)v.findViewById(R.id.store_manage_discount_delete_ll_add);
         add.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
-                new AlertDialogController().addDiscountDialog(getContext(), false);
+                new AlertDialogController(getString(R.string.server_domain)).addDiscountDialog(getContext(), false);
             }
         });
 
@@ -135,7 +135,7 @@ public class StoreManageDiscountDeleteFragment extends Fragment {
         protected Void doInBackground(String... params) {
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/remove_promotion");
+                HttpPost post = new HttpPost(R.string.server_domain+"/api/remove_promotion");
                 List<NameValuePair> param = new ArrayList<NameValuePair>();
                 param.add(new BasicNameValuePair("promotion_id",params[0]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));

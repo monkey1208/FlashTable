@@ -129,7 +129,6 @@ public class CustomerMainFragment extends Fragment implements Observer {
         System.out.println("set list!");
 
         adapter = new CustomerMainAdapter(view.getContext(), restaurant_list, my_location);
-        System.out.println("size = "+restaurant_list.size());
         setSortedList();
     }
 
@@ -383,7 +382,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
                 info.offer = list.get(i).offer;
                 info.promotion_id = list.get(i).promotion_id;
                 info.date = list.get(i).date;
-
+                String shop_rating = "0";
                 try {
                     if(isCancelled())
                         return null;
@@ -394,10 +393,11 @@ public class CustomerMainFragment extends Fragment implements Observer {
                     if (!status.equals("0")) break;
                     shop_rating = responseShopRating.getJSONObject(0).getString("average_score");
                 } catch (Exception e) {
-                    shop_rating = "0";
+                    //shop_rating = "0";
+                } finally {
+                    httpClient.getConnectionManager().shutdown();
                 }
                 info.rating = Float.parseFloat(shop_rating) / 2;
-
                 restaurantInfoList.add(info);
             }
 

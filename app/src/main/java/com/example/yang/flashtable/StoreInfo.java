@@ -29,9 +29,9 @@ public class StoreInfo {
         recordList = new ArrayList<>();
         success_record_num = 0;
     }
-    public void addAppointment(CustomerAppointInfo info){
+    public void addAppointment(CustomerAppointInfo info,String domain){
         //TODO: notify server new appointment
-        new APIHandler().postSession(info);
+        new APIHandler(domain).postSession(info);
         totalAppointment = totalAppointment +1;
         return;
     }
