@@ -104,14 +104,7 @@ public class AlertDialogController {
                 StoreMainActivity.fragmentController.storeHomeFragment.setActive();
 
                 bt_active.setEnabled(false);
-                if(first) {
-                    bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
-                    first = false;
-                }
-                bt_active_gif.setVisibility(View.VISIBLE);
                 bt_active_gif.setEnabled(true);
-                tv_active.setText("開啟中");
-
                 tv_active_remind.setText("按下後暫停");
                 alertDialog.dismiss();
             }
@@ -132,7 +125,7 @@ public class AlertDialogController {
         protected Void doInBackground(String... params) {
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpPost post = new HttpPost("https://flash-table.herokuapp.com/api/activate_promotion");
+                HttpPost post = new HttpPost(domain+"api/activate_promotion");
                 List<NameValuePair> param = new ArrayList<NameValuePair>();
                 param.add(new BasicNameValuePair("promotion_id",params[0]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));

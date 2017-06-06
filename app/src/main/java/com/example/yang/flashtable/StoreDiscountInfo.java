@@ -7,6 +7,7 @@ public class StoreDiscountInfo {
     int count;
     boolean isDefault;
     boolean notDelete;
+    boolean isActive;
     public StoreDiscountInfo(int id,int discount, String description,boolean notDelete, int count){
         this.id = id;
         this.description = description;

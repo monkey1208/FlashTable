@@ -29,6 +29,8 @@ public class StoreRecentAdapter extends BaseAdapter{
 
     private Context context;
     private List<CustomerAppointInfo> list = new ArrayList<>();
+    private List<Integer> isDeleting = new ArrayList<>();
+    private int isDeletingCount = 0;
     private LayoutInflater layoutInflater;
     private String domain;
 
@@ -98,11 +100,14 @@ public class StoreRecentAdapter extends BaseAdapter{
                 anim.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
-
+                        isDeleting.add(position);
+                        isDeletingCount++;
                     }
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        StoreMainActivity.fragmentController.storeRecentFragment.removeItem(position);
+                        isDeletingCount--;
+                        if(isDeletingCount == 0)
+                            removeAll();
                     }
                     @Override
                     public void onAnimationRepeat(Animation animation) {
@@ -126,12 +131,14 @@ public class StoreRecentAdapter extends BaseAdapter{
                 anim.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
-
+                        isDeleting.add(position);
+                        isDeletingCount++;
                     }
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        StoreMainActivity.fragmentController.storeRecentFragment.removeItem(position);
-                    }
+                        isDeletingCount--;
+                        if(isDeletingCount == 0)
+                            removeAll();                    }
                     @Override
                     public void onAnimationRepeat(Animation animation) {
 
@@ -169,6 +176,12 @@ public class StoreRecentAdapter extends BaseAdapter{
     }
     public void postRequestDeny(int id){
         Toast.makeText(context,Integer.toString(id),Toast.LENGTH_LONG).show();
+    }
+    private void removeAll(){
+        for(int i=0;i<isDeleting.size();i++)
+            StoreMainActivity.fragmentController.storeRecentFragment.removeItem(isDeleting.get(i));
+        isDeleting.clear();
+        return ;
     }
 
 }

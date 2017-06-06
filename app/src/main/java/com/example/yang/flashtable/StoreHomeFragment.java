@@ -192,9 +192,11 @@ public class StoreHomeFragment extends Fragment {
                     String description = promotion.getString("description");
                     int count = promotion.getInt("n_succ");
                     String notDelete = promotion.getString("is_removed");
+                    String isActive_str = promotion.getString("is_active");
+                    boolean isActive = (isActive_str.equals("true"))? true:false;
                     boolean isRemoved = (notDelete.equals("true"))? true:false;
                     StoreDiscountInfo info = new StoreDiscountInfo(id, discount, description,isRemoved, count);
-
+                    info.isActive = isActive;
                     StoreMainActivity.storeInfo.discountList.add(info);
                 }
             } catch (JSONException e) {
@@ -214,6 +216,23 @@ public class StoreHomeFragment extends Fragment {
                 alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
                 alertDialog.show();
                 setDialogSize();
+            }
+            Log.d("Promotion",Integer.toString(StoreMainActivity.storeInfo.discountList.size()));
+            for(int i=0;i<StoreMainActivity.storeInfo.discountList.size();i++) {
+                if (StoreMainActivity.storeInfo.discountList.get(i).isActive && !StoreMainActivity.storeInfo.discountList.get(i).notDelete) {
+                    startUpdate();
+                    bt_active.setVisibility(View.INVISIBLE);
+                    tv_active.setVisibility(View.INVISIBLE);
+                    bt_active_gif.setVisibility(View.VISIBLE);
+                    bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
+                    StoreMainActivity.fragmentController.storeHomeFragment.setActive();
+                    bt_active.setEnabled(false);
+                    bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
+                    bt_active_gif.setEnabled(true);
+                    tv_active_remind.setText("按下後暫停");
+                    tv_gift.setText(StoreMainActivity.storeInfo.discountList.get(i).description);
+                    Log.d("Promotion", StoreMainActivity.storeInfo.discountList.get(i).description);
+                }
             }
         }
     }
