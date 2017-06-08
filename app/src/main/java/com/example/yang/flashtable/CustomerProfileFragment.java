@@ -247,7 +247,6 @@ public class CustomerProfileFragment extends Fragment {
             else iv_avatar.setImageBitmap(getRoundedShape(avatar));
 
             String pic_url = data.getStringExtra("url");
-            pic_url = "http://i.imgur.com/" + pic_url + ".png";
             new APIAvatar().execute(userID, pic_url);
         }
     }

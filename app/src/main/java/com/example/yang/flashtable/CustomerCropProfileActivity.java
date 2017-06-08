@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -22,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.yang.flashtable.customer.util.Sftp;
 import com.isseiaoki.simplecropview.CropImageView;
 import com.isseiaoki.simplecropview.callback.CropCallback;
 import com.isseiaoki.simplecropview.callback.LoadCallback;
@@ -138,8 +140,10 @@ public class CustomerCropProfileActivity extends AppCompatActivity {
                                 CustomerCropProfileActivity.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        UploadImgur upload = new UploadImgur(readImage(path));
-                                        upload.execute("781ad2fd891649a", path);
+                                        UploadServer upload = new UploadServer(readImage(path));
+                                        upload.execute(getUserId(), path);
+                                        //UploadImgur upload = new UploadImgur(readImage(path));
+                                        //upload.execute("781ad2fd891649a", path);
                                     }
                                 });
                             }
@@ -204,6 +208,51 @@ public class CustomerCropProfileActivity extends AppCompatActivity {
         finish();
     }
 
+    private String getUserId(){
+        SharedPreferences preferences = getSharedPreferences("USER", MODE_PRIVATE);
+        return preferences.getString("userID", "");
+    }
+
+    public class UploadServer extends AsyncTask<String, Void, String> {
+        private Bitmap bitmap;
+        private String path;
+        private ProgressDialog new_progress_dialog = new ProgressDialog(CustomerCropProfileActivity.this);
+
+        public UploadServer(Bitmap bitmap){
+            this.bitmap = bitmap;
+        }
+        @Override
+        protected void onPreExecute()
+        {
+            new_progress_dialog.setMessage("儲存中...");
+            new_progress_dialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params)
+        {
+            String clientID = params[0];
+            path = params[1];
+            return getImgurContent(clientID);
+        }
+
+        public String getImgurContent(String clientID) {
+            Sftp sftp = new Sftp(CustomerCropProfileActivity.this);
+            sftp.putBitmap(bitmap, "FlashTable/public/user_picture", clientID+".jpg");
+            String pic_url = getString(R.string.server_domain)+"user_picture/"+clientID+".jpg";
+
+            return pic_url;
+        }
+
+        @Override
+        protected void onPostExecute(String pic_url)
+        {
+            new_progress_dialog.dismiss();
+            finishUpload(path, pic_url);
+        }
+
+    }
+
     public class UploadImgur extends AsyncTask<String, Void, String> {
         private Bitmap bitmap;
         private String path;
@@ -254,6 +303,7 @@ public class CustomerCropProfileActivity extends AppCompatActivity {
                 Log.e("UploadImgur", responseJSON.toString());
                 JSONObject data = responseJSON.getJSONObject("data");
                 pic_url = data.getString("id");
+                pic_url = "http://i.imgur.com/"+ pic_url + ".png";
             } catch (Exception e) {
                 //no internet support
                 pic_url = null;
