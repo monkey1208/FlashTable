@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -26,6 +28,8 @@ import org.json.JSONObject;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by CS on 2017/3/27.
@@ -55,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
 
         // Set to fullscreen.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -176,7 +181,7 @@ public class LoginActivity extends AppCompatActivity {
         bundle.putString("name",storeInfo.name);
         bundle.putString("address",storeInfo.address);
         bundle.putString("url",storeInfo.url);
-        bundle.putInt("contract", storeInfo.getContract_fee());
+        bundle.putInt("contract", storeInfo.contract_fee);
         Intent intent = new Intent(LoginActivity.this, StoreMainActivity.class);
         intent.putExtras(bundle);
         LoginActivity.this.startActivity(intent);
@@ -257,6 +262,7 @@ public class LoginActivity extends AppCompatActivity {
                 .putString("name",storeInfo.name)
                 .putString("address",storeInfo.address)
                 .putString("url",storeInfo.url)
+                .putInt("contract_fee", storeInfo.getContract_fee())
                 .apply();
     }
 

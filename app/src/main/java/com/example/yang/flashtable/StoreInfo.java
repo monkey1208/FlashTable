@@ -16,14 +16,14 @@ public class StoreInfo {
 
     private List<ReservationInfo> recordList;
     private int success_record_num;
-    private int contract_fee;
+    public int contract_fee;
 
     public StoreInfo(){};
     public StoreInfo(String n,String a,String url, int contract_fee){
         name = n;
         address = a;
         this.url = url;
-        contract_fee = contract_fee;
+        this.contract_fee = contract_fee;
         discountList = new ArrayList<>();
         discountDefault = 0;
         discountCurrent = discountDefault;

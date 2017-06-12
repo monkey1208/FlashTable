@@ -53,7 +53,6 @@ public class StoreManageFragment extends ListFragment {
         setListAdapter(adapter);
 
         getStoreInfo();
-        new StoreContractFee().execute();
         new APIFirstRecordDetail().execute();
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_tb_toolbar);
@@ -111,34 +110,6 @@ public class StoreManageFragment extends ListFragment {
     private void getStoreInfo() {
         SharedPreferences store = getActivity().getSharedPreferences("USER", MODE_PRIVATE);
         shop_id = store.getString("userID", "");
-    }
-
-    private class StoreContractFee extends AsyncTask<String, Void, Void> {
-        boolean exception = false;
-        @Override
-        protected Void doInBackground(String...params) {
-            HttpClient httpClient = new DefaultHttpClient();
-            try {
-                HttpGet getShopInfo = new HttpGet(getString(R.string.server_domain)+"/api/shop_info?shop_id="+shop_id);
-                JSONObject shopInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getShopInfo)));
-                if(shopInfo.getInt("status_code") == 0){
-                    StoreMainActivity.storeInfo.setContract_fee(shopInfo.getInt("contract_fee"));
-                }else{
-                    exception = true;
-                }
-
-            } catch (Exception e) {
-                exception = true;
-                e.printStackTrace();
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void _params){
-            if(exception) {
-                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
-            }
-        }
     }
 
     private class APIFirstRecordDetail extends AsyncTask<String, Void, Void> {
