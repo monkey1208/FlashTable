@@ -17,6 +17,9 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.crashlytics.android.Crashlytics;
+import com.example.yang.flashtable.customer.CustomerLoadingActivity;
+import com.example.yang.flashtable.customer.CustomerRegisterActivity;
+
 import io.fabric.sdk.android.Fabric;
 
 import org.apache.http.HttpResponse;

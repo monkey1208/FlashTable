@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.example.yang.flashtable.customer.infos.CustomerAppointInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
