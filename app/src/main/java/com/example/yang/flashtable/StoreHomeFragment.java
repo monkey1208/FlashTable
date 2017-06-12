@@ -52,6 +52,7 @@ public class StoreHomeFragment extends Fragment {
     private TextView tv_active_running;
     private TextView tv_active_remind;
     private TextView tv_active_time;
+    private ImageView iv_gift_icon;
     private View v;
     private StoreInfo storeInfo;
     private AlertDialog alertDialog;
@@ -88,6 +89,8 @@ public class StoreHomeFragment extends Fragment {
         v.setPadding(0, getStatusBarHeight(), 0, 0);
         //Image---------
         im_photo = (ImageView) v.findViewById(R.id.im_photo);
+        iv_gift_icon = (ImageView) v.findViewById(R.id.store_home_iv_gift_icon);
+        iv_gift_icon.setVisibility(View.INVISIBLE);
         Picasso.with(getContext()).load(storeInfo.url).into(im_photo);
         //--------------
         //TextView init-
@@ -110,7 +113,7 @@ public class StoreHomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 alertdialog_active = true;
-                alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+                alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind, iv_gift_icon);
                 alertDialog.show();
                 setDialogSize();
             }
@@ -119,6 +122,8 @@ public class StoreHomeFragment extends Fragment {
         bt_active_gif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tv_gift.setVisibility(View.INVISIBLE);
+                iv_gift_icon.setVisibility(View.INVISIBLE);
                 tv_active.setText("立即尋客");
                 tv_active.setVisibility(View.VISIBLE);
                 tv_active_remind.setText("");
@@ -213,7 +218,7 @@ public class StoreHomeFragment extends Fragment {
         protected void onPostExecute(Void _params) {
             if (alertdialog_active) {
                 alertDialog.dismiss();
-                alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+                alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind, iv_gift_icon);
                 alertDialog.show();
                 setDialogSize();
             }

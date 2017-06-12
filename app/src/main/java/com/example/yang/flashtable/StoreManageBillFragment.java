@@ -64,11 +64,7 @@ public class StoreManageBillFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getStoreInfo();
-        if(StoreMainActivity.storeInfo.getContract_fee() == -1) {
-            new StoreContractFee().execute();
-        }else{
-            contract_fee = StoreMainActivity.storeInfo.getContract_fee();
-        }
+        contract_fee = StoreMainActivity.storeInfo.getContract_fee();
 
         view = inflater.inflate(R.layout.store_manage_bill_fragment, container, false);
         Toolbar bar = (Toolbar)view.findViewById(R.id.store_manage_bill_tb_toolbar);
@@ -227,7 +223,7 @@ public class StoreManageBillFragment extends Fragment {
             int origin_size = list.size();
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet getRecordsInfo = new HttpGet(R.string.server_domain+"/api/shop_records?shop_id="+shop_id+"&verbose=1");
+                HttpGet getRecordsInfo = new HttpGet(getString(R.string.server_domain)+"/api/shop_records?shop_id="+ shop_id+"&verbose=1");
                 JSONArray recordsInfo = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(getRecordsInfo)));
                 int new_size = recordsInfo.getJSONObject(0).getInt("size");
                 if(new_size <= origin_size){
@@ -286,34 +282,6 @@ public class StoreManageBillFragment extends Fragment {
                 new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
             }
             progress_dialog.dismiss();
-        }
-    }
-
-    private class StoreContractFee extends AsyncTask<String, Void, Void> {
-        boolean exception = false;
-        @Override
-        protected Void doInBackground(String...params) {
-            HttpClient httpClient = new DefaultHttpClient();
-            try {
-                HttpGet getShopInfo = new HttpGet(getString(R.string.server_domain)+"/api/shop_info?shop_id="+shop_id);
-                JSONObject shopInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(getShopInfo)));
-                if(shopInfo.getInt("status_code") == 0){
-                    contract_fee = shopInfo.getInt("contract_fee");
-                }else{
-                    exception = true;
-                }
-
-            } catch (Exception e) {
-                exception = true;
-                e.printStackTrace();
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void _params){
-            if(exception) {
-                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
-            }
         }
     }
 
