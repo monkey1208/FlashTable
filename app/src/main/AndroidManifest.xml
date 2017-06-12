@@ -140,6 +140,9 @@
         <!--<provider android:name=".customer.provider.SearchSuggestionProvider"
             android:authorities="com.example.yang.flashtable.customer.provider.SearchSuggestionProvider" />-->
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="96fb5133166743e20b85bf3c821d77cfa802b439" />
     </application>
 
 </manifest>

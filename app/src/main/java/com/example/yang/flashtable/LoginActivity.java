@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -56,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
 
         // Set to fullscreen.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
