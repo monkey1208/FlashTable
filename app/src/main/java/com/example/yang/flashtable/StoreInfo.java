@@ -19,10 +19,11 @@ public class StoreInfo {
     private int contract_fee;
 
     public StoreInfo(){};
-    public StoreInfo(String n,String a,String url){
+    public StoreInfo(String n,String a,String url, int contract_fee){
         name = n;
         address = a;
         this.url = url;
+        contract_fee = contract_fee;
         discountList = new ArrayList<>();
         discountDefault = 0;
         discountCurrent = discountDefault;

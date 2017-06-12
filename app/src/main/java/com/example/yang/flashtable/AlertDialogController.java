@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +58,7 @@ public class AlertDialogController {
     public AlertDialogController(String domain){
         this.domain = domain;
     }
-    public AlertDialog discountDialog(final Context context, final StoreInfo storeInfo, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind){
+    public AlertDialog discountDialog(final Context context, final StoreInfo storeInfo, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind, final ImageView iv_icon){
         //init view---------
         View item = LayoutInflater.from(context).inflate(R.layout.store_discount_list, null);
         //listview adapt----
@@ -88,6 +89,8 @@ public class AlertDialogController {
         bt_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                iv_icon.setVisibility(View.VISIBLE);
+                tv_gift.setVisibility(View.VISIBLE);
                 tv_gift.setText(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
                 //TODO: notify server dicount change
                 new APIpromotion_modify().execute(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
