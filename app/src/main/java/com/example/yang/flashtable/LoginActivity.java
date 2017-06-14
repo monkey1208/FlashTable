@@ -160,7 +160,7 @@ public class LoginActivity extends AppCompatActivity {
                 "\\W*\\d\\W*\\d\\W*\\d\\W*\\d\\W*\\d\\W*\\d\\W*\\d\\W*\\d\\W*(\\d{1,2})$");
         Matcher matcher = pattern.matcher(cellphone);
 
-        return (!matcher.find() && !cellphone.equals(""));
+        return (!matcher.find() && !cellphone.equals("") && cellphone.length() == 10);
     }
 
     private boolean isPasswordValid(String password) {
@@ -214,10 +214,6 @@ public class LoginActivity extends AppCompatActivity {
         String account = customer_et_account.getText().toString();
         String password = customer_et_password.getText().toString();
 
-        String cellphone = "%2B886-" + account.substring(1, 4)
-                + "-" + account.substring(4, 7)
-                + "-" + account.substring(7, 10);
-
         int fail = 0;
 
         if (!isCustomerAccountValid(account)) {
@@ -229,6 +225,9 @@ public class LoginActivity extends AppCompatActivity {
         if (fail != 0) {
             dialog_builder.dialogEvent(getResources().getString(R.string.login_error_typo), "normal", null);
         } else {
+            String cellphone = "%2B886-" + account.substring(1, 4)
+                    + "-" + account.substring(4, 7)
+                    + "-" + account.substring(7, 10);
             preference_account = cellphone;
             preference_password = password;
             new CustomerAPILogin().execute(cellphone, password);
