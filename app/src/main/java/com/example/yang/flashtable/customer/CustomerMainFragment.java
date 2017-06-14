@@ -140,11 +140,11 @@ public class CustomerMainFragment extends Fragment implements Observer {
     }
 
     private void setRefreshLayout() {
-        apiPromotion = new ApiPromotion();
         swipe_refresh_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 my_location = CustomerAppInfo.getInstance().getLocation();
+                apiPromotion = new ApiPromotion();
                 apiPromotion.execute(my_location.getLatitude(), my_location.getLongitude());
             }
         });
