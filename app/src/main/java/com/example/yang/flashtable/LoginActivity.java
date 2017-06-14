@@ -16,6 +16,12 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.crashlytics.android.Crashlytics;
+import com.example.yang.flashtable.customer.CustomerLoadingActivity;
+import com.example.yang.flashtable.customer.CustomerRegisterActivity;
+
+import io.fabric.sdk.android.Fabric;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -24,7 +30,6 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
-import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
 
         // Set to fullscreen.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -177,6 +183,7 @@ public class LoginActivity extends AppCompatActivity {
         bundle.putString("name",storeInfo.name);
         bundle.putString("address",storeInfo.address);
         bundle.putString("url",storeInfo.url);
+        bundle.putInt("contract", storeInfo.contract_fee);
         Intent intent = new Intent(LoginActivity.this, StoreMainActivity.class);
         intent.putExtras(bundle);
         LoginActivity.this.startActivity(intent);
@@ -256,6 +263,7 @@ public class LoginActivity extends AppCompatActivity {
                 .putString("name",storeInfo.name)
                 .putString("address",storeInfo.address)
                 .putString("url",storeInfo.url)
+                .putInt("contract_fee", storeInfo.getContract_fee())
                 .apply();
     }
 
@@ -341,6 +349,7 @@ public class LoginActivity extends AppCompatActivity {
         private String name;
         private String address;
         private String url;
+        private int contract_fee;
         @Override
         protected void onPreExecute() {
             // TODO: Style this.
@@ -370,7 +379,8 @@ public class LoginActivity extends AppCompatActivity {
                     name = shopInfo.getString("name");
                     address = shopInfo.getString("address");
                     url = shopInfo.getString("picture_url");
-                    storeInfo = new StoreInfo(name,address,url);
+                    contract_fee = shopInfo.getInt("contract_fee");
+                    storeInfo = new StoreInfo(name,address,url, contract_fee);
                     storeInfo.id = _userID;
                 }
 

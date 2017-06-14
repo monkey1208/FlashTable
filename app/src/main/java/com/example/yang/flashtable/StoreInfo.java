@@ -1,5 +1,7 @@
 package com.example.yang.flashtable;
 
+import com.example.yang.flashtable.customer.infos.CustomerAppointInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,20 +18,21 @@ public class StoreInfo {
 
     private List<ReservationInfo> recordList;
     private int success_record_num;
-    private int contract_fee;
+    public int contract_fee;
 
     public StoreInfo(){};
-    public StoreInfo(String n,String a,String url){
+    public StoreInfo(String n,String a,String url, int contract_fee){
         name = n;
         address = a;
         this.url = url;
+        this.contract_fee = contract_fee;
         discountList = new ArrayList<>();
         discountDefault = 0;
         discountCurrent = discountDefault;
         recordList = new ArrayList<>();
         success_record_num = 0;
     }
-    public void addAppointment(CustomerAppointInfo info,String domain){
+    public void addAppointment(CustomerAppointInfo info, String domain){
         //TODO: notify server new appointment
         new APIHandler(domain).postSession(info);
         totalAppointment = totalAppointment +1;
