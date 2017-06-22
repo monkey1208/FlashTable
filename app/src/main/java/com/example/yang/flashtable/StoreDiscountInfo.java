@@ -6,20 +6,15 @@ public class StoreDiscountInfo {
     String description;
     int count;
     boolean isDefault;
-    boolean notDelete;
+    boolean isDeleted;
     boolean isActive;
-    public StoreDiscountInfo(int id,int discount, String description,boolean notDelete, int count){
+    public StoreDiscountInfo(int id, String description, boolean isDeleted, int count, boolean isActive){
         this.id = id;
         this.description = description;
         this.count = count;
         this.isDefault = false;
-        this.notDelete = notDelete;
-    }
-    public StoreDiscountInfo(int id, String description, int count, boolean isDefault){
-        this.id = id;
-        this.description = description;
-        this.count = count;
-        this.isDefault = isDefault;
+        this.isDeleted = isDeleted;
+        this.isActive = isActive;
     }
 
     public int getCount(){
@@ -28,5 +23,9 @@ public class StoreDiscountInfo {
 
     public int getId(){
         return this.id;
+    }
+
+    public void deleteDiscount(){
+        this.isDeleted = true;
     }
 }

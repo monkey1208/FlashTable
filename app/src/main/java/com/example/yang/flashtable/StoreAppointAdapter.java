@@ -11,7 +11,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ import java.util.TimerTask;
 
 public class StoreAppointAdapter extends BaseAdapter{
     private LayoutInflater inflater;
-    private List<ReservationInfo> list = new ArrayList<>();
+    private List<RecordInfo> list = new ArrayList<>();
     private Context context;
     private Handler handler = new Handler();
     String domain;
@@ -43,7 +42,7 @@ public class StoreAppointAdapter extends BaseAdapter{
     private static final int TIMEOUT = 0;
     private static final int WAITING = 1;
 
-    public StoreAppointAdapter(Context context, List<ReservationInfo> reservation_list,String domain) {
+    public StoreAppointAdapter(Context context, List<RecordInfo> reservation_list, String domain) {
         this.context = context;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.list = reservation_list;
@@ -103,7 +102,7 @@ public class StoreAppointAdapter extends BaseAdapter{
         ImageView im_photo;
         ImageButton bt_cancel;
         int position;
-        ReservationInfo info;
+        RecordInfo info;
         public ViewHolder(int position,TextView tv_name,TextView tv_date,TextView tv_state,TextView tv_countdown,TextView tv_remaintime,ImageView im_photo,ImageButton bt_cancel){
             this.position = position;
             this.tv_name = tv_name;
@@ -114,7 +113,7 @@ public class StoreAppointAdapter extends BaseAdapter{
             this.im_photo = im_photo;
             this.bt_cancel = bt_cancel;
         }
-        public void setData(ReservationInfo info){
+        public void setData(RecordInfo info){
             this.info = info;
             tv_name.setText(info.name);
             long val = info.due_time;

@@ -1,17 +1,12 @@
 package com.example.yang.flashtable;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -26,12 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import static com.example.yang.flashtable.R.string.server_domain;
 
 public class BackGroundWorker {
 
@@ -49,7 +38,7 @@ public class BackGroundWorker {
             public void run() {
                 new APIRequestUpdate(domain).execute(StoreMainActivity.storeInfo.id);
             }
-        },0,5000);
+        },0,3000);
     }
     public void killTimer(){
         timer.cancel();

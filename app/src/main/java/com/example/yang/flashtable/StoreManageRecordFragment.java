@@ -34,7 +34,7 @@ public class StoreManageRecordFragment extends ListFragment {
     SharedPreferences store;
     String shop_id;
     public static StoreManageRecordAdapter adapter;
-    public static List<ReservationInfo> list;
+    public static List<RecordInfo> list;
 
     public StoreManageRecordFragment() {
         // Required empty public constructor
@@ -73,15 +73,15 @@ public class StoreManageRecordFragment extends ListFragment {
 
     public void onListItemClick(ListView l, View v, int position, long id) {
         Bundle content = new Bundle();
-        ReservationInfo info = list.get(position);
+        RecordInfo info = list.get(position);
         content.putString("id", String.valueOf(info.id));
         content.putString("name", info.name);
         content.putString("number", String.valueOf(info.number));
         content.putString("point", String.valueOf(info.point));
         content.putString("record_time", info.record_time);
+        content.putString("session_time", info.session_time);
         content.putString("is_succ", info.is_succ);
         content.putString("image_url", info.get_Image_Url());
-        content.putString("promotion_name", info.promotion_name);
         content.putString("promotion_des", info.promotion_des);
         StoreMainActivity.fragmentController.sendBundle(content, FragmentController.MANAGE_RECORD_INFO);
     }
@@ -102,7 +102,7 @@ public class StoreManageRecordFragment extends ListFragment {
 
     private class APIRecordDetail extends AsyncTask<String, Void, Void> {
         boolean new_record_flag = true;
-        List<ReservationInfo> tmp_list = new ArrayList<>();
+        List<RecordInfo> tmp_list = new ArrayList<>();
         @Override
         protected Void doInBackground(String...params) {
             tmp_list.addAll(StoreMainActivity.storeInfo.getRecordList());
@@ -122,16 +122,18 @@ public class StoreManageRecordFragment extends ListFragment {
                     String account = recordInfo.getString("user_account");
                     int point = recordInfo.getInt("user_point");
                     String url = recordInfo.getString("user_picture_url");
-                    String promotion_name = recordInfo.getString("promotion_name");
                     String promotion_des = recordInfo.getString("promotion_description");
 
                     String time = recordInfo.getString("created_at");
+                    String session_time = recordInfo.getString("session_created_at");
                     DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
                     Date date =  df.parse(time);
+                    Date session_date = df.parse(session_time);
                     df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
                     time = df.format(date);
+                    session_time = df.format(session_date);
 
-                    final ReservationInfo info = new ReservationInfo(account, num, point, time, is_success, url, promotion_name, promotion_des);
+                    final RecordInfo info = new RecordInfo(account, num, point, time, session_time, is_success, url, promotion_des);
                     tmp_list.add(info);
                 }
             } catch (Exception e) {

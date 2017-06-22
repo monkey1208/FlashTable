@@ -35,6 +35,9 @@ import static com.example.yang.flashtable.AlertDialogController.LOGOUT;
 public class StoreManageFragment extends ListFragment {
     private String shop_id;
     private StoreManageAdapter adapter;
+    private Calendar today;
+    private int start, end;
+    public List<RecordInfo> recordList;
 
     public  StoreManageFragment () {
         // Required empty public constructor
@@ -113,7 +116,7 @@ public class StoreManageFragment extends ListFragment {
     }
 
     private class APIFirstRecordDetail extends AsyncTask<String, Void, Void> {
-        List<ReservationInfo> list;
+        List<RecordInfo> list;
         ProgressDialog pd;
         boolean exception = false;
         @Override
@@ -138,16 +141,17 @@ public class StoreManageFragment extends ListFragment {
                     String account = recordInfo.getString("user_account");
                     int point = recordInfo.getInt("user_point");
                     String url = recordInfo.getString("user_picture_url");
-                    String promotion_name = recordInfo.getString("promotion_name");
                     String promotion_des = recordInfo.getString("promotion_description");
 
                     String time = recordInfo.getString("created_at");
+                    String session_time = recordInfo.getString("session_created_at");
                     DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
                     Date date =  df.parse(time);
+                    Date session_date = df.parse(session_time);
                     df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
                     time = df.format(date);
-
-                    final ReservationInfo info = new ReservationInfo(account, num, point, time, is_success, url, promotion_name, promotion_des);
+                    session_time = df.format(session_date);
+                    final RecordInfo info = new RecordInfo(account, num, point, time, session_time, is_success, url, promotion_des);
                     list.add(info);
                 }
             } catch (Exception e) {
@@ -163,8 +167,7 @@ public class StoreManageFragment extends ListFragment {
             }
             if(!exception) {
                 try {
-                    Calendar today = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
-                    int start, end;
+                    today = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
                     if(today.get(Calendar.DAY_OF_MONTH) <= 15){
                         start = 1;
                         end = 15;
@@ -175,15 +178,14 @@ public class StoreManageFragment extends ListFragment {
                     Calendar date = Calendar.getInstance();
                     StoreMainActivity.storeInfo.setRecordList(list);
                     int sum = 0;
-                    int num_succ = 0; //to calculate the fee
+                    int num_succ = 0; //Calculate the fee
                     for (int i = 0; i < list.size(); i++) {
-                        String is_success = list.get(i).is_succ;
-                        if (is_success.equals("true")) {
+                        if (list.get(i).is_succ.equals("true")) {
                             SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
                             date.setTime(df.parse(list.get(i).record_time));
                             if (date.get(Calendar.YEAR) == today.get(Calendar.YEAR) && date.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
                                 start <= date.get(Calendar.DAY_OF_MONTH) && date.get(Calendar.DAY_OF_MONTH) <= end) {
-                                num_succ++;
+                                num_succ += list.get(i).number;
                             }
                             sum += 1;
                         }
@@ -197,6 +199,43 @@ public class StoreManageFragment extends ListFragment {
                 }
             }else{
                 new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+            }
+            recordList = new ArrayList<>(list);
+        }
+    }
+
+    public void updateValues(){
+        if(recordList.size() != StoreMainActivity.storeInfo.getRecordList().size()){
+            recordList = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
+            try {
+                int sum = 0;
+                int num_succ = 0; //Calculate the fee
+                Calendar today = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+                int start, end;
+                if (today.get(Calendar.DAY_OF_MONTH) <= 15) {
+                    start = 1;
+                    end = 15;
+                } else {
+                    start = 16;
+                    end = today.getActualMaximum(Calendar.DAY_OF_MONTH);
+                }
+                Calendar date = Calendar.getInstance();
+                for (int i = 0; i < recordList.size(); i++) {
+                    if (recordList.get(i).is_succ.equals("true")) {
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
+                        date.setTime(df.parse(recordList.get(i).record_time));
+                        if (date.get(Calendar.YEAR) == today.get(Calendar.YEAR) && date.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
+                                start <= date.get(Calendar.DAY_OF_MONTH) && date.get(Calendar.DAY_OF_MONTH) <= end) {
+                            num_succ += recordList.get(i).number;
+                        }
+                        sum += 1;
+                    }
+                }
+                value[0] = (int) ((sum + 0.0) / recordList.size() * 100);
+                value[2] = num_succ * StoreMainActivity.storeInfo.getContract_fee();
+                adapter.notifyDataSetChanged();
+            } catch(Exception e){
+                e.printStackTrace();
             }
         }
     }

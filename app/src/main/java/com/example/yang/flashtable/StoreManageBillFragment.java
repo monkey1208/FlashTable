@@ -1,6 +1,5 @@
 package com.example.yang.flashtable;
 
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -46,9 +45,9 @@ public class StoreManageBillFragment extends Fragment {
     TextView tv_money;
     TextView tv_totalmoney;
     private String shop_id;
-    private List<Date> dateList;
     private int contract_fee;
     private Calendar currentDate;
+    List<RecordInfo> recordList;
     private int half_month; // 0 == first half(1-15), 1 == second half(16~)
 
     public StoreManageBillFragment() {
@@ -115,6 +114,7 @@ public class StoreManageBillFragment extends Fragment {
         });
 
         //Get transactions detail, then set values
+        setValues(view);
         new APITimeDetail().execute();
         currentDate = Calendar.getInstance(Locale.getDefault());
 
@@ -151,14 +151,23 @@ public class StoreManageBillFragment extends Fragment {
         tv_period.setText(String.format(Locale.TAIWAN, "%d/%02d/%02d - %d%02d/%02d", thisYear, thisMonth+1, start, thisYear, thisMonth+1,  end));
 
         int num_succ = 0;
-        for(int i = dateList.size()-1; i >= 0; i--) {
-            Calendar date = Calendar.getInstance();
-            date.setTime(dateList.get(i));
-            if (date.get(Calendar.YEAR) == thisYear && date.get(Calendar.MONTH) == thisMonth &&
-                    start <= date.get(Calendar.DAY_OF_MONTH) && date.get(Calendar.DAY_OF_MONTH) <= end) {
-                num_succ++;
+        recordList = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
+        for(int i = recordList.size()-1; i >= 0; i--) {
+            if(recordList.get(i).is_succ.equals("true")) {
+                DateFormat df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
+                try {
+                    Calendar date = Calendar.getInstance(Locale.getDefault());
+                    date.setTime(df.parse(recordList.get(i).record_time));
+                    if (date.get(Calendar.YEAR) == thisYear && (date.get(Calendar.MONTH)) == thisMonth &&
+                            start <= date.get(Calendar.DAY_OF_MONTH) && date.get(Calendar.DAY_OF_MONTH) <= end) {
+                        num_succ += recordList.get(i).number;
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
+
         tv_success.setText(String.valueOf(num_succ));
         tv_money.setText(String.valueOf(contract_fee));
         tv_totalmoney.setText(String.valueOf(contract_fee*num_succ));
@@ -193,12 +202,19 @@ public class StoreManageBillFragment extends Fragment {
         }
         tv_period.setText(String.format(Locale.TAIWAN, "%d/%02d/%02d - %d%02d/%02d", currentYear, currentMonth, start, currentYear, currentMonth,  end));
         int num_succ = 0;
-        for(int i = dateList.size()-1; i >= 0; i--) {
-            Calendar date = Calendar.getInstance();
-            date.setTime(dateList.get(i));
-            if (date.get(Calendar.YEAR) == currentYear && (date.get(Calendar.MONTH)) == (currentMonth-1) &&
-                    start <= date.get(Calendar.DAY_OF_MONTH) && date.get(Calendar.DAY_OF_MONTH) <= end) {
-                num_succ++;
+        for(int i = recordList.size()-1; i >= 0; i--) {
+            if(recordList.get(i).is_succ.equals("true")) {
+                DateFormat df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
+                try {
+                    Calendar date = Calendar.getInstance(Locale.getDefault());
+                    date.setTime(df.parse(recordList.get(i).record_time));
+                    if (date.get(Calendar.YEAR) == currentYear && (date.get(Calendar.MONTH)) == (currentMonth - 1) &&
+                            start <= date.get(Calendar.DAY_OF_MONTH) && date.get(Calendar.DAY_OF_MONTH) <= end) {
+                        num_succ += recordList.get(i).number;
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
         tv_success.setText(String.valueOf(num_succ));
@@ -206,21 +222,13 @@ public class StoreManageBillFragment extends Fragment {
     }
 
     private class APITimeDetail extends AsyncTask<String, Void, Void> {
-        private ProgressDialog progress_dialog = new ProgressDialog(getContext());
         boolean new_record_flag = true;
-        List<ReservationInfo> list;
         boolean exception = false;
-        @Override
-        protected void onPreExecute() {
-            progress_dialog.setCanceledOnTouchOutside(false);
-            progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
-            progress_dialog.show();
-        }
+        List<RecordInfo> tmpList;
         @Override
         protected Void doInBackground(String...params) {
-            list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
-            dateList = new ArrayList<>();
-            int origin_size = list.size();
+            tmpList = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
+            int origin_size = tmpList.size();
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet getRecordsInfo = new HttpGet(getString(R.string.server_domain)+"/api/shop_records?shop_id="+ shop_id+"&verbose=1");
@@ -236,16 +244,18 @@ public class StoreManageBillFragment extends Fragment {
                     String account = recordInfo.getString("user_account");
                     int point = recordInfo.getInt("user_point");
                     String url = recordInfo.getString("user_picture_url");
-                    String promotion_name = recordInfo.getString("promotion_name");
                     String promotion_des = recordInfo.getString("promotion_description");
 
                     String time = recordInfo.getString("created_at");
+                    String session_time = recordInfo.getString("session_created_at");
                     DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
                     Date date =  df.parse(time);
+                    Date session_date = df.parse(session_time);
                     df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
                     time = df.format(date);
-                    ReservationInfo info = new ReservationInfo(account, num, point, time, is_success, url, promotion_name, promotion_des);
-                    list.add(info);
+                    session_time = df.format(session_date);
+                    RecordInfo info = new RecordInfo(account, num, point, time, session_time, is_success, url, promotion_des);
+                    tmpList.add(info);
                 }
             } catch (Exception e) {
                 exception = true;
@@ -255,21 +265,17 @@ public class StoreManageBillFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(Void _params){
-
             if(!exception) {
                 if (new_record_flag) {
-                    StoreMainActivity.storeInfo.setRecordList(list);
+                    StoreMainActivity.storeInfo.setRecordList(recordList);
+                    recordList = new ArrayList<>(tmpList);
+                    setValues(view);
                 }
                 try {
                     int sum = 0;
-                    for (int i = 0; i < list.size(); i++) {
-                        String is_success = list.get(i).is_succ;
-                        if (is_success.equals("true")) {
+                    for (int i = 0; i < recordList.size(); i++) {
+                        if (recordList.get(i).is_succ.equals("true")) {
                             sum += 1;
-                            String time = list.get(i).record_time;
-                            DateFormat df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
-                            Date date = df.parse(time);
-                            dateList.add(date);
                         }
                     }
                     StoreMainActivity.storeInfo.setSuccess_record_num(sum);
@@ -277,11 +283,9 @@ public class StoreManageBillFragment extends Fragment {
                     new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
                     e.printStackTrace();
                 }
-                setValues(view);
             }else{
                 new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
             }
-            progress_dialog.dismiss();
         }
     }
 

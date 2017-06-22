@@ -56,6 +56,9 @@ public class FragmentController extends StoreMainActivity{
             initFragment(i);
     }
     private void setActive(int mode){
+        if(mode == MANAGE && storeManageFragment.recordList != null){
+            storeManageFragment.updateValues();
+        }
         for(int i=0;i<FRAG_COUNT;i++){
             if(i!=mode && frag_stat[i]==SHOW){
                 fragmentManager.beginTransaction().hide(fragment[i]).commit();

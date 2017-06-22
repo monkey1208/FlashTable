@@ -8,13 +8,15 @@ public class StoreInfo {
     public String name;
     public String address;
     public String url;
-    public int discountDefault;
-    public int discountCurrent;
+    public int discountDefault; //Position in not_deleted_discount_list
+    public int discountCurrent; //Position in not_deleted_discount_list
+    public int discountCurrentId; // Promotion Id for current active discount in not_deleted_discount_list
     public int totalAppointment;
     public int successAppointment;
     public List<StoreDiscountInfo> discountList;
+    public List<StoreDiscountInfo> not_delete_discountList;
 
-    private List<ReservationInfo> recordList;
+    private List<RecordInfo> recordList;
     private int success_record_num;
     public int contract_fee;
 
@@ -25,10 +27,12 @@ public class StoreInfo {
         this.url = url;
         this.contract_fee = contract_fee;
         discountList = new ArrayList<>();
-        discountDefault = 0;
+        not_delete_discountList = new ArrayList<>();
+        discountDefault = -1;
         discountCurrent = discountDefault;
         recordList = new ArrayList<>();
         success_record_num = 0;
+        discountCurrentId = -1;
     }
     public void addAppointment(CustomerAppointInfo info,String domain){
         //TODO: notify server new appointment
@@ -41,11 +45,11 @@ public class StoreInfo {
         successAppointment = successAppointment+1;
     }
 
-    public void setRecordList(List<ReservationInfo> list){
+    public void setRecordList(List<RecordInfo> list){
         this.recordList = new ArrayList<>(list);
     }
 
-    public List<ReservationInfo> getRecordList(){
+    public List<RecordInfo> getRecordList(){
         return  recordList;
     }
 
@@ -60,8 +64,18 @@ public class StoreInfo {
     void setContract_fee(int fee){
         this.contract_fee = fee;
     }
+
     int getContract_fee(){
         return contract_fee;
     }
+
+    void changeDiscountCurrentId(int id){
+        this.discountCurrentId = id;
+    }
+
+    void stopDiscount(){
+        this.discountCurrentId = -1;
+    }
+
 
 }
