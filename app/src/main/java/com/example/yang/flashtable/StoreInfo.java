@@ -1,5 +1,7 @@
 package com.example.yang.flashtable;
 
+import com.example.yang.flashtable.customer.infos.CustomerAppointInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class StoreInfo {
         success_record_num = 0;
         discountCurrentId = -1;
     }
-    public void addAppointment(CustomerAppointInfo info,String domain){
+    public void addAppointment(CustomerAppointInfo info, String domain){
         //TODO: notify server new appointment
         new APIHandler(domain).postSession(info);
         totalAppointment = totalAppointment +1;

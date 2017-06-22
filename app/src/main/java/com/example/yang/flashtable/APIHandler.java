@@ -3,6 +3,8 @@ package com.example.yang.flashtable;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.yang.flashtable.customer.infos.CustomerAppointInfo;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;

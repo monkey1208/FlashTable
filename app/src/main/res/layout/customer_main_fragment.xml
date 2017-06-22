@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/lightgray"
-    tools:context="com.example.yang.flashtable.CustomerMainActivity">
+    tools:context="com.example.yang.flashtable.customer.CustomerMainActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/customer_main_srl"

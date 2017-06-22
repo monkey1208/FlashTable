@@ -9,7 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.example.yang.flashtable.CustomerRestaurantInfo;
+import com.example.yang.flashtable.customer.infos.CustomerRestaurantInfo;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.ByteArrayOutputStream;
