@@ -16,6 +16,8 @@
     <color name="colorHalfTransparent">#80FFFFFF</color>
     <color name="textColorOrangeDark">#EA5703</color>
     <color name="alertColor">#FF9533</color>
+    <color name="menuColor">#FF6600</color>
+    <color name="menuShadowColor">#D8FF6600</color>
 
     <color name="colorOrangeLighter">#60EA5703</color>
 

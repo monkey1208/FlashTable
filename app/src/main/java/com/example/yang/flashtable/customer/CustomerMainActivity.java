@@ -132,9 +132,11 @@ public class CustomerMainActivity extends AppCompatActivity
         if (id == R.id.customer_drawer_reservation) {
             // Handle the camera action
             navigate("main");
-        } else if (id == R.id.customer_drawer_detail) {
+        }
+        /* else if (id == R.id.customer_drawer_detail) {
             navigate("detail");
-        } else if (id == R.id.customer_drawer_profile) {
+        } */
+        else if (id == R.id.customer_drawer_profile) {
             navigate("profile");
         } else if (id == R.id.customer_drawer_points) {
             navigate("points");
