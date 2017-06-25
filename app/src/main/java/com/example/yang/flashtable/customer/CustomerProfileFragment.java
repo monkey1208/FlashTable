@@ -1,11 +1,14 @@
 package com.example.yang.flashtable.customer;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,9 +17,11 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.util.Log;
@@ -71,7 +76,7 @@ public class CustomerProfileFragment extends Fragment {
 
     private String credits;
 
-    private int GET_IMAGE_GALLERY = 0, GET_IMAGE_CAMERA = 1, CROP_IMAGE = 2;
+    private int GET_IMAGE_GALLERY = 0, GET_IMAGE_CAMERA = 1, CROP_IMAGE = 2, REQUEST_CAMERA = 3;
     private String picture_path;
 
     @Nullable
@@ -147,21 +152,21 @@ public class CustomerProfileFragment extends Fragment {
                             public void clickEvent(boolean ok, int status) {
                                 if (ok) {
                                     if (status == 1) {
+                                        // Get image from gallery
                                         Intent intent = new Intent(
                                                 Intent.ACTION_PICK,
                                                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                                         startActivityForResult(intent, GET_IMAGE_GALLERY);
                                     } else {
-                                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                                        String imageFileName = timeStamp + ".jpg";
-                                        File storageDir = Environment.getExternalStoragePublicDirectory(
-                                                Environment.DIRECTORY_PICTURES);
-                                        picture_path = storageDir.getAbsolutePath() + "/" + imageFileName;
-                                        File file = new File(picture_path);
-                                        Uri outputFileUri = Uri.fromFile(file);
-                                        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                                        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-                                        startActivityForResult(intent, GET_IMAGE_CAMERA);
+                                        // Get image from camera
+                                        // NOTE: Android M crash; needs to get permission first
+
+                                        boolean camPermission = hasPermissionInManifest(getActivity(), android.Manifest.permission.CAMERA);
+                                        // Toast.makeText(getActivity(), String.valueOf(camPermission), Toast.LENGTH_LONG).show();
+
+                                        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                                            requestPermissions(new String[]{android.Manifest.permission.CAMERA}, REQUEST_CAMERA);
+                                        else if (camPermission) startCamera();
                                     }
                                 }
                             }
@@ -170,11 +175,6 @@ public class CustomerProfileFragment extends Fragment {
             }
         });
 
-        // String path = Environment.getExternalStorageDirectory().getPath() +
-        //         getResources().getString(R.string.customer_profile_pic);
-        // Bitmap avatar = readImage(path);
-        // if (avatar == null) iv_avatar.setImageBitmap(getRoundedShape(((BitmapDrawable) iv_avatar.getDrawable()).getBitmap()));
-        // else    iv_avatar.setImageBitmap(getRoundedShape(avatar));
         tv_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -200,6 +200,55 @@ public class CustomerProfileFragment extends Fragment {
                 ((CustomerMainActivity)getActivity()).navigate("points");
             }
         });
+    }
+
+    private void startCamera() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = timeStamp + ".jpg";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        picture_path = storageDir.getAbsolutePath() + "/" + imageFileName;
+        File file = new File(picture_path);
+        Uri outputFileUri = Uri.fromFile(file);
+        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        startActivityForResult(intent, GET_IMAGE_CAMERA);
+    }
+
+    public boolean hasPermissionInManifest(Context context, String permissionName) {
+        final String packageName = context.getPackageName();
+        try {
+            final PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(packageName, PackageManager.GET_PERMISSIONS);
+            final String[] declaredPermisisons = packageInfo.requestedPermissions;
+            if (declaredPermisisons != null && declaredPermisisons.length > 0) {
+                for (String p : declaredPermisisons) {
+                    if (p.equals(permissionName)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        }
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CAMERA) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Now user should be able to use camera
+                startCamera();
+            }
+            else {
+                // Your app will not have this permission. Turn off all functions
+                // that require this permission or it will force close like your
+                // original question
+                Toast.makeText(getActivity(), "無法取得相機權限！", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     // Functions related to getting image
