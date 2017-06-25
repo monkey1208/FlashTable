@@ -64,7 +64,11 @@ public class AlertDialogController {
             StoreMainActivity.storeInfo.not_delete_discountList.remove(discountDefault);
             StoreMainActivity.storeInfo.not_delete_discountList.add(0, discount);
             StoreMainActivity.storeInfo.discountDefault = 0;
+            StoreMainActivity.storeInfo.discountCurrent = 0;
+        }else if(StoreMainActivity.storeInfo.discountCurrent < 0){
+            StoreMainActivity.storeInfo.discountCurrent = 0;
         }
+
         final StoreHomeDiscountDialogAdapter adapter = new StoreHomeDiscountDialogAdapter(context, StoreMainActivity.storeInfo.not_delete_discountList);
         lv_discount.setAdapter(adapter);
         lv_discount.setOnItemClickListener(new AdapterView.OnItemClickListener() {
