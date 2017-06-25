@@ -211,7 +211,7 @@ public class CustomerGps {
     public Marker setMarker(LatLng latLng){
         MarkerOptions options =new MarkerOptions();
         options.position(latLng)
-                .icon(BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_restaurant)));
+                .icon(BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_orange)));
         Marker restaurant_marker = googleMap.addMarker(options);
         return restaurant_marker;
     }
