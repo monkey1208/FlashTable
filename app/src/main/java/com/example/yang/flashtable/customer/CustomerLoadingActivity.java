@@ -136,7 +136,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                     String status = shop_object.get("status_code").toString();
 
                     if(status.equals("0")) {
-                        String picture_url = shop_object.get("picture_url").toString();
+                        String picture_url = shop_object.get("picture_url_mainpage").toString();
                         Bitmap image = getBitmapFromURL(picture_url);
                         if(image != null){
 
@@ -155,12 +155,13 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                         info.setInfo(address, intro);
                         info.turnBitmap2ByteArray(image);
 
+                        byte[] img1 = bitmap2ByteArray(shop_object.getString("picture_url"));
                         byte[] img2 = bitmap2ByteArray(shop_object.getString("picture_url2"));
                         byte[] img3 = bitmap2ByteArray(shop_object.getString("picture_url3"));
                         byte[] img4 = bitmap2ByteArray(shop_object.getString("picture_url4"));
                         byte[] img5 = bitmap2ByteArray(shop_object.getString("picture_url5"));
 
-                        sql_handler.insert(info, img2, img3, img4, img5);
+                        sql_handler.insert(info, img1, img2, img3, img4, img5);
 
                         if(!image.isRecycled()){
                             image.recycle();

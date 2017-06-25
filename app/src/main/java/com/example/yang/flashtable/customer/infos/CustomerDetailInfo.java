@@ -43,5 +43,18 @@ public class CustomerDetailInfo {
         image = _image;
     }
 
-
+    @Override
+    public String toString() {
+        return "Shop: "+shop+
+                ", Location: "+location+
+                ", time: "+time+
+                ", dicount: "+discount+
+                ", gift: "+gift+
+                ", success: "+success+
+                ", persons: "+persons+
+                ", shop_info: "+shop_info+
+                ", category: "+category+
+                ", shop_id: "+shop_id+
+                ", record_id: "+record_id;
+    }
 }
