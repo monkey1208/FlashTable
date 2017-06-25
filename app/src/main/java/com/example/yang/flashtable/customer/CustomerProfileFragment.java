@@ -1,5 +1,6 @@
 package com.example.yang.flashtable.customer;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
@@ -76,7 +77,7 @@ public class CustomerProfileFragment extends Fragment {
 
     private String credits;
 
-    private int GET_IMAGE_GALLERY = 0, GET_IMAGE_CAMERA = 1, CROP_IMAGE = 2, REQUEST_CAMERA = 3;
+    private int GET_IMAGE_GALLERY = 0, GET_IMAGE_CAMERA = 1, CROP_IMAGE = 2, REQUEST_CAMERA = 3, REQUEST_MEDIA = 4;
     private String picture_path;
 
     @Nullable
@@ -235,12 +236,12 @@ public class CustomerProfileFragment extends Fragment {
     }
 
     @Override
+    @TargetApi(23)
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CAMERA) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Now user should be able to use camera
-                startCamera();
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_MEDIA);
             }
             else {
                 // Your app will not have this permission. Turn off all functions
@@ -249,6 +250,20 @@ public class CustomerProfileFragment extends Fragment {
                 Toast.makeText(getActivity(), "無法取得相機權限！", Toast.LENGTH_LONG).show();
             }
         }
+        else if (requestCode == REQUEST_MEDIA) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Now user should be able to use camera
+                startCamera();
+            }
+            else {
+                // Your app will not have this permission. Turn off all functions
+                // that require this permission or it will force close like your
+                // original question
+                Toast.makeText(getActivity(), "無法取得影像權限！", Toast.LENGTH_LONG).show();
+            }
+
+        }
+        else super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     // Functions related to getting image
