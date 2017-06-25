@@ -315,7 +315,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
     @Override
     public void onDestroy() {
         CustomerObservable.getInstance().deleteObserver(this);
-        apiPromotion.cancel(true);
+        if (apiPromotion != null) apiPromotion.cancel(true);
         super.onDestroy();
     }
 

@@ -256,7 +256,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
     private void requestSuccess(){
         timer.cancel();
-        reservationAccepted(60000*15);
+        reservationAccepted(60000*30);
     }
 
     private void requestRejected(){
@@ -309,7 +309,8 @@ public class CustomerReservationActivity extends AppCompatActivity {
                         pre_millis = millis_left;
                         new ApiRequestSuccess(request_id).execute();
                     }
-                    time_left = (millis_left / 1000) + seconds;
+                    time_left = ((millis_left/1000)/60)+":"+((millis_left/1000)%60);
+                    //time_left = (millis_left / 1000) + seconds;
                     tv_time.setText(time_left);
                 }
                 public void onFinish() {
