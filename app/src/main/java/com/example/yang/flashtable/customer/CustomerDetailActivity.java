@@ -269,10 +269,10 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         status = responseShopRating.getJSONObject(0).getString("status_code");
                         if( !status.equals("0") )   break;
                         String shop_rating = responseShopRating.getJSONObject(0).getString("average_score");
-
-                        reservations.add(new CustomerDetailInfo(shop_name, shop_address, Float.parseFloat(shop_rating) / 2,
+                        CustomerDetailInfo insert_info = new CustomerDetailInfo(shop_name, shop_address, Float.parseFloat(shop_rating) / 2,
                                 created_at, Integer.parseInt(promotion_discount), promotion_gift, is_succ.equals("true"), Integer.parseInt(persons)
-                                , shop_intro, shop_category, Integer.parseInt(shop_id), record_id, info.getImage()));
+                                , shop_intro, shop_category, Integer.parseInt(shop_id), record_id, info.getImage());
+                        reservations.add(insert_info);
                     }
                 }
             } catch (Exception e) {

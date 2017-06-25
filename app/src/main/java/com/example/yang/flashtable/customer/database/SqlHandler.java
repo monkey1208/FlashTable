@@ -33,6 +33,7 @@ public class SqlHandler extends SQLiteOpenHelper {
     public static final String ADDRESS_COLUMN = "address";
     public static final String INTRO_COLUMN = "intro";
     public static final String IMG_COLUMN = "img";
+    public static final String IMG_COLUMN_1 = "img_1";
     public static final String IMG_COLUMN_2 = "img_2";
     public static final String IMG_COLUMN_3 = "img_3";
     public static final String IMG_COLUMN_4 = "img_4";
@@ -58,6 +59,7 @@ public class SqlHandler extends SQLiteOpenHelper {
                 ADDRESS_COLUMN + " text, " +
                 INTRO_COLUMN + " text, " +
                 IMG_COLUMN + " blob no null, " +
+                IMG_COLUMN_1 + " blob, " +
                 IMG_COLUMN_2 + " blob, " +
                 IMG_COLUMN_3 + " blob, " +
                 IMG_COLUMN_4 + " blob, " +
@@ -140,16 +142,16 @@ public class SqlHandler extends SQLiteOpenHelper {
     }
 
     public void insertList(List<CustomerRestaurantInfo> list){
-        insertList(list, null, null, null, null);
+        insertList(list, null, null, null, null, null);
     }
 
-    public void insertList(List<CustomerRestaurantInfo> list, byte[] img_2, byte[] img_3, byte[] img_4, byte[] img_5){
+    public void insertList(List<CustomerRestaurantInfo> list, byte[] img_1, byte[] img_2, byte[] img_3, byte[] img_4, byte[] img_5){
         for(int i = 0;i<list.size(); i++){
-            insert(list.get(i), img_2, img_3, img_4, img_5);
+            insert(list.get(i), img_1, img_2, img_3, img_4, img_5);
         }
     }
 
-    public void insert(CustomerRestaurantInfo info, byte[] img_2, byte[] img_3, byte[] img_4, byte[] img_5){
+    public void insert(CustomerRestaurantInfo info, byte[] img_1, byte[] img_2, byte[] img_3, byte[] img_4, byte[] img_5){
 
         Log.d("SQLite", "Saving Data");
         ContentValues cv = new ContentValues();
@@ -162,6 +164,7 @@ public class SqlHandler extends SQLiteOpenHelper {
         cv.put(ADDRESS_COLUMN, info.address);
         cv.put(INTRO_COLUMN, info.intro);
         cv.put(IMG_COLUMN, info.image);
+        cv.put(IMG_COLUMN_1, img_1);
         cv.put(IMG_COLUMN_2, img_2);
         cv.put(IMG_COLUMN_3, img_3);
         cv.put(IMG_COLUMN_4, img_4);
@@ -177,7 +180,7 @@ public class SqlHandler extends SQLiteOpenHelper {
     public ArrayList<Bitmap> getBitmapList(int shop_id){
         Cursor cursor = db.query(true,
                 DATABASE_TABLE,
-                new String[] {IMG_COLUMN_2, IMG_COLUMN_3, IMG_COLUMN_4, IMG_COLUMN_5},	//column
+                new String[] {IMG_COLUMN_1, IMG_COLUMN_2, IMG_COLUMN_3, IMG_COLUMN_4, IMG_COLUMN_5},	//column
                 ID_COLUMN+"="+ shop_id,				//WHERE
                 null, // WHERE 的參數
                 null, // GROUP BY
@@ -189,7 +192,10 @@ public class SqlHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();	//cursor to the first data
         }
         ArrayList<Bitmap> list = new ArrayList<>();
-        byte[] array = cursor.getBlob(cursor.getColumnIndex(IMG_COLUMN_2));
+        byte[] array = cursor.getBlob(cursor.getColumnIndex(IMG_COLUMN_1));
+        if(array != null)
+            list.add(BitmapFactory.decodeByteArray(array, 0, array.length));
+        array = cursor.getBlob(cursor.getColumnIndex(IMG_COLUMN_2));
         if(array != null)
             list.add(BitmapFactory.decodeByteArray(array, 0, array.length));
         array = cursor.getBlob(cursor.getColumnIndex(IMG_COLUMN_3));
