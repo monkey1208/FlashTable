@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -219,8 +220,12 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         public CustomerGps(Activity c, GoogleMap googleMap) {
             this.c = c;
             this.googleMap = googleMap;
-            descriptor_origin = BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_orange));
-            descriptor_clicked = BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_red));
+            //descriptor_origin = BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_orange));
+            //descriptor_clicked = BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_red));
+            descriptor_origin = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_customer_map_orange));
+            descriptor_clicked = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_customer_map_red));
+
+
 
             //descriptor_origin = BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_restaurant));
             //descriptor_clicked = BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_choosedrestaurant));
@@ -363,7 +368,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         public Marker setMarker(LatLng latLng, int index) {
             MarkerOptions options = new MarkerOptions();
             options.position(latLng)
-                    .icon(BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_orange)))
+                    .icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_customer_map_orange)))
+                    //.icon(BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_orange)))
                     .snippet(index + "");
             Marker restaurant_marker = googleMap.addMarker(options);
             return restaurant_marker;

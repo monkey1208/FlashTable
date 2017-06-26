@@ -6,10 +6,12 @@
             android:id="@+id/customer_drawer_reservation"
             android:title="@string/drawer_reservation"
             android:icon="@drawable/ic_customer_drawer_reservation_square"/>
+        <!--
         <item
             android:id="@+id/customer_drawer_detail"
             android:title="@string/drawer_detail"
             android:icon="@drawable/ic_customer_drawer_detail"/>
+        -->
         <item
             android:id="@+id/customer_drawer_profile"
             android:title="@string/drawer_profile"

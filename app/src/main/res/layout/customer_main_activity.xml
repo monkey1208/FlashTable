@@ -35,6 +35,8 @@
         android:fitsSystemWindows="true"
         android:background="@color/transparentWhite"
         app:headerLayout="@layout/customer_drawer_header"
+        app:itemTextColor="@color/menuColor"
+        app:itemIconTint="@color/menuColor"
         app:menu="@menu/customer_drawer_menu" />
 
 </android.support.v4.widget.DrawerLayout>
