@@ -24,6 +24,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -162,12 +163,28 @@ public class CustomerProfileFragment extends Fragment {
                                         // Get image from camera
                                         // NOTE: Android M crash; needs to get permission first
 
-                                        boolean camPermission = hasPermissionInManifest(getActivity(), android.Manifest.permission.CAMERA);
+                                        // boolean camPermission = hasPermissionInManifest(getActivity(), android.Manifest.permission.CAMERA);
                                         // Toast.makeText(getActivity(), String.valueOf(camPermission), Toast.LENGTH_LONG).show();
 
-                                        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                                            requestPermissions(new String[]{android.Manifest.permission.CAMERA}, REQUEST_CAMERA);
-                                        else if (camPermission) startCamera();
+                                        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                                // Should we show an explanation?
+                                                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                                                    //This is called if user has denied the permission before
+                                                    //In this case I am just asking the permission again
+                                                    requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+
+                                                } else {
+                                                    requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+                                                }
+                                            }
+                                            else if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                                                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_MEDIA);
+                                            // Otherwise has all permissions; start camera
+
+                                            else startCamera();
+                                        }
+                                        else startCamera();
                                     }
                                 }
                             }
