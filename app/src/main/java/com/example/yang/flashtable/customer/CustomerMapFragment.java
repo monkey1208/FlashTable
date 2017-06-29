@@ -72,6 +72,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
     public final int FINE_LOCATION_CODE = 12;
     private GoogleMap googleMap;
     private CustomerGps gps;
+    private ApiPromotion apiPromotion;
     private ArrayList<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
 
     @Nullable
@@ -97,6 +98,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onDestroy() {
+        if (apiPromotion != null)
+            apiPromotion.cancel(true);
         super.onDestroy();
         CustomerObservable.getInstance().deleteObserver(this);
     }
@@ -110,7 +113,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public void setMap() {
-        new ApiPromotion(gps).execute(CustomerAppInfo.getInstance().getLocation().getLatitude(), CustomerAppInfo.getInstance().getLocation().getLongitude());
+        apiPromotion = new ApiPromotion(gps);
+        apiPromotion.execute(CustomerAppInfo.getInstance().getLocation().getLatitude(), CustomerAppInfo.getInstance().getLocation().getLongitude());
         gps.execute();
         fab_my_position.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -520,8 +524,14 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
             String lng = String.valueOf(params[1]);
             String latlng = lat + "," + lng;//need current location
             Log.d("APIPromotion", "latlng = " + latlng);
+            if(isCancelled())
+                return null;
             List<Description> list = getPromotionId(latlng);
+            if(isCancelled())
+                return null;
             for (int i = 0; i < list.size(); i++) {
+                if(isCancelled())
+                    return null;
                 CustomerRestaurantInfo info = sqlHandler.getDetail(list.get(i).shop_id);
                 info.discount = list.get(i).discount;
                 info.offer = list.get(i).offer;
@@ -541,13 +551,26 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
 
         }
 
+        @Override
+        protected void onCancelled() {
+            if(progress_dialog != null){
+                if(progress_dialog.isShowing())
+                    progress_dialog.cancel();
+            }
+            super.onCancelled();
+        }
+
         private List<Description> getPromotionId(String latlng) {
             List<Description> list = new ArrayList<>();
             NameValuePair nameValuePair = new BasicNameValuePair("location", latlng);
             String s = nameValuePair.toString();
+            if(isCancelled())
+                return null;
             HttpGet request = new HttpGet(getString(R.string.server_domain) + "api/surrounding_promotions" + "?" + s);
             request.addHeader("Content-Type", "application/json");
             try {
+                if(isCancelled())
+                    return null;
                 HttpResponse http_response = httpClient.execute(request);
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 String json = handler.handleResponse(http_response);
@@ -555,12 +578,16 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                 if (jsonArray.getJSONObject(0).get("status_code").equals("0")) {
                     int size = Integer.valueOf(jsonArray.getJSONObject(0).get("size").toString());
                     for (int i = 1; i <= size; i++) {
+                        if(isCancelled())
+                            return null;
                         String id = jsonArray.getJSONObject(i).get("promotion_id").toString();
                         nameValuePair = null;
                         nameValuePair = new BasicNameValuePair("promotion_id", id);
                         s = nameValuePair.toString();
                         request = new HttpGet(getString(R.string.server_domain) + "api/promotion_info" + "?" + s);
                         request.addHeader("Content-Type", "application/json");
+                        if(isCancelled())
+                            return null;
                         http_response = httpClient.execute(request);
                         json = handler.handleResponse(http_response);
                         JSONObject jsonObject = new JSONObject(json);
