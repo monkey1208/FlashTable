@@ -161,7 +161,7 @@
     <string name="customer_profile_name_empty">請輸入新的暱稱</string>
 
     <!-- Strings related to customer detail -->
-    <string name="customer_detail_title">預約明細</string>
+    <string name="customer_detail_title">預約紀錄</string>
     <string name="customer_detail_shop">店家名稱</string>
     <string name="customer_detail_location">店家地址</string>
     <string name="customer_detail_time">2017/02/14 08:00pm</string>

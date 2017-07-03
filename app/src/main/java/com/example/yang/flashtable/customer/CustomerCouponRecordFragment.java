@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.R;
 import com.example.yang.flashtable.customer.infos.CustomerCouponRecordInfo;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
@@ -47,6 +48,8 @@ public class CustomerCouponRecordFragment extends Fragment {
     CustomerCouponRecordAdapter adapter;
     int position;
 
+    DialogBuilder dialog_builder;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -57,6 +60,7 @@ public class CustomerCouponRecordFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        dialog_builder = new DialogBuilder(getActivity());
         position = FragmentPagerItem.getPosition(getArguments());
 
         lv_records = (ListView) view.findViewById(R.id.customer_coupon_lv_records);
@@ -90,6 +94,7 @@ public class CustomerCouponRecordFragment extends Fragment {
     }
 
     private class ApiRedeemRecords extends AsyncTask<String, Void, Void> {
+        private boolean success = true;
 
         @Override
         protected Void doInBackground(String ...value) {
@@ -120,6 +125,7 @@ public class CustomerCouponRecordFragment extends Fragment {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                success = false;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -128,9 +134,14 @@ public class CustomerCouponRecordFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void params) {
-
-            //get record list
-            updateRecords();
+            if (!success) {
+                dialog_builder.dialogEvent(
+                        "資料載入失敗，請重試", "normal", null);
+            }
+            else {
+                //get record list
+                updateRecords();
+            }
         }
     }
 

@@ -267,7 +267,7 @@ public class CustomerCommentActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void _params) {
-            if( status == null  || !status.equals("0") )    dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
+            if( status == null  || !status.equals("0") )    dialog_builder.dialogEvent("資料載入失敗，請重試", "normal", null);
             else    updateComments();
             progress_dialog.dismiss();
         }
