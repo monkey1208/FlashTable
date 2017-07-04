@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.yang.flashtable.DialogBuilder;
+import com.example.yang.flashtable.DialogEventListener;
 import com.example.yang.flashtable.R;
 
 import org.apache.http.HttpResponse;
@@ -87,7 +88,13 @@ public class CustomerNameActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            DialogEventListener listener = new DialogEventListener() {
+                @Override
+                public void clickEvent(boolean ok, int status) {
+                    if (ok) CustomerNameActivity.this.finish();
+                }
+            };
+            dialog_builder.dialogEvent("填寫內容尚未送出，確定回到上一頁嗎？", "withCancel", listener);
         }
 
         return super.onOptionsItemSelected(item);
@@ -138,7 +145,14 @@ public class CustomerNameActivity extends AppCompatActivity {
             if( status.equals("-2") )    dialog_builder.dialogEvent(getResources().getString(R.string.customer_profile_name_used), "normal", null);
             else if( status == null  || !status.equals("0") )    dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
             else {
-                Toast.makeText(CustomerNameActivity.this.getBaseContext(), getResources().getString(R.string.customer_profile_name_success), Toast.LENGTH_LONG).show();
+                DialogEventListener listener = new DialogEventListener() {
+                    @Override
+                    public void clickEvent(boolean ok, int status) {
+                        CustomerNameActivity.this.finish();
+                    }
+                };
+                dialog_builder.dialogEvent(
+                        "修改成功", "normal", listener);
                 user.edit().putString("username", new_username).apply();
                 finish();
             }

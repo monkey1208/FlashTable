@@ -167,7 +167,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
         cancel_listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DialogBuilder(CustomerReservationActivity.this).dialogEvent(getString(R.string.customer_reservation_cancel_confirm), "withCancel", new DialogEventListener() {
+                new DialogBuilder(CustomerReservationActivity.this).dialogEvent("商家正在為您安排桌位中\n確定要取消嗎？", "withCancel", new DialogEventListener() {
                     @Override
                     public void clickEvent(boolean ok, int status) {
                         if(ok) {
@@ -261,22 +261,23 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
     private void requestRejected(){
         timer.cancel();
-        new DialogBuilder(this).dialogEvent(getString(R.string.dialog_restaurant_refuse_reservation), "normal", finish_listener);
+        new DialogBuilder(this).dialogEvent("該店家目前無法接受您的預約\n再去看看其他餐廳吧", "normal", finish_listener);
     }
 
     private void qrRejected(){
         timer.cancel();
-        new DialogBuilder(this).dialogEvent(getString(R.string.dialog_restaurant_cancel_reservation), "normal", finish_listener);
+        new DialogBuilder(this).dialogEvent("很抱歉，店家已取消您的預約", "normal", finish_listener);
     }
 
     private void qrSuccess(){
         timer.cancel();
-        Intent intent = new Intent(CustomerReservationActivity.this, CustomerRatingActivity.class);
-        intent.putExtra("shop", shop_name);
-        intent.putExtra("shop_location", "");
-        intent.putExtra("shop_id", shop_id);
-        startActivity(intent);
-        CustomerReservationActivity.this.finish();
+        DialogEventListener listener = new DialogEventListener() {
+            @Override
+            public void clickEvent(boolean ok, int status) {
+                CustomerReservationActivity.this.finish();
+            }
+        };
+        new DialogBuilder(this).dialogEvent("掃描完成，已成功取位\n享用完美食記得給店家好評呦", "normal", listener);
     }
 
     private void requestNoResponse(){
@@ -309,8 +310,11 @@ public class CustomerReservationActivity extends AppCompatActivity {
                         pre_millis = millis_left;
                         new ApiRequestSuccess(request_id).execute();
                     }
-                    time_left = ((millis_left/1000)/60)+":"+((millis_left/1000)%60);
+                    //time_left = ((millis_left/1000)/60)+":"+((millis_left/1000)%60);
                     //time_left = (millis_left / 1000) + seconds;
+                    time_left = String.format(Locale.CHINESE, "%02d:%02d",
+                            TimeUnit.MILLISECONDS.toMinutes(millis_left) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis_left)),
+                            TimeUnit.MILLISECONDS.toSeconds(millis_left) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis_left)));
                     tv_time.setText(time_left);
                 }
                 public void onFinish() {
@@ -337,6 +341,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     tv_arrival_time.setText(time_left);
                 }
                 public void onFinish() {
+                    new DialogBuilder(CustomerReservationActivity.this).dialogEvent(late, "normal", null);
                     ll_time_left.removeAllViews();
                     ll_time_left.addView(tv_arrival_time);
                     tv_arrival_time.setText(late);

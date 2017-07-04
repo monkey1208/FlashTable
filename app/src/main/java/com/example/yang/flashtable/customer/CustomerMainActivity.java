@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.yang.flashtable.DialogBuilder;
+import com.example.yang.flashtable.DialogEventListener;
 import com.example.yang.flashtable.LoginActivity;
 import com.example.yang.flashtable.R;
 
@@ -30,6 +32,8 @@ public class CustomerMainActivity extends AppCompatActivity
     public final int FINE_LOCATION_MAP_CODE = 12;
     public final int FINE_LOCATION_MAIN_CODE = 13;
     public final static int LOCATION_SETTING_CODE = 14;
+
+    DialogBuilder dialog_builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,7 @@ public class CustomerMainActivity extends AppCompatActivity
     }
 
     private void initData() {
+        dialog_builder = new DialogBuilder(this);
         setDrawer();
         navigate("main");
         nv_view.getMenu().getItem(0).setChecked(true);
@@ -175,11 +180,20 @@ public class CustomerMainActivity extends AppCompatActivity
     }
 
     public void logout() {
-        SharedPreferences preferences = this.getSharedPreferences("USER", MODE_PRIVATE);
-        preferences.edit().clear().apply();
-        Intent intent = new Intent(CustomerMainActivity.this, LoginActivity.class);
-        startActivity(intent);
-        finish();
+        DialogEventListener logout_listener = new DialogEventListener() {
+            @Override
+            public void clickEvent(boolean ok, int status) {
+                if (ok) {
+                    SharedPreferences preferences = CustomerMainActivity.this.getSharedPreferences("USER", MODE_PRIVATE);
+                    preferences.edit().clear().apply();
+                    Intent intent = new Intent(CustomerMainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        };
+        dialog_builder.dialogEvent("確認是否登出此帳號", "withCancel", logout_listener);
+
     }
 
 

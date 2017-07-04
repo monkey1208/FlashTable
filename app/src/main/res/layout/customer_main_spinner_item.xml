@@ -7,5 +7,5 @@
     android:background="@color/white"
     android:padding="5dp"
     android:textSize="13sp"
-    android:textColor="@color/colorPrimaryLight"
+    android:textColor="@color/textColorOrange"
     android:textAlignment="center"/>

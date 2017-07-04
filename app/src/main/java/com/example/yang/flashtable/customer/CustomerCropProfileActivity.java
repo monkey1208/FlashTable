@@ -1,5 +1,6 @@
 package com.example.yang.flashtable.customer;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,16 +10,19 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import com.example.yang.flashtable.DialogBuilder;
+import com.example.yang.flashtable.DialogEventListener;
 import com.example.yang.flashtable.R;
 import com.example.yang.flashtable.customer.util.Sftp;
 import com.isseiaoki.simplecropview.CropImageView;
@@ -68,6 +72,7 @@ public class CustomerCropProfileActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        setupActionBar();
         dialog_builder = new DialogBuilder(this);
 
         cv_avatar = (CropImageView) findViewById(R.id.customer_profile_cv_avatar);
@@ -76,24 +81,6 @@ public class CustomerCropProfileActivity extends AppCompatActivity {
 
     private void initData() {
         Intent intent = getIntent();
-        /*
-        finish_crop = new FinishCrop() {
-            @Override
-            public void startUpload(String path) {
-                UploadImgur upload = new UploadImgur(readImage(path));
-                upload.execute("781ad2fd891649a", path);
-            }
-        }; */
-/*
-        finish_crop = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message message) {
-                String path = message.get
-                UploadImgur upload = new UploadImgur(readImage(path));
-                upload.execute("781ad2fd891649a", path);
-            }
-        };
-*/
         // Get path of image from intent and set image to be cropped
         String path = intent.getStringExtra("avatar");
         cv_avatar.setCropMode(CropImageView.CropMode.CIRCLE_SQUARE); // Indicator is circle; but image is saved as square
@@ -153,11 +140,31 @@ public class CustomerCropProfileActivity extends AppCompatActivity {
         });
 
     }
-/*
-    public interface FinishCrop {
-        void startUpload(String path);
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void setupActionBar() {
+        setTitle("新增頭像");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            // Show the Up button in the action bar.
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
-*/
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            DialogEventListener listener = new DialogEventListener() {
+                @Override
+                public void clickEvent(boolean ok, int status) {
+                    if (ok) CustomerCropProfileActivity.this.finish();
+                }
+            };
+            dialog_builder.dialogEvent("選擇的圖片尚未送出，確定回到上一頁嗎？", "withCancel", listener);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     // Read bitmap from file
     private Bitmap readImage(String path) {
         BitmapFactory.Options options;
@@ -201,7 +208,13 @@ public class CustomerCropProfileActivity extends AppCompatActivity {
         return_data.putExtra("path", path);
         return_data.putExtra("url", pic_url);
         setResult(RESULT_OK, return_data);
-        finish();
+        DialogEventListener listener = new DialogEventListener() {
+            @Override
+            public void clickEvent(boolean ok, int status) {
+                CustomerCropProfileActivity.this.finish();
+            }
+        };
+        if (!CustomerCropProfileActivity.this.isFinishing()) dialog_builder.dialogEvent("修改成功", "normal", listener);
     }
 
     private String getUserId(){
@@ -221,7 +234,7 @@ public class CustomerCropProfileActivity extends AppCompatActivity {
         protected void onPreExecute()
         {
             new_progress_dialog.setMessage("儲存中...");
-            new_progress_dialog.show();
+            if(!CustomerCropProfileActivity.this.isFinishing()) new_progress_dialog.show();
         }
 
         @Override

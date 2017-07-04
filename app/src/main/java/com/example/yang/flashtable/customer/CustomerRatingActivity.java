@@ -100,6 +100,10 @@ public class CustomerRatingActivity extends AppCompatActivity {
             dialog_builder.dialogEvent(getResources().getString(R.string.customer_comments_error_no_rating),
                     "normal", null);
         }
+        else if (et_content.getText().length() > 100) {
+            dialog_builder.dialogEvent("字數已超過限制100字，請編輯後再重新送出！",
+                    "normal", null);
+        }
         else {
             String content = et_content.getText().toString();
             content = content.replace("\n", "%0D%0A");
@@ -231,11 +235,17 @@ public class CustomerRatingActivity extends AppCompatActivity {
 
             if( status == null )
                 dialog_builder.dialogEvent(
-                        getResources().getString(R.string.login_error_connection), "normal", null);
+                        "資料送出失敗，請重試", "normal", null);
             else {
-                Toast.makeText(CustomerRatingActivity.this, getResources().getString(R.string.customer_comments_success), Toast.LENGTH_LONG)
-                        .show();
-                CustomerRatingActivity.this.finish();
+                DialogEventListener listener = new DialogEventListener() {
+                    @Override
+                    public void clickEvent(boolean ok, int status) {
+                        CustomerRatingActivity.this.finish();
+                    }
+                };
+                dialog_builder.dialogEvent(
+                        "發送成功", "normal", listener);
+
             }
         }
     }
