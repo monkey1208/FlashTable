@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.R;
 import com.example.yang.flashtable.customer.database.SqlHandler;
 import com.example.yang.flashtable.customer.infos.CustomerAppInfo;
@@ -545,6 +546,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         CustomerGps gps;
         ArrayList<CustomerRestaurantInfo> mlist = new ArrayList<>();
         private ProgressDialog progress_dialog = new ProgressDialog(view.getContext());
+        private DialogBuilder dialog_builder = new DialogBuilder(getContext());
+        private String status = null;
         public ApiPromotion(CustomerGps gps) {
             this.gps = gps;
         }
@@ -583,6 +586,11 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
 
         @Override
         protected void onPostExecute(String s) {
+            if( status == null  || !status.equals("0") ) {
+                dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
+                progress_dialog.dismiss();
+                return;
+            }
             CustomerAppInfo.getInstance().setRestaurantList(mlist);
             setRestMap();
             restaurantInfoList = mlist;
@@ -615,7 +623,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 String json = handler.handleResponse(http_response);
                 JSONArray jsonArray = new JSONArray(json);
-                if (jsonArray.getJSONObject(0).get("status_code").equals("0")) {
+                status = jsonArray.getJSONObject(0).getString("status_code");
+                if (status.equals("0")) {
                     int size = Integer.valueOf(jsonArray.getJSONObject(0).get("size").toString());
                     for (int i = 1; i <= size; i++) {
                         if(isCancelled())

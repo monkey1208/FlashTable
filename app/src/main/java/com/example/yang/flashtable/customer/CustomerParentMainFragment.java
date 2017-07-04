@@ -192,6 +192,10 @@ public class CustomerParentMainFragment extends Fragment {
                         filter_distance = "2000";
                         CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
                         break;
+                    case 5:
+                        filter_distance = "3000";
+                        CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
+                        break;
                 }
             }
 
@@ -414,6 +418,7 @@ public class CustomerParentMainFragment extends Fragment {
         HttpClient httpClient = new DefaultHttpClient();
         ArrayList<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
         private String status = null;
+        private DialogBuilder dialog_builder = new DialogBuilder(getContext());
 
         @Override
         protected void onPreExecute() {
@@ -461,7 +466,8 @@ public class CustomerParentMainFragment extends Fragment {
         protected void onPostExecute(String s) {
             closeDB();
             CustomerAppInfo.getInstance().setRestaurantList(restaurantInfoList);
-
+            if( status == null  || !status.equals("0") )
+                dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
             navigate("main");
             super.onPostExecute(s);
         }

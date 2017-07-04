@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.R;
@@ -60,6 +61,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
     View view;
     ListView lv_shops;
     SwipeRefreshLayout swipe_refresh_layout;
+    TextView tv_nothing;
     ArrayList<CustomerRestaurantInfo> restaurant_list;
 
     CustomerMainAdapter adapter;
@@ -86,7 +88,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
 
         lv_shops = (ListView) view.findViewById(R.id.customer_main_lv);
         swipe_refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.customer_main_srl);
-
+        tv_nothing = (TextView) view.findViewById(R.id.customer_main_tv_nothing);
     }
 
     private void initData() {
@@ -119,6 +121,13 @@ public class CustomerMainFragment extends Fragment implements Observer {
         restaurant_list = CustomerAppInfo.getInstance().getRestaurantList();
         System.out.println("size = "+restaurant_list.size());
         System.out.println("set list!");
+        if(restaurant_list.size() == 0) {
+            tv_nothing.setVisibility(View.VISIBLE);
+            lv_shops.setVisibility(View.INVISIBLE);
+        }else{
+            tv_nothing.setVisibility(View.INVISIBLE);
+            lv_shops.setVisibility(View.VISIBLE);
+        }
 
         adapter = new CustomerMainAdapter(view.getContext(), restaurant_list, my_location);
         setSortedList();
@@ -349,6 +358,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
     private class ApiPromotion extends AsyncTask<Double, Void, String> {
         HttpClient httpClient = new DefaultHttpClient();
         ArrayList<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
+        DialogBuilder dialog = new DialogBuilder(getContext());
         private String status = null;
         private String shop_rating;
 
@@ -400,6 +410,11 @@ public class CustomerMainFragment extends Fragment implements Observer {
         protected void onPostExecute(String s) {
 
             closeDB();
+            if( status == null  || !status.equals("0") ) {
+                dialog.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
+                swipe_refresh_layout.setRefreshing(false);
+                return;
+            }
             if(restaurant_list != null)
                 restaurant_list.clear();
             CustomerAppInfo.getInstance().setRestaurantList(restaurantInfoList);
