@@ -28,7 +28,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD1qukcqJkUZtxiKApJlp6O8oiYP25fyrs" />
+            android:value="AIzaSyCVu9CSS6xdVdQ3WsmP763wLO0XVRDs0_M" />
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
@@ -111,7 +111,8 @@
             android:theme="@style/AppFullScreenTheme" />
         <activity
             android:name=".customer.CustomerShopActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTask" />
 
         <activity android:name=".customer.CustomerCropProfileActivity"
             android:theme="@style/AppTheme.LightActionBar"/>

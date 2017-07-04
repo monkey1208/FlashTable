@@ -142,7 +142,7 @@
     <string name="customer_profile_name">使用者名稱</string>
     <string name="customer_profile_credit">信譽分數 </string>
     <string name="customer_profile_reservations">預約紀錄</string>
-    <string name="customer_profile_comments">我的評論</string>
+    <string name="customer_profile_comments">我要評論</string>
     <string name="customer_profile_points_record">FLASH Points紀錄</string>
     <string name="customer_profile_contact_us">聯絡我們</string>
     <string name="customer_profile_edit">編輯</string>

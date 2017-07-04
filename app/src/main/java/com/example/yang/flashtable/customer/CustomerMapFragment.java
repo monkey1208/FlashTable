@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -152,6 +154,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         for(int i = 0; i < restaurantInfoList.size(); i++){
             gps.setMarker(restaurantInfoList.get(i).latLng, i);
         }
+        gps.collapseSheet();
     }
 
     private boolean displayable(CustomerRestaurantInfo item){
@@ -242,6 +245,15 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
 
         }
 
+        public void collapseSheet(){
+            //when filt with spinner, the bottom sheet should be collapse
+            if(bottom_sheet != null){
+                bottom_sheet.setVisibility(View.INVISIBLE);
+                bottom_sheet_behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+            pre_marker = null;
+        }
+
         GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -257,8 +269,17 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                     if (!marker.equals(pre_marker)) {
                         marker.setIcon(descriptor_clicked);
                         pre_marker = marker;
+                        final int index = Integer.valueOf(marker.getSnippet());
                         bottom_sheet.setVisibility(View.VISIBLE);
                         bottom_sheet_behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        LinearLayout layout = (LinearLayout) view.findViewById(R.id.customer_map_bottom_sheet_layout);
+                        layout.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                System.out.println("test sheet");
+                                showRestaurantDetail(index);
+                            }
+                        });
                         /*
                         TextView tv_name = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_name);
                         TextView tv_discount = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_discount);
@@ -271,7 +292,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                         TextView tv_consume = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_price);
                         RatingBar rb = (RatingBar) bottom_sheet.findViewById(R.id.customer_main_rb_rating);
                         ImageView iv_shop = (ImageView) bottom_sheet.findViewById(R.id.customer_main_iv_shop);
-                        int index = Integer.valueOf(marker.getSnippet());
+
                         tv_name.setText(restaurantInfoList.get(index).name);
                         tv_offer.setText(restaurantInfoList.get(index).offer);
                         Location l = new Location("");
@@ -487,6 +508,25 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
             BitmapDrawable bitmapdraw = (BitmapDrawable) c.getResources().getDrawable(resource);
             Bitmap b = bitmapdraw.getBitmap();
             return Bitmap.createScaledBitmap(b, width, height, false);
+        }
+
+        private void showRestaurantDetail(final int index) {
+
+            final CustomerRestaurantInfo info = restaurantInfoList.get(index);
+            CustomerShopActivity.ShowInfo showInfo = new CustomerShopActivity.ShowInfo(
+                    info.name,
+                    info.consumption,
+                    info.discount,
+                    info.offer,
+                    info.address,
+                    info.category,
+                    info.intro,
+                    info.rating,
+                    info.promotion_id);
+            Intent intent = new Intent(getActivity(), CustomerShopActivity.class);
+            intent.putExtra("info", showInfo);
+            intent.putExtra("shop_id", Integer.toString(info.id));
+            startActivity(intent);
         }
 
         @Override
