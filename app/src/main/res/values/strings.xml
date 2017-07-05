@@ -120,6 +120,7 @@
         <item>距離&lt;1km</item>
         <item>距離&lt;1.5km</item>
         <item>距離&lt;2km</item>
+        <item>距離&lt;3km</item>
     </string-array>
     <string-array name="customer_sp_food">
         <item>全部美食分類</item>
