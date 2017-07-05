@@ -53,7 +53,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
 
         progress_tv = (TextView)CustomerLoadingActivity.this.findViewById(R.id.customer_loading_tv);
 
-        //initDatabase();
+        initDatabase();
 
         new ApiUpdate().execute();
     }

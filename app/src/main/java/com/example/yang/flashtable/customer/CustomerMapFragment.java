@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,9 +23,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.R;
 import com.example.yang.flashtable.customer.database.SqlHandler;
 import com.example.yang.flashtable.customer.infos.CustomerAppInfo;
@@ -72,6 +75,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
     public final int FINE_LOCATION_CODE = 12;
     private GoogleMap googleMap;
     private CustomerGps gps;
+    private ApiPromotion apiPromotion;
     private ArrayList<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
 
     @Nullable
@@ -97,6 +101,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onDestroy() {
+        if (apiPromotion != null)
+            apiPromotion.cancel(true);
         super.onDestroy();
         CustomerObservable.getInstance().deleteObserver(this);
     }
@@ -110,7 +116,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public void setMap() {
-        new ApiPromotion(gps).execute(CustomerAppInfo.getInstance().getLocation().getLatitude(), CustomerAppInfo.getInstance().getLocation().getLongitude());
+        apiPromotion = new ApiPromotion(gps);
+        apiPromotion.execute(CustomerAppInfo.getInstance().getLocation().getLatitude(), CustomerAppInfo.getInstance().getLocation().getLongitude());
         gps.execute();
         fab_my_position.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,6 +155,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         for(int i = 0; i < restaurantInfoList.size(); i++){
             gps.setMarker(restaurantInfoList.get(i).latLng, i);
         }
+        gps.collapseSheet();
     }
 
     private boolean displayable(CustomerRestaurantInfo item){
@@ -238,6 +246,15 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
 
         }
 
+        public void collapseSheet(){
+            //when filt with spinner, the bottom sheet should be collapse
+            if(bottom_sheet != null){
+                bottom_sheet.setVisibility(View.INVISIBLE);
+                bottom_sheet_behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+            pre_marker = null;
+        }
+
         GoogleMap.OnMarkerClickListener markerClickListener = new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -253,8 +270,17 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                     if (!marker.equals(pre_marker)) {
                         marker.setIcon(descriptor_clicked);
                         pre_marker = marker;
+                        final int index = Integer.valueOf(marker.getSnippet());
                         bottom_sheet.setVisibility(View.VISIBLE);
                         bottom_sheet_behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                        LinearLayout layout = (LinearLayout) view.findViewById(R.id.customer_map_bottom_sheet_layout);
+                        layout.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                System.out.println("test sheet");
+                                showRestaurantDetail(index);
+                            }
+                        });
                         /*
                         TextView tv_name = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_name);
                         TextView tv_discount = (TextView) bottom_sheet.findViewById(R.id.customer_map_bottom_sheet_tv_discount);
@@ -267,7 +293,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                         TextView tv_consume = (TextView) bottom_sheet.findViewById(R.id.customer_main_tv_price);
                         RatingBar rb = (RatingBar) bottom_sheet.findViewById(R.id.customer_main_rb_rating);
                         ImageView iv_shop = (ImageView) bottom_sheet.findViewById(R.id.customer_main_iv_shop);
-                        int index = Integer.valueOf(marker.getSnippet());
+
                         tv_name.setText(restaurantInfoList.get(index).name);
                         tv_offer.setText(restaurantInfoList.get(index).offer);
                         Location l = new Location("");
@@ -485,6 +511,25 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
             return Bitmap.createScaledBitmap(b, width, height, false);
         }
 
+        private void showRestaurantDetail(final int index) {
+
+            final CustomerRestaurantInfo info = restaurantInfoList.get(index);
+            CustomerShopActivity.ShowInfo showInfo = new CustomerShopActivity.ShowInfo(
+                    info.name,
+                    info.consumption,
+                    info.discount,
+                    info.offer,
+                    info.address,
+                    info.category,
+                    info.intro,
+                    info.rating,
+                    info.promotion_id);
+            Intent intent = new Intent(getActivity(), CustomerShopActivity.class);
+            intent.putExtra("info", showInfo);
+            intent.putExtra("shop_id", Integer.toString(info.id));
+            startActivity(intent);
+        }
+
         @Override
         public void onConnected(Bundle bundle) {
             
@@ -501,6 +546,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         CustomerGps gps;
         ArrayList<CustomerRestaurantInfo> mlist = new ArrayList<>();
         private ProgressDialog progress_dialog = new ProgressDialog(view.getContext());
+        private DialogBuilder dialog_builder = new DialogBuilder(getContext());
+        private String status = null;
         public ApiPromotion(CustomerGps gps) {
             this.gps = gps;
         }
@@ -520,8 +567,14 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
             String lng = String.valueOf(params[1]);
             String latlng = lat + "," + lng;//need current location
             Log.d("APIPromotion", "latlng = " + latlng);
+            if(isCancelled())
+                return null;
             List<Description> list = getPromotionId(latlng);
+            if(isCancelled())
+                return null;
             for (int i = 0; i < list.size(); i++) {
+                if(isCancelled())
+                    return null;
                 CustomerRestaurantInfo info = sqlHandler.getDetail(list.get(i).shop_id);
                 info.discount = list.get(i).discount;
                 info.offer = list.get(i).offer;
@@ -533,6 +586,11 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
 
         @Override
         protected void onPostExecute(String s) {
+            if( status == null  || !status.equals("0") ) {
+                dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
+                progress_dialog.dismiss();
+                return;
+            }
             CustomerAppInfo.getInstance().setRestaurantList(mlist);
             setRestMap();
             restaurantInfoList = mlist;
@@ -541,26 +599,44 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
 
         }
 
+        @Override
+        protected void onCancelled() {
+            if(progress_dialog != null){
+                if(progress_dialog.isShowing())
+                    progress_dialog.cancel();
+            }
+            super.onCancelled();
+        }
+
         private List<Description> getPromotionId(String latlng) {
             List<Description> list = new ArrayList<>();
             NameValuePair nameValuePair = new BasicNameValuePair("location", latlng);
             String s = nameValuePair.toString();
+            if(isCancelled())
+                return null;
             HttpGet request = new HttpGet(getString(R.string.server_domain) + "api/surrounding_promotions" + "?" + s);
             request.addHeader("Content-Type", "application/json");
             try {
+                if(isCancelled())
+                    return null;
                 HttpResponse http_response = httpClient.execute(request);
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 String json = handler.handleResponse(http_response);
                 JSONArray jsonArray = new JSONArray(json);
-                if (jsonArray.getJSONObject(0).get("status_code").equals("0")) {
+                status = jsonArray.getJSONObject(0).getString("status_code");
+                if (status.equals("0")) {
                     int size = Integer.valueOf(jsonArray.getJSONObject(0).get("size").toString());
                     for (int i = 1; i <= size; i++) {
+                        if(isCancelled())
+                            return null;
                         String id = jsonArray.getJSONObject(i).get("promotion_id").toString();
                         nameValuePair = null;
                         nameValuePair = new BasicNameValuePair("promotion_id", id);
                         s = nameValuePair.toString();
                         request = new HttpGet(getString(R.string.server_domain) + "api/promotion_info" + "?" + s);
                         request.addHeader("Content-Type", "application/json");
+                        if(isCancelled())
+                            return null;
                         http_response = httpClient.execute(request);
                         json = handler.handleResponse(http_response);
                         JSONObject jsonObject = new JSONObject(json);

@@ -35,6 +35,7 @@
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
         <include
+            android:id="@+id/customer_map_bottom_sheet_layout"
             layout="@layout/customer_main_item"
             android:visibility="visible"
             />

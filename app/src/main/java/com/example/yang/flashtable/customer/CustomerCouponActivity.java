@@ -217,7 +217,7 @@ public class CustomerCouponActivity extends AppCompatActivity {
                 dialog_builder.dialogEvent("恭喜成功兌換好禮！是否前往歷史紀錄查看好禮序號？", "withCancel", success_listener);
             }
             else if (status.equals("-3"))
-                dialog_builder.dialogEvent("您的FLASH Points點數不足", "normal", null);
+                dialog_builder.dialogEvent("您的FLASH Points點數不足喔", "normal", null);
             else if (status.equals("-4"))
                 dialog_builder.dialogEvent("此優惠已搶購一空，去看看其他優惠吧！", "normal", null);
             else    dialog_builder.dialogEvent("網路連線錯誤", "normal", null);

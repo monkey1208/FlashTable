@@ -16,6 +16,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,10 +48,11 @@ public class CustomerSearchActivity extends AppCompatActivity {
     CustomerMainAdapter adapter;
     TextView textView;
     ListView listView;
+    EditText editText;
     Location my_location;
     SearchView search_view;
     ArrayAdapter<String> history_adapter;
-    ViewGroup header_history, header_result;
+    View header_history, header_result;
 
     HistorySqlHandler sqlHandler;
 
@@ -78,7 +81,6 @@ public class CustomerSearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initData();
         setContentView(R.layout.customer_search_activity);
 
         initView();
@@ -86,22 +88,41 @@ public class CustomerSearchActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        setupActionBar();
-        setTitle(getResources().getString(R.string.customer_search_title));
+        //setupActionBar();
+        //setTitle(getResources().getString(R.string.customer_search_title));
         listView = (ListView)findViewById(R.id.customer_search_lv);
         textView = (TextView)findViewById(R.id.customer_search_tv);
+        editText = (EditText)findViewById(R.id.customer_search_et);
 
         LayoutInflater inflater = getLayoutInflater();
-        header_history = (ViewGroup)inflater.inflate(R.layout.customer_search_history_header, listView, false);
-        header_result = (ViewGroup)inflater.inflate(R.layout.customer_search_result_header, listView, false);
+        header_history = inflater.inflate(R.layout.customer_search_history_header, listView, false);
+        header_result = inflater.inflate(R.layout.customer_search_result_header, listView, false);
+
     }
 
     private void initData() {
+        sqlHandler = new HistorySqlHandler(this);
         Bundle bundle = getIntent().getExtras();
         ArrayList<DetailInfo> detailInfos = bundle.getParcelableArrayList("list");
+
         restaurant_list = new ArrayList<>();
         openDB(detailInfos);
+        setHistory();
         my_location = CustomerAppInfo.getInstance().getLocation();
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(event.getAction() == KeyEvent.ACTION_DOWN){
+                    String query = v.getText().toString();
+                    if(query != null && !query.equals("")) {
+                        sqlHandler.insert(query);
+                        doSearch(query);
+                        v.setText("");
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     private void openDB(ArrayList<DetailInfo> detailInfos){
@@ -177,7 +198,8 @@ public class CustomerSearchActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                search_view.setQuery(history.get(position-1), false);
+                editText.setText(history.get(position-1));
+                //search_view.setQuery(history.get(position-1), false);
             }
         });
     }
@@ -201,6 +223,10 @@ public class CustomerSearchActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void finish(View view){
+        this.finish();
+    }
+/*
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setupActionBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -268,6 +294,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    */
 
     public static class DetailInfo implements Parcelable {
         int id;

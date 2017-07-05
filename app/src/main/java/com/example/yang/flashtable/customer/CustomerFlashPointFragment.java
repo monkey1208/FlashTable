@@ -18,6 +18,7 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.FlashCouponInfo;
 import com.example.yang.flashtable.R;
 import com.example.yang.flashtable.SerializableCouponInfo;
@@ -64,6 +65,8 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
     CustomerFlashPointAdapter adapter;
     List<FlashCouponInfo> coupons;
 
+    DialogBuilder dialog_builder;
+
     @Override
     public View onCreateView(LayoutInflater _inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         inflater = _inflater;
@@ -88,6 +91,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
 
     private void initData() {
         getUserInfo();
+        dialog_builder = new DialogBuilder(getActivity());
 
         coupons = new ArrayList<>();
         adapter = new CustomerFlashPointAdapter(getActivity().getBaseContext(), coupons);
@@ -229,6 +233,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
 
     private class ApiCoupons extends AsyncTask<Void, Void, Void>{
 
+        private boolean success = true;
 //        private ProgressDialog progress_dialog = new ProgressDialog(CustomerFlashPointFragment.this.getActivity());
 //
 //        @Override
@@ -272,6 +277,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                success = false;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -282,9 +288,15 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
         protected void onPostExecute(Void params) {
 //            progress_dialog.dismiss();
 
-            //get coupon list
-            updateCoupons();
-            setSlider();
+            if (!success) {
+                dialog_builder.dialogEvent(
+                        "資料載入失敗，請重試", "normal", null);
+            }
+            else {
+                //get coupon list
+                updateCoupons();
+                setSlider();
+            }
         }
     }
 
