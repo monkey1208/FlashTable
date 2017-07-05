@@ -32,16 +32,34 @@
                 android:layout_gravity="center" />
         </android.support.v7.widget.CardView>
 
-        <TextView
-            android:id="@+id/store_manage_comment_tv_user"
+        <LinearLayout
+            android:layout_toEndOf="@+id/sotre_manage_comment_cv_avatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/loading_text"
-            android:textSize="18sp"
-            android:textColor="@color/textColor"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/sotre_manage_comment_cv_avatar"
-            android:layout_marginStart="17dp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/store_manage_comment_tv_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/loading_text"
+                android:textSize="18sp"
+                android:textColor="@color/textColor"
+                android:layout_marginStart="17dp"
+                android:text="我"/>
+
+            <TextView
+                android:id="@+id/store_manage_comment_tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:layout_marginStart="17dp"
+                android:textColor="@color/textColorLighter"
+                android:text="" />
+
+
+        </LinearLayout>
+
 
         <RelativeLayout
             android:layout_width="100dp"
@@ -69,9 +87,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
-        android:paddingStart="0dp"
         android:paddingEnd="30dp"
         android:textColor="@color/textColorLighter"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:text="content"/>
 
 </LinearLayout>

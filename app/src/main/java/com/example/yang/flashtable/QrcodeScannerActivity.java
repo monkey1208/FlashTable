@@ -373,10 +373,10 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
         ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(dm);
         int displayWidth = dm.widthPixels;
         int displayHeight = dm.heightPixels;
-        lp.width = (int) (displayWidth * 0.76);
-        lp.height = (int) (displayHeight * 0.3);
+        lp.width = (int) (displayWidth * 0.78);
+        lp.height = (int) (displayHeight * 0.31);
         try {
-            alertDialog.getWindow().setLayout( (int) (displayWidth * 0.76), (int) (displayHeight * 0.3));
+            alertDialog.getWindow().setLayout( (int) (displayWidth * 0.78), (int) (displayHeight * 0.31));
         } catch(NullPointerException e) {
             e.printStackTrace();
         }
@@ -386,14 +386,14 @@ public class QrcodeScannerActivity extends AppCompatActivity implements ZXingSca
     public static class UserInfoFragment extends Fragment{
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.store_home_confirm_fragment, container, false);
+            View view = inflater.inflate(R.layout.store_session_info_fragment, container, false);
             view.setPadding(0, status_bar_height, 0, 0);
             TextView tv_name = (TextView) view.findViewById(R.id.tv_name);
             TextView tv_point = (TextView) view.findViewById(R.id.tv_point);
             TextView tv_number = (TextView) view.findViewById(R.id.tv_number);
-            TextView tv_arrive_time = (TextView) view.findViewById(R.id.store_home_confirm_fragment_tv_arrive_time);
-            TextView tv_sessiont_time = (TextView) view.findViewById(R.id.store_home_confirm_fragment_tv_appoint_time);
-            TextView tv_description = (TextView) view.findViewById(R.id.store_home_confirm_fragment_tv_gift);
+            TextView tv_arrive_time = (TextView) view.findViewById(R.id.store_session_info_fragment_tv_arrive_time);
+            TextView tv_sessiont_time = (TextView) view.findViewById(R.id.store_session_info_fragment_tv_appoint_time);
+            TextView tv_description = (TextView) view.findViewById(R.id.store_session_info_fragment_tv_gift);
             tv_name.setText(name);
             tv_point.setText(" ( 信譽"+String.valueOf(point)+" )");
             tv_number.setText(arrive_time);

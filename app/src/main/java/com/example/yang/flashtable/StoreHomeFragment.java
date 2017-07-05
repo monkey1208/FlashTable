@@ -30,8 +30,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -64,7 +66,6 @@ public class StoreHomeFragment extends Fragment {
 
 
     private static final int SCAN_REQUEST_ZXING_SCANNER = 1;
-    private static final int RC_HANDLE_CAMERA_PERM = 2;
 
     private boolean alertdialog_active = false;
 
@@ -114,7 +115,7 @@ public class StoreHomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 alertdialog_active = true;
-                alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind, iv_gift_icon);
+                alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind, iv_gift_icon);
                 alertDialog.show();
                 setDialogSize();
             }
@@ -180,6 +181,7 @@ public class StoreHomeFragment extends Fragment {
     }
 
     public class APIpromotion extends AsyncTask<String, Void, Void> {
+        boolean exception = false;
         @Override
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
@@ -201,9 +203,11 @@ public class StoreHomeFragment extends Fragment {
                         StoreMainActivity.storeInfo.not_delete_discountList.add(info);
                     }
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
+               exception = true;
+            } catch (JSONException e) {
                 e.printStackTrace();
-            } finally {
+            } finally{
                 httpClient.getConnectionManager().shutdown();
             }
             return null;
@@ -211,36 +215,40 @@ public class StoreHomeFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void _params) {
-            if (alertdialog_active) {
-                alertDialog.dismiss();
-                alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind, iv_gift_icon);
-                alertDialog.show();
-                setDialogSize();
-            }
-
-            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("DefaultDiscount" , MODE_PRIVATE);
-            int default_id = sharedPreferences.getInt("promotion_id", -1);
-            String default_description = sharedPreferences.getString("description", "");
-            for(int i=0;i<StoreMainActivity.storeInfo.not_delete_discountList.size();i++) {
-                if (StoreMainActivity.storeInfo.not_delete_discountList.get(i).isActive) {
-                    startUpdate();
-                    bt_active.setVisibility(View.INVISIBLE);
-                    tv_active.setVisibility(View.INVISIBLE);
-                    iv_gift_icon.setVisibility(View.VISIBLE);
-                    bt_active_gif.setVisibility(View.VISIBLE);
-                    bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
-                    StoreMainActivity.fragmentController.storeHomeFragment.setActive();
-                    StoreMainActivity.storeInfo.changeDiscountCurrentId(StoreMainActivity.storeInfo.not_delete_discountList.get(i).getId());
-                    bt_active.setEnabled(false);
-                    bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
-                    bt_active_gif.setEnabled(true);
-                    tv_active_remind.setText("按下後暫停");
-                    tv_gift.setText(StoreMainActivity.storeInfo.not_delete_discountList.get(i).description);
-
+            if(exception){
+                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "網路連線失敗，請檢查您的網路");
+            }else {
+                if (alertdialog_active) {
+                    alertDialog.dismiss();
+                    alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind, iv_gift_icon);
+                    alertDialog.show();
+                    setDialogSize();
                 }
-                if(default_id != -1 && StoreMainActivity.storeInfo.not_delete_discountList.get(i).description.equals(default_description)){
-                    StoreMainActivity.storeInfo.not_delete_discountList.get(i).isDefault = true;
-                    StoreMainActivity.storeInfo.discountDefault = i;
+
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("DefaultDiscount", MODE_PRIVATE);
+                int default_id = sharedPreferences.getInt("promotion_id", -1);
+                String default_description = sharedPreferences.getString("description", "");
+                for (int i = 0; i < StoreMainActivity.storeInfo.not_delete_discountList.size(); i++) {
+                    if (StoreMainActivity.storeInfo.not_delete_discountList.get(i).isActive) {
+                        startUpdate();
+                        bt_active.setVisibility(View.INVISIBLE);
+                        tv_active.setVisibility(View.INVISIBLE);
+                        iv_gift_icon.setVisibility(View.VISIBLE);
+                        bt_active_gif.setVisibility(View.VISIBLE);
+                        bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
+                        StoreMainActivity.fragmentController.storeHomeFragment.setActive();
+                        StoreMainActivity.storeInfo.changeDiscountCurrentId(StoreMainActivity.storeInfo.not_delete_discountList.get(i).getId());
+                        bt_active.setEnabled(false);
+                        bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
+                        bt_active_gif.setEnabled(true);
+                        tv_active_remind.setText("按下後暫停");
+                        tv_gift.setText(StoreMainActivity.storeInfo.not_delete_discountList.get(i).description);
+
+                    }
+                    if (default_id != -1 && StoreMainActivity.storeInfo.not_delete_discountList.get(i).description.equals(default_description)) {
+                        StoreMainActivity.storeInfo.not_delete_discountList.get(i).isDefault = true;
+                        StoreMainActivity.storeInfo.discountDefault = i;
+                    }
                 }
             }
         }

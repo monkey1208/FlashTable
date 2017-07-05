@@ -126,6 +126,8 @@ public class FragmentController extends StoreMainActivity{
                 setActive(MANAGE_DISCOUNT);
                 break;
             case MANAGE_COMMENT:
+                if(frag_stat[MANAGE_COMMENT] != DEAD)
+                    kill(MANAGE_COMMENT);
                 setActive(MANAGE_COMMENT);
                 break;
             case CONFIRM:
@@ -186,7 +188,7 @@ public class FragmentController extends StoreMainActivity{
                 fragment[select] = new StoreManageCommentFragment();
                 break;
             case CONFIRM:
-                fragment[select] = new StoreHomeConfirmFragment();
+                fragment[select] = new StoreSesseionInfoFragment();
                 break;
             case MANAGE_RECORD_INFO:
                 fragment[select] = new StoreManageRecordInfoFragment();

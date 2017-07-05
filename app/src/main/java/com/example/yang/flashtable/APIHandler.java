@@ -1,5 +1,6 @@
 package com.example.yang.flashtable;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -171,6 +172,12 @@ public class APIHandler {
         int new_promotion_id;
         String name = "11";
         String description;
+        boolean exception = false;
+        Context context;
+        public Post_promotion(Context context){
+            super();
+            this.context = context;
+        }
         @Override
         protected Void doInBackground(String... params) {
             try {
@@ -185,18 +192,22 @@ public class APIHandler {
                 JSONObject recordInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(post)));
                 new_promotion_id = recordInfo.getInt("promotion_id");
             } catch (Exception e) {
-                Log.d("ChangePromotion","Exception");
                 e.printStackTrace();
+                exception = true;
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void _params){
-            StoreDiscountInfo info = new StoreDiscountInfo(new_promotion_id, description, false, 0, false);
-            StoreMainActivity.storeInfo.discountList.add(info);
-            StoreMainActivity.storeInfo.not_delete_discountList.add(info);
-            StoreManageDiscountFragment.addPromotionList(info);
+            if(exception){
+                new AlertDialogController(domain_name).warningConfirmDialog(context,"提醒", "網路連線失敗，請檢查您的網路");
+            }else {
+                StoreDiscountInfo info = new StoreDiscountInfo(new_promotion_id, description, false, 0, false);
+                StoreMainActivity.storeInfo.discountList.add(info);
+                StoreMainActivity.storeInfo.not_delete_discountList.add(info);
+                StoreManageDiscountFragment.addPromotionList(info);
+            }
         }
     }
 
