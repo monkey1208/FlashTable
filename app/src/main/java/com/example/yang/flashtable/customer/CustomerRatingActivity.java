@@ -145,16 +145,12 @@ public class CustomerRatingActivity extends AppCompatActivity {
                         @Override
                         public void clickEvent(boolean ok, int status) {
                             if (ok) {
-                                Intent intent = new Intent(CustomerRatingActivity.this, CustomerMainActivity.class);
-                                startActivity(intent);
                                 CustomerRatingActivity.this.finish();
                             }
                         }
                     });
         }
         else{
-            Intent intent = new Intent(CustomerRatingActivity.this, CustomerMainActivity.class);
-            startActivity(intent);
             finish();
         }
     }
