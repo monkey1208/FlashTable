@@ -517,6 +517,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
             CustomerShopActivity.ShowInfo showInfo = new CustomerShopActivity.ShowInfo(
                     info.name,
                     info.consumption,
+                    0,
                     info.discount,
                     info.offer,
                     info.address,

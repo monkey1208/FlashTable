@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.R;
@@ -48,6 +49,8 @@ public class CustomerCouponRecordFragment extends Fragment {
     CustomerCouponRecordAdapter adapter;
     int position;
 
+    TextView tv_nothing;
+
     DialogBuilder dialog_builder;
 
     @Override
@@ -77,6 +80,7 @@ public class CustomerCouponRecordFragment extends Fragment {
                 }
             }
         });
+        tv_nothing = (TextView) view.findViewById(R.id.customer_coupon_tv_nothing);
 
         if (position == 1) new ApiRedeemRecords().execute(userID);
         else new ApiGetRecords().execute(userID);
@@ -91,6 +95,9 @@ public class CustomerCouponRecordFragment extends Fragment {
     public void updateRecords() {
         adapter.notifyDataSetChanged();
         lv_records.setAdapter(adapter);
+
+        if (records.size() > 0) tv_nothing.setVisibility(View.INVISIBLE);
+        else tv_nothing.setVisibility(View.VISIBLE);
     }
 
     private class ApiRedeemRecords extends AsyncTask<String, Void, Void> {

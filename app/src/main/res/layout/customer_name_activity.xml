@@ -20,7 +20,7 @@
             android:textSize="17sp"
             android:hint="@string/customer_profile_name_hint"
             android:maxLines="1"
-            />
+            android:inputType="textPersonName"/>
     </LinearLayout>
 
     <Button

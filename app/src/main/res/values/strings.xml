@@ -6,6 +6,9 @@
     <string name="server_acc">service_flashtable</string>
     <string name="server_pwd">service_flashtable</string>
 
+    <string name="service_email">service@daydreamstudio.co</string>
+    <string name="service_facebook">https://www.facebook.com/FLASHTABLE</string>
+
     <string name="title_activity_customer_main">CustomerMainActivity</string>
 
     <!-- Universal strings -->

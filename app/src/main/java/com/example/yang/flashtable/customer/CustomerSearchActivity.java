@@ -216,6 +216,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
         CustomerShopActivity.ShowInfo showInfo = new CustomerShopActivity.ShowInfo(
                 info.name,
                 info.consumption,
+                0,
                 info.discount,
                 info.offer,
                 info.address,
