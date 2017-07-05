@@ -30,16 +30,17 @@
             android:textColor="@color/white"
             android:textSize="20sp"
             android:text="我要評論"/>
-        <View
+        <!--<View
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:layout_weight="1"/>
-        <!--<TextView
+            android:layout_weight="1"/>-->
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:text="評論紀錄"
+            android:textColor="@color/white"
             android:onClick="goToHistory"
-            android:layout_weight="1"/>-->
+            android:layout_weight="1"/>
 
     </LinearLayout>
     <com.ogaclejapan.smarttablayout.SmartTabLayout

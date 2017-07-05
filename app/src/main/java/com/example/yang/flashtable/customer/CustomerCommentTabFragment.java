@@ -2,8 +2,6 @@ package com.example.yang.flashtable.customer;
 
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,16 +10,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.R;
-import com.example.yang.flashtable.customer.adapter.CustomerCommentAdapter;
 import com.example.yang.flashtable.customer.adapter.CustomerCommentContentAdapter;
 import com.example.yang.flashtable.customer.database.SqlHandler;
 import com.example.yang.flashtable.customer.infos.CustomerCommentContentInfo;
-import com.example.yang.flashtable.customer.infos.CustomerCommentInfo;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
 
 import org.apache.http.client.HttpClient;
@@ -31,12 +26,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
