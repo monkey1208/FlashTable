@@ -236,6 +236,8 @@ public class CustomerRatingActivity extends AppCompatActivity {
                 DialogEventListener listener = new DialogEventListener() {
                     @Override
                     public void clickEvent(boolean ok, int status) {
+                        Intent intent = new Intent(CustomerRatingActivity.this, CustomerMainActivity.class);
+                        startActivity(intent);
                         CustomerRatingActivity.this.finish();
                     }
                 };
