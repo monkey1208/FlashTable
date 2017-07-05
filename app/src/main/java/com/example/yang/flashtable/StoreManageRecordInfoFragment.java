@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.example.yang.flashtable.R.id.store_home_confirm_fragment_tv_gift;
+import static com.example.yang.flashtable.R.id.store_session_info_fragment_tv_gift;
 
 public class StoreManageRecordInfoFragment extends Fragment {
     private ImageView iv_photo;
@@ -43,24 +43,24 @@ public class StoreManageRecordInfoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.store_home_confirm_fragment, container, false);
+        View view = inflater.inflate(R.layout.store_session_info_fragment, container, false);
         iv_photo = (ImageView)view.findViewById(R.id.iv_photo);
         tv_name = (TextView)view.findViewById(R.id.tv_name);
         tv_point = (TextView)view.findViewById(R.id.tv_point);
-        tv_info_first = (TextView)view.findViewById(R.id.store_home_comfirm_fragment_tv_info_first);
+        tv_info_first = (TextView)view.findViewById(R.id.store_session_info_fragment_tv_info_first);
         tv_people_number = (TextView)view.findViewById(R.id.tv_number);
-        tv_info_last = (TextView)view.findViewById(R.id.store_home_comfirm_fragment_tv_info_last);
-        tv_appoint_time = (TextView)view.findViewById(R.id.store_home_confirm_fragment_tv_appoint_time);
-        tv_promotion_description  = (TextView)view.findViewById(store_home_confirm_fragment_tv_gift);
+        tv_info_last = (TextView)view.findViewById(R.id.store_session_info_fragment_tv_info_last);
+        tv_appoint_time = (TextView)view.findViewById(R.id.store_session_info_fragment_tv_appoint_time);
+        tv_promotion_description  = (TextView)view.findViewById(store_session_info_fragment_tv_gift);
         bt_confirm = (ImageButton)view.findViewById(R.id.bt_click);
 
-        LinearLayout ll_user_info = (LinearLayout)view.findViewById(R.id.store_home_confirm_fragment_ll_info);
+        LinearLayout ll_user_info = (LinearLayout)view.findViewById(R.id.store_session_info_fragment_ll_info);
         ll_user_info.setPadding(0, getStatusBarHeight(), 0, 0);
-        LinearLayout ll_arrive_time = (LinearLayout)view.findViewById(R.id.store_home_confirm_fragment_ll_arrive_time);
+        LinearLayout ll_arrive_time = (LinearLayout)view.findViewById(R.id.store_session_info_fragment_ll_arrive_time);
         if(!getArguments().getString("is_succ").equals("true")){
             ll_arrive_time.setVisibility(View.GONE);
         }else{
-            tv_arrive_time = (TextView)view.findViewById(R.id.store_home_confirm_fragment_tv_arrive_time);
+            tv_arrive_time = (TextView)view.findViewById(R.id.store_session_info_fragment_tv_arrive_time);
         }
 
         bt_confirm.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +82,7 @@ public class StoreManageRecordInfoFragment extends Fragment {
             iv_photo.setImageResource(R.drawable.default_avatar);
         }
         tv_name.setText(content.getString("name"));
-        tv_point.setText(" ( 信譽"+content.getString("point")+" )");
+        tv_point.setText("  (信譽"+content.getString("point")+")");
         tv_people_number.setText(content.getString("number"));
 
         try {

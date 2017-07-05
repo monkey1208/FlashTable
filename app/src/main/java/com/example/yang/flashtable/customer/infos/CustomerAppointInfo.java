@@ -20,7 +20,7 @@ public class CustomerAppointInfo {
         this.name = name;
         this.honor = honor;
         this.number = number;
-        this.expireTime = 60;
+        this.expireTime = 120;
         this.im_id = R.drawable.ic_temp_user1;
         this.url =url;
         picture = null;
@@ -30,7 +30,7 @@ public class CustomerAppointInfo {
         this.honor=honor;
         this.number=number;
         this.im_id=im_id;
-        this.expireTime = 60;
+        this.expireTime = 120;
         picture = null;
     }
 }

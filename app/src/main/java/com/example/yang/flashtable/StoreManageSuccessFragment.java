@@ -160,7 +160,7 @@ public class StoreManageSuccessFragment extends Fragment {
                     StoreMainActivity.storeInfo.setSuccess_record_num(sum);
                 }
             }else{
-                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "網路連線失敗，請檢查您的網路");
             }
         }
     }
