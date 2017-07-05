@@ -87,12 +87,6 @@ public class StoreManageCommentFragment extends ListFragment {
         private ProgressDialog progress_dialog = new ProgressDialog(getContext());
         private String status = null;
         @Override
-        protected void onPreExecute() {
-            progress_dialog.setCanceledOnTouchOutside(false);
-            progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
-            progress_dialog.show();
-        }
-        @Override
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
@@ -123,9 +117,8 @@ public class StoreManageCommentFragment extends ListFragment {
         @Override
         protected void onPostExecute(Void _params) {
             if( status == null  || !status.equals("0") )
-                dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
+                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "網路連線失敗，請檢查您的網路");
             else    updateComments();
-            progress_dialog.dismiss();
         }
     }
 

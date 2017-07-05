@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -76,21 +77,16 @@ public class StoreAppointAdapter extends BaseAdapter{
                     (TextView) convertView.findViewById(R.id.store_appoint_row_tv_state),
                     (TextView) convertView.findViewById(R.id.tv_countdown),
                     (TextView) convertView.findViewById(R.id.tv_remaining_time),
+                    (TextView) convertView.findViewById(R.id.store_appoint_row_tv_point),
                     (ImageView) convertView.findViewById(R.id.store_appoint_row_iv_icon),
                     (ImageButton) convertView.findViewById(R.id.bt_cancel));
             convertView.setTag(holder);
         }
-        else
+        else {
             holder = (ViewHolder) convertView.getTag();
+        }
         holder.setData(list.get(position));
 
-        /*convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO:  Go to comfirm fragment
-                //Toast.makeText(context,Integer.toString(position),Toast.LENGTH_LONG).show();
-            }
-        });*/
         return  convertView;
     }
     private class ViewHolder{
@@ -99,30 +95,33 @@ public class StoreAppointAdapter extends BaseAdapter{
         TextView tv_state;
         TextView tv_countdown;
         TextView tv_remaintime;
+        TextView tv_point;
         ImageView im_photo;
         ImageButton bt_cancel;
         int position;
         RecordInfo info;
-        public ViewHolder(int position,TextView tv_name,TextView tv_date,TextView tv_state,TextView tv_countdown,TextView tv_remaintime,ImageView im_photo,ImageButton bt_cancel){
+        public ViewHolder(int position,TextView tv_name,TextView tv_date,TextView tv_state,TextView tv_countdown,TextView tv_remaintime, TextView tv_point, ImageView im_photo,ImageButton bt_cancel){
             this.position = position;
             this.tv_name = tv_name;
             this.tv_date = tv_date;
             this.tv_state = tv_state;
             this.tv_countdown = tv_countdown;
             this.tv_remaintime = tv_remaintime;
+            this.tv_point = tv_point;
             this.im_photo = im_photo;
             this.bt_cancel = bt_cancel;
         }
         public void setData(RecordInfo info){
             this.info = info;
             tv_name.setText(info.name);
+            tv_point.setText("  (信譽"+String.valueOf(info.point)+") ");
             long val = info.due_time;
             Date date=new Date(val);
-            SimpleDateFormat df2 = new SimpleDateFormat("yyyy/MM/dd");
+            SimpleDateFormat df2 = new SimpleDateFormat("yyyy/MM/dd  a hh: mm", Locale.ENGLISH);
             String dateText = df2.format(date);
             tv_date.setText(dateText);
-            tv_state.setText("已成功向您預約("+Integer.toString(info.number)+")人桌位");
-            tv_remaintime.setText("剩餘到達時間");
+            tv_state.setText("已成功向您預約 ("+Integer.toString(info.number)+") 人桌位");
+            tv_remaintime.setText("剩餘抵達時間");
             bt_cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -137,7 +136,8 @@ public class StoreAppointAdapter extends BaseAdapter{
             if(info.isActive && (info.due_time - System.currentTimeMillis())>0) {
                 buttonControl(this, WAITING);
                 int remain_time = (int)(info.due_time - System.currentTimeMillis())/1000;
-                tv_countdown.setText(Integer.toString(remain_time/60)+":"+Integer.toString(remain_time%60));
+                //TODO:
+                tv_countdown.setText(String.format("%02d:%02d",remain_time/60,remain_time%60));
             }
             else
                 buttonControl(this,TIMEOUT);

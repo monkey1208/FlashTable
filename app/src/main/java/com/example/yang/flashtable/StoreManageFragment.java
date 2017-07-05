@@ -198,7 +198,7 @@ public class StoreManageFragment extends ListFragment {
                     e.printStackTrace();
                 }
             }else{
-                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "網路連線失敗，請檢查您的網路");
             }
             recordList = new ArrayList<>(list);
         }

@@ -132,6 +132,7 @@ public class StoreManageDiscountDeleteFragment extends Fragment {
 
     private class APIremove_promotion extends AsyncTask<String,Void,Void> {
         int removed_promotion_id;
+        boolean exception = false;
         @Override
         protected Void doInBackground(String... params) {
             try {
@@ -144,24 +145,29 @@ public class StoreManageDiscountDeleteFragment extends Fragment {
                 JSONObject response = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(post)));
                 Log.e("status", response.getString("status_code"));
             } catch (Exception e) {
+                exception = true;
                 e.printStackTrace();
             }
             return null;
         }
         @Override
         protected void onPostExecute(Void _params){
-            for(int i = 0; i < StoreMainActivity.storeInfo.discountList.size(); i++){
-                if(removed_promotion_id ==  StoreMainActivity.storeInfo.discountList.get(i).getId()){
-                    StoreMainActivity.storeInfo.discountList.get(i).deleteDiscount();
-                    break;
+            if(exception){
+                new AlertDialogController("").warningConfirmDialog(getContext(), "提醒", "網路連線失敗，請檢查您的網路");
+            }else {
+                for (int i = 0; i < StoreMainActivity.storeInfo.discountList.size(); i++) {
+                    if (removed_promotion_id == StoreMainActivity.storeInfo.discountList.get(i).getId()) {
+                        StoreMainActivity.storeInfo.discountList.get(i).deleteDiscount();
+                        break;
+                    }
                 }
-            }
-            for(int i = 0; i < StoreMainActivity.storeInfo.not_delete_discountList.size(); i++){
-                if(removed_promotion_id == StoreMainActivity.storeInfo.not_delete_discountList.get(i).getId()){
-                    StoreMainActivity.storeInfo.not_delete_discountList.remove(i);
+                for (int i = 0; i < StoreMainActivity.storeInfo.not_delete_discountList.size(); i++) {
+                    if (removed_promotion_id == StoreMainActivity.storeInfo.not_delete_discountList.get(i).getId()) {
+                        StoreMainActivity.storeInfo.not_delete_discountList.remove(i);
+                    }
                 }
+                StoreManageDiscountFragment.deletePromotionList(removed_promotion_id);
             }
-            StoreManageDiscountFragment.deletePromotionList(removed_promotion_id);
         }
     }
 

@@ -321,11 +321,11 @@ public class StoreManageOpentimeFragment extends Fragment {
                     setBarChart(value, max_value);
 
                 } catch (Exception e) {
-                    new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+                    new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "網路連線失敗，請檢查您的網路");
                     e.printStackTrace();
                 }
             }else{
-                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "網路連線失敗，請檢查您的網路");
             }
 
         }
