@@ -175,7 +175,6 @@ public class StoreAppointFragment extends ListFragment {
             final List<Thread> threadList = new ArrayList<>();
             for(int i=0;i<infos.size();i++) {
                 final ReservationInfo info = infos.get(i);
-                Bitmap image = null;
                 Thread t = new Thread(new Runnable() {
                     @Override
                     public void run() {

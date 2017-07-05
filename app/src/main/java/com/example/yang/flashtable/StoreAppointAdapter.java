@@ -84,14 +84,13 @@ public class StoreAppointAdapter extends BaseAdapter{
         else
             holder = (ViewHolder) convertView.getTag();
         holder.setData(list.get(position));
+        if(list.get(position).picture != null) {
+            holder.im_photo.setImageBitmap(list.get(position).picture);
+            Log.d("Session","set picture "+list.get(position).name);
+        }
+        else
+            Log.d("Session","picture null "+list.get(position).name);
 
-        /*convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO:  Go to comfirm fragment
-                //Toast.makeText(context,Integer.toString(position),Toast.LENGTH_LONG).show();
-            }
-        });*/
         return  convertView;
     }
     private class ViewHolder{
@@ -131,10 +130,12 @@ public class StoreAppointAdapter extends BaseAdapter{
                     new AlertDialogController(domain).confirmCancelDialog(context,"提醒","選擇未見該客戶\n將扣除客戶的信譽分數喔",AlertDialogController.NOTICE1_APPOINT,position);
                 }
             });
-            if(info.picture != null)
+            /*if(info.picture != null) {
                 im_photo.setImageBitmap(info.picture);
+                Log.d("Session","set picture "+info.name);
+            }
             else
-                Log.d("Session","picture null");
+                Log.d("Session","picture null "+info.name);*/
             if(info.isActive && (info.due_time - System.currentTimeMillis())>0) {
                 buttonControl(this, WAITING);
                 int remain_time = (int)(info.due_time - System.currentTimeMillis())/1000;

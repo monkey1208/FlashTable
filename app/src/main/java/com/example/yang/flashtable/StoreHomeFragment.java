@@ -127,6 +127,7 @@ public class StoreHomeFragment extends Fragment {
                 bt_active_gif.setVisibility(View.INVISIBLE);
                 bt_active_gif.setEnabled(false);
                 new APIHandler(getString(R.string.server_domain)).postPromotionInactive();
+                Log.d("inactive","success");
                 stopUpdate();
             }
         });
@@ -231,6 +232,7 @@ public class StoreHomeFragment extends Fragment {
                     bt_active_gif.setEnabled(true);
                     tv_active_remind.setText("按下後暫停");
                     tv_gift.setText(StoreMainActivity.storeInfo.discountList.get(i).description);
+                    StoreMainActivity.storeInfo.discountCurrent = i;
                     Log.d("Promotion", StoreMainActivity.storeInfo.discountList.get(i).description);
                 }
             }
