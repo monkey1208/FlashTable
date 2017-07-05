@@ -35,7 +35,7 @@
         android:id="@+id/customer_reservation_tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/customer_reservation_seconds"
+        android:text="02:00"
         android:textColor="@color/white"
         android:textSize="28sp"
         android:layout_centerInParent="true"/>

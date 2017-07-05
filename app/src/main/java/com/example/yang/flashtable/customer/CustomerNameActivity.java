@@ -154,7 +154,6 @@ public class CustomerNameActivity extends AppCompatActivity {
                 dialog_builder.dialogEvent(
                         "修改成功", "normal", listener);
                 user.edit().putString("username", new_username).apply();
-                finish();
             }
         }
     }

@@ -1,17 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ListView
-        android:id="@+id/customer_comment_lv_comments"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="5dp"
-        android:paddingBottom="0dp"
-        android:clipToPadding="false"
-        android:dividerHeight="5dp"
-        android:divider="@color/lightgray"
-        android:background="@color/lightgray"/>
+        android:layout_height="70dp"
+        android:background="@drawable/customer_bg_main"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <ImageButton
+            android:onClick="finish"
+            android:id="@+id/imageButton"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:background="#00000000"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_back_white" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="我要評論"/>
+        <!--<View
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"/>-->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="評論紀錄"
+            android:textColor="@color/white"
+            android:onClick="goToHistory"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+    <com.ogaclejapan.smarttablayout.SmartTabLayout
+        android:id="@+id/customer_comment_vp_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        app:stl_indicatorAlwaysInCenter="false"
+        app:stl_indicatorWithoutPadding="false"
+        app:stl_indicatorInFront="false"
+        app:stl_indicatorInterpolation="smart"
+        app:stl_indicatorGravity="bottom"
+        app:stl_indicatorColor="@color/textColorOrange"
+        app:stl_indicatorThickness="5dp"
+        app:stl_indicatorWidth="auto"
+        app:stl_indicatorCornerRadius="0dp"
+        app:stl_overlineColor="#4D000000"
+        app:stl_overlineThickness="0dp"
+        app:stl_underlineColor="@color/lightgray"
+        app:stl_underlineThickness="3dp"
+        app:stl_dividerColor="@color/lightgray"
+        app:stl_dividerThickness="0dp"
+        app:stl_defaultTabBackground="?attr/selectableItemBackground"
+        app:stl_defaultTabTextAllCaps="true"
+        app:stl_defaultTabTextColor="@color/textColor"
+        app:stl_defaultTabTextSize="14sp"
+        app:stl_defaultTabTextHorizontalPadding="16dp"
+        app:stl_defaultTabTextMinWidth="0dp"
+        app:stl_distributeEvenly="true"
+        app:stl_clickable="true"
+        app:stl_titleOffset="24dp"
+        app:stl_drawDecorationAfterTab="false" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/customer_comment_vp_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

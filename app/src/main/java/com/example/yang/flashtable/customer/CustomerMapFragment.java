@@ -517,6 +517,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
             CustomerShopActivity.ShowInfo showInfo = new CustomerShopActivity.ShowInfo(
                     info.name,
                     info.consumption,
+                    0,
                     info.discount,
                     info.offer,
                     info.address,
@@ -570,14 +571,36 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
             if(isCancelled())
                 return null;
             List<Description> list = getPromotionId(latlng);
+            System.out.println("11111list size = "+list.size());
             if(isCancelled())
                 return null;
             for (int i = 0; i < list.size(); i++) {
                 if(isCancelled())
                     return null;
                 CustomerRestaurantInfo info = sqlHandler.getDetail(list.get(i).shop_id);
+                info.id = list.get(i).shop_id;
                 info.discount = list.get(i).discount;
                 info.offer = list.get(i).offer;
+                info.date = list.get(i).date;
+                info.promotion_id = list.get(i).promotion_id;
+                String shop_rating = "0";
+                try {
+                    if(isCancelled())
+                        return null;
+                    HttpGet requestShopRating = new HttpGet(getString(R.string.server_domain)+"api/shop_comments?shop_id=" + list.get(i).shop_id);
+                    requestShopRating.addHeader("Content-Type", "application/json");
+                    String s = new BasicResponseHandler().handleResponse(httpClient.execute(requestShopRating));
+                    JSONArray responseShopRating = new JSONArray(s);
+                    status = responseShopRating.getJSONObject(0).getString("status_code");
+                    if (!status.equals("0")) break;
+                    shop_rating = responseShopRating.getJSONObject(0).getString("average_score");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    httpClient.getConnectionManager().shutdown();
+                }
+                info.rating = Float.parseFloat(shop_rating) / 2;
+
                 mlist.add(info);
             }
 
@@ -591,6 +614,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                 progress_dialog.dismiss();
                 return;
             }
+            System.out.println("size = "+mlist.size());
             CustomerAppInfo.getInstance().setRestaurantList(mlist);
             setRestMap();
             restaurantInfoList = mlist;
@@ -633,7 +657,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                         nameValuePair = null;
                         nameValuePair = new BasicNameValuePair("promotion_id", id);
                         s = nameValuePair.toString();
-                        request = new HttpGet(getString(R.string.server_domain) + "api/promotion_info" + "?" + s);
+                        request = new HttpGet(getString(R.string.server_domain) + "api/promotion_info" + "?" + s +"&");
                         request.addHeader("Content-Type", "application/json");
                         if(isCancelled())
                             return null;
@@ -642,7 +666,9 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                         JSONObject jsonObject = new JSONObject(json);
                         Description description = new Description(Integer.valueOf(jsonObject.get("shop_id").toString()),
                                 Integer.valueOf(jsonObject.get("name").toString()),
-                                jsonObject.get("description").toString());
+                                jsonObject.get("description").toString(),
+                                id,
+                                jsonObject.getString("updated_at"));
                         list.add(description);
                     }
                 }
@@ -656,15 +682,18 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         }
 
         private class Description {
-            public Description(int shop_id, int discount, String offer) {
+            public Description(int shop_id, int discount, String offer, String promotion_id, String date) {
                 this.shop_id = shop_id;
                 this.discount = discount;
                 this.offer = offer;
+                this.promotion_id = promotion_id;
+                this.date = date;
             }
-
+            String promotion_id;
             int shop_id;
             int discount;
             String offer;
+            String date;
         }
     }
 

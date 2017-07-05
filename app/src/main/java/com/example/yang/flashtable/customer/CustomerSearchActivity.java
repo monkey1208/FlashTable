@@ -16,6 +16,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +24,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -81,6 +84,10 @@ public class CustomerSearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.customer_search_activity);
 
         initView();
@@ -112,14 +119,13 @@ public class CustomerSearchActivity extends AppCompatActivity {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(event.getAction() == KeyEvent.ACTION_DOWN){
-                    String query = v.getText().toString();
-                    if(query != null && !query.equals("")) {
-                        sqlHandler.insert(query);
-                        doSearch(query);
-                        v.setText("");
-                    }
+                String query = v.getText().toString();
+                if(query != null && !query.equals("")) {
+                    sqlHandler.insert(query);
+                    doSearch(query);
+                    v.setText("");
                 }
+
                 return false;
             }
         });
@@ -210,6 +216,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
         CustomerShopActivity.ShowInfo showInfo = new CustomerShopActivity.ShowInfo(
                 info.name,
                 info.consumption,
+                0,
                 info.discount,
                 info.offer,
                 info.address,

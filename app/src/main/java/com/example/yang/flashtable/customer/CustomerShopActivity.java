@@ -139,7 +139,7 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
         sl_restaurant.startAutoCycle();
 
         tv_show_name.setText(info.name);
-        tv_show_consumption.setText("均消$" + info.consumption);
+        tv_show_consumption.setText("均消" + info.consumption + "元");
 
         tv_show_offer.setText(info.offer);
         tv_show_location.setText(info.address);
@@ -202,6 +202,7 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
     public static class ShowInfo implements Serializable{
         private String name;
         private int consumption;
+        private int low_consumption;
         private int discount;
         private String offer;
         private String address;
@@ -209,9 +210,10 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
         private String intro;
         private float rating;
         private String promotion_id;
-        public ShowInfo(String name, int consumption, int discount, String offer, String address, String category, String intro, float rating, String promotion_id){
+        public ShowInfo(String name, int consumption, int low_consumption, int discount, String offer, String address, String category, String intro, float rating, String promotion_id){
             this.name = name;
             this.consumption = consumption;
+            this.low_consumption = low_consumption;
             this.discount = discount;
             this.offer = offer;
             this.address = address;
