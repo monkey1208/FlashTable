@@ -83,12 +83,6 @@ public class CustomerCommentActivity extends AppCompatActivity {
         this.finish();
     }
 
-    @Override
-    protected void onDestroy() {
-        System.out.println("comment Destroy");
-        super.onDestroy();
-    }
-
     public void goToHistory(View view){
         Intent intent = new Intent(this, CustomerCommentHistory.class);
         startActivity(intent);
