@@ -1,13 +1,12 @@
 package com.example.yang.flashtable;
 
-import android.support.v4.app.ListFragment;
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +27,6 @@ public class StoreManageCommentFragment extends ListFragment {
     private String shopID;
 
     SharedPreferences user;
-    String userID;
     DialogBuilder dialog_builder;
 
     StoreManageCommentAdapter comment_adapter;
@@ -84,8 +82,8 @@ public class StoreManageCommentFragment extends ListFragment {
 
 
     class APIShopComments extends AsyncTask<String, Void, Void> {
-        private ProgressDialog progress_dialog = new ProgressDialog(getContext());
         private String status = null;
+        List<String> time_list = StoreMainActivity.storeInfo.getCommentTimeList();
         @Override
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
@@ -102,8 +100,7 @@ public class StoreManageCommentFragment extends ListFragment {
                         String body = user_comment.getString("body");
                         String score = user_comment.getString("score");
                         String user_picture_url = user_comment.getString("user_picture_url");
-
-                        comments.add( new StoreCommentInfo(userAccount, body, Float.parseFloat(score) / 2, user_picture_url) );
+                        comments.add( new StoreCommentInfo(userAccount, body, Float.parseFloat(score) / 2, user_picture_url, time_list.get(i-1)) );
                     }
                 }
             } catch (Exception e) {
