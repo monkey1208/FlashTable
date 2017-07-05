@@ -18,9 +18,9 @@
             android:textCursorDrawable="@null"
             android:textColor="@color/textColor"
             android:textSize="17sp"
-            android:lines="1"
             android:hint="@string/customer_profile_name_hint"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            />
     </LinearLayout>
 
     <Button

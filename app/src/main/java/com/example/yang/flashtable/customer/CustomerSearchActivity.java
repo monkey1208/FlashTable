@@ -24,6 +24,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -82,6 +84,10 @@ public class CustomerSearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.customer_search_activity);
 
         initView();
@@ -113,15 +119,13 @@ public class CustomerSearchActivity extends AppCompatActivity {
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                Log.e("EditorAction", event.toString());
-                if(event.getAction() == KeyEvent.ACTION_DOWN){
-                    String query = v.getText().toString();
-                    if(query != null && !query.equals("")) {
-                        sqlHandler.insert(query);
-                        doSearch(query);
-                        v.setText("");
-                    }
+                String query = v.getText().toString();
+                if(query != null && !query.equals("")) {
+                    sqlHandler.insert(query);
+                    doSearch(query);
+                    v.setText("");
                 }
+
                 return false;
             }
         });
