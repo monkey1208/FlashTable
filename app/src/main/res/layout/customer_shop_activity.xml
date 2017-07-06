@@ -18,56 +18,82 @@
             <com.daimajia.slider.library.SliderLayout
                 android:id="@+id/customer_main_sl_restaurant"
                 android:layout_width="match_parent"
-                android:layout_height="230dp" />
+                android:layout_height="230dp"
+                android:layout_marginBottom="20dp" />
 
+            <TextView
+                android:id="@+id/customer_main_tv_show_shop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/customer_detail_shop"
+                android:textColor="@color/textColor"
+                android:textSize="17sp"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:layout_marginBottom="5dp"/>
+
+            <!-- Rating and average consumption -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="17dp"
+                android:layout_marginBottom="0dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp">
+
+                <RatingBar
+                    android:id="@+id/customer_main_rb_show_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/RatingBar"
+                    android:layout_marginEnd="10dp"/>
+
+                <TextView
+                    android:id="@+id/customer_main_tv_show_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/customer_main_price"
+                    android:textColor="@color/textColorLighter"
+                    android:textSize="15sp"
+                    android:layout_marginTop="5dp"/>
+
+            </LinearLayout>
+
+            <!-- Low consumption -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="#FDF3EA"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="0dp"
+                    android:text="@string/customer_main_low"
+                    android:textColor="@color/textColorLight"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:id="@+id/customer_main_tv_low"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/textColorOrange"/>
+
+            </LinearLayout>
+
+            <!-- Gift -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="10dp">
-                <TextView
-                    android:id="@+id/customer_main_tv_show_shop"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/customer_detail_shop"
-                    android:textColor="@color/textColor"
-                    android:textSize="17sp"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="10dp"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginStart="17dp"
-                    android:layout_marginBottom="0dp">
-
-                    <RatingBar
-                        android:id="@+id/customer_main_rb_show_rating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/RatingBar"
-                        android:layout_marginEnd="10dp"/>
-
-                    <TextView
-                        android:id="@+id/customer_main_tv_show_price"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/customer_main_price"
-                        android:textColor="@color/textColorLighter"
-                        android:textSize="15sp"
-                        android:layout_marginTop="5dp"/>
-
-                </LinearLayout>
-
-                <!-- SPACER VIEW -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:background="@color/lightgray"
-                    android:layout_marginBottom="20dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -102,18 +128,8 @@
                     android:layout_marginBottom="20dp"/>
 
 
-                <TextView
-                    android:id="@+id/customer_main_tv_show_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/customer_main_info_content"
-                    android:textSize="15sp"
-                    android:textAlignment="center"
-                    android:textColor="@color/textColorLighter"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:layout_marginBottom="20dp"/>
-
+                <!-- ABOUT THE RESTAURANT -->
+                <!-- Location -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -137,6 +153,13 @@
                         android:textColor="@color/textColorLight" />
 
                 </LinearLayout>
+
+                <!-- Phone -->
+
+                <!-- Open hours -->
+
+
+                <!-- Category -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -162,6 +185,8 @@
 
                 </LinearLayout>
 
+                <!-- Website -->
+
                 <!-- SPACER VIEW -->
                 <View
                     android:layout_width="match_parent"
@@ -174,7 +199,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:background="@color/white"
+                    android:background="?android:attr/selectableItemBackground"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:paddingTop="15dp"
@@ -209,8 +234,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@color/lightgray"
-                    android:layout_marginBottom="15dp"/>
+                    android:layout_marginBottom="20dp"/>
 
+                <!-- Reservation regulations -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -250,13 +276,18 @@
 
     </ScrollView>
 
-    <Button
-        android:id="@+id/customer_main_bt_show_reserve"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/customer_main_reserve"
         android:layout_alignParentBottom="true"
-        style="@style/CustomerOrangeButton"/>
+        android:background="@color/textColorOrange">
+        <Button
+            android:id="@+id/customer_main_bt_show_reserve"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/customer_main_reserve"
+            style="@style/CustomerOrangeButton"/>
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/customer_main_ib_show_back"

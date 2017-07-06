@@ -84,17 +84,33 @@
 
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/customer_profile_bt_about_credit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <LinearLayout
+                    android:id="@+id/customer_profile_ll_about_credit"
                     android:layout_alignParentEnd="true"
                     android:layout_below="@id/customer_profile_ll_credit"
-                    android:background="@android:color/transparent"
-                    android:text="@string/customer_profile_about_credit"
-                    android:textSize="13sp"
-                    android:textColor="@color/textColorOrange"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:background="?android:attr/selectableItemBackground">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/customer_profile_about_credit"
+                        android:textSize="13sp"
+                        android:textColor="@color/textColorOrange"
+                        android:layout_marginEnd="0dp"/>
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_about_credits"
+                        android:layout_marginEnd="0dp"/>
+                </LinearLayout>
 
             </RelativeLayout>
 
@@ -127,7 +143,7 @@
                         android:textSize="42sp"/>
 
                 </LinearLayout>
-                
+
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -187,24 +203,29 @@
                 android:id="@+id/customer_profile_ll_reservations"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/white"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp">
+                android:background="@color/white">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="15dp"
-                    android:src="@drawable/ic_reservations"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/customer_profile_reservations"/>
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="15dp"
+                        android:src="@drawable/ic_reservations"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/customer_profile_reservations"/>
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -219,25 +240,29 @@
                 android:id="@+id/customer_profile_ll_comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/white"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp">
+                android:background="@color/white">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="15dp"
-                    android:src="@drawable/ic_comments"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/customer_profile_comments"/>
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="15dp"
+                        android:src="@drawable/ic_comments"/>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/customer_profile_comments"/>
+                </LinearLayout>
             </LinearLayout>
 
             <!-- SPACER VIEW -->
@@ -251,25 +276,29 @@
                 android:id="@+id/customer_profile_ll_points_record"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/white"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp">
+                android:background="@color/white">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="15dp"
-                    android:src="@drawable/ic_flash_points"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/customer_profile_points_record"/>
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="15dp"
+                        android:src="@drawable/ic_flash_points"/>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/customer_profile_points_record"/>
+                </LinearLayout>
             </LinearLayout>
 
             <!-- SPACER VIEW -->
@@ -283,25 +312,29 @@
                 android:id="@+id/customer_profile_ll_contact_us"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/white"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp">
+                android:background="@color/white">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="15dp"
-                    android:src="@drawable/ic_contact_us"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/customer_profile_contact_us"/>
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="15dp"
+                        android:src="@drawable/ic_contact_us"/>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/customer_profile_contact_us"/>
+                </LinearLayout>
             </LinearLayout>
 
             <!-- SPACER VIEW -->

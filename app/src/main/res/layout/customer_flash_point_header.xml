@@ -9,8 +9,8 @@
         android:layout_height="170dp"
         android:orientation="vertical"
         android:background="@drawable/customer_bg_exchange_info"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"
         android:gravity="center_horizontal">
 
         <RelativeLayout
@@ -21,7 +21,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
                 android:text="FLASH Points 兌換區"
                 android:textSize="18sp"
                 android:textColor="@color/white"/>
@@ -34,6 +34,8 @@
                 android:layout_marginEnd="15dp"
                 android:layout_marginStart="10dp"
                 android:layout_centerVertical="true"
+                android:padding="10dp"
+                android:background="?android:attr/selectableItemBackground"
                 android:text="歷史紀錄"
                 android:textSize="13sp"
                 android:textColor="@color/white"/>

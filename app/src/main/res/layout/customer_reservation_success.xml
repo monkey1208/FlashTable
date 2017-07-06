@@ -117,17 +117,23 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/customer_reservation_bt_arrive_cancel"
+    <LinearLayout
+        android:id="@+id/customer_reservation_ll_arrive_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/CustomerOrangeButton"
         android:layout_alignParentBottom="true"
-        android:text="@string/customer_reservation_cancel"/>
+        android:background="@color/textColorOrange">
+        <Button
+            android:id="@+id/customer_reservation_bt_arrive_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/CustomerOrangeButton"
+            android:text="@string/customer_reservation_cancel"/>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/customer_reservation_ll_time_left"
-        android:layout_above="@id/customer_reservation_bt_arrive_cancel"
+        android:layout_above="@id/customer_reservation_ll_arrive_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

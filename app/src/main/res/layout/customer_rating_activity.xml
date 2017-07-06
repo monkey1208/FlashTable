@@ -89,12 +89,17 @@
 
     </ScrollView>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/textColorOrange">
     <Button
         android:id="@+id/customer_rating_bt_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/submit"
-        style="@style/CustomerOrangeButton"
-        android:layout_alignParentBottom="true"/>
+        style="@style/CustomerOrangeButton"/>
+    </LinearLayout>
 
 </RelativeLayout>

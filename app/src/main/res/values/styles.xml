@@ -88,7 +88,8 @@
 
     <!-- Style for customer orange button -->
     <style name="CustomerOrangeButton">
-        <item name="android:background">@color/textColorOrange</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:backgroundTint">@color/textColorOrange</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">18sp</item>
         <item name="android:padding">15dp</item>
