@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import com.example.yang.flashtable.CustomerCommentHistory;
 import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.DialogEventListener;
 import com.example.yang.flashtable.R;
@@ -91,7 +92,7 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
         ll_comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CustomerShopActivity.this, CustomerCommentActivity.class);
+                Intent intent = new Intent(CustomerShopActivity.this, CustomerCommentHistory.class);
                 intent.putExtra("type", "shop");
                 intent.putExtra("shop_id", shop_id);
                 startActivity(intent);

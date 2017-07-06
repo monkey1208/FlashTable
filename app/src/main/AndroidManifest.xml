@@ -135,7 +135,8 @@
             android:value="96fb5133166743e20b85bf3c821d77cfa802b439" />
 
         <activity android:name=".CustomerCommentHistory"
-            android:launchMode="singleTask"></activity>
+            android:theme="@style/AppTheme.LightActionBar"/>
+
     </application>
 
 </manifest>

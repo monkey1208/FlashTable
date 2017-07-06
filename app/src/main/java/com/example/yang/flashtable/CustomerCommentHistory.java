@@ -141,7 +141,7 @@ public class CustomerCommentHistory extends AppCompatActivity {
     }
 
     class APIShopComments extends AsyncTask<String, Void, Void> {
-        private ProgressDialog progress_dialog = new ProgressDialog(getApplicationContext());
+        private ProgressDialog progress_dialog = new ProgressDialog(CustomerCommentHistory.this);
         private String status = null;
         @Override
         protected void onPreExecute() {

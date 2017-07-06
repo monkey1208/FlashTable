@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.R;
@@ -43,6 +44,8 @@ public class CustomerCommentTabFragment extends Fragment {
     CustomerCommentContentAdapter comment_adapter;
     ArrayList<CustomerCommentContentInfo> comments;
     DialogBuilder dialog_builder;
+    TextView tv_nothing;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -62,6 +65,7 @@ public class CustomerCommentTabFragment extends Fragment {
     private void initView(){
         lv_comments = (ListView)view.findViewById(R.id.customer_comment_tab_lv);
         dialog_builder = new DialogBuilder(getContext());
+        tv_nothing = (TextView) view.findViewById(R.id.customer_comment_tv_nothing);
     }
 
     private void initData(){
@@ -76,6 +80,13 @@ public class CustomerCommentTabFragment extends Fragment {
     private void updateComments(){
         comment_adapter.notifyDataSetChanged();
         lv_comments.setAdapter(comment_adapter);
+
+        if (comments.size() > 0) tv_nothing.setVisibility(View.INVISIBLE);
+        else {
+            tv_nothing.setVisibility(View.VISIBLE);
+            if (has_comment) tv_nothing.setText("目前沒有已評論的餐廳");
+            else tv_nothing.setText("目前沒有未評論的餐廳");
+        }
     }
 
     private String getUserId() {

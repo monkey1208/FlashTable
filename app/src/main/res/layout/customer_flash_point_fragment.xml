@@ -1,10 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.yang.flashtable.customer.CustomerFlashPointFragment"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:background="@color/white">
 
     <jp.co.recruit_mp.android.headerfootergridview.HeaderFooterGridView
         android:id="@+id/customer_points_lv_coupons"
@@ -16,4 +15,14 @@
 
     </jp.co.recruit_mp.android.headerfootergridview.HeaderFooterGridView>
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/customer_points_tv_nothing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="5dp"
+        android:text="載入中"
+        android:textColor="@color/textColorLighter"
+        android:textSize="15sp"/>
+
+</RelativeLayout>

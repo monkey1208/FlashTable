@@ -7,8 +7,8 @@
     tools:context="com.example.yang.flashtable.CustomerCommentHistory">
     <ListView
         android:id="@+id/customer_comment_history_lv"
-        android:layout_width="368dp"
-        android:layout_height="520dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:paddingTop="5dp"
         android:paddingBottom="0dp"
         android:clipToPadding="false"

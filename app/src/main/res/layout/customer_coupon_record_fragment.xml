@@ -9,7 +9,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="invisible"
-        android:text="查無資料"/>
+        android:text="查無資料"
+        android:textColor="@color/textColorLighter"
+        android:textSize="15sp"/>
 
     <ListView
         android:id="@+id/customer_coupon_lv_records"

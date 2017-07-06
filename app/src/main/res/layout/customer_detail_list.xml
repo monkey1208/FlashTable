@@ -9,7 +9,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="invisible"
-        android:text="目前沒有任何餐廳預約紀錄喔！"/>
+        android:text="目前沒有任何餐廳預約紀錄喔！"
+        android:textSize="15sp"
+        android:textColor="@color/textColorLighter"/>
 
     <ListView
         android:id="@+id/customer_detail_lv_details"
