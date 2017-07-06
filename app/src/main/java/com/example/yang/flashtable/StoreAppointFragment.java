@@ -166,7 +166,6 @@ public class StoreAppointFragment extends ListFragment {
                     int promotion_id = session.getInt("promotion_id");
                     int point = session.getInt("user_point");
                     String url = session.getString("user_picture_url");
-                    Log.e("picture url", url);
                     Date due_time = stringToDate(session.getString("due_time"),DateFormat);
                     if(due_time != null)
                         Log.d("Session",Long.toString(due_time.getTime()));

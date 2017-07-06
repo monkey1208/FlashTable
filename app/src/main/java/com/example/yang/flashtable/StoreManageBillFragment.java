@@ -225,9 +225,11 @@ public class StoreManageBillFragment extends Fragment {
         boolean new_record_flag = true;
         boolean exception = false;
         List<RecordInfo> tmpList;
+        List<String> time_list;
         @Override
         protected Void doInBackground(String...params) {
             tmpList = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
+            time_list = new ArrayList<>(StoreMainActivity.storeInfo.getCommentTimeList());
             int origin_size = tmpList.size();
             HttpClient httpClient = new DefaultHttpClient();
             try {
@@ -256,6 +258,11 @@ public class StoreManageBillFragment extends Fragment {
                     session_time = df.format(session_date);
                     RecordInfo info = new RecordInfo(account, num, point, time, session_time, is_success, url, promotion_des);
                     tmpList.add(info);
+
+                    if(recordInfo.getString("is_used").equals("true")){
+                        df = new SimpleDateFormat("yyyy MM/dd  hh:mm a", Locale.ENGLISH);
+                        time_list.add( df.format(date).replace("AM", "am").replace("PM","pm") );
+                    }
                 }
             } catch (Exception e) {
                 exception = true;
@@ -268,6 +275,7 @@ public class StoreManageBillFragment extends Fragment {
             if(!exception) {
                 if (new_record_flag) {
                     StoreMainActivity.storeInfo.setRecordList(recordList);
+                    StoreMainActivity.storeInfo.setCommentTimeList(time_list);
                     recordList = new ArrayList<>(tmpList);
                     setValues(view);
                 }

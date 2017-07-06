@@ -205,14 +205,6 @@ public class StoreManageOpentimeFragment extends Fragment {
                 case WEEK:
                     //TODO: Get date
                     try {
-                        /*String date_interval = tv_info.getText().toString().split(" ")[0];
-                        String start_date = date_interval.split("-")[0];
-                        DateFormat df = new SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN); //String to date
-                        Calendar cal_date = Calendar.getInstance();
-                        cal_date.setTime(df.parse(start_date));
-                        cal_date.add(Calendar.DATE, i);
-                        df = new SimpleDateFormat("MM/dd", Locale.TAIWAN);
-                        chartLabels.add(String.format("%s\n%s", month_to_Chinese[i], df.format(cal_date.getTime())));*/
                         chartLabels.add( String.format("%s\n", (i<6? month_to_Chinese[i]:"日")) );
 
                     }catch (Exception e){
@@ -239,10 +231,12 @@ public class StoreManageOpentimeFragment extends Fragment {
     private class APITimeDetail extends AsyncTask<String, Void, Void> {
         boolean new_record_flag = true;
         List<RecordInfo> list;
+        List<String> time_list;
         boolean exception = false;
         @Override
         protected Void doInBackground(String...params) {
             list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
+            time_list = new ArrayList<>(StoreMainActivity.storeInfo.getCommentTimeList());
             dateList = new ArrayList<>();
             int origin_size = list.size();
             HttpClient httpClient = new DefaultHttpClient();
@@ -272,6 +266,11 @@ public class StoreManageOpentimeFragment extends Fragment {
                     session_time = df.format(session_date);
                     RecordInfo info = new RecordInfo(account, num, point, time, session_time, is_success, url, promotion_des);
                     list.add(info);
+
+                    if(recordInfo.getString("is_used").equals("true")){
+                        df = new SimpleDateFormat("yyyy MM/dd  hh:mm a", Locale.ENGLISH);
+                        time_list.add( df.format(date).replace("AM", "am").replace("PM","pm") );
+                    }
                 }
             } catch (Exception e) {
                 exception = true;
@@ -284,6 +283,7 @@ public class StoreManageOpentimeFragment extends Fragment {
             if(!exception) {
                 if (new_record_flag) {
                     StoreMainActivity.storeInfo.setRecordList(list);
+                    StoreMainActivity.storeInfo.setCommentTimeList(time_list);
                 }
                 try {
                     int sum = 0;
