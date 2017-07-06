@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -273,7 +274,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                         final int index = Integer.valueOf(marker.getSnippet());
                         bottom_sheet.setVisibility(View.VISIBLE);
                         bottom_sheet_behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                        LinearLayout layout = (LinearLayout) view.findViewById(R.id.customer_map_bottom_sheet_layout);
+                        FrameLayout layout = (FrameLayout) view.findViewById(R.id.customer_map_bottom_sheet_layout);
                         layout.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
