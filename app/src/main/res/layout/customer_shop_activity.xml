@@ -60,7 +60,7 @@
 
             </LinearLayout>
 
-            <!-- Low consumption -->
+            <!-- Minimum consumption -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -131,18 +131,22 @@
                 <!-- ABOUT THE RESTAURANT -->
                 <!-- Location -->
                 <LinearLayout
+                    android:id="@+id/customer_shop_ll_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:background="?android:attr/selectableItemBackground"
                     android:layout_marginBottom="10dp">
 
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginEnd="5dp"
+                        android:layout_marginEnd="10dp"
                         android:src="@drawable/ic_location_orange" />
 
                     <TextView
@@ -150,14 +154,66 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="15sp"
-                        android:textColor="@color/textColorLight" />
+                        android:textColor="@color/textColorLighter" />
 
                 </LinearLayout>
 
                 <!-- Phone -->
+                <LinearLayout
+                    android:id="@+id/customer_shop_ll_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:layout_marginBottom="10dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/ic_phone" />
+
+                    <TextView
+                        android:id="@+id/customer_main_tv_show_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/textColorLighter" />
+
+                </LinearLayout>
 
                 <!-- Open hours -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:layout_marginBottom="10dp">
 
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/ic_time" />
+
+                    <TextView
+                        android:id="@+id/customer_main_tv_show_open"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/textColorLighter" />
+
+                </LinearLayout>
 
                 <!-- Category -->
                 <LinearLayout
@@ -165,14 +221,17 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="20dp">
+                    android:background="?android:attr/selectableItemBackground"
+                    android:layout_marginBottom="10dp">
 
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginEnd="5dp"
+                        android:layout_marginEnd="10dp"
                         android:src="@drawable/ic_tableware"
                         />
 
@@ -181,11 +240,38 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="15sp"
-                        android:textColor="@color/textColorLight" />
+                        android:textColor="@color/textColorLighter" />
 
                 </LinearLayout>
 
                 <!-- Website -->
+                <LinearLayout
+                    android:id="@+id/customer_shop_ll_website"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:layout_marginBottom="20dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/ic_shop" />
+
+                    <TextView
+                        android:id="@+id/customer_main_tv_show_website"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/textColorLighter" />
+
+                </LinearLayout>
 
                 <!-- SPACER VIEW -->
                 <View

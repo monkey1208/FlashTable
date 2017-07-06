@@ -27,6 +27,7 @@
             android:layout_weight="5"
             android:layout_gravity="center"
             android:gravity="center"
+            android:padding="5dp"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:text="我要評論"/>

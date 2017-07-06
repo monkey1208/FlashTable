@@ -334,11 +334,14 @@ public class CustomerMainFragment extends Fragment implements Observer {
         CustomerShopActivity.ShowInfo showInfo = new CustomerShopActivity.ShowInfo(
                 info.name,
                 info.consumption,
-                0,
+                info.minconsumption,
                 info.discount,
                 info.offer,
                 info.address,
+                info.phone,
+                info.date,
                 info.category,
+                info.web,
                 info.intro,
                 info.rating,
                 info.promotion_id);
