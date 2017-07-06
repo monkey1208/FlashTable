@@ -2,86 +2,90 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingTop="15dp"
-    android:paddingBottom="15dp"
-    android:paddingStart="30dp"
-    android:paddingEnd="0dp"
-    android:orientation="vertical">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp">
-
-        <ImageView
-            android:id="@+id/customer_comment_iv_avatar"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/default_avatar"/>
-
-        <TextView
-            android:id="@+id/customer_comment_tv_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/customer_comment_iv_avatar"
-            android:layout_centerVertical="true"
-            android:background="@drawable/loading_text"
-            android:textSize="18sp"
-            android:textColor="@color/textColor"/>
-
-        <RelativeLayout
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="20dp">
-            <RatingBar
-                android:id="@+id/customer_comment_rb_rating"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_centerInParent="true"
-                style="@style/RatingBarSmall"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_centerInParent="true"
-                android:src="@drawable/rating_bar_bg"/>
-        </RelativeLayout>
-
-    </RelativeLayout>
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingEnd="10dp"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="5dp">
-        
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_shop_no_padding"
-            android:layout_marginEnd="5dp"/>
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:paddingStart="30dp"
+        android:paddingEnd="0dp"
+        android:orientation="vertical"
+        android:background="?android:attr/selectableItemBackground">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp">
+
+            <ImageView
+                android:id="@+id/customer_comment_iv_avatar"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/default_avatar"/>
+
+            <TextView
+                android:id="@+id/customer_comment_tv_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/customer_comment_iv_avatar"
+                android:layout_centerVertical="true"
+                android:textSize="18sp"
+                android:textColor="@color/textColor"/>
+
+            <RelativeLayout
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp">
+                <RatingBar
+                    android:id="@+id/customer_comment_rb_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_centerInParent="true"
+                    style="@style/RatingBarSmall"/>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/rating_bar_bg"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingEnd="10dp"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="5dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_shop_no_padding"
+                android:layout_marginEnd="5dp"/>
+
+            <TextView
+                android:id="@+id/customer_comment_tv_shop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/loading_text"
+                android:textSize="17sp"
+                android:textColor="@color/textColor"/>
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/customer_comment_tv_shop"
-            android:layout_width="wrap_content"
+            android:id="@+id/customer_comment_tv_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/loading_text"
-            android:textSize="17sp"
-            android:textColor="@color/textColor"/>
+            android:paddingStart="0dp"
+            android:paddingEnd="30dp"
+            android:textColor="@color/textColorLighter"
+            android:textSize="16sp"/>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/customer_comment_tv_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="0dp"
-        android:paddingEnd="30dp"
-        android:textColor="@color/textColorLighter"
-        android:textSize="16sp"/>
-
 </LinearLayout>
