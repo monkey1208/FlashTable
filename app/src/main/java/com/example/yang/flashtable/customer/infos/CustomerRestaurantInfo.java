@@ -21,15 +21,19 @@ public class CustomerRestaurantInfo{
     public String offer;
     public LatLng latLng;
     public int consumption;
+    public int minconsumption;
     public String image_url;
     public String promotion_id;
     public String category;
     public byte[] image = null;
     public String address = "";
+    public String web;
+    public String phone;
     public String intro = "";
     public String date = "";
 
-    public CustomerRestaurantInfo(String name, int discount, String offer, int id, int consumption, String tag,LatLng latLng){
+    public CustomerRestaurantInfo(String name, int discount, String offer, int id, int consumption,
+                                  String tag, LatLng latLng, String web, String phone, int minconsumption){
         this.name = name;
         this.discount = discount;
         this.offer = offer;
@@ -37,9 +41,13 @@ public class CustomerRestaurantInfo{
         this.id = id;
         this.category = tag;
         this.consumption = consumption;
+        this.web = web;
+        this.phone = phone;
+        this.minconsumption = minconsumption;
     }
-    public CustomerRestaurantInfo(String name, int id, int consumption, String tag, LatLng latLng){
-        this(name, 101, "暫無優惠", id, consumption, tag, latLng);
+    public CustomerRestaurantInfo(String name, int id, int consumption, String tag, LatLng latLng,
+                                  String web, String phone, int minconsumption){
+        this(name, 101, "暫無優惠", id, consumption, tag, latLng, web, phone, minconsumption);
     }
 
     public void setInfo(String address, String intro){
