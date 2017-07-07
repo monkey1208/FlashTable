@@ -126,7 +126,7 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
         ll_phone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(CustomerShopActivity.this, "店家連絡電話已複製到剪貼簿", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CustomerShopActivity.this, "店家聯絡電話已複製到剪貼簿", Toast.LENGTH_SHORT).show();
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("FlashPhone", tv_show_phone.getText());
                 clipboard.setPrimaryClip(clip);
@@ -137,7 +137,7 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
         ll_website.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(CustomerShopActivity.this, "店家網址已複製到剪貼簿", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CustomerShopActivity.this, "店家聯絡信箱已複製到剪貼簿", Toast.LENGTH_SHORT).show();
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("FlashWebsite", tv_show_website.getText());
                 clipboard.setPrimaryClip(clip);
