@@ -31,9 +31,10 @@ public class CustomerRestaurantInfo{
     public String phone;
     public String intro = "";
     public String date = "";
+    public String business = "";
 
     public CustomerRestaurantInfo(String name, int discount, String offer, int id, int consumption,
-                                  String tag, LatLng latLng, String web, String phone, int minconsumption){
+                                  String tag, LatLng latLng, String web, String phone, int minconsumption, String business){
         this.name = name;
         this.discount = discount;
         this.offer = offer;
@@ -44,10 +45,11 @@ public class CustomerRestaurantInfo{
         this.web = web;
         this.phone = phone;
         this.minconsumption = minconsumption;
+        this.business = business;
     }
     public CustomerRestaurantInfo(String name, int id, int consumption, String tag, LatLng latLng,
-                                  String web, String phone, int minconsumption){
-        this(name, 101, "暫無優惠", id, consumption, tag, latLng, web, phone, minconsumption);
+                                  String web, String phone, int minconsumption, String business){
+        this(name, 101, "暫無優惠", id, consumption, tag, latLng, web, phone, minconsumption, business);
     }
 
     public void setInfo(String address, String intro){
