@@ -90,9 +90,10 @@ public class CustomerSessionServic extends Service {
         }
         @Override
         public void onDestroy() {
-            super.onDestroy();
+
             new StoreNotificationManager(getApplicationContext()).remindPromotionOpen(false);
             killtimer();
+            super.onDestroy();
         }
 
         public void finish(){

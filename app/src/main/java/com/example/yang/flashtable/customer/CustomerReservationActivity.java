@@ -111,11 +111,6 @@ public class CustomerReservationActivity extends AppCompatActivity {
         initView();
         initData();
         stopService(new Intent(this, CustomerSessionServic.class));
-        Intent intent = new Intent(this, CustomerSessionServic.class);
-        intent.putExtra("user_id", getUserId());
-        intent.putExtra("session_id", session_id);
-        startService(intent);
-
     }
 
     @Override
