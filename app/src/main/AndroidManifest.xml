@@ -134,7 +134,7 @@
             android:name="io.fabric.ApiKey"
             android:value="96fb5133166743e20b85bf3c821d77cfa802b439" />
 
-        <activity android:name=".CustomerCommentHistory"
+        <activity android:name=".customer.CustomerCommentHistory"
             android:theme="@style/AppTheme.LightActionBar"/>
 
     </application>

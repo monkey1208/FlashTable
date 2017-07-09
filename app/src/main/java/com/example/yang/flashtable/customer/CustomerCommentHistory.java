@@ -1,4 +1,4 @@
-package com.example.yang.flashtable;
+package com.example.yang.flashtable.customer;
 
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
@@ -11,7 +11,6 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,15 +18,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-import com.example.yang.flashtable.customer.CustomerCommentActivity;
-import com.example.yang.flashtable.customer.CustomerCommentTabFragment;
-import com.example.yang.flashtable.customer.CustomerMainActivity;
+import com.example.yang.flashtable.DialogBuilder;
+import com.example.yang.flashtable.R;
 import com.example.yang.flashtable.customer.adapter.CustomerCommentAdapter;
 import com.example.yang.flashtable.customer.infos.CustomerCommentInfo;
-import com.ogaclejapan.smarttablayout.SmartTabLayout;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -207,7 +201,7 @@ public class CustomerCommentHistory extends AppCompatActivity {
     }
 
     class APIUserComments extends AsyncTask<String, Void, Void> {
-        private ProgressDialog progress_dialog = new ProgressDialog(getApplicationContext());
+        private ProgressDialog progress_dialog = new ProgressDialog(CustomerCommentHistory.this);
         private String status = null;
         @Override
         protected void onPreExecute() {
