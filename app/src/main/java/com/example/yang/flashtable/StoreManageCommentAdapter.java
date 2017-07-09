@@ -51,8 +51,10 @@ public class StoreManageCommentAdapter extends BaseAdapter{
             convertView = inflater.inflate(R.layout.store_manage_comment_row, parent, false);
             holder.tv_user = (TextView) convertView.findViewById(R.id.store_manage_comment_tv_user);
             holder.tv_content = (TextView) convertView.findViewById(R.id.store_manage_comment_tv_content);
+            holder.tv_time = (TextView) convertView.findViewById(R.id.store_manage_comment_tv_time);
             holder.rb_rating = (RatingBar) convertView.findViewById(R.id.store_manage_comment_rb_rating);
             holder.iv_avatar = (ImageView) convertView.findViewById(store_manage_comment_iv_avatar);
+
             convertView.setTag(holder);
         }else{
             holder = (ViewHolder)convertView.getTag();
@@ -69,9 +71,14 @@ public class StoreManageCommentAdapter extends BaseAdapter{
         }
         holder.rb_rating.setRating(comment.rating);
         holder.rb_rating.setIsIndicator(true);
+        if(comment.record_time != null && !comment.record_time.equals("")){
+            holder.tv_time.setText(comment.record_time);
+        }else{
+            holder.tv_time.setText("");
+        }
 
-        if (comment.content.equals("")) {
-            ((ViewGroup)  holder.tv_content.getParent()).removeView(holder.tv_content);
+        if (comment.content == null || comment.content.equals("")) {
+            holder.tv_content.setVisibility(View.GONE);
         } else {
             comment.content = comment.content.replace("%0D%0A", "\n");
             holder.tv_content.setText(comment.content);
@@ -87,6 +94,7 @@ public class StoreManageCommentAdapter extends BaseAdapter{
     private class ViewHolder{
         TextView tv_user;
         TextView tv_content;
+        TextView tv_time;
         RatingBar rb_rating;
         ImageView iv_avatar;
     }

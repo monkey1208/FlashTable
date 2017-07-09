@@ -31,6 +31,10 @@ public class SqlHandler extends SQLiteOpenHelper {
     public static final String CONSUMPTION_COLUMN = "consumption";
     public static final String CATEGORY_COLUMN = "catergory";
     public static final String ADDRESS_COLUMN = "address";
+    public static final String PHONE_COLUMN = "phone";
+    public static final String MINCONSUMPTION_COLUMN = "minconsumption";
+    public static final String WEB_COLUMN = "web";
+    public static final String BUSINESS_COLUMN = "business";
     public static final String INTRO_COLUMN = "intro";
     public static final String IMG_COLUMN = "img";
     public static final String IMG_COLUMN_1 = "img_1";
@@ -55,8 +59,12 @@ public class SqlHandler extends SQLiteOpenHelper {
                 LATITUDE_COLUMN + " real no null, " +
                 LONGITUDE_COLUMN + " real no null, " +
                 CONSUMPTION_COLUMN + " integer, " +
+                MINCONSUMPTION_COLUMN + " integer, " +
                 CATEGORY_COLUMN + " text, " +
                 ADDRESS_COLUMN + " text, " +
+                PHONE_COLUMN + " text, " +
+                WEB_COLUMN + " text, " +
+                BUSINESS_COLUMN + " text, " +
                 INTRO_COLUMN + " text, " +
                 IMG_COLUMN + " blob no null, " +
                 IMG_COLUMN_1 + " blob, " +
@@ -76,7 +84,8 @@ public class SqlHandler extends SQLiteOpenHelper {
     public Cursor getAll() {
         return db.query(DATABASE_TABLE,
                 new String[] {NAME_COLUMN, ID_COLUMN, LATITUDE_COLUMN, LONGITUDE_COLUMN, IMG_COLUMN,
-                        CATEGORY_COLUMN, ADDRESS_COLUMN, INTRO_COLUMN, CONSUMPTION_COLUMN},	//column
+                        CATEGORY_COLUMN, ADDRESS_COLUMN, INTRO_COLUMN, CONSUMPTION_COLUMN,
+                        PHONE_COLUMN, MINCONSUMPTION_COLUMN, WEB_COLUMN, BUSINESS_COLUMN},	//column
                 null, // WHERE
                 null, // WHERE parameter
                 null, // GROUP BY
@@ -88,7 +97,8 @@ public class SqlHandler extends SQLiteOpenHelper {
         Cursor cursor = db.query(true,
                 DATABASE_TABLE,
                 new String[] {NAME_COLUMN, ID_COLUMN, LATITUDE_COLUMN, LONGITUDE_COLUMN, IMG_COLUMN,
-                        CATEGORY_COLUMN, ADDRESS_COLUMN, INTRO_COLUMN, CONSUMPTION_COLUMN},	//column
+                        CATEGORY_COLUMN, ADDRESS_COLUMN, INTRO_COLUMN, CONSUMPTION_COLUMN,
+                        PHONE_COLUMN, MINCONSUMPTION_COLUMN, WEB_COLUMN, BUSINESS_COLUMN},	//column
                 ID_COLUMN+"="+ rowId,				//WHERE
                 null, // WHERE 的參數
                 null, // GROUP BY
@@ -111,7 +121,12 @@ public class SqlHandler extends SQLiteOpenHelper {
                     Integer.valueOf(cursor.getString(cursor.getColumnIndex(SqlHandler.ID_COLUMN))),
                     Integer.valueOf(cursor.getString(cursor.getColumnIndex(SqlHandler.CONSUMPTION_COLUMN))),
                     cursor.getString(cursor.getColumnIndex(SqlHandler.CATEGORY_COLUMN)),
-                    new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)), cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN)))
+                    new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)),
+                            cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN))),
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.WEB_COLUMN)),
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.PHONE_COLUMN)),
+                    Integer.valueOf(cursor.getString(cursor.getColumnIndex(SqlHandler.MINCONSUMPTION_COLUMN))),
+                    cursor.getString(cursor.getColumnIndex(SqlHandler.BUSINESS_COLUMN))
             );
             info.setInfo(
                     cursor.getString(cursor.getColumnIndex(SqlHandler.ADDRESS_COLUMN)),
@@ -131,7 +146,12 @@ public class SqlHandler extends SQLiteOpenHelper {
                 Integer.valueOf(cursor.getString(cursor.getColumnIndex(SqlHandler.ID_COLUMN))),
                 Integer.valueOf(cursor.getString(cursor.getColumnIndex(SqlHandler.CONSUMPTION_COLUMN))),
                 cursor.getString(cursor.getColumnIndex(SqlHandler.CATEGORY_COLUMN)),
-                new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)), cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN)))
+                new LatLng(cursor.getFloat(cursor.getColumnIndex(SqlHandler.LATITUDE_COLUMN)),
+                        cursor.getFloat(cursor.getColumnIndex(SqlHandler.LONGITUDE_COLUMN))),
+                cursor.getString(cursor.getColumnIndex(SqlHandler.WEB_COLUMN)),
+                cursor.getString(cursor.getColumnIndex(SqlHandler.PHONE_COLUMN)),
+                Integer.valueOf(cursor.getString(cursor.getColumnIndex(SqlHandler.MINCONSUMPTION_COLUMN))),
+                cursor.getString(cursor.getColumnIndex(SqlHandler.BUSINESS_COLUMN))
         );
         info.setInfo(
                     cursor.getString(cursor.getColumnIndex(SqlHandler.ADDRESS_COLUMN)),
@@ -164,6 +184,10 @@ public class SqlHandler extends SQLiteOpenHelper {
         cv.put(ADDRESS_COLUMN, info.address);
         cv.put(INTRO_COLUMN, info.intro);
         cv.put(IMG_COLUMN, info.image);
+        cv.put(PHONE_COLUMN, info.phone);
+        cv.put(WEB_COLUMN, info.web);
+        cv.put(MINCONSUMPTION_COLUMN, info.minconsumption);
+        cv.put(BUSINESS_COLUMN, info.business);
         cv.put(IMG_COLUMN_1, img_1);
         cv.put(IMG_COLUMN_2, img_2);
         cv.put(IMG_COLUMN_3, img_3);

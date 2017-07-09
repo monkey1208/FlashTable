@@ -117,6 +117,7 @@ public class StoreManageFragment extends ListFragment {
 
     private class APIFirstRecordDetail extends AsyncTask<String, Void, Void> {
         List<RecordInfo> list;
+        List<String> comment_time_list;
         ProgressDialog pd;
         boolean exception = false;
         @Override
@@ -130,6 +131,7 @@ public class StoreManageFragment extends ListFragment {
         @Override
         protected Void doInBackground(String...params) {
             list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
+            comment_time_list = new ArrayList<>(StoreMainActivity.storeInfo.getCommentTimeList());
             HttpClient httpClient = new DefaultHttpClient();
             try {
                 HttpGet getRecordsInfo = new HttpGet(getString(R.string.server_domain)+"/api/shop_records?shop_id="+ shop_id+"&verbose=1");
@@ -153,6 +155,11 @@ public class StoreManageFragment extends ListFragment {
                     session_time = df.format(session_date);
                     final RecordInfo info = new RecordInfo(account, num, point, time, session_time, is_success, url, promotion_des);
                     list.add(info);
+
+                    if(recordInfo.getString("is_used").equals("true")){
+                        df = new SimpleDateFormat("yyyy MM/dd  hh:mm a", Locale.ENGLISH);
+                        comment_time_list.add( df.format(date).replace("AM", "am").replace("PM","pm") );
+                    }
                 }
             } catch (Exception e) {
                 exception = true;
@@ -177,6 +184,7 @@ public class StoreManageFragment extends ListFragment {
                     }
                     Calendar date = Calendar.getInstance();
                     StoreMainActivity.storeInfo.setRecordList(list);
+                    StoreMainActivity.storeInfo.setCommentTimeList(comment_time_list);
                     int sum = 0;
                     int num_succ = 0; //Calculate the fee
                     for (int i = 0; i < list.size(); i++) {
@@ -198,7 +206,7 @@ public class StoreManageFragment extends ListFragment {
                     e.printStackTrace();
                 }
             }else{
-                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "網路連線失敗，請檢查您的網路");
             }
             recordList = new ArrayList<>(list);
         }

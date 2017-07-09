@@ -64,6 +64,8 @@ public class CustomerDetailActivity extends AppCompatActivity {
     String time, success, fail, persons, discount_off;
     String no_discount, no_gift;
 
+    TextView tv_nothing;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +94,8 @@ public class CustomerDetailActivity extends AppCompatActivity {
         tv_category = (TextView) findViewById(R.id.customer_detail_tv_show_category);
         iv_record_credit = (ImageView) findViewById(R.id.customer_detail_iv_record_credit);
         rb_record_rating = (RatingBar) findViewById(R.id.customer_detail_rb_record_rating);
+
+        tv_nothing = (TextView) findViewById(R.id.customer_detail_tv_nothing);
     }
 
     private void initData() {
@@ -153,6 +157,9 @@ public class CustomerDetailActivity extends AppCompatActivity {
     public void updateReservations() {
         reservation_adapter.notifyDataSetChanged();
         lv_reservations.setAdapter(reservation_adapter);
+
+        if (reservations.size() > 0) tv_nothing.setVisibility(View.INVISIBLE);
+        else tv_nothing.setVisibility(View.VISIBLE);
     }
 
     private void getUserInfo() {

@@ -30,6 +30,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,12 +50,12 @@ public class AlertDialogController {
     public int result = 0;
     private String discountDes;
     private String domain;
-    private int discountNameChoose = -1; //-1=no choose, 0=no discount, 1=have discount
+    private Context currentContext;
 
     public AlertDialogController(String domain){
         this.domain = domain;
     }
-    public AlertDialog discountDialog(final Context context, final StoreInfo storeInfo, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind, final ImageView iv_icon){
+    public AlertDialog discountDialog(final Context context, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind, final ImageView iv_icon){
         //init view
         View item = LayoutInflater.from(context).inflate(R.layout.store_discount_list, null);
         //listview adapt
@@ -65,7 +66,11 @@ public class AlertDialogController {
             StoreMainActivity.storeInfo.not_delete_discountList.remove(discountDefault);
             StoreMainActivity.storeInfo.not_delete_discountList.add(0, discount);
             StoreMainActivity.storeInfo.discountDefault = 0;
+            StoreMainActivity.storeInfo.discountCurrent = 0;
+        }else if(StoreMainActivity.storeInfo.discountCurrent < 0){
+            StoreMainActivity.storeInfo.discountCurrent = 0;
         }
+
         final StoreHomeDiscountDialogAdapter adapter = new StoreHomeDiscountDialogAdapter(context, StoreMainActivity.storeInfo.not_delete_discountList);
         lv_discount.setAdapter(adapter);
         lv_discount.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -76,7 +81,7 @@ public class AlertDialogController {
             }
         });
 
-        setTitle(context, "折扣優惠", 18);
+        setTitle(context, "折扣優惠", 20);
 
         alertDialog = new AlertDialog.Builder(context)
                 .setCustomTitle(titleBar)
@@ -88,29 +93,14 @@ public class AlertDialogController {
         bt_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                iv_icon.setVisibility(View.VISIBLE);
-                tv_gift.setVisibility(View.VISIBLE);
-                tv_gift.setText(StoreMainActivity.storeInfo.not_delete_discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
-                //TODO: notify server dicount change
-                new APIpromotion_modify().execute(Integer.toString(StoreMainActivity.storeInfo.not_delete_discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
-                StoreMainActivity.storeInfo.changeDiscountCurrentId(StoreMainActivity.storeInfo.not_delete_discountList.get(StoreMainActivity.storeInfo.discountCurrent).id);
-                Log.d("ChangePromotion",String.valueOf(StoreMainActivity.storeInfo.not_delete_discountList.get(StoreMainActivity.storeInfo.discountCurrent).description));
-                StoreMainActivity.fragmentController.storeHomeFragment.startUpdate();
-                StoreMainActivity.fragmentController.storeAppointFragment.startUpdate();
-                bt_active.setVisibility(View.INVISIBLE);
-                tv_active.setVisibility(View.INVISIBLE);
-
-                bt_active_gif.setVisibility(View.VISIBLE);
-                bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
-                StoreMainActivity.fragmentController.storeHomeFragment.setActive();
-
-                bt_active.setEnabled(false);
-                bt_active_gif.setEnabled(true);
-                tv_active_remind.setText("按下後暫停");
 
                 Intent intent = new Intent(context,StoreBGService.class);
                 intent.putExtra("name",StoreMainActivity.storeInfo.id);
                 context.startService(intent);
+
+                currentContext = context;
+                new APIpromotion_modify(tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind, iv_icon).execute(Integer.toString(StoreMainActivity.storeInfo.not_delete_discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
+
                 alertDialog.dismiss();
             }
         });
@@ -124,7 +114,20 @@ public class AlertDialogController {
         return alertDialog;
     }
     public class APIpromotion_modify extends AsyncTask<String,Void,Void> {
-        private String result = "-1";
+        boolean exception = false;
+        TextView tv_gift, tv_active, tv_active_remind;
+        ImageButton bt_active;
+        GifImageView bt_active_gif;
+        ImageView iv_icon;
+        public APIpromotion_modify(final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind, final ImageView iv_icon){
+            super();
+            this.tv_gift = tv_gift;
+            this.bt_active = bt_active;
+            this.bt_active_gif = bt_active_gif;
+            this.tv_active = tv_active;
+            this.tv_active_remind = tv_active_remind;
+            this.iv_icon = iv_icon;
+        }
         @Override
         protected Void doInBackground(String... params) {
             try {
@@ -135,12 +138,35 @@ public class AlertDialogController {
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
                 HttpResponse response = httpClient.execute(post);
                 HttpEntity resEntity = response.getEntity();
-                if(resEntity != null)
-                    result = resEntity.toString();
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch(IOException e){
+                exception = true;
             }
             return null;
+        }
+        @Override
+        protected void onPostExecute(Void _params){
+            if(!exception) {
+                iv_icon.setVisibility(View.VISIBLE);
+                tv_gift.setVisibility(View.VISIBLE);
+                tv_gift.setText(StoreMainActivity.storeInfo.not_delete_discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
+                StoreMainActivity.storeInfo.changeDiscountCurrentId(StoreMainActivity.storeInfo.not_delete_discountList.get(StoreMainActivity.storeInfo.discountCurrent).id);
+                Log.e("ChangePromotion", String.valueOf(StoreMainActivity.storeInfo.not_delete_discountList.get(StoreMainActivity.storeInfo.discountCurrent).description));
+
+                StoreMainActivity.fragmentController.storeHomeFragment.startUpdate();
+                StoreMainActivity.fragmentController.storeAppointFragment.startUpdate();
+                bt_active.setVisibility(View.INVISIBLE);
+                tv_active.setVisibility(View.INVISIBLE);
+
+                bt_active_gif.setVisibility(View.VISIBLE);
+                bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
+                StoreMainActivity.fragmentController.storeHomeFragment.setActive();
+
+                bt_active.setEnabled(false);
+                bt_active_gif.setEnabled(true);
+                tv_active_remind.setText("按下後暫停");
+            }
+            if(exception)
+                new AlertDialogController("").warningConfirmDialog(currentContext, "提醒", "網路連線失敗，請檢查您的網路");
         }
     }
 
@@ -165,7 +191,7 @@ public class AlertDialogController {
             @Override
             public void onClick(View v) {
                 String gift_content = et_gift.getText().toString();
-                new APIHandler.Post_promotion().execute(context.getString(R.string.server_domain), gift_content, StoreMainActivity.storeInfo.id);
+                new APIHandler.Post_promotion(context).execute(context.getString(R.string.server_domain), gift_content, StoreMainActivity.storeInfo.id);
                 alertDialog.dismiss();
             }
         });
@@ -205,7 +231,7 @@ public class AlertDialogController {
         });
 
         alertDialog.show();
-        setDialogSize(context, 0.78, 0.33);
+        setDialogSize(context, 0.78, 0.31);
     }
 
 
@@ -263,7 +289,7 @@ public class AlertDialogController {
 
     public void confirmCancelDialog(final Context context, String title, String content, final int mode, final int position){
         View item = LayoutInflater.from(context).inflate(R.layout.store_confirm_cancel_dialog, null);
-        setTitle(context, title, 18);
+        setTitle(context, title, 20);
 
         alertDialog = new AlertDialog.Builder(context)
                 .setCustomTitle(titleBar)
@@ -304,9 +330,6 @@ public class AlertDialogController {
                         Intent intent = new Intent(context, LoginActivity.class);
                         context.startActivity(intent);
                         break;
-                    case UNFINISHED_CONTENT:
-                        discountNameChoose = -1;
-
                 }
             }
         });
@@ -315,15 +338,10 @@ public class AlertDialogController {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-                switch (mode){
-                    case UNFINISHED_CONTENT:
-                        addDiscountDialog(context, true);
-                        break;
-                }
             }
         });
         alertDialog.show();
-        setDialogSize(context, 0.8, 0.45);
+        setDialogSize(context, 0.78, 0.42);
     }
 
     //Change dialog size

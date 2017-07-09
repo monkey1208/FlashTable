@@ -95,6 +95,7 @@ public class StoreManageSuccessFragment extends Fragment {
     private class ReservationSuccessDetail extends AsyncTask<Object, Void, Void> {
         int sum = 0, new_size;
         List<RecordInfo> list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
+        List<String> time_list = new ArrayList<>(StoreMainActivity.storeInfo.getCommentTimeList());
         boolean new_records_flag = true;
         boolean exception = false;
         @Override
@@ -114,7 +115,6 @@ public class StoreManageSuccessFragment extends Fragment {
                     Log.e("record", "update");
                     JSONObject recordInfo = recordsInfo.getJSONObject(i);
                     int num = recordInfo.getInt("number");
-                    int id = recordInfo.getInt("record_id");
                     String is_success = recordInfo.getString("is_succ");
                     String account = recordInfo.getString("user_account");
                     int point = recordInfo.getInt("user_point");
@@ -131,6 +131,11 @@ public class StoreManageSuccessFragment extends Fragment {
                     session_time = df.format(session_date);
                     RecordInfo info = new RecordInfo(account, num, point, time, session_time, is_success, url, promotion_des);
                     list.add(info);
+
+                    if(recordInfo.getString("is_used").equals("true")){
+                        df = new SimpleDateFormat("yyyy MM/dd  hh:mm a", Locale.ENGLISH);
+                        time_list.add( df.format(date).replace("AM", "am").replace("PM","pm") );
+                    }
                 }
             } catch (Exception e) {
                 exception = true;
@@ -145,6 +150,7 @@ public class StoreManageSuccessFragment extends Fragment {
                 if (new_records_flag || !was_browsed) {
                     Log.e("success", "refresh");
                     StoreMainActivity.storeInfo.setRecordList(list);
+                    StoreMainActivity.storeInfo.setCommentTimeList(time_list);
 
                     for (int i = 0; i < list.size(); i++) {
                         String is_success = list.get(i).is_succ;
@@ -160,7 +166,7 @@ public class StoreManageSuccessFragment extends Fragment {
                     StoreMainActivity.storeInfo.setSuccess_record_num(sum);
                 }
             }else{
-                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
+                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "網路連線失敗，請檢查您的網路");
             }
         }
     }

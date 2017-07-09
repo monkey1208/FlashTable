@@ -102,10 +102,13 @@ public class StoreManageRecordFragment extends ListFragment {
 
     private class APIRecordDetail extends AsyncTask<String, Void, Void> {
         boolean new_record_flag = true;
+        boolean exception = false;
         List<RecordInfo> tmp_list = new ArrayList<>();
+        List<String> tmp_time_list = new ArrayList<>();
         @Override
         protected Void doInBackground(String...params) {
             tmp_list.addAll(StoreMainActivity.storeInfo.getRecordList());
+            tmp_time_list = new ArrayList<>(StoreMainActivity.storeInfo.getCommentTimeList());
             int origin_size = tmp_list.size();
             HttpClient httpClient = new DefaultHttpClient();
             try {
@@ -135,30 +138,39 @@ public class StoreManageRecordFragment extends ListFragment {
 
                     final RecordInfo info = new RecordInfo(account, num, point, time, session_time, is_success, url, promotion_des);
                     tmp_list.add(info);
+
+                    if(recordInfo.getString("is_used").equals("true")){
+                        df = new SimpleDateFormat("yyyy MM/dd  hh:mm a", Locale.ENGLISH);
+                        tmp_time_list.add( df.format(date).replace("AM", "am").replace("PM","pm") );
+                    }
                 }
             } catch (Exception e) {
+                exception = true;
                 e.printStackTrace();
             }
             return null;
         }
         @Override
         protected void onPostExecute(Void _params){
-            if(new_record_flag) {
-                list.clear();
-                list.addAll(tmp_list);
-                adapter.notifyDataSetChanged();
-                Log.e("record", "update");
-                StoreMainActivity.storeInfo.setRecordList(list);
-                int sum = 0;
-                for (int i = 0; i < list.size(); i++) {
-                    String is_success = list.get(i).is_succ;
-                    if(is_success.equals("true")){
-                        sum += 1;
+            if(exception){
+                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "網路連線失敗，請檢查您的網路");
+            }else {
+                if (new_record_flag) {
+                    list.clear();
+                    list.addAll(tmp_list);
+                    adapter.notifyDataSetChanged();
+                    Log.e("record", "update");
+                    StoreMainActivity.storeInfo.setRecordList(list);
+                    StoreMainActivity.storeInfo.setCommentTimeList(tmp_time_list);
+                    int sum = 0;
+                    for (int i = 0; i < list.size(); i++) {
+                        String is_success = list.get(i).is_succ;
+                        if (is_success.equals("true")) {
+                            sum += 1;
+                        }
                     }
+                    StoreMainActivity.storeInfo.setSuccess_record_num(sum);
                 }
-                StoreMainActivity.storeInfo.setSuccess_record_num(sum);
-            }else{
-                Log.e("record", "remain");
             }
         }
     }

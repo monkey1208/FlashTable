@@ -14,19 +14,19 @@ public class RecordInfo {
     public String is_succ;
     public int point;
     public int promotion_id;
-    public String url;
     public Bitmap picture;
     private String image_url;
     public  String promotion_des;
 
-    public RecordInfo(int id, String name, int number, long due_time, int promotion_id, String url){
+    public RecordInfo(int id, String name, int point, int number, long due_time, int promotion_id, String url){
         this.id = id;
         this.name = name;
+        this.point = point;
         this.number = number;
         this.due_time = due_time;
         this.isActive = true;
         this.promotion_id = promotion_id;
-        this.url =url;
+        this.image_url =url;
         this.picture = null;
     }
 

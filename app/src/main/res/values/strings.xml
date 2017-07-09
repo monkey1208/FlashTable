@@ -6,6 +6,9 @@
     <string name="server_acc">service_flashtable</string>
     <string name="server_pwd">service_flashtable</string>
 
+    <string name="service_email">service@daydreamstudio.co</string>
+    <string name="service_facebook">https://www.facebook.com/FLASHTABLE</string>
+
     <string name="title_activity_customer_main">CustomerMainActivity</string>
 
     <!-- Universal strings -->
@@ -15,6 +18,7 @@
     <string name="back">返回</string>
     <string name="search">搜尋</string>
     <string name="discount">折</string>
+    <string name="dollars">元</string>
 
     <!-- Dialog Content strings -->
     <string name="dialog_cancel_success_reservation">商家正在為您安排桌位中\n確定要取消嗎？</string>
@@ -90,6 +94,7 @@
     <!-- String related to customer main -->
     <string name="customer_main_no_info">尚未提供</string>
     <string name="customer_main_price">均消$</string>
+    <string name="customer_main_low">店內最低消費金額，每人：</string>
     <string name="customer_main_price_per">/人</string>
     <string name="customer_main_distance">50m</string>
     <string name="customer_main_reserve">立即預約</string>

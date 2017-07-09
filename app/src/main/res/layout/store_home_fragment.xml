@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/store_home_logo"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="16dp"
                 android:text="店 家 專 用 管 理 後 台"
                 android:textColor="@color/colorPrimary"
                 android:layout_centerHorizontal="true"
@@ -114,7 +114,6 @@
                 android:layout_marginBottom="15dp"
                 android:layout_weight="1.8"
                 android:orientation="horizontal">
-
 
 
                     <ImageView

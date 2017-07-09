@@ -334,10 +334,14 @@ public class CustomerMainFragment extends Fragment implements Observer {
         CustomerShopActivity.ShowInfo showInfo = new CustomerShopActivity.ShowInfo(
                 info.name,
                 info.consumption,
+                info.minconsumption,
                 info.discount,
                 info.offer,
                 info.address,
+                info.phone,
+                info.business,
                 info.category,
+                info.web,
                 info.intro,
                 info.rating,
                 info.promotion_id);
@@ -411,6 +415,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
 
             closeDB();
             if( status == null  || !status.equals("0") ) {
+                Log.e("MainStatus", status);
                 dialog.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
                 swipe_refresh_layout.setRefreshing(false);
                 return;

@@ -77,8 +77,9 @@ public class StoreRecentAdapter extends BaseAdapter{
         holder.tv_name.setText(info.name+"(信譽"+ Integer.toString(info.honor) +")");
         holder.tv_number.setText("正向您即將預約("+info.number+"人)");
         holder.tv_countdown.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-        holder.tv_countdown.setText(Integer.toString(info.expireTime));
-        if(!list.get(position).isDelete) {
+
+        holder.tv_countdown.setText(String.format("%02d:%02d",info.expireTime/60,info.expireTime%60));
+        if(!list.get(position).isDelete){
             holder.im_confirmed.setImageResource(0);
             holder.bt_cancel.setEnabled(true);
             holder.bt_confirm.setEnabled(true);

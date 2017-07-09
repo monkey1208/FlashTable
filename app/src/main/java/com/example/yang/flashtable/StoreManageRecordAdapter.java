@@ -61,7 +61,7 @@ public class StoreManageRecordAdapter extends BaseAdapter {
             holder = (ViewHolder)convertView.getTag();
         }
         holder.tv_name.setText(info.name);
-        holder.tv_point.setText("（信譽" + reservation_list.get(position).point + "）");
+        holder.tv_point.setText("  (信譽" + reservation_list.get(position).point + ")");
         holder.tv_date.setText(info.record_time);
         if (info.is_succ.equals("true")) {
             holder.tv_state.setTextColor(Color.parseColor("#6DBD61"));

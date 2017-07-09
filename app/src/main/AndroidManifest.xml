@@ -6,17 +6,20 @@
     <meta-data
         android:name="com.google.android.gms.version"
         android:value="@integer/google_play_services_version"
-        tools:replace="android:value"/>
+        tools:replace="android:value" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
     <permission android:name="android.permission.FLASHLIGHT" />
-    <uses-feature android:name="android.hardware.camera"/>
+
+    <uses-feature android:name="android.hardware.camera" />
 
     <application
         android:allowBackup="true"
@@ -29,6 +32,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCVu9CSS6xdVdQ3WsmP763wLO0XVRDs0_M" />
+
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
@@ -42,103 +46,97 @@
         </activity>
         <activity
             android:name=".StoreMainActivity"
-            android:hardwareAccelerated="true"
             android:configChanges="screenSize|orientation"
+            android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".StoreRegisterActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".customer.CustomerRegisterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".customer.CustomerLoadingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".customer.CustomerMainActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"
-            android:launchMode="singleTask">
-        </activity>
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".customer.CustomerSearchActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"
-            android:launchMode="singleTop">
-
-        </activity>
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".customer.CustomerReservationActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".customer.CustomerCommentActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.LightActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".customer.CustomerDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.LightActionBar">
-        </activity>
+            android:theme="@style/AppTheme.LightActionBar"></activity>
         <activity
             android:name=".customer.CustomerRatingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.TransparentActionBar"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".customer.CustomerNameActivity"
             android:theme="@style/AppTheme.LightActionBar"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
-        <activity android:name=".customer.CustomerCreditsActivity"
-            android:theme="@style/AppTheme.OrangeActionBar"/>
+            android:windowSoftInputMode="adjustPan"></activity>
+        <activity
+            android:name=".customer.CustomerCreditsActivity"
+            android:theme="@style/AppTheme.OrangeActionBar" />
         <activity
             android:name=".QrcodeScannerActivity"
             android:theme="@style/AppFullScreenTheme" />
         <activity
             android:name=".customer.CustomerShopActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTask" />
-
-        <activity android:name=".customer.CustomerCropProfileActivity"
-            android:theme="@style/AppTheme.LightActionBar"/>
-
-        <activity android:name=".customer.CustomerCouponActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity android:name=".customer.CustomerCouponRecordActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".customer.CustomerCropProfileActivity"
+            android:theme="@style/AppTheme.LightActionBar" />
+        <activity
+            android:name=".customer.CustomerCouponActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".customer.CustomerCouponRecordActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".customer.CustomerCouponCodeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".customer.CustomerContactUsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".customer.CustomerGuideActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".customer.CustomerCouponCodeActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        
-        <activity android:name=".customer.CustomerContactUsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".customer.CustomerGuideActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <!--<provider android:name=".customer.provider.SearchSuggestionProvider"
-            android:authorities="com.example.yang.flashtable.customer.provider.SearchSuggestionProvider" />-->
+        <!--
+            <provider android:name=".customer.provider.SearchSuggestionProvider"
+            android:authorities="com.example.yang.flashtable.customer.provider.SearchSuggestionProvider" />
+        -->
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="96fb5133166743e20b85bf3c821d77cfa802b439" />
         <service android:name=".StoreBGService"/>
+        <activity android:name=".CustomerCommentHistory"
+            android:theme="@style/AppTheme.LightActionBar"/>
+
     </application>
 
 </manifest>

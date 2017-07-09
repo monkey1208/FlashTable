@@ -72,9 +72,8 @@ public class CustomerProfileFragment extends Fragment {
 
     private View view;
     TextView tv_username, tv_credit, tv_edit, tv_exchange_gifts_content, tv_points, tv_go;
-    LinearLayout ll_comments, ll_reservations, ll_points_record, ll_contact_us;
+    LinearLayout ll_comments, ll_reservations, ll_points_record, ll_contact_us, ll_about_credits;
     ImageView iv_avatar;
-    Button bt_about_credits;
 
     private String credits;
 
@@ -101,7 +100,7 @@ public class CustomerProfileFragment extends Fragment {
         ll_contact_us = (LinearLayout) view.findViewById(R.id.customer_profile_ll_contact_us);
         iv_avatar = (ImageView) view.findViewById(R.id.customer_profile_iv_avatar);
         tv_edit = (TextView) view.findViewById(R.id.customer_profile_bt_edit);
-        bt_about_credits = (Button) view.findViewById(R.id.customer_profile_bt_about_credit);
+        ll_about_credits = (LinearLayout) view.findViewById(R.id.customer_profile_ll_about_credit);
         tv_points = (TextView) view.findViewById(R.id.customer_profile_tv_points);
         tv_go = (TextView) view.findViewById(R.id.customer_profile_tv_go_exchange);
 
@@ -200,7 +199,7 @@ public class CustomerProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        bt_about_credits.setOnClickListener(new View.OnClickListener() {
+        ll_about_credits.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity().getBaseContext(), CustomerCreditsActivity.class);

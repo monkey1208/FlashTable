@@ -67,6 +67,8 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
 
     DialogBuilder dialog_builder;
 
+    TextView tv_nothing;
+
     @Override
     public View onCreateView(LayoutInflater _inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         inflater = _inflater;
@@ -82,11 +84,14 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
                 R.layout.customer_flash_point_header, lv_coupons, false);
         lv_coupons.addHeaderView(header);
 
+        tv_nothing = (TextView) view.findViewById(R.id.customer_points_tv_nothing);
+
         // Header views
         sl_coupons = (SliderLayout) header.findViewById(R.id.customer_points_sl_coupons);
         sl_coupons.startAutoCycle();
         tv_points = (TextView) header.findViewById(R.id.customer_points_tv_points);
         tv_records = (TextView) header.findViewById(R.id.customer_points_tv_records);
+
     }
 
     private void initData() {
@@ -183,6 +188,9 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
     private void updateCoupons() {
         adapter.notifyDataSetChanged();
         lv_coupons.setAdapter(adapter);
+
+        if (coupons.size() > 0) tv_nothing.setVisibility(View.INVISIBLE);
+        else tv_nothing.setText("目前沒有可兌換的優惠喔！");
     }
 
     private class ApiPoints extends AsyncTask<String, Void, Void>{

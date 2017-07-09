@@ -146,12 +146,16 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                         String location = shop_object.get("location").toString();
                         String tag = shop_object.get("tag").toString();
                         int consumption = Integer.valueOf(shop_object.get("consumption").toString());
+                        int minconsumption = shop_object.getInt("min_consumption");
+                        String phone = shop_object.getString("public_phone_number");
+                        String web = shop_object.getString("email");
                         String address = shop_object.get("address").toString();
+                        String business_hours = shop_object.getString("business_hours");
                         String []tmp = location.split(",");
                         String lat = tmp[0];
                         String lng = tmp[1];
                         LatLng latlng = new LatLng(Float.parseFloat(lat), Float.parseFloat(lng));
-                        info = new CustomerRestaurantInfo(name, Integer.valueOf(id), consumption, tag, latlng);
+                        info = new CustomerRestaurantInfo(name, Integer.valueOf(id), consumption, tag, latlng, web, phone, minconsumption, business_hours);
                         info.setInfo(address, intro);
                         info.turnBitmap2ByteArray(image);
 

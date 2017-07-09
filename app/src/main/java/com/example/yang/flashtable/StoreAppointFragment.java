@@ -100,7 +100,10 @@ public class StoreAppointFragment extends ListFragment {
         bundle.putString("name",list.get(position).name);
         bundle.putString("number",Integer.toString(list.get(position).number));
         bundle.putInt("promotion_id",list.get(position).promotion_id);
+        bundle.putInt("point", list.get(position).point);
         bundle.putLong("due_time",list.get(position).due_time);
+        bundle.putString("picture_url", list.get(position).get_Image_Url());
+        Log.e("picture", list.get(position).get_Image_Url());
         StoreMainActivity.fragmentController.sendBundle(bundle,FragmentController.CONFIRM);
     }
 
@@ -133,7 +136,6 @@ public class StoreAppointFragment extends ListFragment {
     public void deleteSession(String session_id){
         for(int i=0;i<list.size();i++){
             if(Integer.toString(list.get(i).id).equals(session_id)) {
-                Log.d("Session",session_id);
                 list.remove(i);
                 adapter.notifyDataSetChanged();
                 break;
@@ -146,6 +148,7 @@ public class StoreAppointFragment extends ListFragment {
         return;
     }
     public class API_Refresh extends AsyncTask<String,Void,Void>{
+
         List<RecordInfo> infos = new ArrayList<>();
         private int total;
         @Override
@@ -161,11 +164,12 @@ public class StoreAppointFragment extends ListFragment {
                     String name = session.getString("user_account");
                     int number = session.getInt("number");
                     int promotion_id = session.getInt("promotion_id");
+                    int point = session.getInt("user_point");
                     String url = session.getString("user_picture_url");
                     Date due_time = stringToDate(session.getString("due_time"),DateFormat);
                     if(due_time != null)
                         Log.d("Session",Long.toString(due_time.getTime()));
-                    RecordInfo info = new RecordInfo(id,name,number,due_time.getTime(),promotion_id,url);
+                    RecordInfo info = new RecordInfo(id,name,point, number,due_time.getTime(),promotion_id,url);
                     if(System.currentTimeMillis() - info.due_time < 85500000)
                         infos.add(info);
                     else
@@ -192,7 +196,7 @@ public class StoreAppointFragment extends ListFragment {
                     public void run() {
                         Bitmap mIcon = null;
                         try {
-                            InputStream in = new java.net.URL(info.url).openStream();
+                            InputStream in = new java.net.URL(info.get_Image_Url()).openStream();
                             mIcon = BitmapFactory.decodeStream(in);
                         } catch (Exception e) {
                             Log.e("Error", e.getMessage());

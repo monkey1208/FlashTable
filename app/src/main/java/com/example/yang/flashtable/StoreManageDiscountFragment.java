@@ -25,6 +25,7 @@ public class StoreManageDiscountFragment extends ListFragment {
 
     private static List<StoreDiscountInfo> discountList;
     public static StoreManageDiscountAdapter adapter;
+    private String shop_id;
 
     public StoreManageDiscountFragment() {
         // Required empty public constructor
@@ -41,12 +42,12 @@ public class StoreManageDiscountFragment extends ListFragment {
         // Inflate the layout for this fragment
         final View v = inflater.inflate(R.layout.store_manage_discount_fragment, container, false);
 
-        ListView lv =(ListView) v.findViewById(list);
+        ListView lv = (ListView) v.findViewById(list);
         discountList = new ArrayList<>(StoreMainActivity.storeInfo.not_delete_discountList);
-        adapter = new StoreManageDiscountAdapter(getContext(),discountList);
+        adapter = new StoreManageDiscountAdapter(getContext(), discountList);
         lv.setAdapter(adapter);
 
-        Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_discount_tb_toolbar);
+        Toolbar bar = (Toolbar) v.findViewById(R.id.store_manage_discount_tb_toolbar);
         bar.setPadding(0, getStatusBarHeight(), 0, 0);
         bar.inflateMenu(R.menu.store_manage_discount_menu);
         Toolbar.OnMenuItemClickListener onMenuItemClick = new Toolbar.OnMenuItemClickListener() {
@@ -68,8 +69,8 @@ public class StoreManageDiscountFragment extends ListFragment {
             }
         });
 
-        LinearLayout add = (LinearLayout)v.findViewById(R.id.store_manage_discount_ll_add);
-        add.setOnClickListener(new View.OnClickListener(){
+        LinearLayout add = (LinearLayout) v.findViewById(R.id.store_manage_discount_ll_add);
+        add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 new AlertDialogController(getString(R.string.server_domain)).addDiscountDialog(getContext(), false);
             }
@@ -77,25 +78,26 @@ public class StoreManageDiscountFragment extends ListFragment {
         return v;
     }
 
+
     public void onListItemClick(ListView l, View v, int position, long id) {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("DefaultDiscount" , MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("DefaultDiscount", MODE_PRIVATE);
         String default_description;
         int default_id;
         //Click the same promotion twice , cancel the default promotion
-        if(StoreMainActivity.storeInfo.discountDefault == position){
+        if (StoreMainActivity.storeInfo.discountDefault == position) {
             discountList.get(StoreMainActivity.storeInfo.discountDefault).isDefault = false;
             adapter.notifyDataSetChanged();
             StoreMainActivity.storeInfo.discountDefault = -1;
             default_id = -1;
             default_description = "";
-        }else if(StoreMainActivity.storeInfo.discountDefault != -1) { //There is default promotion
+        } else if (StoreMainActivity.storeInfo.discountDefault != -1) { //There is default promotion
             discountList.get(StoreMainActivity.storeInfo.discountDefault).isDefault = false;
             discountList.get(position).isDefault = true;
             adapter.notifyDataSetChanged();
             StoreMainActivity.storeInfo.discountDefault = position;
             default_id = discountList.get(position).getId();
             default_description = discountList.get(position).description;
-        }else{ //There is "no" default promotion
+        } else { //There is "no" default promotion
             discountList.get(position).isDefault = true;
             adapter.notifyDataSetChanged();
             StoreMainActivity.storeInfo.discountDefault = position;
@@ -114,19 +116,19 @@ public class StoreManageDiscountFragment extends ListFragment {
         return result;
     }
 
-    public static void addPromotionList(StoreDiscountInfo info){
+    public static void addPromotionList(StoreDiscountInfo info) {
         discountList.add(info);
         adapter.notifyDataSetChanged();
     }
 
-    public static void deletePromotionList(int promotion_id){
-        for(int i = 0; i < discountList.size(); i++){
-            if(promotion_id ==  discountList.get(i).getId()){
+    public static void deletePromotionList(int promotion_id) {
+        for (int i = 0; i < discountList.size(); i++) {
+            if (promotion_id == discountList.get(i).getId()) {
                 discountList.remove(i);
                 break;
             }
         }
         adapter.notifyDataSetChanged();
     }
-
 }
+
