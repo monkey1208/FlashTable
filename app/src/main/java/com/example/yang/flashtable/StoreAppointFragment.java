@@ -33,16 +33,26 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class StoreAppointFragment extends ListFragment {
-    private List<ReservationInfo> list = new ArrayList<>();
+    private List<RecordInfo> list = new ArrayList<>();
     private StoreAppointAdapter adapter;
     private String DateFormat = "EEE MMM dd HH:mm:ss yyyy";
     private List<Integer> updateList = new ArrayList<>();
     private List<Integer> deleteList = new ArrayList<>();
-    private Timer timer;
+    private Timer timer = new Timer();
     private Fragment userInfoFragment;
     private FragmentManager fragmentManager;
+
+    public void startUpdate(){
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                refresh();
+            }
+        },0,3000);
+    }
 
     public  StoreAppointFragment () {
         // Required empty public constructor
@@ -56,7 +66,7 @@ public class StoreAppointFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         fragmentManager = getFragmentManager();
         final View v = inflater.inflate(R.layout.store_appoint_fragment, container, false);
-        List<ReservationInfo> newList = new ArrayList<>();
+        List<RecordInfo> newList = new ArrayList<>();
         for(int i=0;i<list.size();i++)
             if(System.currentTimeMillis()-list.get(i).due_time < 85500000)
                 newList.add(list.get(i));
@@ -95,13 +105,13 @@ public class StoreAppointFragment extends ListFragment {
     }
 
 
-    public ReservationInfo getItem(int position){
+    public RecordInfo getItem(int position){
         if(list.size()>position)
             return list.get(position);
         else
             return null;
     }
-    public int addItem(ReservationInfo info){
+    public int addItem(RecordInfo info){
         list.add(info);
         adapter.notifyDataSetChanged();
         return 0;
@@ -136,7 +146,7 @@ public class StoreAppointFragment extends ListFragment {
         return;
     }
     public class API_Refresh extends AsyncTask<String,Void,Void>{
-        List<ReservationInfo> infos = new ArrayList<>();
+        List<RecordInfo> infos = new ArrayList<>();
         private int total;
         @Override
         protected Void doInBackground(String... params) {
@@ -155,7 +165,7 @@ public class StoreAppointFragment extends ListFragment {
                     Date due_time = stringToDate(session.getString("due_time"),DateFormat);
                     if(due_time != null)
                         Log.d("Session",Long.toString(due_time.getTime()));
-                    ReservationInfo info = new ReservationInfo(id,name,number,due_time.getTime(),promotion_id,url);
+                    RecordInfo info = new RecordInfo(id,name,number,due_time.getTime(),promotion_id,url);
                     if(System.currentTimeMillis() - info.due_time < 85500000)
                         infos.add(info);
                     else
@@ -174,7 +184,9 @@ public class StoreAppointFragment extends ListFragment {
             super.onPostExecute(aVoid);
             final List<Thread> threadList = new ArrayList<>();
             for(int i=0;i<infos.size();i++) {
-                final ReservationInfo info = infos.get(i);
+
+                final RecordInfo info = infos.get(i);
+                Bitmap image = null;
                 Thread t = new Thread(new Runnable() {
                     @Override
                     public void run() {

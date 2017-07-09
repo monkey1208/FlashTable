@@ -36,7 +36,7 @@ import static android.R.id.list;
 
 public class StoreManageDiscountDeleteFragment extends Fragment {
 
-    private List<StoreDiscountInfo> discountList = StoreMainActivity.storeInfo.discountList;
+    private List<StoreDiscountInfo> discountList;
     public static StoreManageDiscountDeleteAdapter adapter;
     private ListView lv;
 
@@ -57,6 +57,7 @@ public class StoreManageDiscountDeleteFragment extends Fragment {
 
         lv = (ListView)v.findViewById(list);
 
+        discountList =  new ArrayList<>(StoreMainActivity.storeInfo.not_delete_discountList);
         adapter = new StoreManageDiscountDeleteAdapter(getContext(),discountList);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -113,7 +114,6 @@ public class StoreManageDiscountDeleteFragment extends Fragment {
                     if (checked.valueAt(i)) {
                         StoreDiscountInfo promotion = discountList.get(checked.keyAt(i));
                         new APIremove_promotion().execute(String.valueOf(promotion.getId()));
-                        Log.e("cheee", String.valueOf(promotion.getId()));
                     }
                 StoreMainActivity.fragmentController.act(FragmentController.MANAGE_DISCOUNT);
             }
@@ -131,11 +131,13 @@ public class StoreManageDiscountDeleteFragment extends Fragment {
     }
 
     private class APIremove_promotion extends AsyncTask<String,Void,Void> {
+        int removed_promotion_id;
         @Override
         protected Void doInBackground(String... params) {
             try {
+                removed_promotion_id = Integer.valueOf(params[0]);
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpPost post = new HttpPost(R.string.server_domain+"/api/remove_promotion");
+                HttpPost post = new HttpPost(getString(R.string.server_domain)+"/api/remove_promotion");
                 List<NameValuePair> param = new ArrayList<NameValuePair>();
                 param.add(new BasicNameValuePair("promotion_id",params[0]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
@@ -145,6 +147,21 @@ public class StoreManageDiscountDeleteFragment extends Fragment {
                 e.printStackTrace();
             }
             return null;
+        }
+        @Override
+        protected void onPostExecute(Void _params){
+            for(int i = 0; i < StoreMainActivity.storeInfo.discountList.size(); i++){
+                if(removed_promotion_id ==  StoreMainActivity.storeInfo.discountList.get(i).getId()){
+                    StoreMainActivity.storeInfo.discountList.get(i).deleteDiscount();
+                    break;
+                }
+            }
+            for(int i = 0; i < StoreMainActivity.storeInfo.not_delete_discountList.size(); i++){
+                if(removed_promotion_id == StoreMainActivity.storeInfo.not_delete_discountList.get(i).getId()){
+                    StoreMainActivity.storeInfo.not_delete_discountList.remove(i);
+                }
+            }
+            StoreManageDiscountFragment.deletePromotionList(removed_promotion_id);
         }
     }
 

@@ -1,5 +1,7 @@
 package com.example.yang.flashtable;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -32,7 +34,8 @@ public class StoreMainActivity extends AppCompatActivity{
         //TODO: Get Store Info
         //TODO: start a thread getting updating request
         //arguments init temp
-        storeInfo = new StoreInfo(bundle.getString("name"),bundle.getString("address"),bundle.getString("url"));
+        if(getIntent().getExtras()!=null)
+            storeInfo = new StoreInfo(bundle.getString("name"),bundle.getString("address"),bundle.getString("url"), bundle.getInt("contract_fee"));
         getStoreInfo();
         button = new ImageButton[PRIM_FRAG];
         setContentView(R.layout.store_main_activity);
@@ -52,6 +55,7 @@ public class StoreMainActivity extends AppCompatActivity{
         storeInfo.name = store.getString("name", "");
         storeInfo.address = store.getString("address", "");
         storeInfo.url = store.getString("url","");
+        storeInfo.setContract_fee(store.getInt("contract_fee", 1));
         storeInfo.id = shop_id;
     }
 

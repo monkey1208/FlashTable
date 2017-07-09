@@ -1,5 +1,6 @@
 package com.example.yang.flashtable;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -17,11 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.R.id.list;
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class StoreManageDiscountFragment extends ListFragment {
 
-    private List<StoreDiscountInfo> discountList = StoreMainActivity.storeInfo.discountList;
+    private static List<StoreDiscountInfo> discountList;
     public static StoreManageDiscountAdapter adapter;
 
     public StoreManageDiscountFragment() {
@@ -40,12 +42,8 @@ public class StoreManageDiscountFragment extends ListFragment {
         final View v = inflater.inflate(R.layout.store_manage_discount_fragment, container, false);
 
         ListView lv =(ListView) v.findViewById(list);
-
-        List<StoreDiscountInfo> notRemovedList = new ArrayList<>();
-        for(int i=0;i<discountList.size();i++)
-            if(!discountList.get(i).notDelete)
-                notRemovedList.add(discountList.get(i));
-        adapter = new StoreManageDiscountAdapter(getContext(),notRemovedList);
+        discountList = new ArrayList<>(StoreMainActivity.storeInfo.not_delete_discountList);
+        adapter = new StoreManageDiscountAdapter(getContext(),discountList);
         lv.setAdapter(adapter);
 
         Toolbar bar = (Toolbar)v.findViewById(R.id.store_manage_discount_tb_toolbar);
@@ -80,10 +78,31 @@ public class StoreManageDiscountFragment extends ListFragment {
     }
 
     public void onListItemClick(ListView l, View v, int position, long id) {
-        discountList.get(position).isDefault = true;
-        discountList.get(StoreMainActivity.storeInfo.discountDefault).isDefault = false;
-        adapter.notifyDataSetChanged();
-        StoreMainActivity.storeInfo.discountDefault = position;
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("DefaultDiscount" , MODE_PRIVATE);
+        String default_description;
+        int default_id;
+        //Click the same promotion twice , cancel the default promotion
+        if(StoreMainActivity.storeInfo.discountDefault == position){
+            discountList.get(StoreMainActivity.storeInfo.discountDefault).isDefault = false;
+            adapter.notifyDataSetChanged();
+            StoreMainActivity.storeInfo.discountDefault = -1;
+            default_id = -1;
+            default_description = "";
+        }else if(StoreMainActivity.storeInfo.discountDefault != -1) { //There is default promotion
+            discountList.get(StoreMainActivity.storeInfo.discountDefault).isDefault = false;
+            discountList.get(position).isDefault = true;
+            adapter.notifyDataSetChanged();
+            StoreMainActivity.storeInfo.discountDefault = position;
+            default_id = discountList.get(position).getId();
+            default_description = discountList.get(position).description;
+        }else{ //There is "no" default promotion
+            discountList.get(position).isDefault = true;
+            adapter.notifyDataSetChanged();
+            StoreMainActivity.storeInfo.discountDefault = position;
+            default_id = discountList.get(position).getId();
+            default_description = discountList.get(position).description;
+        }
+        sharedPreferences.edit().putString("description", default_description).putInt("promotion_id", default_id).apply();
     }
 
     public int getStatusBarHeight() {
@@ -93,6 +112,21 @@ public class StoreManageDiscountFragment extends ListFragment {
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public static void addPromotionList(StoreDiscountInfo info){
+        discountList.add(info);
+        adapter.notifyDataSetChanged();
+    }
+
+    public static void deletePromotionList(int promotion_id){
+        for(int i = 0; i < discountList.size(); i++){
+            if(promotion_id ==  discountList.get(i).getId()){
+                discountList.remove(i);
+                break;
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
 }

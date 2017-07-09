@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +23,6 @@ import android.widget.Toast;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -29,8 +30,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,9 +46,7 @@ public class AlertDialogController {
     public static final int NOTICELIST_APPOINT = 2;
     public static final int UNFINISHED_CONTENT = 3;
     public static final int LOGOUT = 4;
-    public int listPosition = -1;
     public int result = 0;
-    private boolean first = true;
     private String discountDes;
     private String domain;
     private int discountNameChoose = -1; //-1=no choose, 0=no discount, 1=have discount
@@ -57,16 +54,19 @@ public class AlertDialogController {
     public AlertDialogController(String domain){
         this.domain = domain;
     }
-    public AlertDialog discountDialog(final Context context, final StoreInfo storeInfo, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind){
-        //init view---------
+    public AlertDialog discountDialog(final Context context, final StoreInfo storeInfo, final TextView tv_gift, final ImageButton bt_active, final GifImageView bt_active_gif, final TextView tv_active, final TextView tv_active_remind, final ImageView iv_icon){
+        //init view
         View item = LayoutInflater.from(context).inflate(R.layout.store_discount_list, null);
-        //listview adapt----
+        //listview adapt
         ListView lv_discount = (ListView)item.findViewById(R.id.lv_discount);
-        List<StoreDiscountInfo> notRemovedList = new ArrayList<>();
-        for(int i=0;i<storeInfo.discountList.size();i++)
-            if(!storeInfo.discountList.get(i).notDelete)
-                notRemovedList.add(storeInfo.discountList.get(i));
-        final StoreHomeDiscountDialogAdapter adapter = new StoreHomeDiscountDialogAdapter(context,notRemovedList);
+        int discountDefault = StoreMainActivity.storeInfo.discountDefault;
+        if(discountDefault != -1){
+            StoreDiscountInfo discount = StoreMainActivity.storeInfo.not_delete_discountList.get(discountDefault);
+            StoreMainActivity.storeInfo.not_delete_discountList.remove(discountDefault);
+            StoreMainActivity.storeInfo.not_delete_discountList.add(0, discount);
+            StoreMainActivity.storeInfo.discountDefault = 0;
+        }
+        final StoreHomeDiscountDialogAdapter adapter = new StoreHomeDiscountDialogAdapter(context, StoreMainActivity.storeInfo.not_delete_discountList);
         lv_discount.setAdapter(adapter);
         lv_discount.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -88,14 +88,15 @@ public class AlertDialogController {
         bt_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tv_gift.setText(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
+                iv_icon.setVisibility(View.VISIBLE);
+                tv_gift.setVisibility(View.VISIBLE);
+                tv_gift.setText(StoreMainActivity.storeInfo.not_delete_discountList.get(StoreMainActivity.storeInfo.discountCurrent).description);
                 //TODO: notify server dicount change
-                new APIpromotion_modify().execute(Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
-                Log.d("ChangePromotion",Integer.toString(StoreMainActivity.storeInfo.discountCurrent));
-                Log.d("ChangePromotion",Integer.toString(storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
-                //StoreMainActivity.fragmentController.storeAppointFragment.startUpdate();
-                //new APIHandler().changePromotions();
+                new APIpromotion_modify().execute(Integer.toString(StoreMainActivity.storeInfo.not_delete_discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
+                StoreMainActivity.storeInfo.changeDiscountCurrentId(StoreMainActivity.storeInfo.not_delete_discountList.get(StoreMainActivity.storeInfo.discountCurrent).id);
+                Log.d("ChangePromotion",String.valueOf(StoreMainActivity.storeInfo.not_delete_discountList.get(StoreMainActivity.storeInfo.discountCurrent).description));
                 StoreMainActivity.fragmentController.storeHomeFragment.startUpdate();
+                StoreMainActivity.fragmentController.storeAppointFragment.startUpdate();
                 bt_active.setVisibility(View.INVISIBLE);
                 tv_active.setVisibility(View.INVISIBLE);
 
@@ -106,6 +107,10 @@ public class AlertDialogController {
                 bt_active.setEnabled(false);
                 bt_active_gif.setEnabled(true);
                 tv_active_remind.setText("按下後暫停");
+
+                Intent intent = new Intent(context,StoreBGService.class);
+                intent.putExtra("name",StoreMainActivity.storeInfo.id);
+                context.startService(intent);
                 alertDialog.dismiss();
             }
         });
@@ -116,7 +121,6 @@ public class AlertDialogController {
                 alertDialog.dismiss();
             }
         });
-
         return alertDialog;
     }
     public class APIpromotion_modify extends AsyncTask<String,Void,Void> {
@@ -133,11 +137,7 @@ public class AlertDialogController {
                 HttpEntity resEntity = response.getEntity();
                 if(resEntity != null)
                     result = resEntity.toString();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -165,7 +165,7 @@ public class AlertDialogController {
             @Override
             public void onClick(View v) {
                 String gift_content = et_gift.getText().toString();
-                new APIHandler.Post_promotion().execute(gift_content, StoreMainActivity.storeInfo.id);
+                new APIHandler.Post_promotion().execute(context.getString(R.string.server_domain), gift_content, StoreMainActivity.storeInfo.id);
                 alertDialog.dismiss();
             }
         });
@@ -298,6 +298,8 @@ public class AlertDialogController {
                     case  LOGOUT:
                         SharedPreferences store_login_info = context.getSharedPreferences("USER", MODE_PRIVATE);
                         store_login_info.edit().clear().apply();
+                        SharedPreferences store_default_info = context.getSharedPreferences("DefaultDiscount", MODE_PRIVATE);
+                        store_default_info.edit().clear().apply();
                         ((Activity)context).finish();
                         Intent intent = new Intent(context, LoginActivity.class);
                         context.startActivity(intent);
@@ -321,7 +323,7 @@ public class AlertDialogController {
             }
         });
         alertDialog.show();
-        setDialogSize(context, 0.8, 0.43);
+        setDialogSize(context, 0.8, 0.45);
     }
 
     //Change dialog size

@@ -10,12 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.example.yang.flashtable.customer.infos.CustomerAppointInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class StoreRecentFragment extends Fragment {
+
 
     private View v;
     private List<CustomerAppointInfo> list;
@@ -106,8 +109,9 @@ public class StoreRecentFragment extends Fragment {
     }
     public synchronized void addItem(List<CustomerAppointInfo> infoList){
         waitingList.clear();
-        for(int i=0;i<infoList.size();i++)
+        for(int i=0;i<infoList.size();i++) {
             waitingList.add(infoList.get(i));
+        }
         return;
     }
     public CustomerAppointInfo getItem(int position){

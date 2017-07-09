@@ -5,27 +5,37 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/lightgray"
-    tools:context="com.example.yang.flashtable.CustomerMainActivity">
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/customer_main_srl"
+    tools:context="com.example.yang.flashtable.customer.CustomerMainActivity">
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <ListView
-            android:id="@+id/customer_main_lv"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/customer_main_tv_nothing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            android:text="查無資料"/>
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/customer_main_srl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:clipToPadding="false"
-            android:background="@color/lightgray"
-            android:dividerHeight="10dp"
-            android:divider="@color/lightgray" />
-    </android.support.v4.widget.SwipeRefreshLayout>
-
+            android:visibility="visible"
+            android:layout_weight="1">
+            <ListView
+                android:id="@+id/customer_main_lv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:clipToPadding="false"
+                android:background="@color/lightgray"
+                android:dividerHeight="10dp"
+                android:divider="@color/lightgray" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </FrameLayout>
 
 </LinearLayout>
 

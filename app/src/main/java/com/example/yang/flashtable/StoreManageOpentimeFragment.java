@@ -140,7 +140,7 @@ public class StoreManageOpentimeFragment extends Fragment {
         int thisYear = calendar.get(Calendar.YEAR);
         int thisMonth = calendar.get(Calendar.MONTH);
         int thisDay = calendar.get(Calendar.DAY_OF_MONTH);
-        String date = String.format("%d/%02d/%02d", thisYear, thisMonth+1, thisDay);
+        String date = String.format(Locale.getDefault(), "%d/%02d/%02d", thisYear, thisMonth+1, thisDay);
         tv_period.setText(date);
         tv_info.setText(date+" "+"時段整理");
     }
@@ -238,7 +238,7 @@ public class StoreManageOpentimeFragment extends Fragment {
 
     private class APITimeDetail extends AsyncTask<String, Void, Void> {
         boolean new_record_flag = true;
-        List<ReservationInfo> list;
+        List<RecordInfo> list;
         boolean exception = false;
         @Override
         protected Void doInBackground(String...params) {
@@ -260,15 +260,17 @@ public class StoreManageOpentimeFragment extends Fragment {
                     String account = recordInfo.getString("user_account");
                     int point = recordInfo.getInt("user_point");
                     String url = recordInfo.getString("user_picture_url");
-                    String promotion_name = recordInfo.getString("promotion_name");
                     String promotion_des = recordInfo.getString("promotion_description");
 
                     String time = recordInfo.getString("created_at");
+                    String session_time = recordInfo.getString("session_created_at");
                     DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
                     Date date =  df.parse(time);
+                    Date session_date = df.parse(session_time);
                     df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
                     time = df.format(date);
-                    ReservationInfo info = new ReservationInfo(account, num, point, time, is_success, url, promotion_name, promotion_des);
+                    session_time = df.format(session_date);
+                    RecordInfo info = new RecordInfo(account, num, point, time, session_time, is_success, url, promotion_des);
                     list.add(info);
                 }
             } catch (Exception e) {
@@ -296,6 +298,28 @@ public class StoreManageOpentimeFragment extends Fragment {
                         }
                     }
                     StoreMainActivity.storeInfo.setSuccess_record_num(sum);
+
+
+                    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+                    int thisYear = calendar.get(Calendar.YEAR);
+                    int thisMonth = calendar.get(Calendar.MONTH);
+                    int thisDay = calendar.get(Calendar.DAY_OF_MONTH);
+                    Calendar tmp_calender = Calendar.getInstance();
+                    int value[] = new int[DATA_COUNT[current_state]];
+                    for(int i = 0; i < dateList.size(); i+=1){
+                        tmp_calender.setTime(dateList.get(i));
+                        if(tmp_calender.get(Calendar.DAY_OF_MONTH) == thisDay && tmp_calender.get(Calendar.YEAR) == thisYear
+                                && tmp_calender.get(Calendar.MONTH) == thisMonth){
+                            value[tmp_calender.get(Calendar.HOUR_OF_DAY)] += 1;
+                        }
+                    }
+                    chart_bar.clear();
+                    int max_value = 0;
+                    for(int i = 0; i < DATA_COUNT[current_state]; i++){
+                        max_value = value[i]>max_value? value[i] : max_value;
+                    }
+                    setBarChart(value, max_value);
+
                 } catch (Exception e) {
                     new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "資料載入失敗，請重試");
                     e.printStackTrace();
@@ -359,23 +383,6 @@ public class StoreManageOpentimeFragment extends Fragment {
                         switch (opentime_choose_result){
                             case OPENTIME_CHOOSE_DAY:
                                 show_calendar_dialog();
-                                /*String date = String.format(Locale.getDefault(),"%d/%02d/%02d", thisYear, thisMonth+1, thisDay);
-                                tv_period.setText(date);
-                                tv_info.setText((date+" 時段整理"));
-                                tv_time_choose.setText(StoreManageOpentimeFragment.period_type[adapter.listPosition]);
-                                tv_time_choose.setBackgroundResource(R.color.colorHalfTransparent);
-                                for(int i = 0; i < dateList.size(); i+=1){
-                                    tmp_calender.setTime(dateList.get(i));
-                                    if(tmp_calender.get(Calendar.DAY_OF_MONTH) == thisDay){
-                                        value[tmp_calender.get(Calendar.HOUR_OF_DAY)] += 1;
-                                    }
-                                }
-                                chart_bar.clear();
-                                int max_value = 0;
-                                for(int i = 0; i < DATA_COUNT[current_state]; i++){
-                                    max_value = value[i]>max_value? value[i] : max_value;
-                                }
-                                setBarChart(value, max_value);*/
                                 break;
                             case OPENTIME_CHOOSE_WEEK:
                                 calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);

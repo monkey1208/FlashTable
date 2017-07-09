@@ -1,9 +1,9 @@
 package com.example.yang.flashtable;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
+
+import com.example.yang.flashtable.customer.infos.CustomerAppointInfo;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -23,21 +23,11 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 
 public class APIHandler {
-    private Handler handler = new Handler();
-    private Context context;
-
-    private List<String> requestCache = new ArrayList<>();
     private List<String> deleteList = new ArrayList<>();
-    private List<Integer> request_id = new ArrayList<>();
-    private List<CustomerAppointInfo> newInfoList = new ArrayList<>();
-
-    private Timer timer;
     private boolean isActive = false;
-    private boolean stat = false;
-    private int sum = 0;
+
     private static String domain_name;
 
     public APIHandler(String domain){
@@ -45,8 +35,8 @@ public class APIHandler {
     };
 
     public void postPromotionInactive(){
-        new APIpromotion_inactive().execute(Integer.toString(StoreMainActivity.storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
-        Log.d("Promotion","Inactivate "+Integer.toString(StoreMainActivity.storeInfo.discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
+        new APIpromotion_inactive().execute(Integer.toString(StoreMainActivity.storeInfo.discountCurrentId));
+        Log.d("Promotion","Inactivate "+Integer.toString(StoreMainActivity.storeInfo.discountCurrentId));
         isActive = false;
         return;
     }
@@ -119,14 +109,6 @@ public class APIHandler {
             return null;
         }
         protected void onPostExecute(Void _params) {
-            /*ReservationInfo info = new ReservationInfo(name,Integer.valueOf(number),System.currentTimeMillis());
-            info.id = id;
-            if(res == 0) {
-                StoreMainActivity.fragmentController.storeAppointFragment.addItem(info);
-                Log.e("Accept","Success");
-            }
-            else
-                Log.e("Accept","Fail");*/
             StoreMainActivity.fragmentController.storeAppointFragment.refresh();
         }
     }
@@ -177,32 +159,31 @@ public class APIHandler {
             }
             return null;
         }
+        @Override
+        protected void onPostExecute(Void _params){
+            StoreMainActivity.storeInfo.stopDiscount();
+        }
+
     }
 
 
     public static class Post_promotion extends AsyncTask<String,Void,Void> {
         int new_promotion_id;
-        String name;
+        String name = "11";
         String description;
         @Override
         protected Void doInBackground(String... params) {
             try {
                 HttpClient httpClient = new DefaultHttpClient();
-                HttpPost post = new HttpPost(domain_name+"api/new_promotion");
+                HttpPost post = new HttpPost(params[0]+"api/new_promotion");
                 List<NameValuePair> param = new ArrayList<NameValuePair>();
-                description = params[0];
+                description = params[1];
                 param.add(new BasicNameValuePair("name", "11"));
-                param.add(new BasicNameValuePair("description",params[0]));
-                param.add(new BasicNameValuePair("shop_id",params[1]));
+                param.add(new BasicNameValuePair("description",params[1]));
+                param.add(new BasicNameValuePair("shop_id",params[2]));
                 post.setEntity(new UrlEncodedFormEntity(param, HTTP.UTF_8));
                 JSONObject recordInfo = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(post)));
                 new_promotion_id = recordInfo.getInt("promotion_id");
-                Log.d("ChangePromotion",Integer.toString(new_promotion_id));
-                //}
-                } catch (IOException e1) {
-                e1.printStackTrace();
-            } catch (JSONException e1) {
-                e1.printStackTrace();
             } catch (Exception e) {
                 Log.d("ChangePromotion","Exception");
                 e.printStackTrace();
@@ -212,9 +193,10 @@ public class APIHandler {
 
         @Override
         protected void onPostExecute(Void _params){
-            StoreDiscountInfo info = new StoreDiscountInfo(new_promotion_id, Integer.valueOf(name), description,true, 0);
+            StoreDiscountInfo info = new StoreDiscountInfo(new_promotion_id, description, false, 0, false);
             StoreMainActivity.storeInfo.discountList.add(info);
-            StoreManageDiscountFragment.adapter.notifyDataSetChanged();
+            StoreMainActivity.storeInfo.not_delete_discountList.add(info);
+            StoreManageDiscountFragment.addPromotionList(info);
         }
     }
 

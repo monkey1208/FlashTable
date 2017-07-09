@@ -74,7 +74,7 @@ public class StoreManageStatisticAdapter extends BaseAdapter{
         TextView tv_detail = (TextView) convertView.findViewById(R.id.store_manage_statistic_row_tv_detail);
         tv_detail.setText(discount_list.get(position).description);
         TextView tv_count = (TextView) convertView.findViewById(R.id.store_manage_statistic_row_tv_num);
-        tv_count.setText((String.valueOf(discount_list.get(position).count) + "人"));
+        tv_count.setText((String.valueOf(discount_list.get(position).count) + "次"));
         return  convertView;
 
     }

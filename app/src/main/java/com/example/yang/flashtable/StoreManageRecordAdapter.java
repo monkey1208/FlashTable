@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -17,11 +18,11 @@ import java.util.List;
 
 public class StoreManageRecordAdapter extends BaseAdapter {
     private LayoutInflater inflater;
-    private List<ReservationInfo> reservation_list = new ArrayList<>();
+    private List<RecordInfo> reservation_list = new ArrayList<>();
     private Context c;
 
 
-    public StoreManageRecordAdapter(Context c, List<ReservationInfo> reservation_list) {
+    public StoreManageRecordAdapter(Context c, List<RecordInfo> reservation_list) {
         this.c = c;
         inflater = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.reservation_list = reservation_list;
@@ -46,7 +47,7 @@ public class StoreManageRecordAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
-        ReservationInfo info = reservation_list.get(position);
+        RecordInfo info = reservation_list.get(position);
         if (convertView == null){
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.store_manage_record_row, parent, false);
@@ -70,7 +71,8 @@ public class StoreManageRecordAdapter extends BaseAdapter {
             holder.tv_state.setText("店家已取消預約 ( " + info.number + " ) 人桌位");
         }
         if (!info.get_Image_Url().equals("")) {
-            Picasso.with(c).load(info.get_Image_Url()).into(holder.iv_avatar);
+            //Picasso.with(c).load(info.get_Image_Url()).into(holder.iv_avatar);
+            Picasso.with(c).load(info.get_Image_Url()).networkPolicy(NetworkPolicy.NO_CACHE).into(holder.iv_avatar);
         }else{
             holder.iv_avatar.setImageResource(R.drawable.default_avatar);
         }

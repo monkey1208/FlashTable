@@ -94,7 +94,7 @@ public class StoreManageSuccessFragment extends Fragment {
 
     private class ReservationSuccessDetail extends AsyncTask<Object, Void, Void> {
         int sum = 0, new_size;
-        List<ReservationInfo> list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
+        List<RecordInfo> list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
         boolean new_records_flag = true;
         boolean exception = false;
         @Override
@@ -119,15 +119,17 @@ public class StoreManageSuccessFragment extends Fragment {
                     String account = recordInfo.getString("user_account");
                     int point = recordInfo.getInt("user_point");
                     String url = recordInfo.getString("user_picture_url");
-                    String promotion_name = recordInfo.getString("promotion_name");
                     String promotion_des = recordInfo.getString("promotion_description");
 
                     String time = recordInfo.getString("created_at");
+                    String session_time = recordInfo.getString("session_created_at");
                     DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
                     Date date =  df.parse(time);
+                    Date session_date = df.parse(session_time);
                     df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
                     time = df.format(date);
-                    ReservationInfo info = new ReservationInfo(account, num, point, time, is_success, url, promotion_name, promotion_des);
+                    session_time = df.format(session_date);
+                    RecordInfo info = new RecordInfo(account, num, point, time, session_time, is_success, url, promotion_des);
                     list.add(info);
                 }
             } catch (Exception e) {

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,14 +30,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import pl.droidsonroids.gif.GifImageView;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class StoreHomeFragment extends Fragment {
 
@@ -52,6 +53,7 @@ public class StoreHomeFragment extends Fragment {
     private TextView tv_active_running;
     private TextView tv_active_remind;
     private TextView tv_active_time;
+    private ImageView iv_gift_icon;
     private View v;
     private StoreInfo storeInfo;
     private AlertDialog alertDialog;
@@ -81,13 +83,15 @@ public class StoreHomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         //Test
         storeInfo = StoreMainActivity.storeInfo;
-        //func_Test(storeInfo.discountList);
+
         //TODO: get promotion from server
         //Start Here---------------------
         v = inflater.inflate(R.layout.store_home_fragment, container, false);
         v.setPadding(0, getStatusBarHeight(), 0, 0);
         //Image---------
         im_photo = (ImageView) v.findViewById(R.id.im_photo);
+        iv_gift_icon = (ImageView) v.findViewById(R.id.store_home_iv_gift_icon);
+        iv_gift_icon.setVisibility(View.INVISIBLE);
         Picasso.with(getContext()).load(storeInfo.url).into(im_photo);
         //--------------
         //TextView init-
@@ -110,7 +114,7 @@ public class StoreHomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 alertdialog_active = true;
-                alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+                alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getActivity(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind, iv_gift_icon);
                 alertDialog.show();
                 setDialogSize();
             }
@@ -119,6 +123,8 @@ public class StoreHomeFragment extends Fragment {
         bt_active_gif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tv_gift.setVisibility(View.INVISIBLE);
+                iv_gift_icon.setVisibility(View.INVISIBLE);
                 tv_active.setText("立即尋客");
                 tv_active.setVisibility(View.VISIBLE);
                 tv_active_remind.setText("");
@@ -126,6 +132,7 @@ public class StoreHomeFragment extends Fragment {
                 bt_active.setEnabled(true);
                 bt_active_gif.setVisibility(View.INVISIBLE);
                 bt_active_gif.setEnabled(false);
+                getActivity().stopService(new Intent(getActivity(),StoreBGService.class));
                 new APIHandler(getString(R.string.server_domain)).postPromotionInactive();
                 Log.d("inactive","success");
                 stopUpdate();
@@ -156,17 +163,12 @@ public class StoreHomeFragment extends Fragment {
         if (requestCode == SCAN_REQUEST_ZXING_SCANNER) {
             if (resultCode == Activity.RESULT_OK) {
                 Log.d("Session","GetBundle");
-                String mResult = data.getStringExtra(QrcodeScannerActivity.SCAN_RESULT);
                 String session_id =  data.getExtras().getString("session_id");
                 StoreMainActivity.fragmentController.storeAppointFragment.deleteSession(session_id);
             }
         } else {
             IntentResult result = IntentIntegrator.parseActivityResult(
                     requestCode, resultCode, data);
-            if (result != null && result.getContents() != null) {
-                //   mResult = result.getContents();
-                //   mTxtResult.setText(mResult);
-            }
         }
     }
 
@@ -189,20 +191,19 @@ public class StoreHomeFragment extends Fragment {
                 for (int i = 1; i < responsePromotion.length(); i++) {
                     JSONObject promotion = responsePromotion.getJSONObject(i);
                     int id = promotion.getInt("promotion_id");
-                    int discount = promotion.getInt("name");
                     String description = promotion.getString("description");
                     int count = promotion.getInt("n_succ");
                     String notDelete = promotion.getString("is_removed");
                     String isActive_str = promotion.getString("is_active");
-                    boolean isActive = (isActive_str.equals("true"))? true:false;
-                    boolean isRemoved = (notDelete.equals("true"))? true:false;
-                    StoreDiscountInfo info = new StoreDiscountInfo(id, discount, description,isRemoved, count);
-                    info.isActive = isActive;
+                    boolean isActive = isActive_str.equals("true");
+                    boolean isRemoved = notDelete.equals("true");
+                    StoreDiscountInfo info = new StoreDiscountInfo(id, description,isRemoved, count, isActive);
                     StoreMainActivity.storeInfo.discountList.add(info);
+                    if(!isRemoved){
+                        StoreMainActivity.storeInfo.not_delete_discountList.add(info);
+                    }
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch ( IOException e){
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 httpClient.getConnectionManager().shutdown();
@@ -214,26 +215,33 @@ public class StoreHomeFragment extends Fragment {
         protected void onPostExecute(Void _params) {
             if (alertdialog_active) {
                 alertDialog.dismiss();
-                alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind);
+                alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), storeInfo, tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind, iv_gift_icon);
                 alertDialog.show();
                 setDialogSize();
             }
-            Log.d("Promotion",Integer.toString(StoreMainActivity.storeInfo.discountList.size()));
-            for(int i=0;i<StoreMainActivity.storeInfo.discountList.size();i++) {
-                if (StoreMainActivity.storeInfo.discountList.get(i).isActive && !StoreMainActivity.storeInfo.discountList.get(i).notDelete) {
+
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("DefaultDiscount" , MODE_PRIVATE);
+            int default_id = sharedPreferences.getInt("promotion_id", -1);
+            String default_description = sharedPreferences.getString("description", "");
+            for(int i=0;i<StoreMainActivity.storeInfo.not_delete_discountList.size();i++) {
+                if (StoreMainActivity.storeInfo.not_delete_discountList.get(i).isActive) {
                     startUpdate();
                     bt_active.setVisibility(View.INVISIBLE);
                     tv_active.setVisibility(View.INVISIBLE);
+                    iv_gift_icon.setVisibility(View.VISIBLE);
                     bt_active_gif.setVisibility(View.VISIBLE);
                     bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
                     StoreMainActivity.fragmentController.storeHomeFragment.setActive();
+                    StoreMainActivity.storeInfo.changeDiscountCurrentId(StoreMainActivity.storeInfo.not_delete_discountList.get(i).getId());
                     bt_active.setEnabled(false);
                     bt_active_gif.setImageResource(R.drawable.bt_resize_activate);
                     bt_active_gif.setEnabled(true);
                     tv_active_remind.setText("按下後暫停");
-                    tv_gift.setText(StoreMainActivity.storeInfo.discountList.get(i).description);
-                    StoreMainActivity.storeInfo.discountCurrent = i;
-                    Log.d("Promotion", StoreMainActivity.storeInfo.discountList.get(i).description);
+                    tv_gift.setText(StoreMainActivity.storeInfo.not_delete_discountList.get(i).description);
+                }
+                if(default_id != -1 && StoreMainActivity.storeInfo.not_delete_discountList.get(i).description.equals(default_description)){
+                    StoreMainActivity.storeInfo.not_delete_discountList.get(i).isDefault = true;
+                    StoreMainActivity.storeInfo.discountDefault = i;
                 }
             }
         }

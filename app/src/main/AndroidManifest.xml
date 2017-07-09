@@ -28,7 +28,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD1qukcqJkUZtxiKApJlp6O8oiYP25fyrs" />
+            android:value="AIzaSyCVu9CSS6xdVdQ3WsmP763wLO0XVRDs0_M" />
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"
@@ -53,93 +53,92 @@
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
-            android:name=".CustomerRegisterActivity"
+            android:name=".customer.CustomerRegisterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
-            android:name=".CustomerLoadingActivity"
+            android:name=".customer.CustomerLoadingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".CustomerMainActivity"
+            android:name=".customer.CustomerMainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"
             android:launchMode="singleTask">
         </activity>
         <activity
-            android:name=".CustomerSearchActivity"
+            android:name=".customer.CustomerSearchActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.LightActionBar"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"
             android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
 
         </activity>
         <activity
-            android:name=".CustomerReservationActivity"
+            android:name=".customer.CustomerReservationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".CustomerCommentActivity"
+            android:name=".customer.CustomerCommentActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.LightActionBar">
         </activity>
         <activity
-            android:name=".CustomerDetailActivity"
+            android:name=".customer.CustomerDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.LightActionBar">
         </activity>
         <activity
-            android:name=".CustomerRatingActivity"
+            android:name=".customer.CustomerRatingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.TransparentActionBar"
             android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
-            android:name=".CustomerNameActivity"
+            android:name=".customer.CustomerNameActivity"
             android:theme="@style/AppTheme.LightActionBar"
             android:windowSoftInputMode="adjustPan">
         </activity>
-        <activity android:name=".CustomerCreditsActivity"
+        <activity android:name=".customer.CustomerCreditsActivity"
             android:theme="@style/AppTheme.OrangeActionBar"/>
         <activity
             android:name=".QrcodeScannerActivity"
             android:theme="@style/AppFullScreenTheme" />
         <activity
-            android:name=".CustomerShopActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".customer.CustomerShopActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTask" />
 
-        <activity android:name=".CustomerCropProfileActivity"
+        <activity android:name=".customer.CustomerCropProfileActivity"
             android:theme="@style/AppTheme.LightActionBar"/>
 
-        <activity android:name=".CustomerCouponActivity"
+        <activity android:name=".customer.CustomerCouponActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name=".CustomerCouponRecordActivity"
+        <activity android:name=".customer.CustomerCouponRecordActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".CustomerCouponCodeActivity"
+        <activity android:name=".customer.CustomerCouponCodeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         
-        <activity android:name=".CustomerContactUsActivity"
+        <activity android:name=".customer.CustomerContactUsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".CustomerGuideActivity"
+        <activity android:name=".customer.CustomerGuideActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <!--<provider android:name=".customer.provider.SearchSuggestionProvider"
             android:authorities="com.example.yang.flashtable.customer.provider.SearchSuggestionProvider" />-->
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="96fb5133166743e20b85bf3c821d77cfa802b439" />
+        <service android:name=".StoreBGService"/>
     </application>
 
 </manifest>

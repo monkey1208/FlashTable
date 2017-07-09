@@ -84,11 +84,10 @@ public class StoreManageRecordInfoFragment extends Fragment {
         tv_name.setText(content.getString("name"));
         tv_point.setText(" ( 信譽"+content.getString("point")+" )");
         tv_people_number.setText(content.getString("number"));
-        //TODO: Get Appoint time
 
         try {
             SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
-            Date date = df.parse(content.getString("record_time"));
+            Date date = df.parse(content.getString("session_time"));
             df = new SimpleDateFormat("yyyy MM/dd  hh:mm a", Locale.ENGLISH);
             String formatted_date = df.format(date).replace("AM", "am").replace("PM","pm");
             tv_appoint_time.setText(formatted_date);
@@ -99,7 +98,15 @@ public class StoreManageRecordInfoFragment extends Fragment {
         tv_info_first.setText("預約 ");
         if(content.getString("is_succ").equals("true")){
             tv_info_last.setText(" 人已到達");
-            tv_arrive_time.setText(content.getString("record_time"));
+            try {
+                SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd  a hh:mm", Locale.ENGLISH);
+                Date date = df.parse(content.getString("record_time"));
+                df = new SimpleDateFormat("yyyy MM/dd  hh:mm a", Locale.ENGLISH);
+                String formatted_date = df.format(date).replace("AM", "am").replace("PM","pm");
+                tv_arrive_time.setText(formatted_date);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }else {
             tv_info_last.setText(" 人已取消");
         }
