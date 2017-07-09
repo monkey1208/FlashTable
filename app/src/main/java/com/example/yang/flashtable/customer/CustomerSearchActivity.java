@@ -205,6 +205,11 @@ public class CustomerSearchActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 editText.setText(history.get(position-1));
+                String query = editText.getText().toString();
+                if(query != null && !query.equals("")) {
+                    sqlHandler.insert(query);
+                    doSearch(query);
+                }
                 //search_view.setQuery(history.get(position-1), false);
             }
         });
@@ -221,7 +226,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
                 info.offer,
                 info.address,
                 info.phone,
-                info.date,
+                info.business,
                 info.category,
                 info.web,
                 info.intro,
