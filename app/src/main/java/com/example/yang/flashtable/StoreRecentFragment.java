@@ -19,6 +19,7 @@ import java.util.TimerTask;
 
 public class StoreRecentFragment extends Fragment {
 
+
     private View v;
     private List<CustomerAppointInfo> list;
     private int requestIDupper = -1;
@@ -108,8 +109,9 @@ public class StoreRecentFragment extends Fragment {
     }
     public synchronized void addItem(List<CustomerAppointInfo> infoList){
         waitingList.clear();
-        for(int i=0;i<infoList.size();i++)
+        for(int i=0;i<infoList.size();i++) {
             waitingList.add(infoList.get(i));
+        }
         return;
     }
     public CustomerAppointInfo getItem(int position){

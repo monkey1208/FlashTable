@@ -346,7 +346,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
                 info.offer,
                 info.address,
                 info.phone,
-                info.date,
+                info.business,
                 info.category,
                 info.web,
                 info.intro,

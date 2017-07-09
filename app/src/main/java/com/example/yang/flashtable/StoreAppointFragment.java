@@ -188,6 +188,7 @@ public class StoreAppointFragment extends ListFragment {
             super.onPostExecute(aVoid);
             final List<Thread> threadList = new ArrayList<>();
             for(int i=0;i<infos.size();i++) {
+
                 final RecordInfo info = infos.get(i);
                 Bitmap image = null;
                 Thread t = new Thread(new Runnable() {

@@ -91,8 +91,6 @@ public class BackGroundWorker {
                 StoreMainActivity.fragmentController.storeRecentFragment.setRequestIDupper(request_id.get(request_id.size()-1));
             for(int i=0;i<newInfoList.size();i++) {
                 final CustomerAppointInfo info = newInfoList.get(i);
-                Bitmap image = null;
-                //new ImageDownloader(image).execute(newInfoList.get(i).url);
                 Thread t = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -101,7 +99,7 @@ public class BackGroundWorker {
                             InputStream in = new java.net.URL(info.url).openStream();
                             mIcon = BitmapFactory.decodeStream(in);
                         } catch (Exception e) {
-                            Log.e("Error", e.getMessage());
+                            Log.e("Picture Error", e.getMessage());
                         }
                         info.picture = mIcon;
                         Log.e("picture", info.name + " get picture!");
