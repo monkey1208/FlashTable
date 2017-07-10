@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="invisible"
-            android:text="查無資料"/>
+            android:text="很抱歉！目前沒有符合您選擇的餐廳資料"/>
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/customer_main_srl"
             android:layout_width="match_parent"

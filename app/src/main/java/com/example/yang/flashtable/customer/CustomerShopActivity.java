@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
-import com.example.yang.flashtable.CustomerCommentHistory;
 import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.DialogEventListener;
 import com.example.yang.flashtable.R;

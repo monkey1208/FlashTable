@@ -53,7 +53,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
 
         progress_tv = (TextView)CustomerLoadingActivity.this.findViewById(R.id.customer_loading_tv);
 
-        initDatabase();
+        //initDatabase();
 
         new ApiUpdate().execute();
     }
@@ -248,6 +248,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
         private String promotion_id, offer, name, address, shop_id, time, session_id;
         private int discount, person;
         private float rating;
+        private boolean block = false;
         @Override
         protected Boolean doInBackground(Void... voids) {
             //NameValuePair param = new BasicNameValuePair("user_id", getUserId());
@@ -266,7 +267,8 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                 if(session_object.get("status_code").equals("0")){
                     int size = Integer.valueOf(session_object.get("size").toString());
                     if(size == 0){
-                        return false;
+                        block = false;
+                        return block;
                     }else{
                         JSONObject object = session_array.getJSONObject(1);
                         this.promotion_id = object.getString("promotion_id");
@@ -278,6 +280,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                         this.person = object.getInt("number");
                         this.time = object.getString("due_time");
                         this.session_id = object.getString("session_id");
+                        block = true;
                         request = new HttpGet("http://"+getString(R.string.server_domain)+"/api/shop_comments?shop_id="+shop_id);
                         request.addHeader("Content-Type", "application/json");
                         JSONArray responseShopRating = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(request)));
@@ -286,7 +289,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                             this.rating = Float.parseFloat(responseShopRating.getJSONObject(0).getString("average_score"))/2;
                         else
                             this.rating = 0;
-                        return true;
+                        block = true;
                     }
                 }
             } catch (IOException e) {
@@ -294,7 +297,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return false;
+            return block;
         }
 
         @Override

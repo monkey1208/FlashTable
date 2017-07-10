@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.example.yang.flashtable.CustomerSessionServic;
 import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.DialogEventListener;
 import com.example.yang.flashtable.R;
@@ -95,9 +96,11 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
     boolean request_flag = true;//true means no request
     boolean session_flag = true;
+    boolean running_session = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         // Set to fullscreen.
@@ -107,37 +110,55 @@ public class CustomerReservationActivity extends AppCompatActivity {
         setContentView(R.layout.customer_reservation_activity);
         initView();
         initData();
-
+        stopService(new Intent(this, CustomerSessionServic.class));
     }
+
+    @Override
+    protected void onPause() {
+        if(running_session) {
+            Intent intent = new Intent(this, CustomerSessionServic.class);
+            intent.putExtra("user_id", getUserId());
+            intent.putExtra("session_id", session_id);
+            startService(intent);
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        stopService(new Intent(this, CustomerSessionServic.class));
+        super.onResume();
+    }
+
     /*
-    public static class GetBlockInfo{
+            public static class GetBlockInfo{
 
 
-        public static boolean getBlockStatus(Context c){
-            SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
-            if(pref.getString("block", "false").equals("true")){
-                return true;
+                public static boolean getBlockStatus(Context c){
+                    SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
+                    if(pref.getString("block", "false").equals("true")){
+                        return true;
+                    }
+                    return false;
+                }
+                public static long getTime(Context c){
+                    SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
+                    return pref.getLong("block_time", 0);
+                }
+                public static String getSession(Context c){
+                    SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
+                    return pref.getString("session", "");
+                }
+                public static int getDiscount(Context c){
+                    SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
+                    return pref.getInt("discount", 101);
+                }
+                public static String getOffer(Context c){
+                    SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
+                    return pref.getString("offer", "N");
+                }
             }
-            return false;
-        }
-        public static long getTime(Context c){
-            SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
-            return pref.getLong("block_time", 0);
-        }
-        public static String getSession(Context c){
-            SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
-            return pref.getString("session", "");
-        }
-        public static int getDiscount(Context c){
-            SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
-            return pref.getInt("discount", 101);
-        }
-        public static String getOffer(Context c){
-            SharedPreferences pref = c.getSharedPreferences("BLOCK", MODE_PRIVATE);
-            return pref.getString("offer", "N");
-        }
-    }
-    */
+            */
     private void initView() {
         vf_flipper = (ViewFlipper) findViewById(R.id.customer_reservation_vf_flipper);
 
@@ -535,6 +556,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     break;
                 default:
                     session_id = s;
+                    running_session = true;
                     requestSuccess();
                     break;
             }
@@ -549,6 +571,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
+            running_session = true;
             session_flag = false;
             super.onPreExecute();
         }
@@ -597,6 +620,7 @@ public class CustomerReservationActivity extends AppCompatActivity {
                     if(timer1 != null)
                         timer1.cancel();
                     session_flag = true;
+                    running_session = false;
                     new ApiRecord().execute();
                     break;
                 default:

@@ -134,9 +134,11 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="96fb5133166743e20b85bf3c821d77cfa802b439" />
+
+        <activity android:name=".customer.CustomerCommentHistory"/>
+
         <service android:name=".StoreBGService"/>
-        <activity android:name=".CustomerCommentHistory"
-            android:theme="@style/AppTheme.LightActionBar"/>
+        <service android:name=".CustomerSessionServic"/>
 
     </application>
 

@@ -1,48 +1,20 @@
 package com.example.yang.flashtable.customer;
 
-import android.annotation.TargetApi;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ListView;
 
-import com.example.yang.flashtable.CustomerCommentHistory;
 import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.R;
-import com.example.yang.flashtable.customer.adapter.CustomerCommentAdapter;
-import com.example.yang.flashtable.customer.infos.CustomerCommentInfo;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by CS on 2017/3/24.
@@ -92,6 +64,7 @@ public class CustomerCommentActivity extends AppCompatActivity {
 
     public void goToHistory(View view){
         Intent intent = new Intent(this, CustomerCommentHistory.class);
+        intent.putExtra("type", "user");
         startActivity(intent);
     }
 

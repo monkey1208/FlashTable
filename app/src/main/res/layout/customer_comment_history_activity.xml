@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.yang.flashtable.CustomerCommentHistory">
+    tools:context="com.example.yang.flashtable.customer.CustomerCommentHistory">
     <ListView
         android:id="@+id/customer_comment_history_lv"
         android:layout_width="match_parent"
