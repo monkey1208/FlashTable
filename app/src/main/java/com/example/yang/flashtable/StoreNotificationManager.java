@@ -17,25 +17,12 @@ public class StoreNotificationManager {
     public StoreNotificationManager(Context context){
         this.context = context;
     }
-    public void sentNotification(String name){
-        if(context!= null){
-            int requestCode = notifyID;
-            Intent intent = new Intent();
-            int flags = PendingIntent.FLAG_CANCEL_CURRENT;
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, requestCode, intent, flags);
-            NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-            Notification notification = new Notification.Builder(context.getApplicationContext()).setSmallIcon(R.drawable.ic_notification)
-                    .setContentTitle("您有新的預約").setContentText("來自"+name+"的預約").setTicker("您有新的預約").setContentIntent(pendingIntent).build();
-            notificationManager.notify(notifyID, notification);
-        }
-        else
-            Log.d("Notify","Context = NULL");
-        notifyID++;
-    }
+
     public void remindPromotionOpen(Boolean active){
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if(active) {
             if (context != null) {
+
                 Notification notification = new Notification.Builder(context.getApplicationContext()).setSmallIcon(R.drawable.ic_notification)
                         .setContentTitle("優惠開啟中").setOngoing(true).build();
                 notificationManager.notify(-1, notification);

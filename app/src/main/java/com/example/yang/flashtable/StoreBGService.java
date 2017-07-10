@@ -74,13 +74,15 @@ public class StoreBGService extends Service{
     @Override
     public void onStart(Intent intent, int startId){
         super.onStart(intent, startId);
-        new StoreNotificationManager(getApplicationContext()).remindPromotionOpen(true);
+        //new StoreNotificationManager(getApplicationContext()).remindPromotionOpen(true);
+        remindPromotionOpen(true);
         update();
     }
     @Override
     public void onDestroy() {
         super.onDestroy();
-        new StoreNotificationManager(getApplicationContext()).remindPromotionOpen(false);
+        //new StoreNotificationManager(getApplicationContext()).remindPromotionOpen(false);
+        remindPromotionOpen(false);
         killtimer();
     }
 
@@ -124,5 +126,23 @@ public class StoreBGService extends Service{
                 .setDefaults(Notification.DEFAULT_ALL).setContentIntent(pendingIntent).setPriority(Notification.PRIORITY_HIGH).build();
         notificationManager.notify(notifyID, notification);
         notifyID++;
+    }
+    public void remindPromotionOpen(Boolean isActive){
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        if(isActive){
+            int requestCode = -1;
+            Intent intent = new Intent(this,StoreMainActivity.class);
+            /*intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_SINGLE_TOP |
+                Intent.FLAG_ACTIVITY_NEW_TASK);*/
+            intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent, 0);
+            Notification notification = new Notification.Builder(this).setWhen(System.currentTimeMillis()).setSmallIcon(R.drawable.ic_notification)
+                    .setContentTitle("優惠開啟中").setOngoing(true)
+                    .setContentIntent(pendingIntent).build();
+            notificationManager.notify(-1, notification);
+        }
+        else
+            notificationManager.cancel(-1);
     }
 }
