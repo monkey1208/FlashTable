@@ -19,6 +19,7 @@ import java.util.TimerTask;
 
 public class StoreRecentFragment extends Fragment {
 
+
     private View v;
     private List<CustomerAppointInfo> list;
     private int requestIDupper = -1;
@@ -36,8 +37,8 @@ public class StoreRecentFragment extends Fragment {
         public void run() {
             synchronized (list) {
                 for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).expireTime > 0)
-                        list.get(i).expireTime--;
+                    if (list.get(i).due_time - System.currentTimeMillis() > 0)
+                        list.get(i).expireTime = (list.get(i).due_time - System.currentTimeMillis())/1000;
                     else {
                         new APIHandler(getString(R.string.server_domain)).postRequestDeny(list.get(i).id, list.get(i).name);
                         list.remove(i);
@@ -108,8 +109,9 @@ public class StoreRecentFragment extends Fragment {
     }
     public synchronized void addItem(List<CustomerAppointInfo> infoList){
         waitingList.clear();
-        for(int i=0;i<infoList.size();i++)
+        for(int i=0;i<infoList.size();i++) {
             waitingList.add(infoList.get(i));
+        }
         return;
     }
     public CustomerAppointInfo getItem(int position){

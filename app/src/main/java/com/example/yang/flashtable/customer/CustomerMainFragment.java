@@ -145,6 +145,13 @@ public class CustomerMainFragment extends Fragment implements Observer {
                     showRestaurantDetail(i);
                 }
             });
+            if(adjusted_adapter.getCount() == 0) {
+                tv_nothing.setVisibility(View.VISIBLE);
+                lv_shops.setVisibility(View.INVISIBLE);
+            }else{
+                tv_nothing.setVisibility(View.INVISIBLE);
+                lv_shops.setVisibility(View.VISIBLE);
+            }
         }
     }
 

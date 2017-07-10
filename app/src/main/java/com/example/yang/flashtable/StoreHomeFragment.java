@@ -115,6 +115,7 @@ public class StoreHomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 alertdialog_active = true;
+
                 alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind, iv_gift_icon);
                 alertDialog.show();
                 setDialogSize();
@@ -133,7 +134,9 @@ public class StoreHomeFragment extends Fragment {
                 bt_active.setEnabled(true);
                 bt_active_gif.setVisibility(View.INVISIBLE);
                 bt_active_gif.setEnabled(false);
+                getActivity().stopService(new Intent(getActivity(),StoreBGService.class));
                 new APIHandler(getString(R.string.server_domain)).postPromotionInactive();
+                Log.d("inactive","success");
                 stopUpdate();
             }
         });
@@ -182,11 +185,12 @@ public class StoreHomeFragment extends Fragment {
 
     public class APIpromotion extends AsyncTask<String, Void, Void> {
         boolean exception = false;
+
         @Override
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
             try {
-                HttpGet get = new HttpGet(getString(R.string.server_domain)+"/api/shop_promotions?shop_id=" + params[0]+"&verbose=1");
+                HttpGet get = new HttpGet(getString(R.string.server_domain) + "/api/shop_promotions?shop_id=" + params[0] + "&verbose=1");
                 JSONArray responsePromotion = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(get)));
                 for (int i = 1; i < responsePromotion.length(); i++) {
                     JSONObject promotion = responsePromotion.getJSONObject(i);
@@ -197,17 +201,17 @@ public class StoreHomeFragment extends Fragment {
                     String isActive_str = promotion.getString("is_active");
                     boolean isActive = isActive_str.equals("true");
                     boolean isRemoved = notDelete.equals("true");
-                    StoreDiscountInfo info = new StoreDiscountInfo(id, description,isRemoved, count, isActive);
+                    StoreDiscountInfo info = new StoreDiscountInfo(id, description, isRemoved, count, isActive);
                     StoreMainActivity.storeInfo.discountList.add(info);
-                    if(!isRemoved){
+                    if (!isRemoved) {
                         StoreMainActivity.storeInfo.not_delete_discountList.add(info);
                     }
                 }
             } catch (IOException e) {
-               exception = true;
+                exception = true;
             } catch (JSONException e) {
                 e.printStackTrace();
-            } finally{
+            } finally {
                 httpClient.getConnectionManager().shutdown();
             }
             return null;
@@ -215,9 +219,9 @@ public class StoreHomeFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void _params) {
-            if(exception){
+            if (exception) {
                 new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "網路連線失敗，請檢查您的網路");
-            }else {
+            } else {
                 if (alertdialog_active) {
                     alertDialog.dismiss();
                     alertDialog = new AlertDialogController(getString(R.string.server_domain)).discountDialog(getContext(), tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind, iv_gift_icon);
@@ -243,7 +247,6 @@ public class StoreHomeFragment extends Fragment {
                         bt_active_gif.setEnabled(true);
                         tv_active_remind.setText("按下後暫停");
                         tv_gift.setText(StoreMainActivity.storeInfo.not_delete_discountList.get(i).description);
-
                     }
                     if (default_id != -1 && StoreMainActivity.storeInfo.not_delete_discountList.get(i).description.equals(default_description)) {
                         StoreMainActivity.storeInfo.not_delete_discountList.get(i).isDefault = true;

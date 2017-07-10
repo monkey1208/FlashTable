@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -92,8 +93,14 @@ public class AlertDialogController {
         bt_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Intent intent = new Intent(context,StoreBGService.class);
+                intent.putExtra("name",StoreMainActivity.storeInfo.id);
+                context.startService(intent);
+
                 currentContext = context;
                 new APIpromotion_modify(tv_gift, bt_active, bt_active_gif, tv_active, tv_active_remind, iv_icon).execute(Integer.toString(StoreMainActivity.storeInfo.not_delete_discountList.get(StoreMainActivity.storeInfo.discountCurrent).id));
+
                 alertDialog.dismiss();
             }
         });
@@ -104,7 +111,6 @@ public class AlertDialogController {
                 alertDialog.dismiss();
             }
         });
-
         return alertDialog;
     }
     public class APIpromotion_modify extends AsyncTask<String,Void,Void> {
@@ -323,6 +329,7 @@ public class AlertDialogController {
                         ((Activity)context).finish();
                         Intent intent = new Intent(context, LoginActivity.class);
                         context.startActivity(intent);
+                        StoreMainActivity.fragmentController.storeAppointFragment.killtimer();
                         break;
                 }
             }

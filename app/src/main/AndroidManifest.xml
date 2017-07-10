@@ -46,6 +46,7 @@
         </activity>
         <activity
             android:name=".StoreMainActivity"
+            android:launchMode="singleTop"
             android:configChanges="screenSize|orientation"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
@@ -142,8 +143,10 @@
             android:name="io.fabric.ApiKey"
             android:value="96fb5133166743e20b85bf3c821d77cfa802b439" />
 
-        <activity android:name=".CustomerCommentHistory"
-            android:theme="@style/AppTheme.LightActionBar"/>
+        <activity android:name=".customer.CustomerCommentHistory"/>
+
+        <service android:name=".StoreBGService"/>
+        <service android:name=".CustomerSessionServic"/>
 
     </application>
 

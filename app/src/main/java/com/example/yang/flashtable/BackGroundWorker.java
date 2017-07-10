@@ -18,9 +18,13 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,6 +33,8 @@ public class BackGroundWorker {
     private List<CustomerAppointInfo> newInfoList = new ArrayList<>();
     private Timer timer;
     private Context context;
+    private String DateFormat = "EEE MMM dd HH:mm:ss yyyy";
+
 
     public BackGroundWorker(Context context){
         this.context = context;
@@ -66,10 +72,14 @@ public class BackGroundWorker {
                     int promotion_id = object.getInt("promotion_id");
                     int user_id = object.getInt("user_id");
                     String user_account = object.getString("user_account");
+                    Date due_time = stringToDate(object.getString("due_time"),DateFormat);
+                    if(due_time != null)
+                        Log.d("Session",Long.toString(due_time.getTime()));
                     int number = object.getInt("number");
                     int point = object.getInt("user_point");
                     String url = object.getString("user_picture_url");
-                    CustomerAppointInfo newInfo = new CustomerAppointInfo(id,user_account,point,number,url);
+                    CustomerAppointInfo newInfo = new CustomerAppointInfo(id,user_account,point,number,url,due_time.getTime());
+                    Log.d("UpperID",Integer.toString(StoreMainActivity.fragmentController.storeRecentFragment.getRequestIDupper()));
                     if(id>StoreMainActivity.fragmentController.storeRecentFragment.getRequestIDupper()) {
                         request_id.add(id);
                         newInfoList.add(newInfo);
@@ -91,8 +101,6 @@ public class BackGroundWorker {
                 StoreMainActivity.fragmentController.storeRecentFragment.setRequestIDupper(request_id.get(request_id.size()-1));
             for(int i=0;i<newInfoList.size();i++) {
                 final CustomerAppointInfo info = newInfoList.get(i);
-                Bitmap image = null;
-                //new ImageDownloader(image).execute(newInfoList.get(i).url);
                 Thread t = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -101,7 +109,7 @@ public class BackGroundWorker {
                             InputStream in = new java.net.URL(info.url).openStream();
                             mIcon = BitmapFactory.decodeStream(in);
                         } catch (Exception e) {
-                            Log.e("Error", e.getMessage());
+                            Log.e("Picture Error", e.getMessage());
                         }
                         info.picture = mIcon;
                         Log.e("picture", info.name + " get picture!");
@@ -154,5 +162,18 @@ public class BackGroundWorker {
         protected void onPostExecute(Bitmap result) {
             this.image = result;
         }
+    }
+    private Date stringToDate(String aDate, String aFormat) {
+        if(aDate==null) return null;
+        Log.d("Session",aDate);
+        SimpleDateFormat simpledateformat = new SimpleDateFormat(aFormat, Locale.ENGLISH);
+        Date stringDate = null;
+        try {
+            stringDate = simpledateformat.parse(aDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.d("Session","ParseError");
+        }
+        return stringDate;
     }
 }
