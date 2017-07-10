@@ -329,6 +329,7 @@ public class AlertDialogController {
                         ((Activity)context).finish();
                         Intent intent = new Intent(context, LoginActivity.class);
                         context.startActivity(intent);
+                        StoreMainActivity.fragmentController.storeAppointFragment.killtimer();
                         break;
                 }
             }

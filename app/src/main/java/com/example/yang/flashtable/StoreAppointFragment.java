@@ -53,6 +53,9 @@ public class StoreAppointFragment extends ListFragment {
             }
         },0,3000);
     }
+    public void killtimer(){
+        timer.cancel();
+    }
 
     public  StoreAppointFragment () {
         // Required empty public constructor

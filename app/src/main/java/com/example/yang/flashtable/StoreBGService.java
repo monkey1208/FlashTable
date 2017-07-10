@@ -113,8 +113,11 @@ public class StoreBGService extends Service{
     public void notification(String name){
         int requestCode = notifyID;
         Intent intent = new Intent(this,StoreMainActivity.class);
-        int flags = PendingIntent.FLAG_CANCEL_CURRENT;
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent, flags);
+        /*intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_SINGLE_TOP |
+                Intent.FLAG_ACTIVITY_NEW_TASK);*/
+        intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent, 0);
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = new Notification.Builder(this).setWhen(System.currentTimeMillis()).setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle("您有新的預約").setContentText("來自"+name+"的預約").setAutoCancel(true)

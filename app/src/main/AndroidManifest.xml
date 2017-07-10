@@ -46,6 +46,7 @@
         </activity>
         <activity
             android:name=".StoreMainActivity"
+            android:launchMode="singleTop"
             android:configChanges="screenSize|orientation"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
