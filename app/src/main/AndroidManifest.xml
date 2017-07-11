@@ -102,6 +102,7 @@
             android:theme="@style/AppTheme.OrangeActionBar" />
         <activity
             android:name=".QrcodeScannerActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppFullScreenTheme" />
         <activity
             android:name=".customer.CustomerShopActivity"
