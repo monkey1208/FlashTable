@@ -99,6 +99,7 @@
             android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".customer.CustomerCreditsActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.OrangeActionBar" />
         <activity
             android:name=".QrcodeScannerActivity"
@@ -106,25 +107,32 @@
             android:theme="@style/AppFullScreenTheme" />
         <activity
             android:name=".customer.CustomerShopActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".customer.CustomerCropProfileActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.LightActionBar" />
         <activity
             android:name=".customer.CustomerCouponActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".customer.CustomerCouponRecordActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".customer.CustomerCouponCodeActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".customer.CustomerContactUsActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".customer.CustomerGuideActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <!--

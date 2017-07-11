@@ -239,19 +239,25 @@ public class CustomerReservationActivity extends AppCompatActivity {
         if(!getIntent().getBooleanExtra("block", false)){
             new ApiRequest().execute();
         }else{
-            System.out.println("BLOCK!!!!!!!");
-            String time = getIntent().getStringExtra("time");
-            session_id = getIntent().getStringExtra("session_id");
-            DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd kk:mm:ss yyyy", Locale.ENGLISH);
-            try {
-                Date date = dateFormat.parse(time);
-                long nowtime = date.getTime();
-                long remain_time = nowtime-Calendar.getInstance().getTimeInMillis();
-                if(remain_time<0)
-                    remain_time = 0;
-                reservationAccepted((int)remain_time);
-            } catch (ParseException e) {
-                e.printStackTrace();
+            if(getIntent().getStringExtra("blocktype").equals("session")) {
+                System.out.println("BLOCK!!!!!!!");
+                String time = getIntent().getStringExtra("time");
+                session_id = getIntent().getStringExtra("session_id");
+                DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd kk:mm:ss yyyy", Locale.ENGLISH);
+                try {
+                    Date date = dateFormat.parse(time);
+                    long nowtime = date.getTime();
+                    long remain_time = nowtime - Calendar.getInstance().getTimeInMillis();
+                    if (remain_time < 0)
+                        remain_time = 0;
+                    reservationAccepted((int) remain_time);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                long time = getIntent().getLongExtra("time", 0);
+                request_id = getIntent().getStringExtra("request_id");
+                startCountDown("waiting", (int)time);
             }
         }
     }

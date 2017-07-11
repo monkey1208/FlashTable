@@ -418,7 +418,7 @@ public class CustomerParentMainFragment extends Fragment {
         HttpClient httpClient = new DefaultHttpClient();
         ArrayList<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
         private String status = null;
-        private DialogBuilder dialog_builder = new DialogBuilder(getContext());
+        private DialogBuilder dialog_builder = new DialogBuilder(CustomerParentMainFragment.this.getActivity());
 
         @Override
         protected void onPreExecute() {
