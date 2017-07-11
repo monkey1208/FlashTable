@@ -550,8 +550,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         HttpClient httpClient = new DefaultHttpClient();
         CustomerGps gps;
         ArrayList<CustomerRestaurantInfo> mlist = new ArrayList<>();
-        private ProgressDialog progress_dialog = new ProgressDialog(view.getContext());
-        private DialogBuilder dialog_builder = new DialogBuilder(getContext());
+        //private ProgressDialog progress_dialog = new ProgressDialog(view.getContext());
+        private DialogBuilder dialog_builder = new DialogBuilder(view.getContext());
         private String status = null;
         public ApiPromotion(CustomerGps gps) {
             this.gps = gps;
@@ -559,9 +559,9 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
 
         @Override
         protected void onPreExecute() {
-            progress_dialog.setMessage( "載入中..." );
-            progress_dialog.setCanceledOnTouchOutside(false);
-            progress_dialog.show();
+            //progress_dialog.setMessage( "載入中..." );
+            //progress_dialog.setCanceledOnTouchOutside(false);
+            //progress_dialog.show();
             super.onPreExecute();
         }
 
@@ -615,24 +615,24 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         protected void onPostExecute(String s) {
             if( status == null  || !status.equals("0") ) {
                 dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
-                progress_dialog.dismiss();
+                //progress_dialog.dismiss();
                 return;
             }
             System.out.println("size = "+mlist.size());
             CustomerAppInfo.getInstance().setRestaurantList(mlist);
             setRestMap();
             restaurantInfoList = mlist;
-            progress_dialog.dismiss();
+            //progress_dialog.dismiss();
             super.onPostExecute(s);
 
         }
 
         @Override
         protected void onCancelled() {
-            if(progress_dialog != null){
+            /*if(progress_dialog != null){
                 if(progress_dialog.isShowing())
                     progress_dialog.cancel();
-            }
+            }*/
             super.onCancelled();
         }
 
