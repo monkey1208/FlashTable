@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.yang.flashtable.R;
 import com.example.yang.flashtable.customer.database.SqlHandler;
@@ -22,6 +23,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -35,8 +37,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class CustomerLoadingActivity extends AppCompatActivity {
     private SqlHandler sql_handler = null;
@@ -60,7 +68,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
 
     private void checkBlock(){
         //Do something!!!!
-        new ApiSessionSuccess().execute();
+        new ApiRequestSuccess().execute();
 
     }
 
@@ -316,6 +324,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                 intent.putExtra("time", this.time);
                 intent.putExtra("session_id", this.session_id);
                 intent.putExtra("block", true);
+                intent.putExtra("blocktype", "session");
                 startActivity(intent);
                 CustomerLoadingActivity.this.finish();
             } else {
@@ -324,6 +333,154 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                 CustomerLoadingActivity.this.finish();
 
             }
+        }
+    }
+
+    class ApiRequestSuccess extends AsyncTask<Void, String, String>{
+        HttpClient httpClient = new DefaultHttpClient();
+        String request_id = null;
+        String promotion_id, offer, address, name, shop_id;
+        int discount, person;
+        long time;
+        float rating;
+        String state = "nothing";
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            NameValuePair param = new BasicNameValuePair("user_id", getUserId());
+            HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/user_requests?"+param.toString()+"&verbose=1");
+            request.addHeader("Content-Type", "application/json");
+            try {
+                HttpResponse response = httpClient.execute(request);
+                ResponseHandler<String> handler = new BasicResponseHandler();
+                String request_response = handler.handleResponse(response);
+                JSONArray request_array = new JSONArray(request_response);
+                JSONObject request_object = request_array.getJSONObject(0);
+                System.out.println("request = "+request_response);
+                if(request_object.get("status_code").equals("0")){
+                    int request_size = Integer.valueOf(request_object.getString("size"));
+                    if(request_size == 0){
+                        //no request
+                        return "nothing";
+                    }else{
+                        //request still exists
+                        for (int i = 1; i <= request_size; i++) {
+                            String due_time = request_array.getJSONObject(i).getString("due_time");
+                            DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd kk:mm:ss yyyy", Locale.ENGLISH);
+                            Date date = dateFormat.parse(due_time);
+                            long time = date.getTime() - Calendar.getInstance().getTimeInMillis();
+                            String request_id = request_array.getJSONObject(i).getString("request_id");
+                            if(time > 0) {
+                                state = "waiting";
+                                JSONObject object = request_array.getJSONObject(i);
+                                this.promotion_id = object.getString("promotion_id");
+                                this.discount = object.getInt("promotion_name");
+                                this.address = object.getString("shop_address");
+                                this.name = object.getString("shop_name");
+                                this.offer = object.getString("promotion_description");
+                                this.shop_id = object.getString("shop_id");
+                                this.person = object.getInt("number");
+                                this.time = time;
+                                this.request_id = request_id;
+                                request = new HttpGet("http://"+getString(R.string.server_domain)+"/api/shop_comments?shop_id="+shop_id);
+                                request.addHeader("Content-Type", "application/json");
+                                JSONArray responseShopRating = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(request)));
+                                String status = responseShopRating.getJSONObject(0).getString("status_code");
+                                if (status.equals("0"))
+                                    this.rating = Float.parseFloat(responseShopRating.getJSONObject(0).getString("average_score"))/2;
+                                else
+                                    this.rating = 0;
+                                return state;
+                            }else{
+                                publishProgress(request_id);
+                            }
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return state;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            new ApiCancel("request").execute(values[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            switch (s){
+                case "waiting":
+                    Intent intent = new Intent(CustomerLoadingActivity.this, CustomerReservationActivity.class);
+                    intent.putExtra("promotion_id", this.promotion_id);
+                    intent.putExtra("discount", this.discount);
+                    intent.putExtra("offer", this.offer);
+                    intent.putExtra("persons", this.person);
+                    intent.putExtra("shop_name", this.name);
+                    intent.putExtra("rating", Float.toString(this.rating));
+                    intent.putExtra("shop_location", this.address);
+                    intent.putExtra("shop_id", this.shop_id);
+                    intent.putExtra("time", this.time);
+                    intent.putExtra("request_id", this.request_id);
+                    intent.putExtra("block", true);
+                    intent.putExtra("blocktype", "request");
+                    startActivity(intent);
+                    CustomerLoadingActivity.this.finish();
+                    break;
+                default:
+                    new ApiSessionSuccess().execute();
+                    break;
+            }
+
+            super.onPostExecute(s);
+        }
+
+    }
+
+    class ApiCancel extends AsyncTask<String, Void, Void>{
+        HttpClient httpClient = new DefaultHttpClient();
+        ResponseHandler<String> handler = new BasicResponseHandler();
+        boolean request_session_flag;
+        public ApiCancel(String flag){
+            if(flag.equals("request")) {
+                request_session_flag = true;
+            }
+            else {
+                request_session_flag = false;
+            }
+        }
+        @Override
+        protected Void doInBackground(String... id) {
+
+
+            HttpPost httpPost;
+            if(request_session_flag) {
+                NameValuePair param = new BasicNameValuePair("request_id", id[0]);
+                httpPost = new HttpPost(getString(R.string.server_domain) + "/api/cancel_request?" + param.toString());
+            }else{
+                NameValuePair param = new BasicNameValuePair("session_id", id[0]);
+                httpPost = new HttpPost(getString(R.string.server_domain) + "/api/cancel_session?" + param.toString());
+            }
+            httpPost.addHeader("Content-Type", "application/json");
+            try {
+                HttpResponse httpResponse = httpClient.execute(httpPost);
+                String json = handler.handleResponse(httpResponse);
+                System.out.println("cancel:"+json);
+                JSONObject jsonObject = new JSONObject(json);
+                String status_code = jsonObject.get("status_code").toString();
+                //0: cancel success
+                //-1: cancel fail
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 

@@ -168,7 +168,7 @@ public class CustomerMainActivity extends AppCompatActivity
                 }
                 break;
             case FINE_LOCATION_MAIN_CODE :
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     ((CustomerParentMainFragment)fragment).getShopStatus(true);
                 } else {
                     ((CustomerParentMainFragment)fragment).getShopStatus(false);
