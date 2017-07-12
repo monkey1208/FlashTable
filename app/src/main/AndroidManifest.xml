@@ -145,6 +145,9 @@
 
         <activity android:name=".customer.CustomerCommentHistory"/>
 
+        <activity android:name=".customer.CustomerViewRatingActivity"
+            android:windowSoftInputMode="stateHidden"/>
+
         <service android:name=".StoreBGService"/>
         <service android:name=".CustomerSessionServic"/>
 

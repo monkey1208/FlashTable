@@ -46,11 +46,11 @@ public class CustomerRatingActivity extends AppCompatActivity {
 
     DialogBuilder dialog_builder;
 
-    TextView tv_shop, tv_location;
-    RatingBar rb_rating;
-    EditText et_content;
-    Button bt_submit;
-    ImageView iv_shop;
+    public TextView tv_shop, tv_location;
+    public RatingBar rb_rating;
+    public EditText et_content;
+    public Button bt_submit;
+    public ImageView iv_shop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
         initData();
     }
 
-    private void initView() {
+    public void initView() {
         setTitle(getResources().getString(R.string.customer_rating_title));
         setTitleColor(R.color.white);
         setupActionBar();
@@ -76,7 +76,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
         iv_shop = (ImageView) findViewById(R.id.customer_rating_iv_shop);
     }
 
-    private void initData() {
+    public void initData() {
         getUserInfo();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -113,7 +113,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
         }
     }
 
-    private void getUserInfo() {
+    public void getUserInfo() {
         user = this.getSharedPreferences("USER", MODE_PRIVATE);
         user_id = user.getString("userID", "");
     }
@@ -138,7 +138,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
         closeActivity();
     }
 
-    private void closeActivity() {
+    public void closeActivity() {
         if (rb_rating.getRating() != 0 || !et_content.getText().toString().equals("")) {
             dialog_builder.dialogEvent(getResources().getString(R.string.customer_comments_error_not_sent), "withCancel",
                     new DialogEventListener() {

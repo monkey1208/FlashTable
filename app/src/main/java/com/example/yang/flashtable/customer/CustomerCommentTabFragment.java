@@ -58,8 +58,10 @@ public class CustomerCommentTabFragment extends Fragment {
         page_index = FragmentPagerItem.getPosition(getArguments());
         initView();
         initData();
-
-        new APIComments().execute(getUserId());
+        if(page_index == 0)
+            new APIRecords().execute(getUserId());
+        else
+            new APIComments().execute(getUserId());
     }
 
     private void initView(){
@@ -94,8 +96,8 @@ public class CustomerCommentTabFragment extends Fragment {
         return user.getString("userID", "");
     }
 
-    class APIComments extends AsyncTask<String, Void, Void> {
-        private ProgressDialog progress_dialog = new ProgressDialog(getContext());
+    class APIRecords extends AsyncTask<String, Void, Void> {
+        private ProgressDialog progress_dialog = new ProgressDialog(view.getContext());
         private String status = null;
         private SqlHandler sqlHandler;
         @Override
@@ -138,6 +140,65 @@ public class CustomerCommentTabFragment extends Fragment {
                         String shop_name = jsonObject1.getString("shop_name");
                         CustomerCommentContentInfo comment = new CustomerCommentContentInfo(shop_name, shop_id, address, time, record_id);
                         comment.setImg(sqlHandler.getDetail(Integer.parseInt(shop_id)).getImage());
+                        comments.add( comment );
+                    }
+
+
+                }
+            } catch (Exception e) {
+                status = null;
+                Log.d("GetCode", "Request exception:" + e.getMessage());
+            } finally {
+                httpClient.getConnectionManager().shutdown();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void _params) {
+            if( status == null  || !status.equals("0") )    dialog_builder.dialogEvent("資料載入失敗，請重試", "normal", null);
+            else {
+                Collections.reverse(comments);
+                updateComments();
+            }
+            progress_dialog.dismiss();
+        }
+    }
+
+    class APIComments extends AsyncTask<String, Void, Void> {
+        private ProgressDialog progress_dialog = new ProgressDialog(view.getContext());
+        private String status = null;
+        private SqlHandler sqlHandler;
+        @Override
+        protected void onPreExecute() {
+            progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
+            progress_dialog.show();
+            sqlHandler = new SqlHandler(getContext());
+        }
+        @Override
+        protected Void doInBackground(String... params) {
+            HttpClient httpClient = new DefaultHttpClient();
+            try {
+                HttpGet request = new HttpGet(getString(R.string.server_domain)+"api/user_comments?user_id=" + params[0]
+                        + "&verbose=1");
+                request.addHeader("Content-Type", "application/json");
+                JSONArray responseJSON = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
+
+                status = responseJSON.getJSONObject(0).getString("status_code");
+                if( status.equals("0") ) {
+                    int size = responseJSON.getJSONObject(0).getInt("size");
+                    for(int i = 1 ; i <= size ; i++) {
+                        JSONObject jsonObject1 = responseJSON.getJSONObject(i);
+
+                        String comment_id = jsonObject1.getString("comment_id");
+                        String body = jsonObject1.getString("body");
+                        float score = Float.parseFloat(jsonObject1.getString("score"));
+                        String time = jsonObject1.getString("created_at");
+                        String address = jsonObject1.getString("shop_address");
+                        String shop_id = jsonObject1.getString("shop_id");
+                        String shop_name = jsonObject1.getString("shop_name");
+                        CustomerCommentContentInfo comment = new CustomerCommentContentInfo(shop_name, shop_id, address, time, comment_id);
+                        comment.setImg(sqlHandler.getDetail(Integer.parseInt(shop_id)).getImage());
+                        comment.setComment(body, score/2);
                         comments.add( comment );
                     }
 
