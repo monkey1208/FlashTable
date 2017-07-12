@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.yang.flashtable.R;
 import com.example.yang.flashtable.customer.CustomerRatingActivity;
+import com.example.yang.flashtable.customer.CustomerViewRatingActivity;
 import com.example.yang.flashtable.customer.infos.CustomerCommentContentInfo;
 
 import java.util.List;
@@ -57,6 +58,19 @@ public class CustomerCommentContentAdapter extends ArrayAdapter<CustomerCommentC
                         intent.putExtra("shop_location", item.address);
                         intent.putExtra("shop_id", item.shopId);
                         intent.putExtra("record_id", Integer.parseInt(item.recordId));
+                        c.startActivity(intent);
+                    }
+                });
+            }else{
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(c, CustomerViewRatingActivity.class);
+                        intent.putExtra("shop", item.shop_name);
+                        intent.putExtra("shop_location", item.address);
+                        intent.putExtra("shop_id", item.shopId);
+                        intent.putExtra("rating", item.rating);
+                        intent.putExtra("comment", item.comment);
                         c.startActivity(intent);
                     }
                 });
