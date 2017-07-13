@@ -146,7 +146,7 @@ public class CustomerMainActivity extends AppCompatActivity
         } else if (id == R.id.customer_drawer_points) {
             navigate("points");
         } else if (id == R.id.customer_drawer_logout) {
-            logout();
+            logout(false);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -179,21 +179,28 @@ public class CustomerMainActivity extends AppCompatActivity
         }
     }
 
-    public void logout() {
-        DialogEventListener logout_listener = new DialogEventListener() {
-            @Override
-            public void clickEvent(boolean ok, int status) {
-                if (ok) {
-                    SharedPreferences preferences = CustomerMainActivity.this.getSharedPreferences("USER", MODE_PRIVATE);
-                    preferences.edit().clear().apply();
-                    Intent intent = new Intent(CustomerMainActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
+    public void logout(boolean force) {
+        if (!force) {
+            DialogEventListener logout_listener = new DialogEventListener() {
+                @Override
+                public void clickEvent(boolean ok, int status) {
+                    if (ok) {
+                        SharedPreferences preferences = CustomerMainActivity.this.getSharedPreferences("USER", MODE_PRIVATE);
+                        preferences.edit().clear().apply();
+                        Intent intent = new Intent(CustomerMainActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
-            }
-        };
-        dialog_builder.dialogEvent("確認是否登出此帳號", "withCancel", logout_listener);
-
+            };
+            dialog_builder.dialogEvent("確認是否登出此帳號", "withCancel", logout_listener);
+        }else{
+            SharedPreferences preferences = CustomerMainActivity.this.getSharedPreferences("USER", MODE_PRIVATE);
+            preferences.edit().clear().apply();
+            Intent intent = new Intent(CustomerMainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
 
