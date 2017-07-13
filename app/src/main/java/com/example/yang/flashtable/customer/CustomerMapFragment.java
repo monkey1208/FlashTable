@@ -14,6 +14,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
@@ -29,6 +30,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.yang.flashtable.DialogBuilder;
+import com.example.yang.flashtable.DialogEventListener;
 import com.example.yang.flashtable.R;
 import com.example.yang.flashtable.customer.database.SqlHandler;
 import com.example.yang.flashtable.customer.infos.CustomerAppInfo;
@@ -116,6 +118,12 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        gpsPermission();
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     public void setMap() {
         apiPromotion = new ApiPromotion(gps);
         apiPromotion.execute(CustomerAppInfo.getInstance().getLocation().getLatitude(), CustomerAppInfo.getInstance().getLocation().getLongitude());
@@ -132,7 +140,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
     private void gpsPermission() {
         if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            setMap();
+            //setMap();
+            new CurrentLocation().execute();
         } else {
             // Show rationale and request permission.
             // No explanation needed, we can request the permission.
@@ -544,6 +553,119 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         public void onConnectionSuspended(int i) {
 
         }
+    }
+
+    private class CurrentLocation {
+        boolean flag = true;
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);;
+        public void execute() {
+            getLocation();
+
+        }
+        private void locationPermission() {
+            new DialogBuilder(getActivity()).dialogEvent(getString(R.string.dialog_gps_permission), "withCancel", new DialogEventListener() {
+                @Override
+                public void clickEvent(boolean ok, int status) {
+                    if(!ok) {
+                        ((CustomerMainActivity)getActivity()).logout(true);
+                    }else{
+                        startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), CustomerMainActivity.LOCATION_SETTING_CODE);
+                    }
+                }
+            });
+        }
+        public void setLocation(Location location){
+            if (location != null) {
+                CustomerAppInfo.getInstance().setLocation(location);
+                setMap();
+
+            } else {
+                if(flag) {
+                    gpsPermission();
+                }else{
+                    locationPermission();
+                }
+            }
+        }
+
+        public void getLocation() {
+            Location location = null;
+            try {
+
+                // getting GPS status
+                boolean isGPSEnabled = locationManager
+                        .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+                // getting network status
+                boolean isNetworkEnabled = locationManager
+                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+                if (!isGPSEnabled && !isNetworkEnabled) {
+                    // no network provider is enabled
+                    flag = false;
+                    setLocation(null);
+                } else {
+                    if (isNetworkEnabled) {
+                        locationManager.requestLocationUpdates(
+                                LocationManager.NETWORK_PROVIDER,
+                                500,
+                                0, listener);
+                        Log.d("Network", "Network Enabled");
+                        if (locationManager != null) {
+                            if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                                setLocation(null);
+                            }
+                            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                        }
+                    }
+                    // if GPS Enabled get lat/long using GPS Services
+                    if (isGPSEnabled) {
+                        if (location == null) {
+                            locationManager.requestLocationUpdates(
+                                    LocationManager.GPS_PROVIDER,
+                                    500,
+                                    0, listener);
+                            Log.d("GPS", "GPS Enabled");
+                            if (locationManager != null) {
+                                location = locationManager
+                                        .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                            }
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if(location != null){
+                setLocation(location);
+            }
+        }
+
+        LocationListener listener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.d("CurrentLocationUpdate", location.getLatitude() + "," + location.getLongitude());
+                setLocation(location);
+                locationManager.removeUpdates(this);
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+                Log.d("ParentMainFragment" ,"status changed to "+s);
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+            }
+        };
     }
 
     private class ApiPromotion extends AsyncTask<Double, Void, String> {

@@ -288,8 +288,12 @@ public class CustomerParentMainFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CustomerMainActivity.LOCATION_SETTING_CODE) {
-            System.out.println("RESULTCODE=" + resultCode);
-            gpsPermission();
+            if(map_showing){
+                fragment_map.onActivityResult(requestCode, resultCode, data);
+            }else {
+                System.out.println("RESULTCODE=" + resultCode);
+                gpsPermission();
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -299,7 +303,7 @@ public class CustomerParentMainFragment extends Fragment {
             @Override
             public void clickEvent(boolean ok, int status) {
                 if(!ok) {
-                    ((CustomerMainActivity)getActivity()).logout();
+                    ((CustomerMainActivity)getActivity()).logout(true);
                 }else{
                     startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), CustomerMainActivity.LOCATION_SETTING_CODE);
                 }
