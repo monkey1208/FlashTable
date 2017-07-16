@@ -143,9 +143,11 @@
             android:name="io.fabric.ApiKey"
             android:value="96fb5133166743e20b85bf3c821d77cfa802b439" />
 
-        <activity android:name=".customer.CustomerCommentHistory"/>
+        <activity android:name=".customer.CustomerCommentHistory"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name=".customer.CustomerViewRatingActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden"/>
 
         <service android:name=".StoreBGService"/>
