@@ -207,9 +207,10 @@ public class CustomerProfileFragment extends Fragment {
             }
         });
 
-        tv_exchange_gifts_content.setText(Html.fromHtml("<font color=\"#FFFFFF\">每次預約用餐每人可得</font> " +
-                "<font color=\"#FFD800\"><big><big><big>5</big></big></big></font> " +
-                "<font color=\"#FFFFFF\">FLASH Points<br>現在開始累積你的FLASH Points<br>各種專屬回饋好禮在兌換區等你喔！</font>"));
+        int points_per_person = 5;
+        tv_exchange_gifts_content.setText(Html.fromHtml("<font color=\"#FFFFFF\">每成功預約１人用餐每人可得</font> " +
+                "<font color=\"#FFD800\"><big><big><big>" + String.valueOf(points_per_person) + "</big></big></big></font> " +
+                "<font color=\"#FFFFFF\">FLASH Points！<br>現在開始累積你的FLASH Points，<br>各種專屬回饋好禮在兌換區等你喔！</font>"));
 
         tv_go.setOnClickListener(new View.OnClickListener() {
             @Override

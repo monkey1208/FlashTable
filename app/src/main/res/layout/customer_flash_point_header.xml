@@ -5,6 +5,7 @@
 
     <!-- Header -->
     <LinearLayout
+        android:id="@+id/customer_points_ll_header"
         android:layout_width="match_parent"
         android:layout_height="170dp"
         android:orientation="vertical"

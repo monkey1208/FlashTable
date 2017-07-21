@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.daimajia.slider.library.SliderLayout;
@@ -23,6 +24,7 @@ import com.example.yang.flashtable.FlashCouponInfo;
 import com.example.yang.flashtable.R;
 import com.example.yang.flashtable.SerializableCouponInfo;
 import com.example.yang.flashtable.customer.adapter.CustomerFlashPointAdapter;
+import com.google.android.gms.vision.text.Line;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -58,6 +60,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
     SharedPreferences user;
     String userID, username;
 
+    LinearLayout ll_header;
     HeaderFooterGridView lv_coupons;
     SliderLayout sl_coupons;
     TextView tv_points, tv_records;
@@ -87,6 +90,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
         tv_nothing = (TextView) view.findViewById(R.id.customer_points_tv_nothing);
 
         // Header views
+        ll_header = (LinearLayout) header.findViewById(R.id.customer_points_ll_header);
         sl_coupons = (SliderLayout) header.findViewById(R.id.customer_points_sl_coupons);
         sl_coupons.startAutoCycle();
         tv_points = (TextView) header.findViewById(R.id.customer_points_tv_points);
@@ -126,6 +130,14 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
 
         new ApiPoints().execute(userID);
         new ApiCoupons().execute();
+
+        ll_header.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CustomerCouponRecordActivity.class);
+                startActivity(intent);
+            }
+        });
 
         tv_records.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -98,8 +98,8 @@ public class CustomerRatingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (rb_rating.isIndicator()) CustomerRatingActivity.this.finish();
-                else closeActivity();
+                Log.e("RatingBack", "pressed");
+                closeActivity();
             }
         });
     }
