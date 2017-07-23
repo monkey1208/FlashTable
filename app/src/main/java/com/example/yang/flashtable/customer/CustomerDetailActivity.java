@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -55,6 +57,8 @@ public class CustomerDetailActivity extends AppCompatActivity {
     Button bt_comment;
     private int current_record;
 
+    ImageView bt_back;
+
     // Elements in show
     TextView tv_record_success, tv_record_arrival_time, tv_record_shop,
             tv_gift, tv_description, tv_location, tv_category;
@@ -69,6 +73,11 @@ public class CustomerDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set to fullscreen.
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.customer_detail_activity);
 
         initView();
@@ -76,13 +85,15 @@ public class CustomerDetailActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        setupActionBar();
-        setTitle(getResources().getString(R.string.customer_detail_title));
+        // setupActionBar();
+        // setTitle(getResources().getString(R.string.customer_detail_title));
         dialog_builder = new DialogBuilder(this);
 
         vf_flipper = (ViewFlipper) findViewById(R.id.customer_detail_vf_flipper);
         lv_reservations = (ListView) findViewById(R.id.customer_detail_lv_details);
         bt_comment = (Button) findViewById(R.id.customer_detail_bt_comment);
+
+        bt_back = (ImageView) findViewById(R.id.customer_detail_bt_back);
 
         // Elements in show
         tv_record_success = (TextView) findViewById(R.id.customer_detail_tv_record_success);
@@ -100,6 +111,13 @@ public class CustomerDetailActivity extends AppCompatActivity {
 
     private void initData() {
         getUserInfo();
+
+        bt_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         // Set reservation ListView
         reservations = new ArrayList<>();

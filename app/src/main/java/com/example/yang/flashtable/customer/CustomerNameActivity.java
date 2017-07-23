@@ -10,8 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.yang.flashtable.DialogBuilder;
@@ -41,10 +44,16 @@ public class CustomerNameActivity extends AppCompatActivity {
 
     EditText et_name;
     Button bt_submit;
+    ImageView bt_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set to fullscreen.
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.customer_name_activity);
 
         initView();
@@ -52,10 +61,11 @@ public class CustomerNameActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        setupActionBar();
+        // setupActionBar();
 
         et_name = (EditText) findViewById(R.id.customer_profile_et_name);
         bt_submit = (Button) findViewById(R.id.customer_profile_bt_name_submit);
+        bt_back = (ImageView) findViewById(R.id.customer_name_bt_back);
     }
 
     private void initData() {
@@ -72,6 +82,18 @@ public class CustomerNameActivity extends AppCompatActivity {
                     new APIUsername().execute(userID, new_name);
                 else dialog_builder.dialogEvent(getResources().getString(R.string.customer_profile_name_empty),
                         "normal", null);
+            }
+        });
+        bt_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogEventListener listener = new DialogEventListener() {
+                    @Override
+                    public void clickEvent(boolean ok, int status) {
+                        if (ok) CustomerNameActivity.this.finish();
+                    }
+                };
+                dialog_builder.dialogEvent("填寫內容尚未送出，確定回到上一頁嗎？", "withCancel", listener);
             }
         });
     }

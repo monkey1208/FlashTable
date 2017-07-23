@@ -16,6 +16,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.yang.flashtable.DialogBuilder;
@@ -43,24 +47,37 @@ public class CustomerCommentHistory extends AppCompatActivity {
     String userID;
     DialogBuilder dialog_builder;
     ListView lv_comments;
+    ImageView bt_back;
     CustomerCommentAdapter comment_adapter;
     List<CustomerCommentInfo> comments;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Set to fullscreen.
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.customer_comment_history_activity);
         initView();
         initData();
     }
     private void initView() {
-        setupActionBar();
-        setTitle(getResources().getString(R.string.customer_comments_my_title));
+        // setupActionBar();
+        // setTitle(getResources().getString(R.string.customer_comments_my_title));
 
         dialog_builder = new DialogBuilder(this);
         lv_comments = (ListView) findViewById(R.id.customer_comment_history_lv);
+        bt_back = (ImageView) findViewById(R.id.customer_comment_bt_back);
     }
 
     private void initData() {
+        bt_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         mode = getIntent().getStringExtra("type");
         if (mode.equals("shop")) {
             shopID = getIntent().getStringExtra("shop_id");
@@ -88,7 +105,7 @@ public class CustomerCommentHistory extends AppCompatActivity {
         private void setupActionBar() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 // Show the Up button in the action bar.
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         }
 

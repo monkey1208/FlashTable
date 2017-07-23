@@ -155,7 +155,7 @@ public class CustomerCommentTabFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(Void _params) {
-            if( status == null  || !status.equals("0") )    dialog_builder.dialogEvent("資料載入失敗，請重試", "normal", null);
+            if( !getActivity().isDestroyed() && (status == null  || !status.equals("0")) )    dialog_builder.dialogEvent("資料載入失敗，請重試", "normal", null);
             else {
                 Collections.reverse(comments);
                 updateComments();

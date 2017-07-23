@@ -4,7 +4,34 @@
     android:layout_height="match_parent"
     android:background="@color/lightgray">
 
+    <RelativeLayout
+        android:id="@+id/customer_name_rl_top"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:background="@drawable/customer_bg_main">
+
+        <ImageView
+            android:id="@+id/customer_name_bt_back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_back_white"
+            android:layout_centerVertical="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="編輯我的暱稱"
+            android:textSize="20sp"
+            android:textColor="@color/white"/>
+
+    </RelativeLayout>
+
     <LinearLayout
+        android:layout_below="@+id/customer_name_rl_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
