@@ -98,7 +98,6 @@ public class CustomerRatingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Log.e("RatingBack", "pressed");
                 closeActivity();
             }
         });

@@ -115,7 +115,12 @@ public class CustomerDetailActivity extends AppCompatActivity {
         bt_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                if (vf_flipper.getDisplayedChild() == 0) {
+                    finish();
+                }
+                else if (vf_flipper.getDisplayedChild() == 1) {
+                    showList();
+                }
             }
         });
 

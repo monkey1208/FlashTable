@@ -34,6 +34,7 @@ public class CustomerMainActivity extends AppCompatActivity
     public final static int LOCATION_SETTING_CODE = 14;
 
     DialogBuilder dialog_builder;
+    FloatingActionButton fab_menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class CustomerMainActivity extends AppCompatActivity
     private void initView() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         nv_view = (NavigationView) findViewById(R.id.nav_view);
+        fab_menu = (FloatingActionButton)findViewById(R.id.customer_fab_menu);
     }
 
     private void initData() {
@@ -60,6 +62,7 @@ public class CustomerMainActivity extends AppCompatActivity
         switch (input){
             case "main":
                 fragment = new CustomerParentMainFragment();
+                fab_menu.setImageResource(R.drawable.ic_float_menu_nobg);
                 break;
             case "detail":
                 // TODO: Handle checked item properly.
@@ -68,9 +71,11 @@ public class CustomerMainActivity extends AppCompatActivity
                 break;
             case "profile":
                 fragment = new CustomerProfileFragment();
+                fab_menu.setImageResource(R.drawable.ic_float_menu);
                 break;
             case "points":
                 fragment = new CustomerFlashPointFragment();
+                fab_menu.setImageResource(R.drawable.ic_float_menu);
                 break;
             default:
                 break;

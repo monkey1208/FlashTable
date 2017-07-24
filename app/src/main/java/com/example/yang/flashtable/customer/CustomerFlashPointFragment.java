@@ -71,6 +71,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
     DialogBuilder dialog_builder;
 
     TextView tv_nothing;
+    List<String> banner_url;
 
     @Override
     public View onCreateView(LayoutInflater _inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -128,8 +129,11 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
             }
         });
 
+        banner_url = new ArrayList<>();
+
         new ApiPoints().execute(userID);
         new ApiCoupons().execute();
+        new ApiBanners().execute();
 
         ll_header.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,8 +162,11 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
         if (sl_coupons != null)
             sl_coupons.removeAllSliders();
         HashMap<String, String> image_map = new HashMap<>();
-        for (int i = 0; i < coupons.size(); i++)
-            image_map.put(String.valueOf(i), coupons.get(i).picture_url_large);
+//        for (int i = 0; i < coupons.size(); i++)
+//            image_map.put(String.valueOf(i), coupons.get(i).picture_url_large);
+
+        for (int i = 0; i < banner_url.size(); i++)
+            image_map.put(String.valueOf(i), banner_url.get(i));
 
         for (String name : image_map.keySet()) {
             // Change DefaultSliderView to TextSliderView if you want text below it
@@ -320,4 +327,44 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
         }
     }
 
+    private class ApiBanners extends AsyncTask<Void, Void, Void>{
+
+        private boolean success = true;
+
+        @Override
+        protected Void doInBackground(Void ...value) {
+            HttpGet httpGet = new HttpGet(getString(R.string.server_domain) + "/api/flash_banners");
+            httpGet.addHeader("Content-Type", "application/json");
+            try {
+                HttpClient httpClient = new DefaultHttpClient();
+                HttpResponse httpResponse = httpClient.execute(httpGet);
+                ResponseHandler<String> handler = new BasicResponseHandler();
+                String json = handler.handleResponse(httpResponse);
+                JSONArray jsonArray = new JSONArray(json);
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                for(int i = 1; i <= jsonObject.getInt("size"); i++) {
+                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                    banner_url.add(jsonObject1.getString("picture_url"));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                success = false;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void params) {
+
+            if (!success) {
+                dialog_builder.dialogEvent(
+                        "資料載入失敗，請重試", "normal", null);
+            }
+            else {
+                setSlider();
+            }
+        }
+    }
 }
