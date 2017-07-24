@@ -50,7 +50,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
     public RatingBar rb_rating;
     public EditText et_content;
     public Button bt_submit;
-    public ImageView iv_shop;
+    public ImageView iv_shop, bt_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
     public void initView() {
         setTitle(getResources().getString(R.string.customer_rating_title));
         setTitleColor(R.color.white);
-        setupActionBar();
+        // setupActionBar();
 
         dialog_builder = new DialogBuilder(this);
 
@@ -74,6 +74,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
         et_content = (EditText) findViewById(R.id.customer_rating_et_content);
         bt_submit = (Button) findViewById(R.id.customer_rating_bt_submit);
         iv_shop = (ImageView) findViewById(R.id.customer_rating_iv_shop);
+        bt_back = (ImageView) findViewById(R.id.customer_rating_bt_back);
     }
 
     public void initData() {
@@ -91,6 +92,14 @@ public class CustomerRatingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 newComment();
+            }
+        });
+        bt_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Log.e("RatingBack", "pressed");
+                closeActivity();
             }
         });
     }
@@ -139,6 +148,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
     }
 
     public void closeActivity() {
+
         if (rb_rating.getRating() != 0 || !et_content.getText().toString().equals("")) {
             dialog_builder.dialogEvent(getResources().getString(R.string.customer_comments_error_not_sent), "withCancel",
                     new DialogEventListener() {
@@ -151,7 +161,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
                     });
         }
         else{
-            finish();
+            CustomerRatingActivity.this.finish();
         }
     }
 

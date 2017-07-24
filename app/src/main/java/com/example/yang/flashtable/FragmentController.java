@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 public class FragmentController extends StoreMainActivity{
-    public static final int FRAG_COUNT = 14;
+    public static final int FRAG_COUNT = 15;
     public static final int HOME = 0;
     public static final int RECENT = 1;
     public static final int APPOINT = 2;
@@ -22,6 +22,7 @@ public class FragmentController extends StoreMainActivity{
     public static final int CONFIRM = 11;
     public static final int MANAGE_RECORD_INFO = 12;
     public static final int MANAGE_DISCOUNT_DELETE = 13;
+    public static final int PAYMENT_INFO = 14;
     public StoreRecentFragment storeRecentFragment;
     public StoreHomeFragment storeHomeFragment;
     public StoreAppointFragment storeAppointFragment;
@@ -145,6 +146,11 @@ public class FragmentController extends StoreMainActivity{
                     kill(MANAGE_DISCOUNT_DELETE);
                 setActive(MANAGE_DISCOUNT_DELETE);
                 break;
+            case PAYMENT_INFO:
+                if(frag_stat[PAYMENT_INFO]!=DEAD)
+                    kill(PAYMENT_INFO);
+                setActive(PAYMENT_INFO);
+                break;
         }
     }
     private void kill(int select){
@@ -195,6 +201,9 @@ public class FragmentController extends StoreMainActivity{
                 break;
             case MANAGE_DISCOUNT_DELETE:
                 fragment[select] = new StoreManageDiscountDeleteFragment();
+                break;
+            case PAYMENT_INFO:
+                fragment[select] = new StorePaymentInfoFragment();
                 break;
         }
     }

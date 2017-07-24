@@ -6,12 +6,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="70dp"
-        android:paddingTop="10dp"
+        android:layout_height="fill_parent"
+        android:paddingTop="20dp"
         android:paddingBottom="40dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         android:clipToPadding="false">
 
         <LinearLayout
@@ -22,10 +19,36 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/customer_rating_bt_back"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_back_white"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="評論及評價"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:background="@color/moreTransparentWhite">
 
                 <ImageView
@@ -73,9 +96,9 @@
                 android:id="@+id/customer_rating_et_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:gravity="top"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
                 android:background="@color/moreTransparentWhite"
                 android:padding="10dp"
                 android:hint="@string/customer_rating_hint"
