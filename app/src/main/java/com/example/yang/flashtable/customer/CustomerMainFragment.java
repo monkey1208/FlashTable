@@ -422,7 +422,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
 
             closeDB();
             if( status == null  || !status.equals("0") ) {
-                Log.e("MainStatus", status);
+                //Log.e("MainStatus", status);
                 dialog.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
                 swipe_refresh_layout.setRefreshing(false);
                 return;
