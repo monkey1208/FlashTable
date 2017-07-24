@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -12,9 +13,11 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,12 +26,23 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.yang.flashtable.*;
 import com.example.yang.flashtable.R;
 import com.example.yang.flashtable.customer.database.SqlHandler;
 import com.example.yang.flashtable.customer.infos.CustomerAppInfo;
 import com.example.yang.flashtable.customer.infos.CustomerRestaurantInfo;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.PlaceDetectionApi;
+import com.google.android.gms.location.places.PlaceFilter;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
+import com.google.android.gms.location.places.PlaceReport;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -279,7 +293,7 @@ public class CustomerParentMainFragment extends Fragment {
 
     public void getShopStatus(boolean active) {
         if (active == true) {
-            new CurrentLocation().execute();
+            new CurrentLocation(view.getContext()).execute();
         } else {
             gpsPermission();
         }
@@ -311,11 +325,20 @@ public class CustomerParentMainFragment extends Fragment {
         });
     }
 
-    private class CurrentLocation {
+    private class CurrentLocation implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
         boolean flag = true;
+        private Location mLastLocation;
+        private GoogleApiClient mGoogleApiClient;
+        private LocationRequest mLocationRequest;
+        private Context context;
+
+        public CurrentLocation(Context context){
+            this.context = context;
+        }
+
         public void execute() {
             getLocation();
-
+            //getCurrentLocation(context);
         }
 
         public void setLocation(Location location){
@@ -415,6 +438,75 @@ public class CustomerParentMainFragment extends Fragment {
             public void onProviderDisabled(String s) {
             }
         };
+
+        public Location getCurrentLocation(Context context) {
+            this.context = context;
+            buildGoogleApiClient();
+            mGoogleApiClient.connect();
+            if ((ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+            }
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            return mLastLocation;
+        }
+
+        public void buildGoogleApiClient() {
+            mGoogleApiClient = new GoogleApiClient.Builder(context)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+
+        protected void startLocationUpdates() {
+            // Create the location request
+            mLocationRequest = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setInterval(0)
+                    .setFastestInterval(0);
+
+            // Request location updates
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                return;
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+
+        @Override
+        public void onConnected(@Nullable Bundle bundle) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            startLocationUpdates();
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if(mLastLocation == null){
+                startLocationUpdates();
+            }
+
+            if (mLastLocation != null) {
+                setLocation(mLastLocation);
+            } else {
+                flag = false;
+                setLocation(null);
+                Toast.makeText(context, "Location not Detected, Did you turn off your location?", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onConnectionSuspended(int i) {
+
+        }
+
+        @Override
+        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            setLocation(location);
+        }
+
     }
 
     private class ApiPromotion extends AsyncTask<Double, Void, String> {

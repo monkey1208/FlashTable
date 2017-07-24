@@ -369,7 +369,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
     private class ApiPromotion extends AsyncTask<Double, Void, String> {
         HttpClient httpClient = new DefaultHttpClient();
         ArrayList<CustomerRestaurantInfo> restaurantInfoList = new ArrayList<>();
-        DialogBuilder dialog = new DialogBuilder(getContext());
+        DialogBuilder dialog = new DialogBuilder(view.getContext());
         private String status = null;
         private String shop_rating;
 
@@ -422,7 +422,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
 
             closeDB();
             if( status == null  || !status.equals("0") ) {
-                Log.e("MainStatus", status);
+                //Log.e("MainStatus", status);
                 dialog.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
                 swipe_refresh_layout.setRefreshing(false);
                 return;
