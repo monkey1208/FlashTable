@@ -11,12 +11,14 @@
     <color name="textColorLight">#4D4D4D</color>
     <color name="textColorLighter">#808080</color>
     <color name="textColorOrange">#F08537</color>
+    <color name="textColorOrangeBright">#FF6600</color>
     <color name="textColorRed">#E41E1B</color>
     <color name="transparentGreen">#00FFFFFF</color>
     <color name="colorHalfTransparent">#80FFFFFF</color>
     <color name="textColorOrangeDark">#EA5703</color>
     <color name="alertColor">#FF9533</color>
     <color name="menuColor">#F08537</color>
+
 
     <color name="colorOrangeLighter">#60EA5703</color>
 

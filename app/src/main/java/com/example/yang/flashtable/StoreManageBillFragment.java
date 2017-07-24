@@ -44,9 +44,11 @@ public class StoreManageBillFragment extends Fragment {
     TextView tv_success;
     TextView tv_money;
     TextView tv_totalmoney;
+    RelativeLayout rl_payment;
     private String shop_id;
     private int contract_fee;
     private Calendar currentDate;
+    private int number_clicks = 0;
     List<RecordInfo> recordList;
     private int half_month; // 0 == first half(1-15), 1 == second half(16~)
 
@@ -84,23 +86,26 @@ public class StoreManageBillFragment extends Fragment {
         bar.setNavigationIcon(d);
         bar.setNavigationOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                StoreMainActivity.fragmentController.act(3);
+                StoreMainActivity.fragmentController.act(FragmentController.MANAGE);
             }
         });
 
         /* Check if the bill was paid,  set visibility.*/
-        RelativeLayout rl = (RelativeLayout)view.findViewById(R.id.store_manage_bill_rl);
-        rl.setVisibility(RelativeLayout.GONE);
+        rl_payment = (RelativeLayout)view.findViewById(R.id.store_manage_bill_rl);
 
         LinearLayout prev_bt = (LinearLayout)view.findViewById(R.id.store_manage_bill_ll_prev);
         prev_bt.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
+                number_clicks -= 1;
+                check_payment();
                 change_values(PREV);
             }
         });
         LinearLayout next_bt = (LinearLayout)view.findViewById(R.id.store_manage_bill_ll_next);
         next_bt.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
+                number_clicks += 1;
+                check_payment();
                 change_values(NEXT);
             }
         });
@@ -109,7 +114,7 @@ public class StoreManageBillFragment extends Fragment {
         bt_pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Pay for the bill
+                StoreMainActivity.fragmentController.act(FragmentController.PAYMENT_INFO);
             }
         });
 
@@ -171,6 +176,14 @@ public class StoreManageBillFragment extends Fragment {
         tv_success.setText(String.valueOf(num_succ));
         tv_money.setText(String.valueOf(contract_fee));
         tv_totalmoney.setText(String.valueOf(contract_fee*num_succ));
+    }
+
+    private void check_payment(){
+        if(number_clicks == 0){
+            rl_payment.setVisibility(RelativeLayout.VISIBLE);
+        }else{
+            rl_payment.setVisibility(RelativeLayout.GONE);
+        }
     }
 
     private void change_values(int command){

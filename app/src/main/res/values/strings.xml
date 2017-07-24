@@ -11,6 +11,17 @@
 
     <string name="title_activity_customer_main">CustomerMainActivity</string>
 
+    <!-- Payment Information -->
+    <string name="account_name">白日夢文創股份有限公司</string>
+    <string name="bank_code">008</string>
+    <string name="bank_name">(華南銀行 樟樹灣分行)</string>
+    <string name="account_number">192–10–003818–1</string>
+    <string name="email">service.flashtable@gmail.com</string>
+    <string name="payment_notice1">請持上方帳號，至ATM自動櫃員機選擇轉帳即可付款。部分銀行將向您收取轉帳手續費。</string>>
+    <string name="payment_notice2">我們將會在收到E-mail郵件後3日內完成確認，並回覆E-mail確認收款成功。</string>
+
+
+
     <!-- Universal strings -->
     <string name="submit">確認送出</string>
     <string name="ok">確認</string>
