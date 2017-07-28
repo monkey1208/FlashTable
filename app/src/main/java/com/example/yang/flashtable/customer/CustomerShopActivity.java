@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -43,6 +44,7 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
     ImageButton ib_show_back;
     DialogBuilder dialog_builder;
     LinearLayout ll_comments;
+    TextView tv_notice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,8 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
         ll_location = (LinearLayout) findViewById(R.id.customer_shop_ll_location);
         ll_phone = (LinearLayout) findViewById(R.id.customer_shop_ll_phone);
         ll_website = (LinearLayout) findViewById(R.id.customer_shop_ll_website);
+
+        tv_notice = (TextView) findViewById(R.id.customer_shop_tv_notice);
     }
 
     private void initData(){
@@ -144,6 +148,19 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
                 v.vibrate(100);
             }
         });
+
+        tv_notice.setText(Html.fromHtml(
+                "<font color=\"#808080\">* 本預約需在規定時間</font><font color=\"#E41E1B\">30分鐘</font><font>以內到達該店家領位。<br>" +
+                "* 與預約者共同前往消費者，須支付店內最低消費金額，每名：</font><font color=\"#E41E1B\">" + String.valueOf(info.min_consumption)
+                        + "元</font><font>。<br>" +
+                "* 為保障您的權益，請於到達現場時，立即要求領位，出示行動裝置之預約認證頁面，並在店員面前完成QR-code掃描。<br>" +
+                "* 預約客人需全數到齊，若未在規定時間內到齊，該店家有權取消此預約。<br>" +
+                "* 本預約僅限內用使用，不提供餐點外帶。<br>" +
+                "* 所有折扣優惠依照店家設定的為主，如有任何問題應與店家進行協調。與平台無關。<br>" +
+                "* 因交通狀況較難隨時掌握，若您擔心無法在規定時間內趕到，建議您先以電話告知店家以保留以預約之桌位。<br>" +
+                "* 餐點菜色依店家實際提供為主，平台照片僅供參考。<br>" +
+                "* 若有其他疑問，請聯繫客服。</font>"));
+
 
         setDetail();
     }

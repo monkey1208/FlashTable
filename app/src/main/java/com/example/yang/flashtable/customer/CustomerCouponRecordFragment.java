@@ -97,7 +97,11 @@ public class CustomerCouponRecordFragment extends Fragment {
         lv_records.setAdapter(adapter);
 
         if (records.size() > 0) tv_nothing.setVisibility(View.INVISIBLE);
-        else tv_nothing.setVisibility(View.VISIBLE);
+        else {
+            if (position == 1) tv_nothing.setText("您還沒有任何兌換紀錄喔");
+            else tv_nothing.setText("您還沒有獲得任何FLASH Points喔");
+            tv_nothing.setVisibility(View.VISIBLE);
+        }
     }
 
     private class ApiRedeemRecords extends AsyncTask<String, Void, Void> {
