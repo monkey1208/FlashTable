@@ -57,6 +57,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -105,6 +106,19 @@ public class CustomerParentMainFragment extends Fragment {
         setMapButton();
         sp_dis = (Spinner) view.findViewById(R.id.customer_main_sp_distance);
         sp_food = (Spinner) view.findViewById(R.id.customer_main_sp_food);
+        try {
+            Field popup = Spinner.class.getDeclaredField("mPopup");
+            popup.setAccessible(true);
+
+            // Get private mPopup member variable and try cast to ListPopupWindow
+            android.widget.ListPopupWindow popupWindow = (android.widget.ListPopupWindow) popup.get(sp_food);
+
+            // Set popupWindow height to 500px
+            popupWindow.setHeight(500);
+        }
+        catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
+            // silently fail...
+        }
         sp_sort = (Spinner) view.findViewById(R.id.customer_main_sp_sort);
         ib_search = (ImageButton) view.findViewById(R.id.customer_main_ib_search);
     }
@@ -240,6 +254,50 @@ public class CustomerParentMainFragment extends Fragment {
                         break;
                     case 4:
                         filter_food = "korean";
+                        CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
+                        break;
+                    case 5:
+                        filter_food = "tailand";
+                        CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
+                        break;
+                    case 6:
+                        filter_food = "foreign";
+                        CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
+                        break;
+                    case 7:
+                        filter_food = "hotpot";
+                        CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
+                        break;
+                    case 8:
+                        filter_food = "barbecue";
+                        CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
+                        break;
+                    case 9:
+                        filter_food = "cafe";
+                        CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
+                        break;
+                    case 10:
+                        filter_food = "vegetarian";
+                        CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
+                        break;
+                    case 11:
+                        filter_food = "fastfood";
+                        CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
+                        break;
+                    case 12:
+                        filter_food = "buffet";
+                        CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
+                        break;
+                    case 13:
+                        filter_food = "smalleat";
+                        CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
+                        break;
+                    case 14:
+                        filter_food = "drink";
+                        CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
+                        break;
+                    case 15:
+                        filter_food = "other";
                         CustomerObservable.getInstance().setData(filter_distance, filter_food, filter_mode);
                         break;
                 }

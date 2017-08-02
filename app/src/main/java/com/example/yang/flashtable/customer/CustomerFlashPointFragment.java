@@ -163,7 +163,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
 
         for (String name : image_map.keySet()) {
             // Change DefaultSliderView to TextSliderView if you want text below it
-            DefaultSliderView slider_view = new DefaultSliderView(getActivity().getBaseContext());
+            DefaultSliderView slider_view = new DefaultSliderView(view.getContext());
             slider_view
                     .description(name)
                     .image(image_map.get(name))

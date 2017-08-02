@@ -199,6 +199,62 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                     return true;
                 else
                     return false;
+            case "tailand":
+                if(item.category.equals("泰式料理"))
+                    return true;
+                else
+                    return false;
+            case "foreign":
+                if(item.category.equals("異國料理"))
+                    return true;
+                else
+                    return false;
+            case "hotpot":
+                if(item.category.equals("鍋類"))
+                    return true;
+                else
+                    return false;
+            case "barbecue":
+                if(item.category.equals("燒烤類"))
+                    return true;
+                else
+                    return false;
+            case "cafe":
+                if(item.category.equals("咖啡、簡餐、茶"))
+                    return true;
+                else
+                    return false;
+            case "vegetarian":
+                if(item.category.equals("素食"))
+                    return true;
+                else
+                    return false;
+            case "fastfood":
+                if(item.category.equals("速食快餐"))
+                    return true;
+                else
+                    return false;
+            case "buffet":
+                if(item.category.equals("Buffet自助餐"))
+                    return true;
+                else
+                    return false;
+            case "smalleat":
+                if(item.category.equals("小吃"))
+                    return true;
+                else
+                    return false;
+            case "drink":
+                if(item.category.equals("飲料、甜點"))
+                    return true;
+                else
+                    return false;
+            case "other":
+                if(item.category.equals("其他美食"))
+                    return true;
+                else
+                    return false;
+
         }
         return false;
     }

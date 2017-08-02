@@ -223,6 +223,149 @@ public class CustomerMainFragment extends Fragment implements Observer {
                     }
                 }
                 break;
+            case "tailand":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("泰式料理")) {
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "foreign":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("異國料理")) {
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "hotpot":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("鍋類")) {
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "barbecue":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("燒烤類")) {
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "cafe":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("咖啡、簡餐、茶")) {
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "vegetarian":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("素食")) {
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "fastfood":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("速食快餐")) {
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "buffet":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("Buffet自助餐")) {
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "smalleat":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("小吃")) {
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "drink":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("飲料、甜點")) {
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
+            case "other":
+                for (int j = 0; j < filt_adapter.getCount(); j++) {
+                    if (filt_adapter.getItem(j).category.equals("其他美食")) {
+                        Location l = new Location("");
+                        l.setLatitude(filt_adapter.getItem(j).latLng.latitude);
+                        l.setLongitude(filt_adapter.getItem(j).latLng.longitude);
+                        if (distance < 0)
+                            r_list.add(filt_adapter.getItem(j));
+                        else if ((int) my_location.distanceTo(l) <= distance)
+                            r_list.add(filt_adapter.getItem(j));
+                    }
+                }
+                break;
             default:
                 if (filt_adapter != null) {
                     for (int j = 0; j < filt_adapter.getCount(); j++) {
