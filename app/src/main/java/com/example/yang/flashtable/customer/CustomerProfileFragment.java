@@ -207,9 +207,8 @@ public class CustomerProfileFragment extends Fragment {
             }
         });
 
-        int points_per_person = 5;
         tv_exchange_gifts_content.setText(Html.fromHtml("<font color=\"#FFFFFF\">每成功預約１人用餐每人可得</font> " +
-                "<font color=\"#FFD800\"><big><big><big>" + String.valueOf(points_per_person) + "</big></big></big></font> " +
+                "<font color=\"#FFD800\"><big><big><big>-</big></big></big></font> " +
                 "<font color=\"#FFFFFF\">FLASH Points！<br>現在開始累積你的FLASH Points，<br>各種專屬回饋好禮在兌換區等你喔！</font>"));
 
         tv_go.setOnClickListener(new View.OnClickListener() {
@@ -218,6 +217,13 @@ public class CustomerProfileFragment extends Fragment {
                 ((CustomerMainActivity)getActivity()).navigate("points");
             }
         });
+    }
+
+    private void setPointRatio(int points_ratio) {
+        tv_exchange_gifts_content.setText(Html.fromHtml("<font color=\"#FFFFFF\">每成功預約１人用餐每人可得</font> " +
+                "<font color=\"#FFD800\"><big><big><big>" + String.valueOf(points_ratio) + "</big></big></big></font> " +
+                "<font color=\"#FFFFFF\">FLASH Points！<br>現在開始累積你的FLASH Points，<br>各種專屬回饋好禮在兌換區等你喔！</font>"));
+
     }
 
     private void startCamera() {
@@ -401,6 +407,7 @@ public class CustomerProfileFragment extends Fragment {
         private String status = null;
         private Bitmap avatar = null;
         private String flash_points = null;
+        private int ratio = -1;
 
         @Override
         protected String doInBackground(String... params) {
@@ -426,6 +433,16 @@ public class CustomerProfileFragment extends Fragment {
 
                 // TODO: Get image from local storage if available.
                 if (pic_url != null && !pic_url.equals("")) avatar = getRoundedShape(BitmapFactory.decodeStream((InputStream)new URL(pic_url).getContent()));
+
+                HttpGet requestRatio = new HttpGet(
+                        getString(R.string.server_domain)+"api/flash_rate");
+                requestRatio.addHeader("Content-Type", "application/json");
+                HttpResponse responseRatio = httpClient.execute(requestRatio);
+                ResponseHandler<String> handlerRatio = new BasicResponseHandler();
+                String httpResponseRatio = handlerRatio.handleResponse(responseRatio);
+                JSONObject responseJSONRatio = new JSONObject(httpResponseRatio);
+                ratio = Integer.parseInt(responseJSONRatio.getString("rate"));
+
             } catch (Exception e) {
                 Log.d("GetCode", "Request exception:" + e.getMessage());
             } finally {
@@ -442,6 +459,7 @@ public class CustomerProfileFragment extends Fragment {
                 tv_credit.setText(credits + _content);
                 if (avatar != null) iv_avatar.setImageBitmap(avatar);
                 tv_points.setText(flash_points);
+                setPointRatio(ratio);
             }
         }
     }

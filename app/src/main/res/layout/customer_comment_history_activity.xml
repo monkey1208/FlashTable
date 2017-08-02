@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:orientation="vertical"
     tools:context="com.example.yang.flashtable.customer.CustomerCommentHistory">
     <RelativeLayout
+        android:id="@+id/customer_comment_history_title"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal"
@@ -22,6 +22,7 @@
             android:layout_centerVertical="true" />
 
         <TextView
+            android:id="@+id/customer_comment_history_tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -34,6 +35,7 @@
 
     <ListView
         android:id="@+id/customer_comment_history_lv"
+        android:layout_below="@+id/customer_comment_history_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
@@ -45,4 +47,16 @@
         tools:layout_editor_absoluteY="8dp"
         tools:layout_editor_absoluteX="8dp" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/customer_comment_history_tv_nothing"
+        android:layout_below="@+id/customer_comment_history_lv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"
+        android:text="目前沒有任何評論紀錄喔！"
+        android:textSize="15sp"
+        android:textColor="@color/textColorLighter"/>
+
+
+</RelativeLayout>

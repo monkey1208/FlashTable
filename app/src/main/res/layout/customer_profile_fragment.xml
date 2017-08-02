@@ -55,8 +55,8 @@
                     android:layout_marginTop="20dp"
                     android:paddingTop="3dp"
                     android:paddingBottom="3dp"
-                    android:paddingStart="7dp"
-                    android:paddingEnd="7dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
                     android:text="@string/customer_profile_edit"
                     android:textColor="@color/white"
                     android:textSize="13sp"
@@ -348,8 +348,9 @@
                 android:layout_height="15dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="20dp"
-                android:src="@drawable/logo_white"
-                android:tint="@color/gray"/>
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/logo_new_white"
+                android:tint="@color/textColorLighter"/>
 
         </LinearLayout>
 

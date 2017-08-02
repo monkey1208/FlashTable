@@ -21,6 +21,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.R;
@@ -50,6 +51,8 @@ public class CustomerCommentHistory extends AppCompatActivity {
     ImageView bt_back;
     CustomerCommentAdapter comment_adapter;
     List<CustomerCommentInfo> comments;
+    TextView tv_nothing;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +71,7 @@ public class CustomerCommentHistory extends AppCompatActivity {
         dialog_builder = new DialogBuilder(this);
         lv_comments = (ListView) findViewById(R.id.customer_comment_history_lv);
         bt_back = (ImageView) findViewById(R.id.customer_comment_bt_back);
+        tv_nothing = (TextView) findViewById(R.id.customer_comment_history_tv_nothing);
     }
 
     private void initData() {
@@ -81,7 +85,8 @@ public class CustomerCommentHistory extends AppCompatActivity {
         mode = getIntent().getStringExtra("type");
         if (mode.equals("shop")) {
             shopID = getIntent().getStringExtra("shop_id");
-            setTitle(getResources().getString(R.string.customer_comments_title));
+            TextView tv_title = (TextView) findViewById(R.id.customer_comment_history_tv_title);
+            tv_title.setText("評價及評論");
         }
         getUserInfo();
 
@@ -120,6 +125,9 @@ public class CustomerCommentHistory extends AppCompatActivity {
     public void updateComments() {
         comment_adapter.notifyDataSetChanged();
         lv_comments.setAdapter(comment_adapter);
+
+        if (comments.size() > 0) tv_nothing.setVisibility(View.INVISIBLE);
+        else tv_nothing.setVisibility(View.VISIBLE);
     }
 
     // Trim rounded shape from image

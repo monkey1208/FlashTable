@@ -143,20 +143,19 @@
         <item>中式料理</item>
         <item>日式料理</item>
         <item>美式料理</item>
+        <item>法式料理</item>
         <item>韓式料理</item>
         <item>泰式料理</item>
         <item>異國料理</item>
         <item>鍋類</item>
         <item>燒烤類</item>
-        <item>韓式料理</item>
-        <item>咖啡簡餐</item>
+        <item>咖啡、簡餐、茶</item>
         <item>素食</item>
         <item>速食快餐</item>
-        <item>Buffet自助餐</item>
-        <item>韓式料理</item>
+        <item>buffet自助餐</item>
         <item>小吃</item>
-        <item>飲料甜點</item>
-        <item>其他</item>
+        <item>飲料、甜點</item>
+        <item>其他美食</item>
     </string-array>
 
     <!-- Strings related to customer drawer -->

@@ -22,6 +22,13 @@ public class CustomerViewRatingActivity extends CustomerRatingActivity {
         bt_submit.setVisibility(View.GONE);
         et_content.setEnabled(false);
         rb_rating.setEnabled(false);
+
+        bt_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override
