@@ -18,7 +18,7 @@
             <com.daimajia.slider.library.SliderLayout
                 android:id="@+id/customer_main_sl_restaurant"
                 android:layout_width="match_parent"
-                android:layout_height="230dp"
+                android:layout_height="239dp"
                 android:layout_marginBottom="20dp" />
 
             <TextView

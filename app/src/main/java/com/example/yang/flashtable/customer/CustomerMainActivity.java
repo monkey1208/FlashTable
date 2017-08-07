@@ -62,7 +62,7 @@ public class CustomerMainActivity extends AppCompatActivity
         switch (input){
             case "main":
                 fragment = new CustomerParentMainFragment();
-                fab_menu.setImageResource(R.drawable.ic_float_menu_nobg);
+                // fab_menu.setImageResource(R.drawable.ic_float_menu_nobg);
                 break;
             case "detail":
                 // TODO: Handle checked item properly.
@@ -71,11 +71,11 @@ public class CustomerMainActivity extends AppCompatActivity
                 break;
             case "profile":
                 fragment = new CustomerProfileFragment();
-                fab_menu.setImageResource(R.drawable.ic_float_menu);
+                // fab_menu.setImageResource(R.drawable.ic_float_menu);
                 break;
             case "points":
                 fragment = new CustomerFlashPointFragment();
-                fab_menu.setImageResource(R.drawable.ic_float_menu);
+                // fab_menu.setImageResource(R.drawable.ic_float_menu);
                 break;
             default:
                 break;
