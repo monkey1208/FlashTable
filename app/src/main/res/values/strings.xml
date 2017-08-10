@@ -115,7 +115,7 @@
     <string name="customer_main_info_content">詳細內容</string>
     <string name="customer_main_comments">評價及評論</string>
     <string name="customer_main_acknowledge">預約服務須知</string>
-    <string name="customer_main_acknowledge_content">* 本預約需在規定時間15分鐘（依照該店家規定）以內到達該店家領位。\n
+    <string name="customer_main_acknowledge_content">* 本預約需在規定時間30分鐘（依照該店家規定）以內到達該店家領位。\n
         * 與預約者共同前往消費者，須支付店內最低消費金額，每名：200元（依照該店家規定）。\n
         * 為保障您的權益，請於到達現場時，立即要求領位，出示行動裝置之預約認證頁面，並在店員面前完成QR-code掃描。\n
         * 預約客人需全數到齊，若未在規定時間內到齊，該店家有權取消此預約。\n
