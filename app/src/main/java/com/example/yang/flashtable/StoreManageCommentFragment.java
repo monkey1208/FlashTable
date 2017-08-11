@@ -20,8 +20,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class StoreManageCommentFragment extends ListFragment {
     private String shopID;
@@ -58,7 +62,7 @@ public class StoreManageCommentFragment extends ListFragment {
     private void setTitleBar(View view){
         Toolbar bar = (Toolbar)view.findViewById(R.id.store_manage_comment_tb_toolbar);
         bar.setPadding(0,getStatusBarHeight(),0,0);
-        Drawable dr = getResources().getDrawable(R.drawable.ic_back);
+        Drawable dr = getResources().getDrawable(R.drawable.ic_back_white);
         Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
         Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 50, 50, true));
         bar.setNavigationIcon(d);
@@ -83,7 +87,6 @@ public class StoreManageCommentFragment extends ListFragment {
 
     class APIShopComments extends AsyncTask<String, Void, Void> {
         private String status = null;
-        List<String> time_list = StoreMainActivity.storeInfo.getCommentTimeList();
         @Override
         protected Void doInBackground(String... params) {
             HttpClient httpClient = new DefaultHttpClient();
@@ -100,12 +103,18 @@ public class StoreManageCommentFragment extends ListFragment {
                         String body = user_comment.getString("body");
                         String score = user_comment.getString("score");
                         String user_picture_url = user_comment.getString("user_picture_url");
-                        comments.add( new StoreCommentInfo(userAccount, body, Float.parseFloat(score) / 2, user_picture_url, time_list.get(i-1)) );
+                        String comment_time = user_comment.getString("created_at");
+
+                        DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy", Locale.ENGLISH);
+                        Date date =  df.parse(comment_time);
+                        df = new SimpleDateFormat("yyyy/MM/dd  hh:mm a", Locale.ENGLISH);
+                        comment_time = df.format(date).replace("PM","pm").replace("AM", "am");
+                        comments.add( new StoreCommentInfo(userAccount, body, Float.parseFloat(score) / 2, user_picture_url, comment_time) );
                     }
                 }
             } catch (Exception e) {
                 status = null;
-                Log.d("GetCode", "Request exception:" + e.getMessage());
+                Log.d("GetCode", "Request exception:"+ e.getMessage());
             } finally {
                 httpClient.getConnectionManager().shutdown();
             }
@@ -114,7 +123,7 @@ public class StoreManageCommentFragment extends ListFragment {
         @Override
         protected void onPostExecute(Void _params) {
             if( status == null  || !status.equals("0") )
-                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "網路連線失敗，請檢查您的網路");
+                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "資料載入失敗，請重試");
             else    updateComments();
         }
     }

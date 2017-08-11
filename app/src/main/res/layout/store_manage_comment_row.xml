@@ -46,7 +46,7 @@
                 android:textSize="18sp"
                 android:textColor="@color/textColor"
                 android:layout_marginStart="17dp"
-                android:text="我"/>
+                android:text=""/>
 
             <TextView
                 android:id="@+id/store_manage_comment_tv_time"
@@ -86,7 +86,7 @@
         android:id="@+id/store_manage_comment_tv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="10dp"
         android:paddingEnd="30dp"
         android:textColor="@color/textColorLighter"
         android:textSize="16sp"

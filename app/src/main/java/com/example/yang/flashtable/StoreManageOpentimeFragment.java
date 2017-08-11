@@ -231,12 +231,10 @@ public class StoreManageOpentimeFragment extends Fragment {
     private class APITimeDetail extends AsyncTask<String, Void, Void> {
         boolean new_record_flag = true;
         List<RecordInfo> list;
-        List<String> time_list;
         boolean exception = false;
         @Override
         protected Void doInBackground(String...params) {
             list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
-            time_list = new ArrayList<>(StoreMainActivity.storeInfo.getCommentTimeList());
             dateList = new ArrayList<>();
             int origin_size = list.size();
             HttpClient httpClient = new DefaultHttpClient();
@@ -267,10 +265,6 @@ public class StoreManageOpentimeFragment extends Fragment {
                     RecordInfo info = new RecordInfo(account, num, point, time, session_time, is_success, url, promotion_des);
                     list.add(info);
 
-                    if(recordInfo.getString("is_used").equals("true")){
-                        df = new SimpleDateFormat("yyyy MM/dd  hh:mm a", Locale.ENGLISH);
-                        time_list.add( df.format(date).replace("AM", "am").replace("PM","pm") );
-                    }
                 }
             } catch (Exception e) {
                 exception = true;
@@ -283,7 +277,6 @@ public class StoreManageOpentimeFragment extends Fragment {
             if(!exception) {
                 if (new_record_flag) {
                     StoreMainActivity.storeInfo.setRecordList(list);
-                    StoreMainActivity.storeInfo.setCommentTimeList(time_list);
                 }
                 try {
                     int sum = 0;

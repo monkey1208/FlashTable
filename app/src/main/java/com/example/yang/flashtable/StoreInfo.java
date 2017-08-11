@@ -17,7 +17,6 @@ public class StoreInfo {
     public int successAppointment;
     public List<StoreDiscountInfo> discountList;
     public List<StoreDiscountInfo> not_delete_discountList;
-    public List<String> comment_timeList;
 
     private List<RecordInfo> recordList;
     private int success_record_num;
@@ -36,7 +35,6 @@ public class StoreInfo {
         recordList = new ArrayList<>();
         success_record_num = 0;
         discountCurrentId = -1;
-        comment_timeList = new ArrayList<>();
     }
     public void addAppointment(CustomerAppointInfo info, String domain){
         //TODO: notify server new appointment
@@ -55,14 +53,6 @@ public class StoreInfo {
 
     public List<RecordInfo> getRecordList(){
         return  recordList;
-    }
-
-    public void setCommentTimeList(List<String> list){
-        this.comment_timeList = new ArrayList<>(list);
-    }
-
-    public List<String> getCommentTimeList(){
-        return comment_timeList;
     }
 
     public int getSuccess_record_num(){

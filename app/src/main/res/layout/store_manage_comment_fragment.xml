@@ -11,17 +11,18 @@
         android:id="@+id/store_manage_comment_tb_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/btBottomColor"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" >
+        android:theme="?attr/actionBarTheme">
         <TextView
-            android:id="@+id/store_manage_comment_tv_toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="評價及評論"
-            android:textColor="@color/textColor"
-            android:textSize="22sp"/>
+            android:text="評論及評價"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp" />
     </android.support.v7.widget.Toolbar>
 
     <ImageView
