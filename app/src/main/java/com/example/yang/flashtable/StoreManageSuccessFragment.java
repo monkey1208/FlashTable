@@ -95,7 +95,6 @@ public class StoreManageSuccessFragment extends Fragment {
     private class ReservationSuccessDetail extends AsyncTask<Object, Void, Void> {
         int sum = 0, new_size;
         List<RecordInfo> list = new ArrayList<>(StoreMainActivity.storeInfo.getRecordList());
-        List<String> time_list = new ArrayList<>(StoreMainActivity.storeInfo.getCommentTimeList());
         boolean new_records_flag = true;
         boolean exception = false;
         @Override
@@ -132,10 +131,6 @@ public class StoreManageSuccessFragment extends Fragment {
                     RecordInfo info = new RecordInfo(account, num, point, time, session_time, is_success, url, promotion_des);
                     list.add(info);
 
-                    if(recordInfo.getString("is_used").equals("true")){
-                        df = new SimpleDateFormat("yyyy MM/dd  hh:mm a", Locale.ENGLISH);
-                        time_list.add( df.format(date).replace("AM", "am").replace("PM","pm") );
-                    }
                 }
             } catch (Exception e) {
                 exception = true;
@@ -150,7 +145,6 @@ public class StoreManageSuccessFragment extends Fragment {
                 if (new_records_flag || !was_browsed) {
                     Log.e("success", "refresh");
                     StoreMainActivity.storeInfo.setRecordList(list);
-                    StoreMainActivity.storeInfo.setCommentTimeList(time_list);
 
                     for (int i = 0; i < list.size(); i++) {
                         String is_success = list.get(i).is_succ;

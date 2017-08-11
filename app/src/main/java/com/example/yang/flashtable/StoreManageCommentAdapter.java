@@ -71,8 +71,8 @@ public class StoreManageCommentAdapter extends BaseAdapter{
         }
         holder.rb_rating.setRating(comment.rating);
         holder.rb_rating.setIsIndicator(true);
-        if(comment.record_time != null && !comment.record_time.equals("")){
-            holder.tv_time.setText(comment.record_time);
+        if(comment.created_time != null && !comment.created_time.equals("")){
+            holder.tv_time.setText(comment.created_time);
         }else{
             holder.tv_time.setText("");
         }
