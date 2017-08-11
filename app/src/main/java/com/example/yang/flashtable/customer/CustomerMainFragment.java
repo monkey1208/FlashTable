@@ -543,6 +543,7 @@ public class CustomerMainFragment extends Fragment implements Observer {
                 try {
                     if(isCancelled())
                         return null;
+                    Log.e("ShopId", String.valueOf(list.get(i).shop_id));
                     HttpGet requestShopRating = new HttpGet(getString(R.string.server_domain)+"api/shop_comments?shop_id=" + list.get(i).shop_id);
                     requestShopRating.addHeader("Content-Type", "application/json");
                     JSONArray responseShopRating = new JSONArray(new BasicResponseHandler().handleResponse(httpClient.execute(requestShopRating)));
@@ -550,14 +551,13 @@ public class CustomerMainFragment extends Fragment implements Observer {
                     if (!status.equals("0")) break;
                     shop_rating = responseShopRating.getJSONObject(0).getString("average_score");
                 } catch (Exception e) {
-                    //shop_rating = "0";
-                } finally {
-                    httpClient.getConnectionManager().shutdown();
+
                 }
-                info.rating = Float.parseFloat(shop_rating) / 2;
+                if (shop_rating != null) info.rating = Float.parseFloat(shop_rating) / 2;
+                Log.e ("ShopRating", shop_rating);
                 restaurantInfoList.add(info);
             }
-
+            httpClient.getConnectionManager().shutdown();
             return null;
         }
 

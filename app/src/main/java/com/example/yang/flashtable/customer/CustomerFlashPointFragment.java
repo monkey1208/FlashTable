@@ -167,7 +167,6 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
 //            image_map.put(String.valueOf(i), coupons.get(i).picture_url_large);
 
         for (int i = 0; i < banner_url.size(); i++) {
-            Log.e("Slider", banner_url.get(i));
             image_map.put(String.valueOf(i), banner_url.get(i));
         }
 
@@ -176,7 +175,6 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
 
             // Change DefaultSliderView to TextSliderView if you want text below it
             DefaultSliderView slider_view = new DefaultSliderView(view.getContext());
-            Log.e("ImageMap", name);
             slider_view
                     .description(name)
                     .image(image_map.get(name))
@@ -344,7 +342,6 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 for(int i = 1; i <= jsonObject.getInt("size"); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                    Log.e("FlashBanner", jsonObject1.getString("picture_url"));
                     banner_url.add(jsonObject1.getString("picture_url"));
                 }
             } catch (IOException e) {
