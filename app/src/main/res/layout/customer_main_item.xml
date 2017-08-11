@@ -21,30 +21,6 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_launcher"/>
 
-            <RatingBar
-                android:id="@+id/customer_main_rb_rating"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                style="@style/RatingBarSmall"
-                android:layout_marginStart="15dp"
-                android:layout_marginBottom="2dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"/>
-
-            <TextView
-                android:id="@+id/customer_main_tv_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:background="@color/moreTransparentBlack"
-                android:text="@string/customer_main_price"
-                android:textSize="12sp"
-                android:textColor="@color/white"/>
         </RelativeLayout>
 
         <LinearLayout
@@ -58,8 +34,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/customer_main_tv_name"
@@ -80,6 +55,40 @@
                     android:textColor="@color/textColorLighter"
                     android:text="@string/customer_main_distance"/>
 
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/customer_main_iv_available"
+                    android:layout_width="60dp"
+                    android:layout_height="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="2dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/available"/>
+
+                <RatingBar
+                    android:id="@+id/customer_main_rb_rating"
+                    android:layout_toEndOf="@id/customer_main_iv_available"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_alignTop="@id/customer_main_iv_available"
+                    style="@style/RatingBarSmall"
+                    android:layout_marginStart="5dp"/>
+
+                <TextView
+                    android:id="@+id/customer_main_tv_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:text="@string/customer_main_price"
+                    android:textSize="13sp"
+                    android:textColor="@color/textColorOrange"/>
             </RelativeLayout>
 
             <LinearLayout

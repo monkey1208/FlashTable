@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -165,12 +166,17 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
 //        for (int i = 0; i < coupons.size(); i++)
 //            image_map.put(String.valueOf(i), coupons.get(i).picture_url_large);
 
-        for (int i = 0; i < banner_url.size(); i++)
+        for (int i = 0; i < banner_url.size(); i++) {
+            Log.e("Slider", banner_url.get(i));
             image_map.put(String.valueOf(i), banner_url.get(i));
+        }
 
-        for (String name : image_map.keySet()) {
+        for (int i = 0; i < image_map.size(); i++) {
+            String name = String.valueOf(i);
+
             // Change DefaultSliderView to TextSliderView if you want text below it
             DefaultSliderView slider_view = new DefaultSliderView(view.getContext());
+            Log.e("ImageMap", name);
             slider_view
                     .description(name)
                     .image(image_map.get(name))
@@ -216,12 +222,6 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
         // private ProgressDialog progress_dialog = new ProgressDialog(CustomerFlashPointFragment.this.getActivity());
         private String status;
         private int points = 0;
-
-//        @Override
-//        protected void onPreExecute() {
-//            progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
-//            progress_dialog.show();
-//        }
 
         @Override
         protected Void doInBackground(String ...value) {
@@ -344,6 +344,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 for(int i = 1; i <= jsonObject.getInt("size"); i++) {
                     JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                    Log.e("FlashBanner", jsonObject1.getString("picture_url"));
                     banner_url.add(jsonObject1.getString("picture_url"));
                 }
             } catch (IOException e) {

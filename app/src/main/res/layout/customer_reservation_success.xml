@@ -114,6 +114,201 @@
                 android:background="@color/lightgray"
                 android:layout_marginBottom="20dp"/>
 
+
+            <!-- ABOUT THE RESTAURANT -->
+            <!-- Location -->
+            <LinearLayout
+                android:id="@+id/customer_reservation_ll_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginBottom="10dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_location_orange" />
+
+                <TextView
+                    android:id="@+id/customer_reservation_tv_show_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/textColorLighter" />
+
+            </LinearLayout>
+
+            <!-- Phone -->
+            <LinearLayout
+                android:id="@+id/customer_reservation_ll_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginBottom="10dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_phone" />
+
+                <TextView
+                    android:id="@+id/customer_reservation_tv_show_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/textColorLighter" />
+
+            </LinearLayout>
+
+            <!-- Open hours -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginBottom="10dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_time" />
+
+                <TextView
+                    android:id="@+id/customer_reservation_tv_show_open"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/textColorLighter" />
+
+            </LinearLayout>
+
+            <!-- Category -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginBottom="10dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_tableware"
+                    />
+
+                <TextView
+                    android:id="@+id/customer_reservation_tv_show_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/textColorLighter" />
+
+            </LinearLayout>
+
+            <!-- Website -->
+            <LinearLayout
+                android:id="@+id/customer_reservation_ll_website"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginBottom="20dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_shop" />
+
+                <TextView
+                    android:id="@+id/customer_reservation_tv_show_website"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/textColorLighter" />
+
+            </LinearLayout>
+
+            <!-- SPACER VIEW -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginBottom="20dp"
+                android:background="@color/lightgray"/>
+
+            <!-- Reservation regulations -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"
+                android:background="@color/white"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_information"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/customer_main_acknowledge"
+                    android:textColor="@color/textColorOrange"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/customer_reservation_tv_notice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="25dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:text="@string/customer_main_acknowledge_content"
+                android:textColor="@color/textColorLighter"
+                android:textSize="14sp"
+                android:lineSpacingExtra="2dp"/>
+
+            <!-- SPACER VIEW -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginBottom="20dp"
+                android:background="@color/lightgray"/>
+
         </LinearLayout>
     </ScrollView>
 
