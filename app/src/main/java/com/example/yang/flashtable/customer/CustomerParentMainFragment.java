@@ -607,7 +607,7 @@ public class CustomerParentMainFragment extends Fragment {
                     //publishProgress();
                     //shop_rating = "0";
                 } finally {
-                    httpClient.getConnectionManager().shutdown();
+                    //httpClient.getConnectionManager().shutdown();
                 }
                 info.rating = Float.parseFloat(shop_rating) / 2;
                 restaurantInfoList.add(info);

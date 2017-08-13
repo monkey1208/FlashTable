@@ -211,7 +211,7 @@
     <string name="customer_reservation_seconds">秒</string>
     <string name="customer_reservation_success">您已成功預約</string>
     <string name="customer_reservation_persons">人位</string>
-    <string name="customer_reservation_15_minutes">請於15分鐘內到達</string>
+    <string name="customer_reservation_15_minutes">請於30分鐘內到達</string>
     <string name="customer_reservation_qr_code">提醒您！記得給店家掃描以確認預約喔</string>
     <string name="customer_reservation_cancel">取消預約</string>
     <string name="customer_reservation_cancel_confirm">確定取消預約？</string>
