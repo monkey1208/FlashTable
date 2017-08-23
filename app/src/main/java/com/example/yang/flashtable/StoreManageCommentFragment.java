@@ -122,9 +122,11 @@ public class StoreManageCommentFragment extends ListFragment {
         }
         @Override
         protected void onPostExecute(Void _params) {
-            if( status == null  || !status.equals("0") )
-                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "資料載入失敗，請重試");
-            else    updateComments();
+            if(isAdded()) {
+                if (status == null || !status.equals("0"))
+                    new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "資料載入失敗，請重試");
+                else updateComments();
+            }
         }
     }
 

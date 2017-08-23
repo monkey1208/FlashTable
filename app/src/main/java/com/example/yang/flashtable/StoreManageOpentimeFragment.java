@@ -292,33 +292,38 @@ public class StoreManageOpentimeFragment extends Fragment {
                     }
                     StoreMainActivity.storeInfo.setSuccess_record_num(sum);
 
-
-                    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
-                    int thisYear = calendar.get(Calendar.YEAR);
-                    int thisMonth = calendar.get(Calendar.MONTH);
-                    int thisDay = calendar.get(Calendar.DAY_OF_MONTH);
-                    Calendar tmp_calender = Calendar.getInstance();
-                    int value[] = new int[DATA_COUNT[current_state]];
-                    for(int i = 0; i < dateList.size(); i+=1){
-                        tmp_calender.setTime(dateList.get(i));
-                        if(tmp_calender.get(Calendar.DAY_OF_MONTH) == thisDay && tmp_calender.get(Calendar.YEAR) == thisYear
-                                && tmp_calender.get(Calendar.MONTH) == thisMonth){
-                            value[tmp_calender.get(Calendar.HOUR_OF_DAY)] += 1;
+                    if(isAdded()) { //Check if this fragment is attached to Activity
+                        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+                        int thisYear = calendar.get(Calendar.YEAR);
+                        int thisMonth = calendar.get(Calendar.MONTH);
+                        int thisDay = calendar.get(Calendar.DAY_OF_MONTH);
+                        Calendar tmp_calender = Calendar.getInstance();
+                        int value[] = new int[DATA_COUNT[current_state]];
+                        for (int i = 0; i < dateList.size(); i += 1) {
+                            tmp_calender.setTime(dateList.get(i));
+                            if (tmp_calender.get(Calendar.DAY_OF_MONTH) == thisDay && tmp_calender.get(Calendar.YEAR) == thisYear
+                                    && tmp_calender.get(Calendar.MONTH) == thisMonth) {
+                                value[tmp_calender.get(Calendar.HOUR_OF_DAY)] += 1;
+                            }
                         }
+                        chart_bar.clear();
+                        int max_value = 0;
+                        for (int i = 0; i < DATA_COUNT[current_state]; i++) {
+                            max_value = value[i] > max_value ? value[i] : max_value;
+                        }
+                        setBarChart(value, max_value);
                     }
-                    chart_bar.clear();
-                    int max_value = 0;
-                    for(int i = 0; i < DATA_COUNT[current_state]; i++){
-                        max_value = value[i]>max_value? value[i] : max_value;
-                    }
-                    setBarChart(value, max_value);
 
                 } catch (Exception e) {
-                    new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "網路連線失敗，請檢查您的網路");
+                    if(isAdded()) {
+                        new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "資料載入失敗，請重試");
+                    }
                     e.printStackTrace();
                 }
             }else{
-                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "網路連線失敗，請檢查您的網路");
+                if(isAdded()) {
+                    new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "資料載入失敗，請重試");
+                }
             }
 
         }
