@@ -152,15 +152,19 @@ public class StoreManageSuccessFragment extends Fragment {
                             sum += 1;
                         }
                     }
-                    DecimalFormat df2 = new DecimalFormat(".##");
-                    tv_rate.setText(df2.format((sum + 0.0) / list.size() * 100));
-                    tv_total.setText(String.valueOf(list.size()));
-                    tv_fail.setText(String.valueOf(list.size() - sum));
-                    tv_success.setText(String.valueOf(sum));
+                    if(isAdded()) {
+                        DecimalFormat df2 = new DecimalFormat(".##");
+                        tv_rate.setText(df2.format((sum + 0.0) / list.size() * 100));
+                        tv_total.setText(String.valueOf(list.size()));
+                        tv_fail.setText(String.valueOf(list.size() - sum));
+                        tv_success.setText(String.valueOf(sum));
+                    }
                     StoreMainActivity.storeInfo.setSuccess_record_num(sum);
                 }
             }else{
-                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "網路連線失敗，請檢查您的網路");
+                if(isAdded()) {
+                    new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "網路連線失敗，請檢查您的網路");
+                }
             }
         }
     }

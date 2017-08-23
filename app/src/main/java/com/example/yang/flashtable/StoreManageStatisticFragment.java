@@ -123,21 +123,23 @@ public class StoreManageStatisticFragment extends ListFragment {
 
         @Override
         protected void onPostExecute(Void _params) {
-            if(exception){
-                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "網路連線失敗，請檢查您的網路");
-            }else{
-                StoreMainActivity.storeInfo.discountList = new ArrayList<>(tmp_discount_list);
-                StoreMainActivity.storeInfo.not_delete_discountList= new ArrayList<>(tmp_not_deleted_discount_list);
-                promotion_succ_num = new ArrayList<>(tmp_discount_list);
-                updateValues();
+            if(isAdded()) {
+                if (exception) {
+                    new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "資料載入失敗，請重試");
+                } else {
+                    StoreMainActivity.storeInfo.discountList = new ArrayList<>(tmp_discount_list);
+                    StoreMainActivity.storeInfo.not_delete_discountList = new ArrayList<>(tmp_not_deleted_discount_list);
+                    promotion_succ_num = new ArrayList<>(tmp_discount_list);
+                    updateValues();
 
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("DefaultDiscount", MODE_PRIVATE);
-                int default_id = sharedPreferences.getInt("promotion_id", -1);
-                String default_description = sharedPreferences.getString("description", "");
-                for (int i = 0; i < StoreMainActivity.storeInfo.not_delete_discountList.size(); i++) {
-                    if (default_id != -1 && StoreMainActivity.storeInfo.not_delete_discountList.get(i).description.equals(default_description)) {
-                        StoreMainActivity.storeInfo.not_delete_discountList.get(i).isDefault = true;
-                        StoreMainActivity.storeInfo.discountDefault = i;
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("DefaultDiscount", MODE_PRIVATE);
+                    int default_id = sharedPreferences.getInt("promotion_id", -1);
+                    String default_description = sharedPreferences.getString("description", "");
+                    for (int i = 0; i < StoreMainActivity.storeInfo.not_delete_discountList.size(); i++) {
+                        if (default_id != -1 && StoreMainActivity.storeInfo.not_delete_discountList.get(i).description.equals(default_description)) {
+                            StoreMainActivity.storeInfo.not_delete_discountList.get(i).isDefault = true;
+                            StoreMainActivity.storeInfo.discountDefault = i;
+                        }
                     }
                 }
             }

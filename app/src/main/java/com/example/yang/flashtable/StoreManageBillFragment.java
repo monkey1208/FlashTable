@@ -279,26 +279,28 @@ public class StoreManageBillFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(Void _params){
-            if(!exception) {
-                if (new_record_flag) {
-                    StoreMainActivity.storeInfo.setRecordList(recordList);
-                    recordList = new ArrayList<>(tmpList);
-                    setValues(view);
-                }
-                try {
-                    int sum = 0;
-                    for (int i = 0; i < recordList.size(); i++) {
-                        if (recordList.get(i).is_succ.equals("true")) {
-                            sum += 1;
-                        }
+            if(isAdded()) {
+                if (!exception) {
+                    if (new_record_flag) {
+                        StoreMainActivity.storeInfo.setRecordList(recordList);
+                        recordList = new ArrayList<>(tmpList);
+                        setValues(view);
                     }
-                    StoreMainActivity.storeInfo.setSuccess_record_num(sum);
-                } catch (Exception e) {
-                    new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "網路連線失敗，請檢查您的網路");
-                    e.printStackTrace();
+                    try {
+                        int sum = 0;
+                        for (int i = 0; i < recordList.size(); i++) {
+                            if (recordList.get(i).is_succ.equals("true")) {
+                                sum += 1;
+                            }
+                        }
+                        StoreMainActivity.storeInfo.setSuccess_record_num(sum);
+                    } catch (Exception e) {
+                        new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "資料載入失敗，請重試");
+                        e.printStackTrace();
+                    }
+                } else {
+                    new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(), "提醒", "網路連線失敗，請檢查您的網路");
                 }
-            }else{
-                new AlertDialogController(getString(R.string.server_domain)).warningConfirmDialog(getContext(),"提醒", "網路連線失敗，請檢查您的網路");
             }
         }
     }

@@ -152,21 +152,23 @@ public class StoreManageDiscountDeleteFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(Void _params){
-            if(exception){
-                new AlertDialogController("").warningConfirmDialog(getContext(), "提醒", "網路連線失敗，請檢查您的網路");
-            }else {
-                for (int i = 0; i < StoreMainActivity.storeInfo.discountList.size(); i++) {
-                    if (removed_promotion_id == StoreMainActivity.storeInfo.discountList.get(i).getId()) {
-                        StoreMainActivity.storeInfo.discountList.get(i).deleteDiscount();
-                        break;
+            if(isAdded()) {
+                if (exception) {
+                    new AlertDialogController("").warningConfirmDialog(getContext(), "提醒", "網路連線失敗，請檢查您的網路");
+                } else {
+                    for (int i = 0; i < StoreMainActivity.storeInfo.discountList.size(); i++) {
+                        if (removed_promotion_id == StoreMainActivity.storeInfo.discountList.get(i).getId()) {
+                            StoreMainActivity.storeInfo.discountList.get(i).deleteDiscount();
+                            break;
+                        }
                     }
-                }
-                for (int i = 0; i < StoreMainActivity.storeInfo.not_delete_discountList.size(); i++) {
-                    if (removed_promotion_id == StoreMainActivity.storeInfo.not_delete_discountList.get(i).getId()) {
-                        StoreMainActivity.storeInfo.not_delete_discountList.remove(i);
+                    for (int i = 0; i < StoreMainActivity.storeInfo.not_delete_discountList.size(); i++) {
+                        if (removed_promotion_id == StoreMainActivity.storeInfo.not_delete_discountList.get(i).getId()) {
+                            StoreMainActivity.storeInfo.not_delete_discountList.remove(i);
+                        }
                     }
+                    StoreManageDiscountFragment.deletePromotionList(removed_promotion_id);
                 }
-                StoreManageDiscountFragment.deletePromotionList(removed_promotion_id);
             }
         }
     }
