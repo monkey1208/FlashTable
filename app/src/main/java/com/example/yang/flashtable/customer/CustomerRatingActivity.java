@@ -62,7 +62,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
     }
 
     public void initView() {
-        setTitle(getResources().getString(R.string.customer_rating_title));
+        //setTitle(getResources().getString(R.string.customer_rating_title));
         setTitleColor(R.color.white);
         // setupActionBar();
 
@@ -125,7 +125,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
         user = this.getSharedPreferences("USER", MODE_PRIVATE);
         user_id = user.getString("userID", "");
     }
-
+    /*
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setupActionBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -140,7 +140,7 @@ public class CustomerRatingActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
+    */
     @Override
     public void onBackPressed() {
         closeActivity();

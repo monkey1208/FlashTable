@@ -92,7 +92,7 @@
         <activity
             android:name=".customer.CustomerRatingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.TransparentActionBar"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".customer.CustomerNameActivity"
