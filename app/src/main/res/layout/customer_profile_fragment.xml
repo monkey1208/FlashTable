@@ -3,12 +3,12 @@
     android:id="@+id/customer_profile_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/customer_bg_profile"
     android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/customer_bg_profile">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -199,34 +199,28 @@
             <!-- Buttons below -->
 
             <!-- Treat this like a button -->
+
             <LinearLayout
                 android:id="@+id/customer_profile_ll_reservations"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white">
+                android:background="?android:attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/ic_reservations"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:orientation="horizontal"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="15dp">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="15dp"
-                        android:src="@drawable/ic_reservations"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/customer_profile_reservations"/>
-                </LinearLayout>
-
+                    android:text="@string/customer_profile_reservations"/>
             </LinearLayout>
 
             <!-- SPACER VIEW -->
@@ -236,33 +230,28 @@
                 android:background="@color/lightgray"/>
 
             <!-- Treat this like a button -->
+
             <LinearLayout
                 android:id="@+id/customer_profile_ll_comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white">
+                android:background="?android:attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/ic_comments"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:orientation="horizontal"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="15dp">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="15dp"
-                        android:src="@drawable/ic_comments"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/customer_profile_comments"/>
-                </LinearLayout>
+                    android:text="@string/customer_profile_comments"/>
             </LinearLayout>
 
             <!-- SPACER VIEW -->
@@ -272,33 +261,28 @@
                 android:background="@color/lightgray"/>
 
             <!-- Treat this like a button -->
+
             <LinearLayout
                 android:id="@+id/customer_profile_ll_points_record"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white">
+                android:background="?android:attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/ic_flash_points"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:orientation="horizontal"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="15dp">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="15dp"
-                        android:src="@drawable/ic_flash_points"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/customer_profile_points_record"/>
-                </LinearLayout>
+                    android:text="@string/customer_profile_points_record"/>
             </LinearLayout>
 
             <!-- SPACER VIEW -->
@@ -308,33 +292,28 @@
                 android:background="@color/lightgray"/>
 
             <!-- Treat this like a button -->
+
             <LinearLayout
                 android:id="@+id/customer_profile_ll_contact_us"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white">
+                android:background="?android:attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/ic_contact_us"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:orientation="horizontal"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="15dp">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="15dp"
-                        android:src="@drawable/ic_contact_us"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/customer_profile_contact_us"/>
-                </LinearLayout>
+                    android:text="@string/customer_profile_contact_us"/>
             </LinearLayout>
 
             <!-- SPACER VIEW -->
