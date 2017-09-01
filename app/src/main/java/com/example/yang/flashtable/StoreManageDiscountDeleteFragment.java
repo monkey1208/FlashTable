@@ -165,6 +165,9 @@ public class StoreManageDiscountDeleteFragment extends Fragment {
                     for (int i = 0; i < StoreMainActivity.storeInfo.not_delete_discountList.size(); i++) {
                         if (removed_promotion_id == StoreMainActivity.storeInfo.not_delete_discountList.get(i).getId()) {
                             StoreMainActivity.storeInfo.not_delete_discountList.remove(i);
+                            if(i == StoreMainActivity.storeInfo.discountDefault){
+                                StoreMainActivity.storeInfo.discountDefault = -1;
+                            }
                         }
                     }
                     StoreManageDiscountFragment.deletePromotionList(removed_promotion_id);
