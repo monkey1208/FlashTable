@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,10 +16,12 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.DialogEventListener;
@@ -35,7 +39,10 @@ import com.example.yang.flashtable.R;
 import com.example.yang.flashtable.customer.database.SqlHandler;
 import com.example.yang.flashtable.customer.infos.CustomerAppInfo;
 import com.example.yang.flashtable.customer.infos.CustomerRestaurantInfo;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -115,7 +122,6 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         this.googleMap = googleMap;
         gps = new CustomerGps(getActivity(), googleMap);
         gpsPermission();
-
     }
 
     @Override
@@ -140,14 +146,38 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
     private void gpsPermission() {
         if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            //setMap();
-            new CurrentLocation().execute();
+            getLocationPermission();
+            //new CurrentLocation().execute(view.getContext());
         } else {
             // Show rationale and request permission.
             // No explanation needed, we can request the permission.
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     FINE_LOCATION_CODE);
+        }
+    }
+
+    public void getLocationPermission() {
+        Location location = null;
+        try {
+            LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+
+            // getting GPS status
+            boolean isGPSEnabled = locationManager
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            // getting network status
+            boolean isNetworkEnabled = locationManager
+                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                // no network provider is enabled
+                locationPermission();
+            }else{
+                setMap();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -277,7 +307,7 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         setRestMap();
     }
 
-    public class CustomerGps implements GoogleApiClient.ConnectionCallbacks {
+    public class CustomerGps implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
         private static final String TAG = "GPSService";
         private LocationManager locationManager;
         private String provider;
@@ -290,6 +320,10 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         private View bottom_sheet;
         private BottomSheetBehavior bottom_sheet_behavior;
         private BitmapDescriptor descriptor_origin, descriptor_clicked;
+        private Location mLastLocation;
+        private GoogleApiClient mGoogleApiClient;
+        private LocationRequest mLocationRequest;
+        private boolean first_update = true;
 
         public CustomerGps(Activity c, GoogleMap googleMap) {
             this.c = c;
@@ -298,9 +332,6 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
             //descriptor_clicked = BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_red));
             descriptor_origin = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_customer_map_orange));
             descriptor_clicked = BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_customer_map_red));
-
-
-
             //descriptor_origin = BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_restaurant));
             //descriptor_clicked = BitmapDescriptorFactory.fromBitmap(createScaledMarker(R.drawable.ic_customer_map_choosedrestaurant));
         }
@@ -385,10 +416,13 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         };
 
         public void execute() {
-            gpsUpdate();
+            initMarker(true);
+            //Location location = getLocation();
+            Location location = getCurrentLocation(view.getContext());
+            //gpsUpdate();
         }
 
-        private void gpsUpdate() {
+        private void gpsUpdate(Location location) {
             if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
@@ -399,8 +433,6 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                 // for ActivityCompat#requestPermissions for more details.
                 return;
             }
-            initMarker(true);
-            Location location = getLocation();
             moveMap(new LatLng(location.getLatitude(), location.getLongitude()));
             updateWithNewLocation(location);
             init();
@@ -427,17 +459,22 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
 
 
         private void updateWithNewLocation(Location location) {
-            if (location != null) {
-                //經度
-                double lng = location.getLongitude();
-                //緯度
-                double lat = location.getLatitude();
-                Log.d(TAG, "new location latlng=(" + lat + "," + lng + ")");
-                latLng = null;
-                latLng = new LatLng(lat, lng);
-                if (latLng != null) {
-                    marker.setPosition(latLng);
-                    CustomerAppInfo.getInstance().setLocation(location);
+            if(first_update){
+                first_update = false;
+                gpsUpdate(location);
+            }else {
+                if (location != null) {
+                    //經度
+                    double lng = location.getLongitude();
+                    //緯度
+                    double lat = location.getLatitude();
+                    Log.d(TAG, "new location latlng=(" + lat + "," + lng + ")");
+                    latLng = null;
+                    latLng = new LatLng(lat, lng);
+                    if (latLng != null) {
+                        marker.setPosition(latLng);
+                        CustomerAppInfo.getInstance().setLocation(location);
+                    }
                 }
             }
         }
@@ -600,24 +637,84 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
             startActivity(intent);
         }
 
+        public Location getCurrentLocation(Context context) {
+            buildGoogleApiClient();
+            mGoogleApiClient.connect();
+            if ((ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+                return null;
+            }
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            return mLastLocation;
+        }
+
+        public void buildGoogleApiClient() {
+            mGoogleApiClient = new GoogleApiClient.Builder(c)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+
+        protected void startLocationUpdates() {
+            // Create the location request
+            mLocationRequest = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setInterval(0)
+                    .setFastestInterval(0);
+
+            // Request location updates
+            if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+
         @Override
-        public void onConnected(Bundle bundle) {
-            
+        public void onConnected(@Nullable Bundle bundle) {
+            if (ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(view.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            startLocationUpdates();
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if(mLastLocation == null){
+                startLocationUpdates();
+            }
+
+            if (mLastLocation != null) {
+                updateWithNewLocation(mLastLocation);
+            }
         }
 
         @Override
         public void onConnectionSuspended(int i) {
 
         }
-    }
 
-    private class CurrentLocation {
-        boolean flag = true;
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);;
-        public void execute() {
-            getLocation();
+        @Override
+        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
         }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            updateWithNewLocation(location);
+        }
+    }
+
+    private class CurrentLocation implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+        boolean flag = true;
+        private Location mLastLocation;
+        private GoogleApiClient mGoogleApiClient;
+        private LocationRequest mLocationRequest;
+        private Context context;
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);;
+        public void execute(Context context) {
+            this.context = context;
+            //getLocation();
+            getCurrentLocation(context);
+        }
+
+
         private void locationPermission() {
             new DialogBuilder(getActivity()).dialogEvent(getString(R.string.dialog_gps_permission), "withCancel", new DialogEventListener() {
                 @Override
@@ -632,6 +729,8 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         }
         public void setLocation(Location location){
             if (location != null) {
+                if(mGoogleApiClient.isConnected())
+                    mGoogleApiClient.disconnect();
                 CustomerAppInfo.getInstance().setLocation(location);
                 setMap();
 
@@ -722,6 +821,80 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
             public void onProviderDisabled(String s) {
             }
         };
+
+        public Location getCurrentLocation(Context context) {
+            this.context = context;
+            buildGoogleApiClient();
+            mGoogleApiClient.connect();
+            if ((ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+                flag = false;
+            }
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if(mLastLocation != null)
+                setLocation(mLastLocation);
+            return mLastLocation;
+        }
+
+        public void buildGoogleApiClient() {
+            mGoogleApiClient = new GoogleApiClient.Builder(context)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+
+        protected void startLocationUpdates() {
+            // Create the location request
+            mLocationRequest = LocationRequest.create()
+                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                    .setInterval(0)
+                    .setFastestInterval(0);
+
+            // Request location updates
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                flag = false;
+                return;
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+
+        @Override
+        public void onConnected(@Nullable Bundle bundle) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                flag = false;
+                return;
+            }
+            startLocationUpdates();
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if(mLastLocation == null){
+                startLocationUpdates();
+            }
+
+            if (mLastLocation != null) {
+                setLocation(mLastLocation);
+            } else {
+                flag = false;
+                setLocation(null);
+                Toast.makeText(context, "Location not Detected, Did you turn off your location?", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onConnectionSuspended(int i) {
+
+        }
+
+        @Override
+        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            setLocation(location);
+            if(mGoogleApiClient.isConnected())
+                mGoogleApiClient.disconnect();
+        }
     }
 
     private class ApiPromotion extends AsyncTask<Double, Void, String> {
@@ -879,5 +1052,16 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-
+    private void locationPermission() {
+        new DialogBuilder(getActivity()).dialogEvent(getString(R.string.dialog_gps_permission), "withCancel", new DialogEventListener() {
+            @Override
+            public void clickEvent(boolean ok, int status) {
+                if(!ok) {
+                    ((CustomerMainActivity)getActivity()).logout(true);
+                }else{
+                    startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), CustomerMainActivity.LOCATION_SETTING_CODE);
+                }
+            }
+        });
+    }
 }

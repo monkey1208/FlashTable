@@ -39,6 +39,8 @@ import android.widget.Toast;
 import com.example.yang.flashtable.DialogBuilder;
 import com.example.yang.flashtable.DialogEventListener;
 import com.example.yang.flashtable.R;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -114,7 +116,6 @@ public class CustomerProfileFragment extends Fragment {
 
         tv_username.setText(username);
         tv_credit.setText(credits + "-");
-        new CustomerAPIProfile().execute(userID);
 
         ll_reservations.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,6 +218,8 @@ public class CustomerProfileFragment extends Fragment {
                 ((CustomerMainActivity)getActivity()).navigate("points");
             }
         });
+
+        new CustomerAPIProfile().execute(userID);
     }
 
     private void setPointRatio(int points_ratio) {
@@ -432,7 +435,22 @@ public class CustomerProfileFragment extends Fragment {
                 }
 
                 // TODO: Get image from local storage if available.
-                if (pic_url != null && !pic_url.equals("")) avatar = getRoundedShape(BitmapFactory.decodeStream((InputStream)new URL(pic_url).getContent()));
+                if (pic_url != null && !pic_url.equals("")) {
+                    /*
+                    ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
+                    imageLoader.loadImage(pic_url, new SimpleImageLoadingListener() {
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            // Do whatever you want with Bitmap
+                            avatar = getRoundedShape(loadedImage);
+                            iv_avatar.setImageBitmap(avatar);
+                        }
+                    });
+                    // Bitmap bmp = imageLoader.loadImageSync(pic_url);
+                    */
+                    avatar = BitmapFactory.decodeStream((InputStream)new URL(pic_url).getContent());
+
+                }
 
                 HttpGet requestRatio = new HttpGet(
                         getString(R.string.server_domain)+"api/flash_rate");
@@ -457,7 +475,7 @@ public class CustomerProfileFragment extends Fragment {
                 dialog_builder.dialogEvent(getResources().getString(R.string.login_error_connection), "normal", null);
             else {
                 tv_credit.setText(credits + _content);
-                if (avatar != null) iv_avatar.setImageBitmap(avatar);
+                if (avatar != null) iv_avatar.setImageBitmap(getRoundedShape(avatar));
                 tv_points.setText(flash_points);
                 setPointRatio(ratio);
             }

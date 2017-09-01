@@ -395,8 +395,8 @@ public class CustomerParentMainFragment extends Fragment {
         }
 
         public void execute() {
-            getLocation();
-            //getCurrentLocation(context);
+            getLocationPermission();
+            getCurrentLocation(context);
         }
 
         public void setLocation(Location location){
@@ -417,7 +417,7 @@ public class CustomerParentMainFragment extends Fragment {
             }
         }
 
-        public void getLocation() {
+        public void getLocationPermission() {
             Location location = null;
             try {
                 locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
@@ -434,44 +434,9 @@ public class CustomerParentMainFragment extends Fragment {
                     // no network provider is enabled
                     flag = false;
                     setLocation(null);
-                } else {
-                    if (isNetworkEnabled) {
-                        locationManager.requestLocationUpdates(
-                                LocationManager.NETWORK_PROVIDER,
-                                500,
-                                0, listener);
-                        Log.d("Network", "Network Enabled");
-                        if (locationManager != null) {
-                            if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                                setLocation(null);
-                            }
-                            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-                        }
-                    }
-                    // if GPS Enabled get lat/long using GPS Services
-                    if (isGPSEnabled) {
-                        if (location == null) {
-                            locationManager.requestLocationUpdates(
-                                    LocationManager.GPS_PROVIDER,
-                                    500,
-                                    0, listener);
-                            Log.d("GPS", "GPS Enabled");
-                            if (locationManager != null) {
-                                location = locationManager
-                                        .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                            }
-                        }
-                    }
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-            if(location != null){
-                setLocation(location);
             }
         }
 
@@ -502,8 +467,11 @@ public class CustomerParentMainFragment extends Fragment {
             buildGoogleApiClient();
             mGoogleApiClient.connect();
             if ((ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+                flag = false;
             }
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if(mLastLocation != null)
+                setLocation(mLastLocation);
             return mLastLocation;
         }
 
@@ -524,7 +492,7 @@ public class CustomerParentMainFragment extends Fragment {
 
             // Request location updates
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+                flag = false;
                 return;
             }
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
@@ -532,7 +500,9 @@ public class CustomerParentMainFragment extends Fragment {
 
         @Override
         public void onConnected(@Nullable Bundle bundle) {
+
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                flag = false;
                 return;
             }
             startLocationUpdates();
@@ -540,13 +510,9 @@ public class CustomerParentMainFragment extends Fragment {
             if(mLastLocation == null){
                 startLocationUpdates();
             }
-
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mLastLocation != null) {
                 setLocation(mLastLocation);
-            } else {
-                flag = false;
-                setLocation(null);
-                Toast.makeText(context, "Location not Detected, Did you turn off your location?", Toast.LENGTH_SHORT).show();
             }
         }
 

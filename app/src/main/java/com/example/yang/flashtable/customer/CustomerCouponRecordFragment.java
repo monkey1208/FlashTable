@@ -1,5 +1,6 @@
 package com.example.yang.flashtable.customer;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -94,7 +95,7 @@ public class CustomerCouponRecordFragment extends Fragment {
 
     public void updateRecords() {
         adapter.notifyDataSetChanged();
-        lv_records.setAdapter(adapter);
+        if (lv_records != null) lv_records.setAdapter(adapter);
 
         if (records.size() > 0) tv_nothing.setVisibility(View.INVISIBLE);
         else {
@@ -168,23 +169,26 @@ public class CustomerCouponRecordFragment extends Fragment {
             try {
                 HttpClient httpClient = new DefaultHttpClient();
                 HttpResponse httpResponse = httpClient.execute(httpGet);
-                ResponseHandler<String> handler = new BasicResponseHandler();
-                String json = handler.handleResponse(httpResponse);
-                System.out.println("records : "+json);
-                JSONArray jsonArray = new JSONArray(json);
-                JSONObject jsonObject = jsonArray.getJSONObject(0);
-                for(int i = 1; i <= jsonObject.getInt("size"); i++) {
-                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                    System.out.println("record: " + jsonObject1.toString());
-                    CustomerCouponRecordInfo info = new CustomerCouponRecordInfo();
-                    info.name = "已成功在" + jsonObject1.getString("shop_name")
-                            + "領取" + jsonObject1.getString("number") + "人桌位";
-                    info.code_id = jsonObject1.getString("promotion_id");
-                    info.points = jsonObject1.getInt("delta_flash_point");
-                    info.time = jsonObject1.getString("created_at");
-                    info.type = 0;
+                Activity activity = getActivity();
+                if(activity != null) {
+                    ResponseHandler<String> handler = new BasicResponseHandler();
+                    String json = handler.handleResponse(httpResponse);
+                    System.out.println("records : " + json);
+                    JSONArray jsonArray = new JSONArray(json);
+                    JSONObject jsonObject = jsonArray.getJSONObject(0);
+                    for (int i = 1; i <= jsonObject.getInt("size"); i++) {
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                        System.out.println("record: " + jsonObject1.toString());
+                        CustomerCouponRecordInfo info = new CustomerCouponRecordInfo();
+                        info.name = "已成功在" + jsonObject1.getString("shop_name")
+                                + "領取" + jsonObject1.getString("number") + "人桌位";
+                        info.code_id = jsonObject1.getString("promotion_id");
+                        info.points = jsonObject1.getInt("delta_flash_point");
+                        info.time = jsonObject1.getString("created_at");
+                        info.type = 0;
 
-                    if (info.points > 0) records.add(info);
+                        if (info.points > 0) records.add(info);
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();

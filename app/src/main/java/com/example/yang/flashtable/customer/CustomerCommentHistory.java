@@ -124,7 +124,7 @@ public class CustomerCommentHistory extends AppCompatActivity {
 
     public void updateComments() {
         comment_adapter.notifyDataSetChanged();
-        lv_comments.setAdapter(comment_adapter);
+        if (lv_comments != null) lv_comments.setAdapter(comment_adapter);
 
         if (comments.size() > 0) tv_nothing.setVisibility(View.INVISIBLE);
         else tv_nothing.setVisibility(View.VISIBLE);
@@ -165,6 +165,7 @@ public class CustomerCommentHistory extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
+            progress_dialog.setCanceledOnTouchOutside(false);
             progress_dialog.show();
         }
         @Override
@@ -231,6 +232,7 @@ public class CustomerCommentHistory extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
+            progress_dialog.setCanceledOnTouchOutside(false);
             progress_dialog.show();
         }
         @Override
