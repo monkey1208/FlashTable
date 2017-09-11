@@ -1,6 +1,7 @@
 package com.example.yang.flashtable.customer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -72,6 +73,8 @@ public class CustomerGuideActivity extends AppCompatActivity /* implements BaseS
             @Override
             public void onClick(View view) {
                 Toast.makeText(CustomerGuideActivity.this, "歡迎使用Flash Table!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(CustomerGuideActivity.this, CustomerMainActivity.class);
+                CustomerGuideActivity.this.startActivity(intent);
                 finish();
             }
         });
@@ -140,72 +143,4 @@ public class CustomerGuideActivity extends AppCompatActivity /* implements BaseS
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeResource(res, resId, options);
     }
-    /*
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Set to fullscreen.
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.customer_guide_activity);
-
-
-    }
-        sl_guide = (SliderLayout) findViewById(R.id.customer_guide_sl_guide);
-        sl_guide.removeAllSliders();
-        image_map = new HashMap<>();
-        image_map.put("0", R.drawable.guide_00);
-        image_map.put("1", R.drawable.guide_01);
-        image_map.put("2", R.drawable.guide_02);
-        image_map.put("3", R.drawable.guide_03);
-        image_map.put("4", R.drawable.guide_04);
-
-        for (String name : image_map.keySet()) {
-            // Change DefaultSliderView to TextSliderView if you want text below it
-            DefaultSliderView slider_view = new DefaultSliderView(getBaseContext());
-
-            slider_view
-                    .image(image_map.get(name))
-                    .description(name)
-                    .setScaleType(BaseSliderView.ScaleType.CenterCrop)
-                    .setOnSliderClickListener(this);
-            sl_guide.addSlider(slider_view);
-        }
-        sl_guide.setPresetTransformer(SliderLayout.Transformer.DepthPage);
-        sl_guide.setIndicatorVisibility(PagerIndicator.IndicatorVisibility.Invisible);
-        sl_guide.addOnPageChangeListener(this);
-
-    }
-
-    @Override
-    public void onSliderClick(BaseSliderView slider) {
-        sl_guide.moveNextPosition();
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if (position == image_map.size() - 1) {
-            sl_guide.stopAutoCycle();
-            Toast.makeText(this, "點選返回以進入應用程式", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
-
-    @Override
-    protected void onStop() {
-        sl_guide.stopAutoCycle();
-        super.onStop();
-    }
-    */
 }

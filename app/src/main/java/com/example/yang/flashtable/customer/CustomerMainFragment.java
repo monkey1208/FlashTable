@@ -95,15 +95,6 @@ public class CustomerMainFragment extends Fragment implements Observer {
 
         user = this.getActivity().getSharedPreferences("USER", MODE_PRIVATE);
 
-        SharedPreferences guide = this.getActivity().getSharedPreferences("GUIDE", MODE_PRIVATE);
-        viewed_guide = guide.getBoolean("viewed_guide", false);
-
-        if (!viewed_guide) {
-            Intent intent = new Intent(this.getActivity(), CustomerGuideActivity.class);
-            startActivity(intent);
-            guide.edit().putBoolean("viewed_guide", true).apply();
-        }
-
         my_location = CustomerAppInfo.getInstance().getLocation();
         if(my_location == null){
             my_location = new Location("");

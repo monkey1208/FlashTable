@@ -328,9 +328,20 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                 startActivity(intent);
                 CustomerLoadingActivity.this.finish();
             } else {
-                Intent intent = new Intent(CustomerLoadingActivity.this, CustomerMainActivity.class);
-                startActivity(intent);
-                CustomerLoadingActivity.this.finish();
+
+                SharedPreferences guide = CustomerLoadingActivity.this.getSharedPreferences("GUIDE", MODE_PRIVATE);
+                boolean viewed_guide = guide.getBoolean("viewed_guide", false);
+
+                if (!viewed_guide) {
+                    Intent intent = new Intent(CustomerLoadingActivity.this, CustomerGuideActivity.class);
+                    startActivity(intent);
+                    guide.edit().putBoolean("viewed_guide", true).apply();
+                }
+                else {
+                    Intent intent = new Intent(CustomerLoadingActivity.this, CustomerMainActivity.class);
+                    startActivity(intent);
+                    CustomerLoadingActivity.this.finish();
+                }
 
             }
         }
