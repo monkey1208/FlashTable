@@ -10,8 +10,8 @@ public class StoreInfo {
     public String name;
     public String address;
     public String url;
-    public int discountDefault; //Position in not_deleted_discount_list
-    public int discountCurrent; //Position in not_deleted_discount_list
+    public int discountDefault; //Position of default discount in not_deleted_discount_list
+    public int discountCurrent; //Position of current discount in not_deleted_discount_list
     public int discountCurrentId; // Promotion Id for current active discount in not_deleted_discount_list
     public int totalAppointment;
     public int successAppointment;
