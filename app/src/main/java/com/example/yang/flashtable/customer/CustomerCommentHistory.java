@@ -177,6 +177,12 @@ public class CustomerCommentHistory extends AppCompatActivity {
                 request.addHeader("Content-Type", "application/json");
                 JSONArray responseJSON = new JSONArray( new BasicResponseHandler().handleResponse( httpClient.execute(request) ) );
                 status = responseJSON.getJSONObject(0).getString("status_code");
+
+                HttpGet requestShop = new HttpGet(getString(R.string.server_domain)+"api/shop_info?shop_id=" + params[0]);
+                requestShop.addHeader("Content-Type", "application/json");
+                JSONObject responseShop = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestShop) ) );
+
+                String shopName = responseShop.getString("name");
                 if( status.equals("0") ) {
                     int size = Integer.parseInt( responseJSON.getJSONObject(0).getString("size") );
                     for(int i = 1 ; i <= size ; i++) {
@@ -197,13 +203,6 @@ public class CustomerCommentHistory extends AppCompatActivity {
                             InputStream input = connection.getInputStream();
                             avatar = BitmapFactory.decodeStream(input);
                         }
-
-                        HttpGet requestShop = new HttpGet(getString(R.string.server_domain)+"api/shop_info?shop_id=" + shop_id);
-                        requestShop.addHeader("Content-Type", "application/json");
-                        JSONObject responseShop = new JSONObject( new BasicResponseHandler().handleResponse( httpClient.execute(requestShop) ) );
-                        status = responseShop.getString("status_code");
-                        if( !status.equals("0") )   break;
-                        String shopName = responseShop.getString("name");
 
                         CustomerCommentInfo comment = new CustomerCommentInfo( userAccount, shopName, body, Float.parseFloat(score) / 2, Integer.parseInt(user_id), Integer.parseInt(shop_id) );
                         if (avatar != null) comment.avatar = getRoundedShape(avatar);

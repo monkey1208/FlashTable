@@ -206,13 +206,14 @@
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp">
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="50dp"
+                    android:layout_height="30dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="15dp"
                     android:src="@drawable/ic_reservations"/>
@@ -237,13 +238,14 @@
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp">
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="50dp"
+                    android:layout_height="30dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="15dp"
                     android:src="@drawable/ic_comments"/>
@@ -268,16 +270,17 @@
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp">
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="50dp"
+                    android:layout_height="30dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="15dp"
-                    android:src="@drawable/ic_flash_points"/>
+                    android:src="@drawable/ic_flash_points_profile"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -299,13 +302,14 @@
                 android:layout_height="wrap_content"
                 android:background="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp">
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="50dp"
+                    android:layout_height="30dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="15dp"
                     android:src="@drawable/ic_contact_us"/>
