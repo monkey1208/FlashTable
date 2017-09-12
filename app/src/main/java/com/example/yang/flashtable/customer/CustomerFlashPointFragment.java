@@ -89,14 +89,14 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
                 R.layout.customer_flash_point_header, lv_coupons, false);
         lv_coupons.addHeaderView(header);
 
-        tv_nothing = (TextView) view.findViewById(R.id.customer_points_tv_nothing);
+        tv_nothing = (TextView) header.findViewById(R.id.customer_points_tv_nothing);
 
         // Header views
-        ll_header = (LinearLayout) header.findViewById(R.id.customer_points_ll_header);
+        ll_header = (LinearLayout) view.findViewById(R.id.customer_points_ll_header);
+        tv_points = (TextView) view.findViewById(R.id.customer_points_tv_points);
+        tv_records = (TextView) view.findViewById(R.id.customer_points_tv_records);
         sl_coupons = (SliderLayout) header.findViewById(R.id.customer_points_sl_coupons);
         sl_coupons.startAutoCycle();
-        tv_points = (TextView) header.findViewById(R.id.customer_points_tv_points);
-        tv_records = (TextView) header.findViewById(R.id.customer_points_tv_records);
 
     }
 
@@ -259,13 +259,6 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
     private class ApiCoupons extends AsyncTask<Void, Void, Void>{
 
         private boolean success = true;
-//        private ProgressDialog progress_dialog = new ProgressDialog(CustomerFlashPointFragment.this.getActivity());
-//
-//        @Override
-//        protected void onPreExecute() {
-//            progress_dialog.setMessage( getResources().getString(R.string.login_wait) );
-//            progress_dialog.show();
-//        }
 
         @Override
         protected Void doInBackground(Void ...value) {
@@ -296,7 +289,8 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
                     connection.setDoInput(true);
                     connection.connect();
                     InputStream input = connection.getInputStream();
-                    info.picture_small = BitmapFactory.decodeStream(input);
+                    if (input != null) info.picture_small = BitmapFactory.decodeStream(input);
+                    else info.picture_small = BitmapFactory.decodeResource(getResources(), R.drawable.icon_default_discount);
 
                     coupons.add(info);
                 }
@@ -305,6 +299,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
                 success = false;
             } catch (JSONException e) {
                 e.printStackTrace();
+                success = false;
             }
             return null;
         }
@@ -316,6 +311,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
             if (!success) {
                 dialog_builder.dialogEvent(
                         "資料載入失敗，請重試", "normal", null);
+                tv_nothing.setVisibility(View.INVISIBLE);
             }
             else {
                 //get coupon list
@@ -359,6 +355,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
             if (!success) {
                 dialog_builder.dialogEvent(
                         "資料載入失敗，請重試", "normal", null);
+                tv_nothing.setVisibility(View.INVISIBLE);
             }
             else {
                 setSlider();

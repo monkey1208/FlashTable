@@ -3,81 +3,6 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Header -->
-    <LinearLayout
-        android:id="@+id/customer_points_ll_header"
-        android:layout_width="match_parent"
-        android:layout_height="170dp"
-        android:orientation="vertical"
-        android:background="@drawable/customer_bg_exchange_info"
-        android:paddingTop="10dp"
-        android:paddingBottom="5dp"
-        android:gravity="center_horizontal">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="FLASH Points 兌換區"
-                android:textSize="18sp"
-                android:textColor="@color/white"/>
-
-            <TextView
-                android:id="@+id/customer_points_tv_records"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="10dp"
-                android:layout_centerVertical="true"
-                android:padding="10dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:text="歷史紀錄"
-                android:textSize="13sp"
-                android:textColor="@color/white"/>
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/round_rectangle_white_frame"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_points"
-                android:tint="@color/white"/>
-
-            <TextView
-                android:id="@+id/customer_points_tv_points"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="@color/white"
-                android:textSize="42dp"/>
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="您的FLASH Points"
-            android:textSize="14sp"
-            android:textColor="@color/white"/>
-
-    </LinearLayout>
-
     <com.daimajia.slider.library.SliderLayout
         android:id="@+id/customer_points_sl_coupons"
         android:layout_width="match_parent"
@@ -116,5 +41,17 @@
         </LinearLayout>
 
     </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/customer_points_tv_nothing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:padding="5dp"
+        android:text="載入中"
+        android:textColor="@color/textColorLighter"
+        android:textSize="15sp"/>
 
 </LinearLayout>
