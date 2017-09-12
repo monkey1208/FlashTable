@@ -47,11 +47,11 @@
         android:id="@+id/customer_points_tv_nothing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_gravity="center_horizontal"
         android:padding="5dp"
         android:text="載入中"
         android:textColor="@color/textColorLighter"
-        android:textSize="15sp"/>
+        android:textSize="1sp"/>
 
 </LinearLayout>

@@ -212,7 +212,7 @@ public class CustomerFlashPointFragment extends Fragment implements BaseSliderVi
         adapter.notifyDataSetChanged();
         lv_coupons.setAdapter(adapter);
 
-        if (coupons.size() > 0) tv_nothing.setVisibility(View.INVISIBLE);
+        if (coupons.size() > 0) ((ViewGroup) tv_nothing.getParent()).removeView(tv_nothing);
         else tv_nothing.setText("目前沒有可兌換的優惠喔！");
     }
 
