@@ -399,7 +399,12 @@ public class CustomerMapFragment extends Fragment implements OnMapReadyCallback,
                         Location m = new Location("");
                         m.setLongitude(latLng.longitude);
                         m.setLatitude(latLng.latitude);
-                        tv_dis.setText("< "+ (int)l.distanceTo(m) +" m");
+                        int dis = (int)l.distanceTo(m);
+                        if(dis >= 1000) {
+                            tv_dis.setText("< " + ((double) (dis/100)) / 10 + " km");
+                        }
+                        else
+                            tv_dis.setText("< "+ dis +" m");
                         iv_shop.setImageBitmap(restaurantInfoList.get(index).getImage());
                         tv_consume.setText("均消$" + restaurantInfoList.get(index).consumption);
                         rb.setRating(restaurantInfoList.get(index).rating);
