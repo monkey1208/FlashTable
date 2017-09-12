@@ -175,11 +175,11 @@ public class CustomerShopActivity extends AppCompatActivity implements BaseSlide
             img_map.put(index+"", item);
             index++;
         }
-        for (String name : img_map.keySet()) {
+        for (int i = 0; i < list.size(); i++) {
             BitmapSliderView slider_view = new BitmapSliderView(this);
             slider_view
-                    .image(img_map.get(name))
-                    .description(name)
+                    .image(list.get(i))
+                    .description(String.valueOf(i))
                     .setScaleType(BaseSliderView.ScaleType.CenterCrop)
                     .setOnSliderClickListener(this);
             sl_restaurant.addSlider(slider_view);
