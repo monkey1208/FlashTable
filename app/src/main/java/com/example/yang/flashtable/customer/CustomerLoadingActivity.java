@@ -146,9 +146,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                     if(status.equals("0")) {
                         String picture_url = shop_object.get("picture_url_mainpage").toString();
                         Bitmap image = getBitmapFromURL(picture_url);
-                        if(image != null){
 
-                        }
                         String name = shop_object.get("name").toString();
                         String intro = shop_object.get("intro").toString();
                         String location = shop_object.get("location").toString();
@@ -165,7 +163,9 @@ public class CustomerLoadingActivity extends AppCompatActivity {
                         LatLng latlng = new LatLng(Float.parseFloat(lat), Float.parseFloat(lng));
                         info = new CustomerRestaurantInfo(name, Integer.valueOf(id), consumption, tag, latlng, web, phone, minconsumption, business_hours);
                         info.setInfo(address, intro);
-                        info.turnBitmap2ByteArray(image);
+                        if(image != null){
+                            info.turnBitmap2ByteArray(image);
+                        }
 
                         byte[] img1 = bitmap2ByteArray(shop_object.getString("picture_url"));
                         byte[] img2 = bitmap2ByteArray(shop_object.getString("picture_url2"));
@@ -175,7 +175,7 @@ public class CustomerLoadingActivity extends AppCompatActivity {
 
                         sql_handler.insert(info, img1, img2, img3, img4, img5);
 
-                        if(!image.isRecycled()){
+                        if(image != null && !image.isRecycled()){
                             image.recycle();
                         }
                     }
